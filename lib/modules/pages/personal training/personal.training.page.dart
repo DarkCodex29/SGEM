@@ -312,6 +312,8 @@ class PersonalSearchPage extends StatelessWidget {
     });
   }
 
+
+
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
@@ -641,7 +643,7 @@ class PersonalSearchPage extends StatelessWidget {
                             Get.put(NewPersonalController());
 
                         try {
-                          // TODO: Eliminar persona  
+                          // TODO: Eliminar persona
                           /*
                           await controllerNew.gestionarPersona(
                             accion: 'eliminar',

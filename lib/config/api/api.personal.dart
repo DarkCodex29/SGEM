@@ -34,9 +34,9 @@ class PersonalService {
           followRedirects: false,
         ),
       );
+
       log('Respuesta recibida para buscarPersonalPorDni: ${response.data}');
-      final personal = Personal.fromJson(response.data);
-      return ResponseHandler.handleSuccess<Personal>(personal);
+      return ResponseHandler.handleSuccess<Personal>(response.data);
     } on DioException catch (e) {
       log('Error al buscar personal por DNI: $dni. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
@@ -56,7 +56,6 @@ class PersonalService {
         ),
       );
 
-      // Verificamos si la respuesta es en formato "Codigo" y "Valor"
       if (response.statusCode == 200 && response.data != null) {
         if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
           return ResponseHandler.handleSuccess<bool>(true);
@@ -126,7 +125,6 @@ class PersonalService {
         ),
       );
 
-      // Verificamos si la respuesta es en formato "Codigo" y "Valor"
       if (response.statusCode == 200 && response.data != null) {
         if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
           return ResponseHandler.handleSuccess<bool>(true);

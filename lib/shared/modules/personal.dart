@@ -91,7 +91,8 @@ class Personal {
       primerNombre: json['PrimerNombre'] ?? "",
       segundoNombre: json['SegundoNombre'] ?? "",
       fechaIngreso: json['FechaIngreso'] != null
-          ? DateTime.tryParse(json['FechaIngreso'])
+          ? DateTime.fromMillisecondsSinceEpoch(
+              int.parse(json['FechaIngreso'].replaceAll(RegExp(r'[^0-9]'), '')))
           : null,
       licenciaCategoria: json['LicenciaCategoria'] ?? "",
       licenciaVencimiento: json['LicenciaVencimiento'] != null

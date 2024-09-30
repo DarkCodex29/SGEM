@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:sgem/shared/modules/personal.dart';
+
 class ResponseHandler<T> {
   final T? data;
   final bool success;
@@ -42,6 +44,10 @@ class ResponseHandler<T> {
     // Caso 4: Mapa genérico
     if (response is Map<String, dynamic>) {
       log('Respuesta exitosa con datos de mapa');
+      if (T == Personal) {
+        final personal = Personal.fromJson(response);
+        return ResponseHandler<T>(success: true, data: personal as T);
+      }
       return ResponseHandler<T>(success: true, data: response as T);
     }
 

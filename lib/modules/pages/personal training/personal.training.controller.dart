@@ -4,6 +4,7 @@ import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
@@ -141,12 +142,15 @@ class PersonalSearchController extends GetxController {
       'FECHA REVALIDACIÓN',
       'RESTRICCIONES'
     ];
+
     for (int i = 0; i < headers.length; i++) {
       var cell = excel.sheets['Personal']!
           .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
       cell.value = TextCellValue(headers[i]);
       cell.cellStyle = headerStyle;
     }
+
+    final dateFormat = DateFormat('dd/MM/yyyy');
 
     for (int rowIndex = 0; rowIndex < personalResults.length; rowIndex++) {
       var personal = personalResults[rowIndex];
@@ -160,16 +164,17 @@ class PersonalSearchController extends GetxController {
         TextCellValue(personal.cargo),
         TextCellValue(personal.gerencia),
         TextCellValue(personal.area),
+        // Formato de la fecha para mostrarlo al usuario
         personal.fechaIngreso != null
-            ? DateCellValue.fromDateTime(personal.fechaIngreso!)
+            ? TextCellValue(dateFormat.format(personal.fechaIngreso!))
             : TextCellValue(''),
         personal.fechaIngresoMina != null
-            ? DateCellValue.fromDateTime(personal.fechaIngresoMina!)
+            ? TextCellValue(dateFormat.format(personal.fechaIngresoMina!))
             : TextCellValue(''),
         TextCellValue(personal.licenciaConducir),
         TextCellValue(personal.licenciaCategoria),
         personal.licenciaVencimiento != null
-            ? DateCellValue.fromDateTime(personal.licenciaVencimiento!)
+            ? TextCellValue(dateFormat.format(personal.licenciaVencimiento!))
             : TextCellValue(''),
         TextCellValue(personal.restricciones),
       ];

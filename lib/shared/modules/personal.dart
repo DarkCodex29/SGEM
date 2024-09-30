@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Personal {
   int key;
   String tipoPersona;
@@ -27,6 +29,8 @@ class Personal {
   DateTime? licenciaVencimiento;
   String gerencia;
   String area;
+
+  static final DateFormat _formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
 
   Personal({
     required this.key,
@@ -91,8 +95,7 @@ class Personal {
       primerNombre: json['PrimerNombre'] ?? "",
       segundoNombre: json['SegundoNombre'] ?? "",
       fechaIngreso: json['FechaIngreso'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(
-              int.parse(json['FechaIngreso'].replaceAll(RegExp(r'[^0-9]'), '')))
+          ? DateTime.tryParse(json['FechaIngreso'])
           : null,
       licenciaCategoria: json['LicenciaCategoria'] ?? "",
       licenciaVencimiento: json['LicenciaVencimiento'] != null
@@ -108,7 +111,8 @@ class Personal {
       'Key': key,
       'TipoPersona': tipoPersona,
       'InPersonalOrigen': inPersonalOrigen,
-      'FechaIngresoMina': fechaIngresoMina?.toIso8601String() ?? "",
+      'FechaIngresoMina':
+          fechaIngresoMina != null ? _formatter.format(fechaIngresoMina!) : "",
       'LicenciaConducir': licenciaConducir,
       'OperacionMina': operacionMina,
       'ZonaPlataforma': zonaPlataforma,
@@ -128,9 +132,12 @@ class Personal {
       'ApellidoMaterno': apellidoMaterno,
       'PrimerNombre': primerNombre,
       'SegundoNombre': segundoNombre,
-      'FechaIngreso': fechaIngreso?.toIso8601String() ?? "",
+      'FechaIngreso':
+          fechaIngreso != null ? _formatter.format(fechaIngreso!) : "",
       'LicenciaCategoria': licenciaCategoria,
-      'LicenciaVencimiento': licenciaVencimiento?.toIso8601String() ?? "",
+      'LicenciaVencimiento': licenciaVencimiento != null
+          ? _formatter.format(licenciaVencimiento!)
+          : "",
       'Gerencia': gerencia,
       'Area': area,
     };

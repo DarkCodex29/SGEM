@@ -1,12 +1,18 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'new.personal.controller.dart';
+import 'package:intl/intl.dart';
 
 class NuevoPersonalPage extends StatelessWidget {
   final NewPersonalController controller = NewPersonalController();
+  final PersonalSearchController controllerPersonalSearch = Get.find();
   final bool isEditing;
   final bool isViewing;
   final Personal personal;
@@ -23,7 +29,6 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.dniController.text = personal.numeroDocumento;
       controller.nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
-      //controller.nombresController.text = personal.nombreCompleto;
       controller.puestoTrabajoController.text = personal.cargo;
       controller.codigoController.text = personal.codigoMcp;
       controller.apellidoPaternoController.text = personal.apellidoPaterno;
@@ -51,7 +56,7 @@ class NuevoPersonalPage extends StatelessWidget {
           children: [
             _buildHeaderSection(),
             const SizedBox(height: 30),
-            _buildDatosAdicionalesSection(),
+            _buildDatosAdicionalesSection(context),
             const SizedBox(height: 30),
             if (isViewing) _buildRegresarButton(context),
             if (!isViewing) _buildButtons(context),
@@ -187,7 +192,7 @@ class NuevoPersonalPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDatosAdicionalesSection() {
+  Widget _buildDatosAdicionalesSection(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -211,7 +216,7 @@ class NuevoPersonalPage extends StatelessWidget {
                   options: const ["A", "B", "C", "D"],
                   isSearchable: false,
                   onChanged: isViewing ? (_) {} : (value) {},
-                  isRequired: true,
+                  isRequired: !isViewing,
                 ),
               ),
               const SizedBox(width: 10),
@@ -220,7 +225,7 @@ class NuevoPersonalPage extends StatelessWidget {
                   label: "Código Licencia",
                   controller: controller.codigoLicenciaController,
                   isReadOnly: isViewing,
-                  isRequired: true,
+                  isRequired: !isViewing,
                 ),
               ),
               const SizedBox(width: 10),
@@ -230,7 +235,13 @@ class NuevoPersonalPage extends StatelessWidget {
                   controller: controller.fechaIngresoMinaController,
                   icon: Icons.calendar_today,
                   isReadOnly: isViewing,
-                  isRequired: true,
+                  isRequired: !isViewing,
+                  onIconPressed: () {
+                    if (!isViewing) {
+                      _selectDate(
+                          context, controller.fechaIngresoMinaController);
+                    }
+                  },
                 ),
               ),
               const SizedBox(width: 10),
@@ -240,7 +251,13 @@ class NuevoPersonalPage extends StatelessWidget {
                   controller: controller.fechaRevalidacionController,
                   icon: Icons.calendar_today,
                   isReadOnly: isViewing,
-                  isRequired: true,
+                  isRequired: !isViewing,
+                  onIconPressed: () {
+                    if (!isViewing) {
+                      _selectDate(
+                          context, controller.fechaRevalidacionController);
+                    }
+                  },
                 ),
               ),
             ],
@@ -249,13 +266,7 @@ class NuevoPersonalPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CustomDropdown(
-                  hintText: "Guardia",
-                  options: const ["Mañana", "Tarde", "Noche"],
-                  isSearchable: false,
-                  onChanged: isViewing ? (_) {} : (value) {},
-                  isRequired: true,
-                ),
+                child: _buildDropdownGuardia(controllerPersonalSearch),
               ),
               const SizedBox(width: 10),
               const Expanded(
@@ -265,7 +276,7 @@ class NuevoPersonalPage extends StatelessWidget {
                 child: Row(
                   children: [
                     Checkbox(
-                      value: true, // Control para el valor
+                      value: true,
                       onChanged: isViewing ? null : (value) {},
                     ),
                     const Text("Operaciones mina"),
@@ -384,7 +395,6 @@ class NuevoPersonalPage extends StatelessWidget {
     );
   }
 
-  // Ícono de búsqueda
   IconData? _getSearchIcon() {
     if (!isEditing && !isViewing) {
       return Icons.search;
@@ -392,10 +402,50 @@ class NuevoPersonalPage extends StatelessWidget {
     return null;
   }
 
-  // Acción para buscar personal por DNI
   void _searchPersonalByDNI() async {
     if (!isEditing && !isViewing) {
       await controller.buscarPersonalPorDni(controller.dniController.text);
+    }
+  }
+
+  Widget _buildDropdownGuardia(PersonalSearchController controller) {
+    return Obx(() {
+      if (controller.guardiaOptions.isEmpty) {
+        return const CircularProgressIndicator();
+      }
+      List<MaestroDetalle> options = controller.guardiaOptions;
+      return CustomDropdown(
+        hintText: 'Selecciona Guardia',
+        options: options.map((option) => option.valor).toList(),
+        selectedValue: controller.selectedGuardiaKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedGuardiaKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedGuardiaKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+        },
+      );
+    });
+  }
+
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      controller.text = DateFormat('dd/MM/yyyy').format(picked);
     }
   }
 }

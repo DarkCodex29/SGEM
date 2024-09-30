@@ -641,7 +641,7 @@ class PersonalSearchPage extends StatelessWidget {
                             Get.put(NewPersonalController());
 
                         try {
-                          // TODO: Eliminar persona
+                          // TODO: Eliminar persona  
                           /*
                           await controllerNew.gestionarPersona(
                             accion: 'eliminar',

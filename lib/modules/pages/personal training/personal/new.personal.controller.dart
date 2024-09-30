@@ -1,10 +1,11 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
-class NewPersonalController {
+class NewPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
   final TextEditingController nombresController = TextEditingController();
   final TextEditingController puestoTrabajoController = TextEditingController();
@@ -45,6 +46,19 @@ class NewPersonalController {
     }
   }
 
+  DateTime? parseDate(String? rawDate) {
+    if (rawDate == null || rawDate.isEmpty) {
+      return null;
+    }
+
+    try {
+      return DateTime.parse(rawDate); // Handle ISO 8601 formatted dates
+    } catch (e) {
+      log('Error al parsear la fecha: $e');
+      return null;
+    }
+  }
+
   void llenarControladores(Personal personal) {
     dniController.text = personal.numeroDocumento;
     nombresController.text =
@@ -54,20 +68,24 @@ class NewPersonalController {
     apellidoPaternoController.text = personal.apellidoPaterno;
     apellidoMaternoController.text = personal.apellidoMaterno;
     gerenciaController.text = personal.gerencia;
+
     fechaIngresoController.text = personal.fechaIngreso != null
-        ? _formatDate(personal.fechaIngreso!)
+        ? _formatDate(parseDate(personal.fechaIngreso.toString())!)
         : '';
+
+    fechaIngresoMinaController.text = personal.fechaIngresoMina != null
+        ? _formatDate(personal.fechaIngresoMina!)
+        : '';
+
+    fechaRevalidacionController.text = personal.licenciaVencimiento != null
+        ? _formatDate(personal.licenciaVencimiento!)
+        : '';
+
     areaController.text = personal.area;
     codigoLicenciaController.text = personal.licenciaCategoria;
     restriccionesController.text = personal.restricciones;
     operacionMinaController.text = personal.operacionMina;
     zonaPlataformaController.text = personal.zonaPlataforma;
-    fechaIngresoMinaController.text = personal.fechaIngresoMina != null
-        ? _formatDate(personal.fechaIngresoMina!)
-        : '';
-    fechaRevalidacionController.text = personal.licenciaVencimiento != null
-        ? _formatDate(personal.licenciaVencimiento!)
-        : '';
   }
 
   Future<bool> gestionarPersona({
@@ -132,6 +150,8 @@ class NewPersonalController {
 
       if (response.success) {
         log('Acción $accion realizada exitosamente');
+        // Redirigir a la página de "Buscar Entrenamiento" en caso de éxito
+        Get.toNamed('/buscarEntrenamiento');
         return true;
       } else {
         log('Acción $accion fallida: ${response.message}');
@@ -160,7 +180,7 @@ class NewPersonalController {
   }
 
   String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
+    return date.toIso8601String(); // ISO 8601 format
   }
 
   bool validate(BuildContext context) {
@@ -195,6 +215,7 @@ class NewPersonalController {
     return true;
   }
 
+  // Restaurar el diseño original del modal
   void showErrorModal(BuildContext context, String message) {
     showDialog(
       context: context,

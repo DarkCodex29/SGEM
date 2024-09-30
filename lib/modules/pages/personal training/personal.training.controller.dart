@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class PersonalSearchController extends GetxController {
@@ -25,10 +26,14 @@ class PersonalSearchController extends GetxController {
 
   var personalResults = <Personal>[].obs;
   var selectedPersonal = Rxn<Personal>();
-  var guardiaOptions = <Map<String, dynamic>>[].obs;
+  RxList<MaestroDetalle> guardiaOptions = <MaestroDetalle>[].obs;
   var selectedGuardiaKey = RxnInt();
+  var selectedEstadoKey = RxnInt();
 
-  var rowsPerPage = 0.obs;
+  var rowsPerPage = 10.obs;
+  var currentPage = 1.obs;
+  var totalPages = 1.obs;
+  var totalRecords = 0.obs;
 
   @override
   void onInit() {
@@ -38,15 +43,26 @@ class PersonalSearchController extends GetxController {
 
   Future<void> cargarGuardiaOptions() async {
     try {
-      var result = await maestroDetalleService.listarMaestroDetalle();
-      guardiaOptions.assignAll(result);
-      log('Guardia opciones: $guardiaOptions');
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+
+      if (response.success && response.data != null) {
+        guardiaOptions.assignAll(response.data!);
+
+        log('Guardia opciones cargadas correctamente: $guardiaOptions');
+      } else {
+        log('Error: ${response.message}');
+      }
     } catch (e) {
       log('Error cargando la data de guardia maestro: $e');
     }
   }
 
-  Future<void> searchPersonal() async {
+  void searchPersonalEstado(int? estadoKey) {
+    selectedEstadoKey.value = estadoKey;
+  }
+
+  Future<void> searchPersonal({int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =
         codigoMCPController.text.isEmpty ? null : codigoMCPController.text;
     String? numeroDocumento = documentoIdentidadController.text.isEmpty
@@ -58,23 +74,42 @@ class PersonalSearchController extends GetxController {
         apellidosController.text.isEmpty ? null : apellidosController.text;
 
     try {
-      var result = await personalService.listarPersonalEntrenamiento(
+      var response = await personalService.listarPersonalEntrenamientoPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
         nombres: nombres,
         apellidos: apellidos,
         inGuardia: selectedGuardiaKey.value,
-        inEstado: null,
+        inEstado: selectedEstadoKey.value,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
       );
 
-      List<Personal> personalList =
-          result.map<Personal>((item) => Personal.fromJson(item)).toList();
-      personalResults.assignAll(personalList);
+      if (response.success && response.data != null) {
+        try {
+          var result = response.data as Map<String, dynamic>;
+          log('Respuesta recibida correctamente: $result');
 
-      isExpanded.value = false;
-      log('Resultados obtenidos: ${personalResults.length}');
+          var items = result['Items'] as List<Personal>;
+          log('Items obtenidos: $items');
+
+          personalResults.assignAll(items);
+
+          currentPage.value = result['PageNumber'] as int;
+          totalPages.value = result['TotalPages'] as int;
+          totalRecords.value = result['TotalRecords'] as int;
+          rowsPerPage.value = result['PageSize'] as int;
+
+          isExpanded.value = false;
+          log('Resultados obtenidos: ${personalResults.length}');
+        } catch (e) {
+          log('Error al procesar la respuesta: $e');
+        }
+      } else {
+        log('Error en la búsqueda: ${response.message}');
+      }
     } catch (e) {
-      log('Error en la búsqueda: $e');
+      log('Error en la búsqueda2: $e');
     }
   }
 

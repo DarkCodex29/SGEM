@@ -1,0 +1,1 @@
+enum EnumAuthenticationRequestType { basic, none }

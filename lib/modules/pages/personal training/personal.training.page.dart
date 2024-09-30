@@ -6,12 +6,13 @@ import 'package:sgem/modules/pages/personal%20training/personal/new.personal.con
 import 'package:sgem/modules/pages/personal%20training/personal/new.personal.page.dart';
 import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal%20training/training/training.personal.page.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
-import 'package:sgem/shared/widgets/widget.delete.motivo.dart';
-import 'package:sgem/shared/widgets/widget.delete.personal.confirmation.dart';
-import 'package:sgem/shared/widgets/widget.delete.personal.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -164,7 +165,7 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomDropdown(
                             hintText: "Estado",
-                            options: const ["Activo", "Inactivo", "Todos"],
+                            options: const ["Activo", "Cesado", "Todos"],
                             isSearchable: false,
                             onChanged: (value) {},
                           ),
@@ -208,7 +209,7 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomDropdown(
                             hintText: "Estado",
-                            options: const ["Activo", "Inactivo", "Todos"],
+                            options: const ["Activo", "Cesado", "Todos"],
                             isSearchable: false,
                             onChanged: (value) {},
                           ),
@@ -233,9 +234,17 @@ class PersonalSearchPage extends StatelessWidget {
                           Expanded(
                             child: CustomDropdown(
                               hintText: "Estado",
-                              options: const ["Activo", "Inactivo", "Todos"],
+                              options: const ["Activo", "Cesado", "Todos"],
                               isSearchable: false,
-                              onChanged: (value) {},
+                              onChanged: (value) {
+                                if (value == "Activo") {
+                                  controller.searchPersonalEstado(95);
+                                } else if (value == "Cesado") {
+                                  controller.searchPersonalEstado(96);
+                                } else {
+                                  controller.searchPersonalEstado(null);
+                                }
+                              },
                             ),
                           ),
                         ],
@@ -308,25 +317,24 @@ class PersonalSearchPage extends StatelessWidget {
       if (controller.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();
       }
-
-      List<Map<String, dynamic>> options = controller.guardiaOptions;
-
+      List<MaestroDetalle> options = controller.guardiaOptions;
       return CustomDropdown(
         hintText: 'Selecciona Guardia',
-        options: options.map((option) => option['Valor'].toString()).toList(),
+        options: options.map((option) => option.valor).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
-            ? options.firstWhere((option) =>
-                option['Key'] == controller.selectedGuardiaKey.value)['Valor']
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedGuardiaKey.value)
+                .valor
             : null,
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
           final selectedOption = options.firstWhere(
-            (option) => option['Valor'] == value,
-            orElse: () => {},
+            (option) => option.valor == value,
           );
-          controller.selectedGuardiaKey.value = selectedOption['Key'];
-          log('Guardia seleccionada - Key: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          controller.selectedGuardiaKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
         },
       );
     });
@@ -363,17 +371,26 @@ class PersonalSearchPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           _buildResultsTable(controller),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Spacer(),
+              Obx(() => Text(
+                    'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
+                    '${controller.currentPage.value * controller.rowsPerPage.value > controller.totalRecords.value ? controller.totalRecords.value : controller.currentPage.value * controller.rowsPerPage.value} '
+                    'de ${controller.totalRecords.value} registros',
+                    style: const TextStyle(fontSize: 14),
+                  )),
               Obx(
                 () => Row(
                   children: [
                     const Text("Items por página: "),
                     DropdownButton<int>(
-                      value: controller.rowsPerPage.value,
-                      items: [0, 1, 20, 50]
+                      value: controller.rowsPerPage.value > 0 &&
+                              controller.rowsPerPage.value <= 50
+                          ? controller.rowsPerPage.value
+                          : null,
+                      items: [10, 20, 50]
                           .map((value) => DropdownMenuItem<int>(
                                 value: value,
                                 child: Text(value.toString()),
@@ -382,8 +399,37 @@ class PersonalSearchPage extends StatelessWidget {
                       onChanged: (value) {
                         if (value != null) {
                           controller.rowsPerPage.value = value;
+                          controller.currentPage.value = 1;
+                          controller.searchPersonal(
+                              pageNumber: controller.currentPage.value,
+                              pageSize: value);
                         }
                       },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back),
+                      onPressed: controller.currentPage.value > 1
+                          ? () {
+                              controller.currentPage.value--;
+                              controller.searchPersonal(
+                                  pageNumber: controller.currentPage.value,
+                                  pageSize: controller.rowsPerPage.value);
+                            }
+                          : null,
+                    ),
+                    Text(
+                        '${controller.currentPage.value} de ${controller.totalPages.value}'),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward),
+                      onPressed: controller.currentPage.value <
+                              controller.totalPages.value
+                          ? () {
+                              controller.currentPage.value++;
+                              controller.searchPersonal(
+                                  pageNumber: controller.currentPage.value,
+                                  pageSize: controller.rowsPerPage.value);
+                            }
+                          : null,
                     ),
                   ],
                 ),
@@ -483,9 +529,7 @@ class PersonalSearchPage extends StatelessWidget {
         ],
         //TODO: controller.personalResults
         rows: rowsToShow.map((personal) {
-          String estado = personal.estado.nombre == 'Cesado'
-              ? 'Inactivo'
-              : personal.estado.nombre;
+          String estado = personal.estado.nombre;
           return DataRow(cells: [
             DataCell(Text(personal.codigoMcp)),
             DataCell(Text(personal.nombreCompleto)),
@@ -503,7 +547,7 @@ class PersonalSearchPage extends StatelessWidget {
               ],
             )),
             DataCell(Row(
-              children: estado == 'Inactivo'
+              children: estado == 'Cesado'
                   ? [
                       _buildIconButton(
                           Icons.remove_red_eye, AppTheme.primaryColor, () {

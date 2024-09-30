@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 
 class MaestroDetalleService {
   final String baseUrl =
@@ -20,7 +22,7 @@ class MaestroDetalleService {
     ));
   }
 
-  Future<List<Map<String, dynamic>>> listarMaestroDetalle({
+  Future<ResponseHandler<List<MaestroDetalle>>> listarMaestroDetalle({
     String? nombre,
     String? descripcion,
   }) async {
@@ -41,67 +43,101 @@ class MaestroDetalleService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        return List<Map<String, dynamic>>.from(response.data);
+        List<MaestroDetalle> detalles = List<MaestroDetalle>.from(
+          response.data.map((json) => MaestroDetalle.fromJson(json)),
+        );
+
+        return ResponseHandler.handleSuccess<List<MaestroDetalle>>(detalles);
       } else {
-        throw Exception('Error al listar maestros detalle');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al listar maestro detalle',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al listar maestros detalle: ${e.message}');
+      return ResponseHandler.handleFailure<List<MaestroDetalle>>(e);
     }
   }
 
-  Future<Map<String, dynamic>> registrarMaestroDetalle(
-      Map<String, dynamic> data) async {
+  Future<ResponseHandler<bool>> registrarMaestroDetalle(
+      MaestroDetalle data) async {
     final url = '$baseUrl/MaestroDetalle/RegistrarMaestroDetalle';
 
     try {
       final response = await dio.post(
         url,
-        data: jsonEncode(data),
+        data: jsonEncode(data.toJson()),
         options: Options(
           followRedirects: false,
         ),
       );
 
-      if (response.data != null && response.data['Key'] != null) {
-        log('Maestro Detalle registrado correctamente');
-        return response.data;
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+          log('Maestro Detalle registrado correctamente');
+          return ResponseHandler(success: true, data: true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: 'Error inesperado al registrar maestro detalle',
+          );
+        }
       } else {
-        throw Exception('Error al registrar maestro detalle');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al registrar maestro detalle',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al registrar maestro detalle: ${e.message}');
+      return ResponseHandler.handleFailure<bool>(e);
     }
   }
 
-  Future<Map<String, dynamic>> actualizarMaestroDetalle(
-      Map<String, dynamic> data) async {
+  Future<ResponseHandler<bool>> actualizarMaestroDetalle(
+      MaestroDetalle data) async {
     final url = '$baseUrl/MaestroDetalle/ActualizarMaestroDetalle';
 
     try {
       final response = await dio.put(
         url,
-        data: jsonEncode(data),
+        data: jsonEncode(data.toJson()),
         options: Options(
           followRedirects: false,
         ),
       );
 
-      if (response.data != null && response.data['Key'] != null) {
-        log('Maestro Detalle actualizado correctamente');
-        return response.data;
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+          log('Maestro Detalle actualizado correctamente');
+          return ResponseHandler(success: true, data: true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: 'Error inesperado al actualizar maestro detalle',
+          );
+        }
       } else {
-        throw Exception('Error al actualizar maestro detalle');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al actualizar maestro detalle',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al actualizar maestro detalle: ${e.message}');
+      if (e.response?.data != null && e.response?.data['Message'] != null) {
+        var errorMessage = e.response!.data['Message'];
+        log('Error al actualizar: $errorMessage');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al actualizar maestro detalle: $errorMessage',
+        );
+      } else {
+        return ResponseHandler.handleFailure<bool>(e);
+      }
     }
   }
 
-  Future<Map<String, dynamic>> obtenerMaestroDetallePorId(String id) async {
+  Future<ResponseHandler<MaestroDetalle>> obtenerMaestroDetallePorId(
+      String id) async {
     final url = '$baseUrl/MaestroDetalle/obtenerMaestroDetallePorId?id=$id';
 
     try {
@@ -112,15 +148,49 @@ class MaestroDetalleService {
         ),
       );
 
-      if (response.data != null && response.data.isNotEmpty) {
-        log('Maestro Detalle encontrado con ID $id');
-        return response.data;
+      if (response.statusCode == 200 && response.data != null) {
+        MaestroDetalle detalle = MaestroDetalle.fromJson(response.data);
+        return ResponseHandler.handleSuccess<MaestroDetalle>(detalle);
       } else {
-        throw Exception('No se encontraron datos para el ID $id');
+        return ResponseHandler(
+          success: false,
+          message: 'No se encontraron datos para el ID $id',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al obtener maestro detalle: ${e.message}');
+      return ResponseHandler.handleFailure<MaestroDetalle>(e);
+    }
+  }
+
+  Future<ResponseHandler<List<MaestroDetalle>>> listarMaestroDetallePorMaestro(
+      int maestroKey) async {
+    final url =
+        '$baseUrl/MaestroDetalle/ListarMaestroDetallePorMaestro?id=$maestroKey';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        List<MaestroDetalle> detalles = (response.data as List)
+            .map(
+                (json) => MaestroDetalle.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        return ResponseHandler.handleSuccess<List<MaestroDetalle>>(detalles);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al listar detalles del maestro con Key $maestroKey',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al listar detalles del maestro con Key $maestroKey: $e');
+      return ResponseHandler.handleFailure<List<MaestroDetalle>>(e);
     }
   }
 }

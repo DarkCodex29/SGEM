@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/personal.dart';
 
 class PersonalService {
   final String baseUrl =
@@ -20,103 +22,133 @@ class PersonalService {
     ));
   }
 
-  Future<Map<String, dynamic>> buscarPersonalPorDni(String dni) async {
+  Future<ResponseHandler<Personal>> buscarPersonalPorDni(String dni) async {
     final url =
         '$baseUrl/Personal/ObtenerPersonalPorDocumento?numeroDocumento=$dni';
 
     try {
+      log('Buscando personal por DNI: $dni');
       final response = await dio.get(
         url,
         options: Options(
           followRedirects: false,
         ),
       );
-
-      if (response.data != null && response.data.isNotEmpty) {
-        log('Personal encontrado con DNI $dni');
-        return response.data;
-      } else {
-        throw Exception('No se encontraron datos para el DNI $dni');
-      }
+      log('Respuesta recibida para buscarPersonalPorDni: ${response.data}');
+      final personal = Personal.fromJson(response.data);
+      return ResponseHandler.handleSuccess<Personal>(personal);
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al buscar personal: ${e.message}');
+      log('Error al buscar personal por DNI: $dni. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
     }
   }
 
-  Future<bool> registrarPersona(Map<String, dynamic> data) async {
+  Future<ResponseHandler<bool>> registrarPersona(Personal personal) async {
     final url = '$baseUrl/Personal/RegistrarPersona';
 
     try {
+      log('Registrando nueva persona: ${jsonEncode(personal.toJson())}');
       final response = await dio.post(
         url,
-        data: jsonEncode(data),
+        data: jsonEncode(personal.toJson()),
         options: Options(
           followRedirects: false,
         ),
       );
 
-      if (response.data == true) {
-        log('Persona registrada correctamente');
-        return true;
+      // Verificamos si la respuesta es en formato "Codigo" y "Valor"
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+          return ResponseHandler.handleSuccess<bool>(true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: response.data['Message'] ?? 'Error desconocido',
+          );
+        }
       } else {
-        throw Exception('Error al registrar persona, respuesta inesperada');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al registrar persona',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al registrar persona: ${e.message}');
+      log('Error al registrar persona. Datos: ${jsonEncode(personal.toJson())}, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
     }
   }
 
-  Future<bool> actualizarPersona(Map<String, dynamic> data) async {
+  Future<ResponseHandler<bool>> actualizarPersona(Personal personal) async {
     final url = '$baseUrl/Personal/ActualizarPersona';
 
     try {
+      log('Actualizando persona: ${jsonEncode(personal.toJson())}');
       final response = await dio.put(
         url,
-        data: jsonEncode(data),
+        data: jsonEncode(personal.toJson()),
         options: Options(
           followRedirects: false,
         ),
       );
 
-      if (response.data == true) {
-        log('Persona actualizada correctamente');
-        return true;
+      // Verificamos si la respuesta es en formato "Codigo" y "Valor"
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+          return ResponseHandler.handleSuccess<bool>(true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: response.data['Message'] ?? 'Error desconocido',
+          );
+        }
       } else {
-        throw Exception('Error al actualizar persona, respuesta inesperada');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al actualizar persona',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al actualizar persona: ${e.message}');
+      log('Error al actualizar persona. Datos: ${jsonEncode(personal.toJson())}, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
     }
   }
 
-  Future<bool> eliminarPersona(Map<String, dynamic> data) async {
+  Future<ResponseHandler<bool>> eliminarPersona(Personal personal) async {
     final url = '$baseUrl/Personal/EliminarPersona';
 
     try {
+      log('Eliminando persona: ${jsonEncode(personal.toJson())}');
       final response = await dio.delete(
         url,
-        data: jsonEncode(data),
+        data: jsonEncode(personal.toJson()),
         options: Options(
           followRedirects: false,
         ),
       );
 
-      if (response.data == true) {
-        log('Persona eliminada correctamente');
-        return true;
+      // Verificamos si la respuesta es en formato "Codigo" y "Valor"
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+          return ResponseHandler.handleSuccess<bool>(true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: response.data['Message'] ?? 'Error desconocido',
+          );
+        }
       } else {
-        throw Exception('Error al eliminar persona, respuesta inesperada');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al eliminar persona',
+        );
       }
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception('Error al eliminar persona: ${e.message}');
+      log('Error al eliminar persona. Datos: ${jsonEncode(personal.toJson())}, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
     }
   }
 
-  Future<List<Map<String, dynamic>>> listarPersonalEntrenamiento({
+  Future<ResponseHandler<List<Personal>>> listarPersonalEntrenamiento({
     String? codigoMcp,
     String? numeroDocumento,
     String? nombres,
@@ -135,6 +167,7 @@ class PersonalService {
     };
 
     try {
+      log('Listando personal de entrenamiento con parámetros: $queryParams');
       final response = await dio.get(
         url,
         queryParameters: queryParams
@@ -143,16 +176,70 @@ class PersonalService {
           followRedirects: false,
         ),
       );
-
-      if (response.statusCode == 200 && response.data != null) {
-        return List<Map<String, dynamic>>.from(response.data);
-      } else {
-        throw Exception('Error al listar personal de entrenamiento');
-      }
+      log('Respuesta recibida para listarPersonalEntrenamiento: ${response.data}');
+      final personalList = (response.data as List)
+          .map((personalJson) => Personal.fromJson(personalJson))
+          .toList();
+      return ResponseHandler.handleSuccess<List<Personal>>(personalList);
     } on DioException catch (e) {
-      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
-      throw Exception(
-          'Error al listar personal de entrenamiento: ${e.message}');
+      log('Error al listar personal de entrenamiento. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<Map<String, dynamic>>>
+      listarPersonalEntrenamientoPaginado({
+    String? codigoMcp,
+    String? numeroDocumento,
+    String? nombres,
+    String? apellidos,
+    int? inGuardia,
+    int? inEstado,
+    int? pageSize,
+    int? pageNumber,
+  }) async {
+    final url = '$baseUrl/Personal/ListarPersonalEntrenamientoPaginado';
+    Map<String, dynamic> queryParams = {
+      'parametros.codigoMcp': codigoMcp,
+      'parametros.numeroDocumento': numeroDocumento,
+      'parametros.nombres': nombres,
+      'parametros.apellidos': apellidos,
+      'parametros.inGuardia': inGuardia,
+      'parametros.inEstado': inEstado,
+      'parametros.pageSize': pageSize,
+      'parametros.pageNumber': pageNumber,
+    };
+
+    try {
+      log('Listando personal de entrenamiento paginado con parámetros: $queryParams');
+      final response = await dio.get(
+        url,
+        queryParameters: queryParams
+          ..removeWhere((key, value) => value == null),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+      log('Respuesta recibida para listarPersonalEntrenamientoPaginado: ${response.data}');
+
+      final result = response.data as Map<String, dynamic>;
+
+      final items = result['Items'] as List;
+      final personalList =
+          items.map((personalJson) => Personal.fromJson(personalJson)).toList();
+
+      final responseData = {
+        'Items': personalList,
+        'PageNumber': result['PageNumber'],
+        'TotalPages': result['TotalPages'],
+        'TotalRecords': result['TotalRecords'],
+        'PageSize': result['PageSize'],
+      };
+
+      return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);
+    } on DioException catch (e) {
+      log('Error al listar personal de entrenamiento paginado. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
     }
   }
 }

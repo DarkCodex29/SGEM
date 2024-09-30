@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class NewPersonalController {
@@ -31,12 +32,16 @@ class NewPersonalController {
 
   Future<void> buscarPersonalPorDni(String dni) async {
     try {
-      final personalJson = await personalService.buscarPersonalPorDni(dni);
-      personalData = Personal.fromJson(personalJson);
+      final response = await personalService.buscarPersonalPorDni(dni);
 
-      llenarControladores(personalData!);
+      if (response.success && response.data != null) {
+        personalData = response.data;
+        llenarControladores(personalData!);
+      } else {
+        log('Error al buscar el personal: ${response.message}');
+      }
     } catch (e) {
-      log('Error al buscar el personal: $e');
+      log('Error inesperado al buscar el personal: $e');
     }
   }
 
@@ -65,8 +70,10 @@ class NewPersonalController {
         : '';
   }
 
-  Future<void> gestionarPersona(
-      {required String accion, String? motivoEliminacion}) async {
+  Future<void> gestionarPersona({
+    required String accion,
+    String? motivoEliminacion,
+  }) async {
     try {
       personalData!
         ..primerNombre = nombresController.text.split(' ').first
@@ -116,25 +123,28 @@ class NewPersonalController {
           ..usuarioElimina = 'usuarioActual';
       }
 
-      bool result;
-      if (accion == 'registrar') {
-        result = await personalService.registrarPersona(personalData!.toJson());
-      } else if (accion == 'actualizar') {
-        result =
-            await personalService.actualizarPersona(personalData!.toJson());
-      } else if (accion == 'eliminar') {
-        result = await personalService.eliminarPersona(personalData!.toJson());
-      } else {
-        throw Exception('Acción no reconocida: $accion');
-      }
+      final response = await _accionPersona(accion);
 
-      if (result == true) {
+      if (response.success) {
         log('Acción $accion realizada exitosamente');
       } else {
-        log('Acción $accion fallida');
+        log('Acción $accion fallida: ${response.message}');
       }
     } catch (e) {
       log('Error al $accion persona: $e');
+    }
+  }
+
+  Future<ResponseHandler<bool>> _accionPersona(String accion) async {
+    switch (accion) {
+      case 'registrar':
+        return personalService.registrarPersona(personalData!);
+      case 'actualizar':
+        return personalService.actualizarPersona(personalData!);
+      case 'eliminar':
+        return personalService.eliminarPersona(personalData!);
+      default:
+        throw Exception('Acción no reconocida: $accion');
     }
   }
 

@@ -155,7 +155,8 @@ class NuevoPersonalPage extends StatelessWidget {
         CustomTextField(
           label: "Apellido Paterno",
           controller: controller.apellidoPaternoController,
-          isReadOnly: isViewing,
+          //isReadOnly: isViewing,
+          isReadOnly: true,
         ),
         const SizedBox(height: 15),
         CustomTextField(
@@ -180,7 +181,8 @@ class NuevoPersonalPage extends StatelessWidget {
         CustomTextField(
           label: "Apellido Materno",
           controller: controller.apellidoMaternoController,
-          isReadOnly: isViewing,
+          //isReadOnly: isViewing,
+          isReadOnly: true,
         ),
         const SizedBox(height: 15),
         CustomTextField(
@@ -210,13 +212,22 @@ class NuevoPersonalPage extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
+              // Expanded(
+              //   child: CustomDropdown(
+              //     hintText: "Categoría Licencia",
+              //     options: const ["A", "B", "C", "D"],
+              //     isSearchable: false,
+              //     onChanged: isViewing ? (_) {} : (value) {},
+              //     isRequired: !isViewing,
+              //   ),
+              // ),
+              const SizedBox(width: 10),
               Expanded(
-                child: CustomDropdown(
-                  hintText: "Categoría Licencia",
-                  options: const ["A", "B", "C", "D"],
-                  isSearchable: false,
-                  onChanged: isViewing ? (_) {} : (value) {},
-                  isRequired: !isViewing,
+                child: CustomTextField(
+                  label: "Categoria Licencia",
+                  controller: controller.categoriaLicenciaController ,
+                  isReadOnly: true,
+                  isRequired: false,
                 ),
               ),
               const SizedBox(width: 10),

@@ -17,6 +17,8 @@ class NewPersonalController extends GetxController {
   final TextEditingController gerenciaController = TextEditingController();
   final TextEditingController fechaIngresoController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
+  final TextEditingController categoriaLicenciaController =
+  TextEditingController();
   final TextEditingController codigoLicenciaController =
       TextEditingController();
   final TextEditingController fechaIngresoMinaController =
@@ -82,7 +84,8 @@ class NewPersonalController extends GetxController {
         : '';
 
     areaController.text = personal.area;
-    codigoLicenciaController.text = personal.licenciaCategoria;
+    categoriaLicenciaController.text=personal.licenciaCategoria;
+    codigoLicenciaController.text = personal.licenciaConducir;
     restriccionesController.text = personal.restricciones;
     operacionMinaController.text = personal.operacionMina;
     zonaPlataformaController.text = personal.zonaPlataforma;

@@ -641,11 +641,13 @@ class PersonalSearchPage extends StatelessWidget {
                             Get.put(NewPersonalController());
 
                         try {
+                          // TODO: Eliminar persona
+                          /*
                           await controllerNew.gestionarPersona(
                             accion: 'eliminar',
                             motivoEliminacion: motivoEliminacion,
                           );
-
+                          */
                           await showModalBottomSheet(
                             isScrollControlled: true,
                             backgroundColor: Colors.transparent,

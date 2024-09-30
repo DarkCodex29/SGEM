@@ -362,12 +362,17 @@ class NuevoPersonalPage extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () async {
+            bool success = false;
             if (isEditing) {
-              await controller.gestionarPersona(accion: 'actualizar');
+              success = await controller.gestionarPersona(
+                  accion: 'actualizar', context: context);
             } else {
-              await controller.gestionarPersona(accion: 'registrar');
+              success = await controller.gestionarPersona(
+                  accion: 'registrar', context: context);
             }
-            onCancel();
+            if (success) {
+              onCancel();
+            }
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,

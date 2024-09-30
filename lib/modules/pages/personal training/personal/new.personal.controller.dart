@@ -70,10 +70,15 @@ class NewPersonalController {
         : '';
   }
 
-  Future<void> gestionarPersona({
+  Future<bool> gestionarPersona({
     required String accion,
     String? motivoEliminacion,
+    required BuildContext context,
   }) async {
+    if (!validate(context)) {
+      return false;
+    }
+
     try {
       personalData!
         ..primerNombre = nombresController.text.split(' ').first
@@ -127,11 +132,17 @@ class NewPersonalController {
 
       if (response.success) {
         log('Acción $accion realizada exitosamente');
+        return true;
       } else {
         log('Acción $accion fallida: ${response.message}');
+        showErrorModal(
+            context, response.message ?? 'Error al gestionar la persona');
+        return false;
       }
     } catch (e) {
       log('Error al $accion persona: $e');
+      showErrorModal(context, 'Error al $accion persona');
+      return false;
     }
   }
 
@@ -150,6 +161,108 @@ class NewPersonalController {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+
+  bool validate(BuildContext context) {
+    if (dniController.text.isEmpty || dniController.text.length != 8) {
+      showErrorModal(
+          context, 'El campo DNI es obligatorio y debe contener 8 dígitos.');
+      return false;
+    }
+    if (nombresController.text.isEmpty) {
+      showErrorModal(context, 'El campo Nombres es obligatorio.');
+      return false;
+    }
+    if (apellidoPaternoController.text.isEmpty) {
+      showErrorModal(context, 'El campo Apellido Paterno es obligatorio.');
+      return false;
+    }
+    if (apellidoMaternoController.text.isEmpty) {
+      showErrorModal(context, 'El campo Apellido Materno es obligatorio.');
+      return false;
+    }
+    if (codigoLicenciaController.text.isEmpty) {
+      showErrorModal(context, 'El campo Código Licencia es obligatorio.');
+      return false;
+    }
+    if (fechaIngresoMinaController.text.isNotEmpty &&
+        DateTime.parse(fechaIngresoMinaController.text)
+            .isBefore(DateTime.parse(fechaIngresoController.text))) {
+      showErrorModal(context,
+          'La fecha de ingreso a mina no puede ser anterior a la fecha de ingreso a la empresa.');
+      return false;
+    }
+    return true;
+  }
+
+  void showErrorModal(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          contentPadding: EdgeInsets.zero,
+          content: Container(
+            width: MediaQuery.of(context).size.width * 0.2,
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  color: Colors.red,
+                  size: 60,
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'Error',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   void resetControllers() {

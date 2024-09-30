@@ -46,6 +46,17 @@ class NewPersonalController extends GetxController {
     }
   }
 
+  Future<void> buscarPersonalPorId(String id) async {
+    try {
+      final personalJson = await personalService.buscarPersonalPorId(id);
+      personalData = Personal.fromJson(personalJson);
+
+      llenarControladores(personalData);
+    } catch (e) {
+      log('Error al buscar el personal: $e');
+    }
+  }
+
   DateTime? parseDate(String? rawDate) {
     if (rawDate == null || rawDate.isEmpty) {
       return null;
@@ -59,33 +70,31 @@ class NewPersonalController extends GetxController {
     }
   }
 
-  void llenarControladores(Personal personal) {
-    dniController.text = personal.numeroDocumento;
-    nombresController.text =
-        '${personal.primerNombre} ${personal.segundoNombre}';
-    puestoTrabajoController.text = personal.cargo;
-    codigoController.text = personal.codigoMcp;
-    apellidoPaternoController.text = personal.apellidoPaterno;
-    apellidoMaternoController.text = personal.apellidoMaterno;
-    gerenciaController.text = personal.gerencia;
-
-    fechaIngresoController.text = personal.fechaIngreso != null
-        ? _formatDate(parseDate(personal.fechaIngreso.toString())!)
-        : '';
-
-    fechaIngresoMinaController.text = personal.fechaIngresoMina != null
-        ? _formatDate(personal.fechaIngresoMina!)
-        : '';
-
-    fechaRevalidacionController.text = personal.licenciaVencimiento != null
-        ? _formatDate(personal.licenciaVencimiento!)
-        : '';
-
-    areaController.text = personal.area;
-    codigoLicenciaController.text = personal.licenciaCategoria;
-    restriccionesController.text = personal.restricciones;
-    operacionMinaController.text = personal.operacionMina;
-    zonaPlataformaController.text = personal.zonaPlataforma;
+  void llenarControladores(Personal? personal) {
+    if(personal != null ){
+      dniController.text = personal.numeroDocumento;
+      nombresController.text =
+          '${personal.primerNombre} ${personal.segundoNombre}';
+      puestoTrabajoController.text = personal.cargo;
+      codigoController.text = personal.codigoMcp;
+      apellidoPaternoController.text = personal.apellidoPaterno;
+      apellidoMaternoController.text = personal.apellidoMaterno;
+      gerenciaController.text = personal.gerencia;
+      fechaIngresoController.text = personal.fechaIngreso != null
+          ? _formatDate(personal.fechaIngreso!)
+          : '';
+      areaController.text = personal.area;
+      codigoLicenciaController.text = personal.licenciaCategoria;
+      restriccionesController.text = personal.restricciones;
+      operacionMinaController.text = personal.operacionMina;
+      zonaPlataformaController.text = personal.zonaPlataforma;
+      fechaIngresoMinaController.text = personal.fechaIngresoMina != null
+          ? _formatDate(personal.fechaIngresoMina!)
+          : '';
+      fechaRevalidacionController.text = personal.licenciaVencimiento != null
+          ? _formatDate(personal.licenciaVencimiento!)
+          : '';
+    }
   }
 
   Future<bool> gestionarPersona({

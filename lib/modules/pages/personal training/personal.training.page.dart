@@ -380,7 +380,7 @@ class PersonalSearchPage extends StatelessWidget {
             builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // Muestra un indicador de carga mientras se busca
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 // Maneja errores aquí
                 return Text('Error: ${snapshot.error}');

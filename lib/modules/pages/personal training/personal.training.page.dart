@@ -17,6 +17,7 @@ import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     final PersonalSearchController controller =
@@ -370,7 +371,25 @@ class PersonalSearchPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          _buildResultsTable(controller),
+          //_buildResultsTable(controller),
+          // FutureBuilder para cargar los resultados automáticamente
+          FutureBuilder<void>(
+            future: controller.searchPersonal(
+                pageNumber: controller.currentPage.value,
+                pageSize: controller.rowsPerPage.value),
+            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // Muestra un indicador de carga mientras se busca
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                // Maneja errores aquí
+                return Text('Error: ${snapshot.error}');
+              } else {
+                // Si no hay errores, muestra la tabla de resultados
+                return _buildResultsTable(controller);
+              }
+            },
+          ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

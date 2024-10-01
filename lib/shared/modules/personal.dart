@@ -111,8 +111,7 @@ class Personal {
       'Key': key,
       'TipoPersona': tipoPersona,
       'InPersonalOrigen': inPersonalOrigen,
-      'FechaIngresoMina':
-          fechaIngresoMina != null ? _formatter.format(fechaIngresoMina!) : "",
+      'FechaIngresoMina': fechaIngresoMina != null ? fechaIngresoMina!.toIso8601String() : null,
       'LicenciaConducir': licenciaConducir,
       'OperacionMina': operacionMina,
       'ZonaPlataforma': zonaPlataforma,
@@ -132,16 +131,16 @@ class Personal {
       'ApellidoMaterno': apellidoMaterno,
       'PrimerNombre': primerNombre,
       'SegundoNombre': segundoNombre,
-      'FechaIngreso':
-          fechaIngreso != null ? _formatter.format(fechaIngreso!) : "",
+      'FechaIngreso': fechaIngreso != null ? fechaIngreso!.toIso8601String() : null,
       'LicenciaCategoria': licenciaCategoria,
       'LicenciaVencimiento': licenciaVencimiento != null
           ? _formatter.format(licenciaVencimiento!)
-          : "",
+          : null,
       'Gerencia': gerencia,
       'Area': area,
     };
   }
+
 }
 
 class Guardia {

@@ -44,8 +44,8 @@ class PersonalService {
   }
 
   Future<ResponseHandler<bool>> registrarPersona(Personal personal) async {
+    log('Registrando nueva persona: ${jsonEncode(personal.toJson())}');
     final url = '$baseUrl/Personal/RegistrarPersona';
-
     try {
       log('Registrando nueva persona: ${jsonEncode(personal.toJson())}');
       final response = await dio.post(

@@ -18,7 +18,7 @@ class NewPersonalController extends GetxController {
   final TextEditingController fechaIngresoController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController categoriaLicenciaController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController codigoLicenciaController =
       TextEditingController();
   final TextEditingController fechaIngresoMinaController =
@@ -84,7 +84,7 @@ class NewPersonalController extends GetxController {
         : '';
 
     areaController.text = personal.area;
-    categoriaLicenciaController.text=personal.licenciaCategoria;
+    categoriaLicenciaController.text = personal.licenciaCategoria;
     codigoLicenciaController.text = personal.licenciaConducir;
     restriccionesController.text = personal.restricciones;
     operacionMinaController.text = personal.operacionMina;
@@ -170,8 +170,10 @@ class NewPersonalController extends GetxController {
   }
 
   Future<ResponseHandler<bool>> _accionPersona(String accion) async {
+    log('Personal: ${personalData.toString()}');
     switch (accion) {
       case 'registrar':
+        log('Registrar');
         return personalService.registrarPersona(personalData!);
       case 'actualizar':
         return personalService.actualizarPersona(personalData!);
@@ -185,7 +187,7 @@ class NewPersonalController extends GetxController {
   String _formatDate(DateTime date) {
     return date.toIso8601String(); // ISO 8601 format
   }
-
+  //Validaciones
   bool validate(BuildContext context) {
     if (dniController.text.isEmpty || dniController.text.length != 8) {
       showErrorModal(
@@ -208,13 +210,16 @@ class NewPersonalController extends GetxController {
       showErrorModal(context, 'El campo Código Licencia es obligatorio.');
       return false;
     }
+    /*
     if (fechaIngresoMinaController.text.isNotEmpty &&
         DateTime.parse(fechaIngresoMinaController.text)
-            .isBefore(DateTime.parse(fechaIngresoController.text))) {
+            .isBefore(DateTime.parse(fechaIngresoController.text)))
+    {
       showErrorModal(context,
           'La fecha de ingreso a mina no puede ser anterior a la fecha de ingreso a la empresa.');
       return false;
     }
+    */
     return true;
   }
 

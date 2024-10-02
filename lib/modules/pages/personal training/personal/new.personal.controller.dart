@@ -142,7 +142,7 @@ class NewPersonalController extends GetxController {
 
       if (response.success) {
         log('Acción $accion realizada exitosamente');
-        Get.toNamed('/buscarEntrenamiento');
+        //Get.toNamed('/buscarEntrenamiento');
         return true;
       } else {
         log('Acción $accion fallida: ${response.message}');

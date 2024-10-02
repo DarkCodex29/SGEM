@@ -503,7 +503,7 @@ class NuevoPersonalPage extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.text = DateFormat('dd/MM/yyy').format(picked);
+      controller.text = DateFormat('yyyy-MM-dd').format(picked);
       //controller.text = picked.toString();
     }
   }

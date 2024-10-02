@@ -1,32 +1,32 @@
 class Personal {
-  int key = 0;
-  String tipoPersona = "";
-  int inPersonalOrigen = 0;
-  DateTime? fechaIngresoMina = null;
-  String licenciaConducir = "";
-  String operacionMina = "S";
-  String zonaPlataforma = "S";
-  String restricciones = "";
-  String usuarioRegistro = "";
-  String usuarioModifica = "";
-  String codigoMcp = "";
-  String nombreCompleto = "";
-  String cargo = "";
-  String numeroDocumento = "";
-  Guardia guardia = Guardia(key: 0, nombre: "");
-  Estado estado = Estado(key: 0, nombre: "");
-  String eliminado = "S";
-  String motivoElimina = "";
-  String usuarioElimina = "";
-  String apellidoPaterno = "";
-  String apellidoMaterno = "";
-  String primerNombre = "";
-  String segundoNombre = "";
-  DateTime? fechaIngreso = null;
-  String licenciaCategoria = "";
-  DateTime? licenciaVencimiento = null;
-  String gerencia = "";
-  String area = "";
+  int key;
+  String tipoPersona;
+  int inPersonalOrigen;
+  DateTime? fechaIngresoMina;
+  String licenciaConducir;
+  String operacionMina;
+  String zonaPlataforma;
+  String restricciones;
+  String usuarioRegistro;
+  String usuarioModifica;
+  String codigoMcp;
+  String nombreCompleto;
+  String cargo;
+  String numeroDocumento;
+  Guardia guardia;
+  Estado estado;
+  String eliminado;
+  String motivoElimina;
+  String usuarioElimina;
+  String apellidoPaterno;
+  String apellidoMaterno;
+  String primerNombre;
+  String segundoNombre;
+  DateTime? fechaIngreso;
+  String licenciaCategoria;
+  DateTime? licenciaVencimiento;
+  String gerencia;
+  String area;
 
   Personal({
     required this.key,
@@ -88,8 +88,8 @@ class Personal {
       inPersonalOrigen: json['InPersonalOrigen'] ?? 0,
       fechaIngresoMina: parseDate(json['FechaIngresoMina']),
       licenciaConducir: json['LicenciaConducir'] ?? "",
-      operacionMina: json['OperacionMina'] ?? "",
-      zonaPlataforma: json['ZonaPlataforma'] ?? "",
+      operacionMina: json['OperacionMina'] ?? "S",
+      zonaPlataforma: json['ZonaPlataforma'] ?? "S",
       restricciones: json['Restricciones'] ?? "",
       usuarioRegistro: json['UsuarioRegistro'] ?? "",
       usuarioModifica: json['UsuarioModifica'] ?? "",
@@ -103,7 +103,7 @@ class Personal {
       estado: json['Estado'] != null
           ? Estado.fromJson(json['Estado'])
           : Estado(key: 0, nombre: ""),
-      eliminado: json['Eliminado'] ?? "",
+      eliminado: json['Eliminado'] ?? "S",
       motivoElimina: json['MotivoElimina'] ?? "",
       usuarioElimina: json['UsuarioElimina'] ?? "",
       apellidoPaterno: json['ApellidoPaterno'] ?? "",

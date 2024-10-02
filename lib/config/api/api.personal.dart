@@ -246,21 +246,30 @@ class PersonalService {
       int idOrigen) async {
     final url =
         '$baseUrl/Personal/ObtenerPersonalFotoPorCodigoOrigen?idOrigen=$idOrigen';
-
     try {
       log('Obteniendo foto para el código de origen: $idOrigen');
       final response = await dio.get(
         url,
         options: Options(
-          responseType: ResponseType.bytes,
+          responseType: ResponseType.json,
           followRedirects: false,
         ),
       );
 
       if (response.statusCode == 200 && response.data != null) {
         log('Foto obtenida con éxito para el idOrigen $idOrigen');
-        Uint8List imageData = Uint8List.fromList(response.data);
-        return ResponseHandler.handleSuccess<Uint8List>(imageData);
+
+        final jsonResponse = response.data;
+        if (jsonResponse.containsKey('Datos')) {
+          Uint8List imageData =
+              Uint8List.fromList(List<int>.from(jsonResponse['Datos']));
+          return ResponseHandler.handleSuccess<Uint8List>(imageData);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: 'No se encontraron datos de imagen en la respuesta',
+          );
+        }
       } else {
         return ResponseHandler(
           success: false,

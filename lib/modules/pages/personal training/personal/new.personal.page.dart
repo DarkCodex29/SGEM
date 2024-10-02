@@ -26,7 +26,7 @@ class NuevoPersonalPage extends StatelessWidget {
     super.key,
   }) {
     if (isEditing || isViewing) {
-      controller.loadPersonalPhoto(personal.key);
+      controller.loadPersonalPhoto(personal.inPersonalOrigen);
       controller.dniController.text = personal.numeroDocumento;
       controller.nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
@@ -78,21 +78,49 @@ class NuevoPersonalPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Column(
+          Column(
             children: [
-              CircleAvatar(
-                backgroundImage: AssetImage('assets/images/user_avatar.png'),
-                radius: 95,
-                backgroundColor: Colors.grey,
-              ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(Icons.circle, color: Colors.green, size: 12),
-                  SizedBox(width: 5),
-                  Text("Activo", style: TextStyle(fontSize: 14)),
-                ],
-              ),
+              Obx(() {
+                if (controller.personalPhoto.value != null &&
+                    controller.personalPhoto.value!.isNotEmpty) {
+                  try {
+                    return CircleAvatar(
+                      backgroundImage:
+                          MemoryImage(controller.personalPhoto.value!),
+                      radius: 95,
+                      backgroundColor: Colors.grey,
+                    );
+                  } catch (e) {
+                    log('Error al cargar la imagen: $e');
+                    return const CircleAvatar(
+                      backgroundImage:
+                          AssetImage('assets/images/user_avatar.png'),
+                      radius: 95,
+                      backgroundColor: Colors.grey,
+                    );
+                  }
+                } else {
+                  return const CircleAvatar(
+                    backgroundImage:
+                        AssetImage('assets/images/user_avatar.png'),
+                    radius: 95,
+                    backgroundColor: Colors.grey,
+                  );
+                }
+              }),
+              const SizedBox(height: 10),
+              Obx(() {
+                String estado = controller.estadoPersonal.value;
+                Color estadoColor =
+                    estado == 'Activo' ? Colors.green : Colors.red;
+                return Row(
+                  children: [
+                    Icon(Icons.circle, color: estadoColor, size: 12),
+                    const SizedBox(width: 5),
+                    Text(estado, style: const TextStyle(fontSize: 14)),
+                  ],
+                );
+              }),
             ],
           ),
           const SizedBox(width: 30),

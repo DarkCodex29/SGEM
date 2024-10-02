@@ -35,11 +35,14 @@ class NewPersonalController extends GetxController {
   final PersonalService personalService = PersonalService();
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
+  var estadoPersonal = 'Cesado'.obs;
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =
           await personalService.obtenerFotoPorCodigoOrigen(idOrigen);
+      log(photoResponse.data.toString());
+
       if (photoResponse.success && photoResponse.data != null) {
         personalPhoto.value = photoResponse.data;
         log('Foto del personal cargada con éxito');
@@ -95,6 +98,14 @@ class NewPersonalController extends GetxController {
     restriccionesController.text = personal.restricciones;
     operacionMinaController.text = personal.operacionMina;
     zonaPlataformaController.text = personal.zonaPlataforma;
+
+    if (personal.estado.nombre == 'Activo') {
+      estadoPersonal.value = 'Activo';
+    } else {
+      estadoPersonal.value = 'Cesado';
+    }
+    log('Controladores llenados con éxito');
+    log('Estado del personal: ${estadoPersonal.value}');
   }
 
   Future<bool> gestionarPersona({

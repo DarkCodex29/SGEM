@@ -15,7 +15,6 @@ import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 
-
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
 
@@ -714,7 +713,7 @@ class PersonalSearchPage extends StatelessWidget {
                       _buildIconButton(
                         Icons.credit_card_rounded, AppTheme.greenColor,
                           ()  {
-                            controller.showCarnet(personal);
+                            //controller.showCarnet(personal);
 
                       }),
                     ],

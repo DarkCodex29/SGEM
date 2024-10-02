@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
+import 'package:sgem/shared/utils/pdf.view.certificado.dart';
+import 'package:sgem/shared/utils/pdf.view.diploma.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
-  const TrainingPersonalPage({super.key});
+  
+  PersonalSearchController controller;
+
+  TrainingPersonalPage({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -256,14 +262,14 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.stars_sharp, color: AppTheme.primaryColor),
               onPressed: () {
-                // Lógica de ver diploma
+                controller.showDiploma();
               },
             ),
             IconButton(
               icon: const Icon(Icons.file_copy_sharp,
                   color: AppTheme.primaryColor),
               onPressed: () {
-                // Lógica de ver autorización
+                controller.showCertificado();
               },
             ),
           ],

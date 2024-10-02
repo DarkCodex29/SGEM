@@ -10,7 +10,42 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
+enum PersonalSearchScreen {
+  none,
+  newPersonal,
+  editPersonal,
+  trainingForm,
+  viewPersonal,
+  carnetPersonal,
+  diplomaPersonal,
+  certificadoPersonal
+}
+
+
+extension PersonalSearchScreenExtension on PersonalSearchScreen {
+  String description() {
+    switch (this) {
+      case PersonalSearchScreen.none:
+        return "";
+      case PersonalSearchScreen.newPersonal:
+        return "Nuevo personal a Entrenar";
+      case PersonalSearchScreen.editPersonal:
+        return "Editar Personal";
+      case PersonalSearchScreen.trainingForm:
+        return "Búsqueda de entrenamiento de personal";
+      case PersonalSearchScreen.viewPersonal:
+        return "Visualizar";
+      case PersonalSearchScreen.carnetPersonal:
+        return "Carnet del Personal";
+      default:
+        return "Entrenamientos";
+    }
+  }
+}
+
 class PersonalSearchController extends GetxController {
+
+
   final codigoMCPController = TextEditingController();
   final documentoIdentidadController = TextEditingController();
   final nombresController = TextEditingController();
@@ -18,12 +53,9 @@ class PersonalSearchController extends GetxController {
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();
-
-  var showNewPersonalForm = false.obs;
-  var showEditPersonalForm = false.obs;
-  var showTrainingForm = false.obs;
-  var showViewPersonalForm = false.obs;
+  
   var isExpanded = true.obs;
+  var screen = PersonalSearchScreen.none.obs;
 
   var personalResults = <Personal>[].obs;
   var selectedPersonal = Rxn<Personal>();
@@ -248,32 +280,23 @@ class PersonalSearchController extends GetxController {
       area: "",
     );
 
-    showNewPersonalForm.value = true;
-    showEditPersonalForm.value = false;
-    showViewPersonalForm.value = false;
+    screen.value = PersonalSearchScreen.newPersonal;
   }
 
   void showEditPersonal(Personal personal) {
     selectedPersonal.value = personal;
 
-    showNewPersonalForm.value = false;
-    showEditPersonalForm.value = true;
-    showViewPersonalForm.value = false;
+    screen.value = PersonalSearchScreen.editPersonal;
   }
 
   void showViewPersonal(Personal personal) {
     selectedPersonal.value = personal;
 
-    showNewPersonalForm.value = false;
-    showEditPersonalForm.value = false;
-    showViewPersonalForm.value = true;
+    screen.value = PersonalSearchScreen.viewPersonal;
   }
 
   void hideForms() {
-    showNewPersonalForm.value = false;
-    showEditPersonalForm.value = false;
-    showViewPersonalForm.value = false;
-    showTrainingForm.value = false;
+    screen.value = PersonalSearchScreen.none;
   }
 
   void toggleExpansion() {
@@ -281,9 +304,19 @@ class PersonalSearchController extends GetxController {
   }
 
   void showTraining() {
-    showNewPersonalForm.value = false;
-    showEditPersonalForm.value = false;
-    showViewPersonalForm.value = false;
-    showTrainingForm.value = true;
+    screen.value = PersonalSearchScreen.trainingForm;
+  }
+
+  void showCarnet(Personal personal) {
+    selectedPersonal.value = personal;
+    screen.value = PersonalSearchScreen.carnetPersonal;
+  }
+
+  void showDiploma() {
+    screen.value = PersonalSearchScreen.diplomaPersonal;
+  }
+
+  void showCertificado() {
+    screen.value = PersonalSearchScreen.certificadoPersonal;
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal%20training/personal.training.page.dart';
+import 'package:sgem/shared/utils/pdf.view.certificado.dart';
+import 'package:sgem/shared/utils/pdf.view.diploma.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
 
 class HomePage extends StatefulWidget {

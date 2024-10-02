@@ -72,40 +72,66 @@ class NewPersonalController extends GetxController {
     }
   }
 
-  void llenarControladores(Personal personal) {
-    dniController.text = personal.numeroDocumento;
-    nombresController.text =
-        '${personal.primerNombre} ${personal.segundoNombre}';
-    puestoTrabajoController.text = personal.cargo;
-    codigoController.text = personal.codigoMcp;
-    apellidoPaternoController.text = personal.apellidoPaterno;
-    apellidoMaternoController.text = personal.apellidoMaterno;
-    gerenciaController.text = personal.gerencia;
+  Future<void> buscarPersonalPorId(String id) async {
+    try {
+      final personalJson = await personalService.buscarPersonalPorId(id);
+      personalData = Personal.fromJson(personalJson);
 
-    fechaIngresoController.text = personal.fechaIngreso != null
-        ? _formatDate(personal.fechaIngreso!)
-        : '';
+      llenarControladores(personalData);
+    } catch (e) {
+      log('Error al buscar el personal: $e');
+    }
+  }
 
-    fechaIngresoMinaController.text = personal.fechaIngresoMina != null
-        ? _formatDate(personal.fechaIngresoMina!)
-        : '';
+  DateTime? parseDate(String? rawDate) {
+    if (rawDate == null || rawDate.isEmpty) {
+      return null;
+    }
 
-    fechaRevalidacionController.text = personal.licenciaVencimiento != null
-        ? _formatDate(personal.licenciaVencimiento!)
-        : '';
+    try {
+      return DateTime.parse(rawDate); // Handle ISO 8601 formatted dates
+    } catch (e) {
+      log('Error al parsear la fecha: $e');
+      return null;
+    }
+  }
 
-    areaController.text = personal.area;
-    categoriaLicenciaController.text = personal.licenciaCategoria;
-    codigoLicenciaController.text = personal.licenciaConducir;
-    restriccionesController.text = personal.restricciones;
+  void llenarControladores(Personal? personal) {
+    if(personal != null ){
+      dniController.text = personal.numeroDocumento;
+      nombresController.text =
+          '${personal.primerNombre} ${personal.segundoNombre}';
+      puestoTrabajoController.text = personal.cargo;
+      codigoController.text = personal.codigoMcp;
+      apellidoPaternoController.text = personal.apellidoPaterno;
+      apellidoMaternoController.text = personal.apellidoMaterno;
+      gerenciaController.text = personal.gerencia;
 
-    isOperacionMina.value = personal.operacionMina == 'S';
-    isZonaPlataforma.value = personal.zonaPlataforma == 'S';
+      fechaIngresoController.text = personal.fechaIngreso != null
+          ? formatDate(personal.fechaIngreso!)
+          : '';
 
-    if (personal.estado.nombre == 'Activo') {
-      estadoPersonal.value = 'Activo';
-    } else {
-      estadoPersonal.value = 'Cesado';
+      fechaIngresoMinaController.text = personal.fechaIngresoMina != null
+          ? formatDate(personal.fechaIngresoMina!)
+          : '';
+
+      fechaRevalidacionController.text = personal.licenciaVencimiento != null
+          ? formatDate(personal.licenciaVencimiento!)
+          : '';
+
+      areaController.text = personal.area;
+      categoriaLicenciaController.text = personal.licenciaCategoria;
+      codigoLicenciaController.text = personal.licenciaConducir;
+      restriccionesController.text = personal.restricciones;
+
+      isOperacionMina.value = personal.operacionMina == 'S';
+      isZonaPlataforma.value = personal.zonaPlataforma == 'S';
+
+      if (personal.estado.nombre == 'Activo') {
+        estadoPersonal.value = 'Activo';
+      } else {
+        estadoPersonal.value = 'Cesado';
+      }
     }
   }
 
@@ -232,7 +258,7 @@ class NewPersonalController extends GetxController {
     }
   }
 
-  String _formatDate(DateTime date) {
+  String formatDate(DateTime date) {
     return DateFormat('dd/MM/yyyy').format(date);
   }
 

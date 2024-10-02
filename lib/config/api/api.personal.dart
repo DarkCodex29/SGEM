@@ -44,6 +44,30 @@ class PersonalService {
     }
   }
 
+  Future<Map<String, dynamic>> buscarPersonalPorId(String id) async {
+    final url =
+        '$baseUrl/Personal/ObtenerPersonalPorId?id=$id';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.data != null && response.data.isNotEmpty) {
+        log('Personal encontrado con DNI $id');
+        return response.data;
+      } else {
+        throw Exception('No se encontraron datos para el DNI $id');
+      }
+    } on DioException catch (e) {
+      log('Error en la solicitud: ${e.response?.statusCode} - ${e.response?.data}');
+      throw Exception('Error al buscar la persona por dni: $id');
+    }
+  }
+
   Future<ResponseHandler<bool>> registrarPersona(Personal personal) async {
     log('Registrando nueva persona: ${jsonEncode(personal.toJson())}');
     final url = '$baseUrl/Personal/RegistrarPersona';

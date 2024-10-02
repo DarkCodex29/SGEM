@@ -253,14 +253,14 @@ class NuevoPersonalPage extends StatelessWidget {
                   label: "Fecha de Revalidación",
                   controller: controller.fechaRevalidacionController,
                   icon: Icons.calendar_today,
-                  isReadOnly: isViewing,
-                  isRequired: !isViewing,
-                  onIconPressed: () {
-                    if (!isViewing) {
-                      _selectDate(
-                          context, controller.fechaRevalidacionController);
-                    }
-                  },
+                  isReadOnly: true,
+                  isRequired: false,
+                  // onIconPressed: () {
+                  //   if (!isViewing) {
+                  //     _selectDate(
+                  //         context, controller.fechaRevalidacionController);
+                  //   }
+                  // },
                 ),
               ),
             ],

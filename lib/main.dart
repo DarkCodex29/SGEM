@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/home/home.page.dart';
-import 'package:sgem/modules/pages/personal%20training/personal/new.personal.page.dart';
 import 'package:sgem/shared/modules/notfound.dart';
-
-import 'modules/pages/personal training/personal.training.page.dart';
 
 void main() async {
   runApp(const MyApp());

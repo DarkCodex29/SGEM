@@ -26,6 +26,7 @@ class NuevoPersonalPage extends StatelessWidget {
     super.key,
   }) {
     if (isEditing || isViewing) {
+      controller.loadPersonalPhoto(personal.key);
       controller.dniController.text = personal.numeroDocumento;
       controller.nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';

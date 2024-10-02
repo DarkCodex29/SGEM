@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,22 @@ class NewPersonalController extends GetxController {
 
   final PersonalService personalService = PersonalService();
   Personal? personalData;
+  Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
+
+  Future<void> loadPersonalPhoto(int idOrigen) async {
+    try {
+      final photoResponse =
+          await personalService.obtenerFotoPorCodigoOrigen(idOrigen);
+      if (photoResponse.success && photoResponse.data != null) {
+        personalPhoto.value = photoResponse.data;
+        log('Foto del personal cargada con éxito');
+      } else {
+        log('Error al cargar la foto: ${photoResponse.message}');
+      }
+    } catch (e) {
+      log('Error al cargar la foto del personal: $e');
+    }
+  }
 
   Future<void> buscarPersonalPorDni(String dni) async {
     try {
@@ -88,8 +105,8 @@ class NewPersonalController extends GetxController {
     if (!validate(context)) {
       return false;
     }
-
     try {
+      log('Intentando gestionar persona...');
       personalData!
         ..primerNombre = nombresController.text.split(' ').first
         ..segundoNombre = nombresController.text.split(' ').length > 1
@@ -132,11 +149,14 @@ class NewPersonalController extends GetxController {
             : '';
 
       if (accion == 'eliminar') {
+        log('Preparando datos para eliminar');
         personalData!
           ..eliminado = 'S'
           ..motivoElimina = motivoEliminacion ?? 'Sin motivo'
           ..usuarioElimina = 'usuarioActual';
       }
+
+      log('Datos de la persona antes de eliminar: ${personalData!.toJson()}');
 
       final response = await _accionPersona(accion);
 
@@ -146,9 +166,6 @@ class NewPersonalController extends GetxController {
         return true;
       } else {
         log('Acción $accion fallida: ${response.message}');
-
-        //showErrorModal(
-        //  context, response.message ?? 'Error al gestionar la persona');
         return false;
       }
     } catch (e) {
@@ -164,8 +181,10 @@ class NewPersonalController extends GetxController {
         log('Registrar');
         return personalService.registrarPersona(personalData!);
       case 'actualizar':
+        log('Actualizar');
         return personalService.actualizarPersona(personalData!);
       case 'eliminar':
+        log('Eliminar');
         return personalService.eliminarPersona(personalData!);
       default:
         throw Exception('Acción no reconocida: $accion');

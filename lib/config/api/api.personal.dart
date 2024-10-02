@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/personal.dart';
@@ -79,7 +80,7 @@ class PersonalService {
 
   Future<ResponseHandler<bool>> actualizarPersona(Personal personal) async {
     final url = '$baseUrl/Personal/ActualizarPersona';
-
+    log('Actualizando persona: ${jsonEncode(personal.toJson().toString())}');
     try {
       log('Actualizando persona: ${jsonEncode(personal.toJson())}');
       final response = await dio.put(
@@ -237,6 +238,37 @@ class PersonalService {
       return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);
     } on DioException catch (e) {
       log('Error al listar personal de entrenamiento paginado. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<Uint8List>> obtenerFotoPorCodigoOrigen(
+      int idOrigen) async {
+    final url =
+        '$baseUrl/Personal/ObtenerPersonalFotoPorCodigoOrigen?idOrigen=$idOrigen';
+
+    try {
+      log('Obteniendo foto para el código de origen: $idOrigen');
+      final response = await dio.get(
+        url,
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        log('Foto obtenida con éxito para el idOrigen $idOrigen');
+        Uint8List imageData = Uint8List.fromList(response.data);
+        return ResponseHandler.handleSuccess<Uint8List>(imageData);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener la foto del personal',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al obtener la foto del personal. idOrigen: $idOrigen, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

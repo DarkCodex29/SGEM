@@ -1,34 +1,4 @@
 class Personal {
-<<<<<<< HEAD
-  int key = 0;
-  String tipoPersona = "";
-  int inPersonalOrigen = 0;
-  DateTime? fechaIngresoMina;
-  String licenciaConducir = "";
-  String operacionMina = "S";
-  String zonaPlataforma = "S";
-  String restricciones = "";
-  String usuarioRegistro = "";
-  String usuarioModifica = "";
-  String codigoMcp = "";
-  String nombreCompleto = "";
-  String cargo = "";
-  String numeroDocumento = "";
-  Guardia guardia = Guardia(key: 0, nombre: "");
-  Estado estado = Estado(key: 0, nombre: "");
-  String eliminado = "S";
-  String motivoElimina = "";
-  String usuarioElimina = "";
-  String apellidoPaterno = "";
-  String apellidoMaterno = "";
-  String primerNombre = "";
-  String segundoNombre = "";
-  DateTime? fechaIngreso;
-  String licenciaCategoria = "";
-  DateTime? licenciaVencimiento;
-  String gerencia = "";
-  String area = "";
-=======
   int key;
   String tipoPersona;
   int inPersonalOrigen;
@@ -57,7 +27,6 @@ class Personal {
   DateTime? licenciaVencimiento;
   String gerencia;
   String area;
->>>>>>> b0ca827d8aaf6b888439ae20c555d56ebf2b5d72
 
   Personal({
     required this.key,

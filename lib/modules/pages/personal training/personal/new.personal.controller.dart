@@ -30,6 +30,8 @@ class NewPersonalController extends GetxController {
   final TextEditingController restriccionesController = TextEditingController();
 
   final PersonalService personalService = PersonalService();
+  var selectedPersonal = Rxn<Personal>();
+
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   var estadoPersonal = 'Cesado'.obs;
@@ -122,7 +124,6 @@ class NewPersonalController extends GetxController {
     }
 */
     try {
-      log('Intentando gestionar persona...');
       personalData!
         ..primerNombre = nombresController.text.split(' ').first
         ..segundoNombre = nombresController.text.split(' ').length > 1
@@ -159,7 +160,7 @@ class NewPersonalController extends GetxController {
         ..restricciones = restriccionesController.text.isNotEmpty
             ? restriccionesController.text
             : '';
- 
+      log('Nombres del personal: ${personalData!.primerNombre} ${personalData!.segundoNombre}');
       if (accion == 'eliminar') {
         log('Preparando datos para eliminar');
         personalData!

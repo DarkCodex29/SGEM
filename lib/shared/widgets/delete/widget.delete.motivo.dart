@@ -16,12 +16,12 @@ class DeleteReasonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: const AlignmentDirectional(0, 0),
+      alignment: AlignmentDirectional(0, 0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Container(
-          width: 350,
-          height: 300,
+          width: 714,
+          height: 365,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(12),
@@ -33,50 +33,83 @@ class DeleteReasonWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Eliminar $entityType',
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.w600),
-                    ),
-                    InkWell(
-                      onTap: onCancel,
-                      child: const Icon(Icons.close, size: 24),
-                    ),
-                  ],
+              Container(
+                width: double.infinity,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Color(0xFF051367),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(-1, 0),
+                        child: Text(
+                          'Eliminar $entityType',
+                          style: const TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: onCancel,
+                        child: const Icon(Icons.close,
+                            size: 24, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Text('Ingrese el motivo de la eliminación:'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  controller: motivoController,
-                  maxLines: 5,
-                  decoration: const InputDecoration(
-                    hintText: 'Motivo de eliminación',
-                    border: OutlineInputBorder(),
+                child: Text(
+                  'Ingrese el motivo de la eliminación:',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF051367),
                   ),
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.all(12.0),
+                child: Container(
+                  height: 134,
+                  child: TextField(
+                    controller: motivoController,
+                    maxLines: 5,
+                    decoration: InputDecoration(
+                      hintText: 'Motivo de eliminación',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
                       onPressed: onCancel,
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: BorderSide(color: Colors.grey.shade400)),
-                      child: const Text('Cancelar'),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 12.0),
+                        backgroundColor: Colors.white,
+                        side: BorderSide(color: Colors.grey.shade400),
+                      ),
+                      child: const Text('Cancelar',
+                          style: TextStyle(color: Colors.black)),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -84,13 +117,17 @@ class DeleteReasonWidget extends StatelessWidget {
                             ? 'Sin motivo'
                             : motivoController.text);
                       },
-                      style:
-                          ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                      child: const Text('Eliminar'),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0, vertical: 12.0),
+                        backgroundColor: Colors.red,
+                      ),
+                      child: const Text('Eliminar',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

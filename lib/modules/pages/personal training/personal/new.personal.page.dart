@@ -26,6 +26,8 @@ class NuevoPersonalPage extends StatelessWidget {
     super.key,
   }) {
     if (isEditing || isViewing) {
+      controller.loadPersonalPhoto(personal.inPersonalOrigen);
+      controller.personalData = personal;
       controller.dniController.text = personal.numeroDocumento;
       controller.nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
@@ -37,12 +39,18 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.fechaIngresoController.text =
           personal.fechaIngreso?.toString() ?? '';
       controller.areaController.text = personal.area;
-      controller.codigoLicenciaController.text = personal.licenciaCategoria;
+      controller.categoriaLicenciaController.text = personal.licenciaCategoria;
+      controller.codigoLicenciaController.text = personal.licenciaConducir;
       controller.restriccionesController.text = personal.restricciones;
       controller.fechaIngresoMinaController.text =
           personal.fechaIngresoMina?.toString() ?? '';
       controller.fechaRevalidacionController.text =
           personal.licenciaVencimiento?.toString() ?? '';
+
+      controller.isOperacionMina.value = personal.operacionMina == 'S';
+      controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
+      controller.estadoPersonal.value =
+          personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
     }
   }
 
@@ -77,21 +85,49 @@ class NuevoPersonalPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Column(
+          Column(
             children: [
-              CircleAvatar(
-                backgroundImage: AssetImage('assets/images/user_avatar.png'),
-                radius: 95,
-                backgroundColor: Colors.grey,
-              ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Icon(Icons.circle, color: Colors.green, size: 12),
-                  SizedBox(width: 5),
-                  Text("Activo", style: TextStyle(fontSize: 14)),
-                ],
-              ),
+              Obx(() {
+                if (controller.personalPhoto.value != null &&
+                    controller.personalPhoto.value!.isNotEmpty) {
+                  try {
+                    return CircleAvatar(
+                      backgroundImage:
+                          MemoryImage(controller.personalPhoto.value!),
+                      radius: 95,
+                      backgroundColor: Colors.grey,
+                    );
+                  } catch (e) {
+                    log('Error al cargar la imagen: $e');
+                    return const CircleAvatar(
+                      backgroundImage:
+                          AssetImage('assets/images/user_avatar.png'),
+                      radius: 95,
+                      backgroundColor: Colors.grey,
+                    );
+                  }
+                } else {
+                  return const CircleAvatar(
+                    backgroundImage:
+                        AssetImage('assets/images/user_avatar.png'),
+                    radius: 95,
+                    backgroundColor: Colors.grey,
+                  );
+                }
+              }),
+              const SizedBox(height: 10),
+              Obx(() {
+                String estado = controller.estadoPersonal.value;
+                Color estadoColor =
+                    estado == 'Activo' ? Colors.green : Colors.red;
+                return Row(
+                  children: [
+                    Icon(Icons.circle, color: estadoColor, size: 12),
+                    const SizedBox(width: 5),
+                    Text(estado, style: const TextStyle(fontSize: 14)),
+                  ],
+                );
+              }),
             ],
           ),
           const SizedBox(width: 30),
@@ -155,7 +191,8 @@ class NuevoPersonalPage extends StatelessWidget {
         CustomTextField(
           label: "Apellido Paterno",
           controller: controller.apellidoPaternoController,
-          isReadOnly: isViewing,
+          //isReadOnly: isViewing,
+          isReadOnly: true,
         ),
         const SizedBox(height: 15),
         CustomTextField(
@@ -180,7 +217,8 @@ class NuevoPersonalPage extends StatelessWidget {
         CustomTextField(
           label: "Apellido Materno",
           controller: controller.apellidoMaternoController,
-          isReadOnly: isViewing,
+          //isReadOnly: isViewing,
+          isReadOnly: true,
         ),
         const SizedBox(height: 15),
         CustomTextField(
@@ -210,13 +248,13 @@ class NuevoPersonalPage extends StatelessWidget {
           const SizedBox(height: 10),
           Row(
             children: [
+              const SizedBox(width: 10),
               Expanded(
-                child: CustomDropdown(
-                  hintText: "Categoría Licencia",
-                  options: const ["A", "B", "C", "D"],
-                  isSearchable: false,
-                  onChanged: isViewing ? (_) {} : (value) {},
-                  isRequired: !isViewing,
+                child: CustomTextField(
+                  label: "Categoria Licencia",
+                  controller: controller.categoriaLicenciaController,
+                  isReadOnly: true,
+                  isRequired: false,
                 ),
               ),
               const SizedBox(width: 10),
@@ -250,14 +288,8 @@ class NuevoPersonalPage extends StatelessWidget {
                   label: "Fecha de Revalidación",
                   controller: controller.fechaRevalidacionController,
                   icon: Icons.calendar_today,
-                  isReadOnly: isViewing,
-                  isRequired: !isViewing,
-                  onIconPressed: () {
-                    if (!isViewing) {
-                      _selectDate(
-                          context, controller.fechaRevalidacionController);
-                    }
-                  },
+                  isReadOnly: true,
+                  isRequired: false,
                 ),
               ),
             ],
@@ -275,10 +307,15 @@ class NuevoPersonalPage extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    Checkbox(
-                      value: true,
-                      onChanged: isViewing ? null : (value) {},
-                    ),
+                    Obx(() => Checkbox(
+                          value: controller.isOperacionMina.value,
+                          onChanged: isViewing
+                              ? null
+                              : (value) {
+                                  controller.isOperacionMina.value =
+                                      value ?? false;
+                                },
+                        )),
                     const Text("Operaciones mina"),
                   ],
                 ),
@@ -286,10 +323,15 @@ class NuevoPersonalPage extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    Checkbox(
-                      value: true, // Control para el valor
-                      onChanged: isViewing ? null : (value) {},
-                    ),
+                    Obx(() => Checkbox(
+                          value: controller.isZonaPlataforma.value,
+                          onChanged: isViewing
+                              ? null
+                              : (value) {
+                                  controller.isZonaPlataforma.value =
+                                      value ?? false;
+                                },
+                        )),
                     const Text("Zonas o plataforma"),
                   ],
                 ),
@@ -374,6 +416,7 @@ class NuevoPersonalPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () async {
             bool success = false;
+            String accion = isEditing ? 'actualizar' : 'registrar';
             if (isEditing) {
               success = await controller.gestionarPersona(
                   accion: 'actualizar', context: context);
@@ -382,7 +425,21 @@ class NuevoPersonalPage extends StatelessWidget {
                   accion: 'registrar', context: context);
             }
             if (success) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content:
+                      Text("Operación de $accion completada exitosamente."),
+                  backgroundColor: Colors.green,
+                ),
+              );
               onCancel();
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("Error al intentar $accion la persona."),
+                  backgroundColor: Colors.red,
+                ),
+              );
             }
           },
           style: ElevatedButton.styleFrom(
@@ -409,6 +466,7 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
+    controller.selectedGuardiaKey.value = personal.guardia.key;
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();
@@ -445,7 +503,8 @@ class NuevoPersonalPage extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.text = DateFormat('dd/MM/yyyy').format(picked);
+      controller.text = DateFormat('dd/MM/yyy').format(picked);
+      //controller.text = picked.toString();
     }
   }
 }

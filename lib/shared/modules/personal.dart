@@ -2,7 +2,7 @@ class Personal {
   int key = 0;
   String tipoPersona = "";
   int inPersonalOrigen = 0;
-  DateTime? fechaIngresoMina = null;
+  DateTime? fechaIngresoMina;
   String licenciaConducir = "";
   String operacionMina = "S";
   String zonaPlataforma = "S";
@@ -22,9 +22,9 @@ class Personal {
   String apellidoMaterno = "";
   String primerNombre = "";
   String segundoNombre = "";
-  DateTime? fechaIngreso = null;
+  DateTime? fechaIngreso;
   String licenciaCategoria = "";
-  DateTime? licenciaVencimiento = null;
+  DateTime? licenciaVencimiento;
   String gerencia = "";
   String area = "";
 

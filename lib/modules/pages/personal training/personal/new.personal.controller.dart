@@ -29,8 +29,6 @@ class NewPersonalController extends GetxController {
       TextEditingController();
   final TextEditingController restriccionesController = TextEditingController();
 
-  
-
   final PersonalService personalService = PersonalService();
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
@@ -82,7 +80,6 @@ class NewPersonalController extends GetxController {
     apellidoMaternoController.text = personal.apellidoMaterno;
     gerenciaController.text = personal.gerencia;
 
-
     fechaIngresoController.text = personal.fechaIngreso != null
         ? _formatDate(personal.fechaIngreso!)
         : '';
@@ -117,9 +114,13 @@ class NewPersonalController extends GetxController {
     String? motivoEliminacion,
     required BuildContext context,
   }) async {
+    log('Gestionando persona con la acción: $accion');
+/*
     if (!validate(context)) {
+      log('Datos incompletos');
       return false;
     }
+*/
     try {
       log('Intentando gestionar persona...');
       personalData!
@@ -153,13 +154,12 @@ class NewPersonalController extends GetxController {
         ..licenciaVencimiento = fechaRevalidacionController.text.isNotEmpty
             ? DateFormat('dd/MM/yyyy').parse(fechaRevalidacionController.text)
             : null
-
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = restriccionesController.text.isNotEmpty
             ? restriccionesController.text
             : '';
-
+      log('')
       if (accion == 'eliminar') {
         log('Preparando datos para eliminar');
         personalData!
@@ -208,6 +208,7 @@ class NewPersonalController extends GetxController {
 
   //Validaciones
   bool validate(BuildContext context) {
+    /*
     if (dniController.text.isEmpty || dniController.text.length != 8) {
       return false;
     }
@@ -219,7 +220,7 @@ class NewPersonalController extends GetxController {
     }
     if (apellidoMaternoController.text.isEmpty) {
       return false;
-    }
+    }*/
     if (codigoLicenciaController.text.isEmpty) {
       return false;
     }

@@ -656,14 +656,15 @@ class PersonalSearchPage extends StatelessWidget {
 
                         NewPersonalController controllerNew =
                             Get.put(NewPersonalController());
-
+                        log('Eliminando personal..........  PAGE');
                         try {
+                          log('INICIANDO TRY');
                           bool success = await controllerNew.gestionarPersona(
                             accion: 'eliminar',
                             motivoEliminacion: motivoEliminacion,
                             context: Get.context!,
                           );
-
+                          log('SUCCESS: $success');
                           if (success) {
                             await showModalBottomSheet(
                               isScrollControlled: true,

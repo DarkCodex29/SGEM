@@ -122,6 +122,40 @@ class NewPersonalController extends GetxController {
     }
 */
     try {
+      String _obtenerPrimerNombre(String nombres) {
+        List<String> nombresSplit = nombres.split(' ');
+        return nombresSplit.isNotEmpty ? nombresSplit.first : '';
+      }
+
+      String _obtenerSegundoNombre(String nombres) {
+        List<String> nombresSplit = nombres.split(' ');
+        return nombresSplit.length > 1 ? nombresSplit[1] : '';
+      }
+
+      String _verificarTexto(String texto) {
+        return texto.isNotEmpty ? texto : '';
+      }
+
+      DateTime? _parsearFecha(String fechaTexto) {
+        return fechaTexto.isNotEmpty
+            ? DateFormat('yyyy-MM-dd').parse(fechaTexto)
+            : null;
+      }
+
+      personalData!
+        ..primerNombre = _obtenerPrimerNombre(nombresController.text)
+        ..segundoNombre = _obtenerSegundoNombre(nombresController.text)
+        ..apellidoPaterno = _verificarTexto(apellidoPaternoController.text)
+        ..apellidoMaterno = _verificarTexto(apellidoMaternoController.text)
+        ..cargo = _verificarTexto(puestoTrabajoController.text)
+        ..fechaIngreso = _parsearFecha(fechaIngresoController.text)
+        ..fechaIngresoMina = _parsearFecha(fechaIngresoMinaController.text)
+        ..licenciaVencimiento = _parsearFecha(fechaRevalidacionController.text)
+        ..operacionMina = isOperacionMina.value ? 'S' : 'N'
+        ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
+        ..restricciones = _verificarTexto(restriccionesController.text);
+
+      /*
       personalData!
         ..primerNombre = nombresController.text.split(' ').first
         ..segundoNombre = nombresController.text.split(' ').length > 1
@@ -157,7 +191,8 @@ class NewPersonalController extends GetxController {
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = restriccionesController.text.isNotEmpty
             ? restriccionesController.text
-            : '';
+            : '';*/
+
       if (accion == 'eliminar') {
         personalData!
           ..eliminado = 'S'

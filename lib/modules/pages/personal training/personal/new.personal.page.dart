@@ -27,6 +27,7 @@ class NuevoPersonalPage extends StatelessWidget {
   }) {
     if (isEditing || isViewing) {
       controller.loadPersonalPhoto(personal.inPersonalOrigen);
+      controller.personalData = personal;
       controller.dniController.text = personal.numeroDocumento;
       controller.nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
@@ -50,7 +51,6 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
       controller.estadoPersonal.value =
           personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
-      
     }
   }
 
@@ -466,6 +466,7 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
+    controller.selectedGuardiaKey.value = personal.guardia.key;
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();

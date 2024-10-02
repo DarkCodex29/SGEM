@@ -38,7 +38,8 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.fechaIngresoController.text =
           personal.fechaIngreso?.toString() ?? '';
       controller.areaController.text = personal.area;
-      controller.codigoLicenciaController.text = personal.licenciaCategoria;
+      controller.categoriaLicenciaController.text = personal.licenciaCategoria;
+      controller.codigoLicenciaController.text = personal.licenciaConducir;
       controller.restriccionesController.text = personal.restricciones;
       controller.fechaIngresoMinaController.text =
           personal.fechaIngresoMina?.toString() ?? '';
@@ -307,7 +308,7 @@ class NuevoPersonalPage extends StatelessWidget {
                 child: Row(
                   children: [
                     Checkbox(
-                      value: true,
+                      value: controller.isOperacionMina,
                       onChanged: isViewing ? null : (value) {},
                     ),
                     const Text("Operaciones mina"),
@@ -318,7 +319,7 @@ class NuevoPersonalPage extends StatelessWidget {
                 child: Row(
                   children: [
                     Checkbox(
-                      value: true, // Control para el valor
+                      value: controller.isZonaPlataforma,
                       onChanged: isViewing ? null : (value) {},
                     ),
                     const Text("Zonas o plataforma"),

@@ -37,6 +37,16 @@ class NewPersonalController extends GetxController {
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   var estadoPersonal = 'Cesado'.obs;
 
+  bool get isOperacionMina => operacionMinaController.text == 'S';
+  set isOperacionMina(bool value) {
+    operacionMinaController.text = value ? 'S' : 'N';
+  }
+
+  bool get isZonaPlataforma => zonaPlataformaController.text == 'S';
+  set isZonaPlataforma(bool value) {
+    zonaPlataformaController.text = value ? 'S' : 'N';
+  }
+
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =

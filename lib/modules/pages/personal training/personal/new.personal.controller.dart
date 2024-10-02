@@ -159,7 +159,7 @@ class NewPersonalController extends GetxController {
         ..restricciones = restriccionesController.text.isNotEmpty
             ? restriccionesController.text
             : '';
-      log('')
+ 
       if (accion == 'eliminar') {
         log('Preparando datos para eliminar');
         personalData!

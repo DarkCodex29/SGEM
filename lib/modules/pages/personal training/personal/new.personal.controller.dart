@@ -29,6 +29,8 @@ class NewPersonalController extends GetxController {
       TextEditingController();
   final TextEditingController restriccionesController = TextEditingController();
 
+  
+
   final PersonalService personalService = PersonalService();
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
@@ -79,6 +81,7 @@ class NewPersonalController extends GetxController {
     apellidoPaternoController.text = personal.apellidoPaterno;
     apellidoMaternoController.text = personal.apellidoMaterno;
     gerenciaController.text = personal.gerencia;
+
 
     fechaIngresoController.text = personal.fechaIngreso != null
         ? _formatDate(personal.fechaIngreso!)

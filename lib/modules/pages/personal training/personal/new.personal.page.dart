@@ -50,6 +50,7 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
       controller.estadoPersonal.value =
           personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
+      
     }
   }
 

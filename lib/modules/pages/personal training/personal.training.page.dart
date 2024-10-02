@@ -8,14 +8,13 @@ import 'package:sgem/modules/pages/personal%20training/personal.training.control
 import 'package:sgem/modules/pages/personal%20training/training/training.personal.page.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/utils/pdf.view.certificado.dart';
-import 'package:sgem/shared/utils/pdf.view.diploma.dart';
+
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
-import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
+
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -49,12 +48,14 @@ class PersonalSearchPage extends StatelessWidget {
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(controller: controller);
+
           case PersonalSearchScreen.carnetPersonal:
-            return PdfToImageScreen(data: controller.selectedPersonal.value );
+          // TODO: Handle this case.
           case PersonalSearchScreen.diplomaPersonal:
-            return const PdfToDiplomaScreen();
+          // TODO: Handle this case.
           case PersonalSearchScreen.certificadoPersonal:
-            return const PdfToCertificadoScreen();
+          // TODO: Handle this case.
+            throw Exception();
         }
       }),
     );

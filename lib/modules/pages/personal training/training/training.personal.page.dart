@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
-import 'package:sgem/shared/utils/pdf.view.certificado.dart';
-import 'package:sgem/shared/utils/pdf.view.diploma.dart';
+
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class TrainingPersonalPage extends StatelessWidget {

@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
@@ -16,7 +17,6 @@ import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -380,7 +380,7 @@ class PersonalSearchPage extends StatelessWidget {
             builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // Muestra un indicador de carga mientras se busca
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 // Maneja errores aquí
                 return Text('Error: ${snapshot.error}');
@@ -546,7 +546,6 @@ class PersonalSearchPage extends StatelessWidget {
           DataColumn(label: Text('Estado')),
           DataColumn(label: Text('Acciones')),
         ],
-        //TODO: controller.personalResults
         rows: rowsToShow.map((personal) {
           String estado = personal.estado.nombre;
           return DataRow(cells: [
@@ -661,12 +660,12 @@ class PersonalSearchPage extends StatelessWidget {
 
                         try {
                           // TODO: Eliminar persona
-                          /*
+/*
                           await controllerNew.gestionarPersona(
                             accion: 'eliminar',
                             motivoEliminacion: motivoEliminacion,
                           );
-                          */
+*/
                           await showModalBottomSheet(
                             isScrollControlled: true,
                             backgroundColor: Colors.transparent,

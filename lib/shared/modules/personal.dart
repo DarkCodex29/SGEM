@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 class Personal {
   int key;
   String tipoPersona;
@@ -29,8 +27,6 @@ class Personal {
   DateTime? licenciaVencimiento;
   String gerencia;
   String area;
-
-  static final DateFormat _formatter = DateFormat('yyyy-MM-ddTHH:mm:ss');
 
   Personal({
     required this.key,
@@ -63,14 +59,34 @@ class Personal {
     required this.area,
   });
 
+  static DateTime? parseDate(dynamic rawDate) {
+    if (rawDate == null) {
+      return null;
+    }
+    if (rawDate is String) {
+      final regExp = RegExp(r'\/Date\((\d+)\)\/');
+      final match = regExp.firstMatch(rawDate);
+      if (match != null) {
+        final timestamp = int.parse(match.group(1)!);
+        return DateTime.fromMillisecondsSinceEpoch(timestamp);
+      }
+      try {
+        return DateTime.parse(rawDate);
+      } catch (e) {
+        return null;
+      }
+    } else if (rawDate is int) {
+      return DateTime.fromMillisecondsSinceEpoch(rawDate);
+    }
+    return null;
+  }
+
   factory Personal.fromJson(Map<String, dynamic> json) {
     return Personal(
       key: json['Key'] ?? 0,
       tipoPersona: json['TipoPersona'] ?? "",
       inPersonalOrigen: json['InPersonalOrigen'] ?? 0,
-      fechaIngresoMina: json['FechaIngresoMina'] != null
-          ? DateTime.tryParse(json['FechaIngresoMina'])
-          : null,
+      fechaIngresoMina: parseDate(json['FechaIngresoMina']),
       licenciaConducir: json['LicenciaConducir'] ?? "",
       operacionMina: json['OperacionMina'] ?? "",
       zonaPlataforma: json['ZonaPlataforma'] ?? "",
@@ -94,13 +110,9 @@ class Personal {
       apellidoMaterno: json['ApellidoMaterno'] ?? "",
       primerNombre: json['PrimerNombre'] ?? "",
       segundoNombre: json['SegundoNombre'] ?? "",
-      fechaIngreso: json['FechaIngreso'] != null
-          ? DateTime.tryParse(json['FechaIngreso'])
-          : null,
+      fechaIngreso: parseDate(json['FechaIngreso']),
       licenciaCategoria: json['LicenciaCategoria'] ?? "",
-      licenciaVencimiento: json['LicenciaVencimiento'] != null
-          ? DateTime.tryParse(json['LicenciaVencimiento'])
-          : null,
+      licenciaVencimiento: parseDate(json['LicenciaVencimiento']),
       gerencia: json['Gerencia'] ?? "",
       area: json['Area'] ?? "",
     );
@@ -111,7 +123,7 @@ class Personal {
       'Key': key,
       'TipoPersona': tipoPersona,
       'InPersonalOrigen': inPersonalOrigen,
-      'FechaIngresoMina': fechaIngresoMina != null ? fechaIngresoMina!.toIso8601String() : null,
+      'FechaIngresoMina': fechaIngresoMina?.toIso8601String(),
       'LicenciaConducir': licenciaConducir,
       'OperacionMina': operacionMina,
       'ZonaPlataforma': zonaPlataforma,
@@ -131,16 +143,13 @@ class Personal {
       'ApellidoMaterno': apellidoMaterno,
       'PrimerNombre': primerNombre,
       'SegundoNombre': segundoNombre,
-      'FechaIngreso': fechaIngreso != null ? fechaIngreso!.toIso8601String() : null,
+      'FechaIngreso': fechaIngreso?.toIso8601String(),
       'LicenciaCategoria': licenciaCategoria,
-      'LicenciaVencimiento': licenciaVencimiento != null
-          ? _formatter.format(licenciaVencimiento!)
-          : null,
+      'LicenciaVencimiento': licenciaVencimiento?.toIso8601String(),
       'Gerencia': gerencia,
       'Area': area,
     };
   }
-
 }
 
 class Guardia {

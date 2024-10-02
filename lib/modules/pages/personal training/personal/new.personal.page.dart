@@ -216,7 +216,7 @@ class NuevoPersonalPage extends StatelessWidget {
               Expanded(
                 child: CustomTextField(
                   label: "Categoria Licencia",
-                  controller: controller.categoriaLicenciaController ,
+                  controller: controller.categoriaLicenciaController,
                   isReadOnly: true,
                   isRequired: false,
                 ),
@@ -387,13 +387,13 @@ class NuevoPersonalPage extends StatelessWidget {
             if (success) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text("Operación de $accion completada exitosamente."),
+                  content:
+                      Text("Operación de $accion completada exitosamente."),
                   backgroundColor: Colors.green,
                 ),
               );
               onCancel();
-            }
-            else {
+            } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text("Error al intentar $accion la persona."),
@@ -407,7 +407,6 @@ class NuevoPersonalPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
           ),
           child: const Text("Guardar", style: TextStyle(color: Colors.white)),
-
         ),
       ],
     );
@@ -463,7 +462,7 @@ class NuevoPersonalPage extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      controller.text = DateFormat('dd/MM/yyy').format(picked);
       //controller.text = picked.toString();
     }
   }

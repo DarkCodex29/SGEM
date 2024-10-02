@@ -107,8 +107,6 @@ class NewPersonalController extends GetxController {
     } else {
       estadoPersonal.value = 'Cesado';
     }
-    log('Controladores llenados con éxito');
-    log('Estado del personal: ${estadoPersonal.value}');
   }
 
   Future<bool> gestionarPersona({
@@ -160,16 +158,12 @@ class NewPersonalController extends GetxController {
         ..restricciones = restriccionesController.text.isNotEmpty
             ? restriccionesController.text
             : '';
-      log('Nombres del personal: ${personalData!.primerNombre} ${personalData!.segundoNombre}');
       if (accion == 'eliminar') {
-        log('Preparando datos para eliminar');
         personalData!
           ..eliminado = 'S'
           ..motivoElimina = motivoEliminacion ?? 'Sin motivo'
           ..usuarioElimina = 'usuarioActual';
       }
-
-      log('Datos de la persona antes de eliminar: ${personalData!.toJson()}');
 
       final response = await _accionPersona(accion);
 

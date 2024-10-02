@@ -8,11 +8,14 @@ import 'package:sgem/modules/pages/personal%20training/personal.training.control
 import 'package:sgem/modules/pages/personal%20training/training/training.personal.page.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/utils/pdf.view.certificado.dart';
+import 'package:sgem/shared/utils/pdf.view.diploma.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
+import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -26,15 +29,7 @@ class PersonalSearchPage extends StatelessWidget {
       appBar: AppBar(
         title: Obx(() {
           return Text(
-            controller.showNewPersonalForm.value
-                ? "Nuevo personal a Entrenar"
-                : controller.showEditPersonalForm.value
-                    ? "Editar personal"
-                    : controller.showViewPersonalForm.value
-                        ? "Vizualizar"
-                        : controller.showTrainingForm.value
-                            ? "Entrenamientos"
-                            : "Búsqueda de entrenamiento de personal",
+            controller.screen.value.description(),
             style: const TextStyle(
               color: AppTheme.backgroundBlue,
               fontSize: 24,
@@ -45,21 +40,30 @@ class PersonalSearchPage extends StatelessWidget {
         backgroundColor: AppTheme.primaryBackground,
       ),
       body: Obx(() {
-        return controller.showNewPersonalForm.value ||
-                controller.showEditPersonalForm.value ||
-                controller.showViewPersonalForm.value
-            ? _buildNewPersonalForm(controller)
-            : controller.showTrainingForm.value
-                ? const TrainingPersonalPage()
-                : _buildSearchPage(controller);
+        switch (controller.screen.value) {
+          case PersonalSearchScreen.none:
+            return _buildSearchPage(controller);
+          case PersonalSearchScreen.newPersonal:
+          case PersonalSearchScreen.viewPersonal:
+          case PersonalSearchScreen.editPersonal:
+            return _buildNewPersonalForm(controller);
+          case PersonalSearchScreen.trainingForm:
+            return TrainingPersonalPage(controller: controller);
+          case PersonalSearchScreen.carnetPersonal:
+            return PdfToImageScreen(data: controller.selectedPersonal.value );
+          case PersonalSearchScreen.diplomaPersonal:
+            return const PdfToDiplomaScreen();
+          case PersonalSearchScreen.certificadoPersonal:
+            return const PdfToCertificadoScreen();
+        }
       }),
     );
   }
 
   Widget _buildNewPersonalForm(PersonalSearchController controller) {
     return NuevoPersonalPage(
-      isEditing: controller.showEditPersonalForm.value,
-      isViewing: controller.showViewPersonalForm.value,
+      isEditing: controller.screen.value == PersonalSearchScreen.editPersonal,
+      isViewing: controller.screen.value == PersonalSearchScreen.viewPersonal,
       personal: controller.selectedPersonal.value ??
           Personal(
             key: 0,
@@ -666,8 +670,12 @@ class PersonalSearchPage extends StatelessWidget {
                           () {
                         controller.showTraining();
                       }),
-                      _buildIconButton(Icons.credit_card_rounded,
-                          AppTheme.greenColor, () {}),
+                      _buildIconButton(
+                        Icons.credit_card_rounded, AppTheme.greenColor,
+                          ()  {
+                            controller.showCarnet(personal);
+
+                      }),
                     ],
             )),
           ]);

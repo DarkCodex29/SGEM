@@ -1,11 +1,13 @@
-import 'package:flutter/services.dart'; // Para usar rootBundle
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
 Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFromAssets) async {
-  final fondoImageBytes = await _loadImage(imageFromAssets);
+  final fondoImageBytes = await loadImage(imageFromAssets);
   Map<String, String?> attributesMap = {};
+
+  String guardia = "";
 
     if(personal != null) {
         attributesMap = {
@@ -16,6 +18,8 @@ Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFr
         "Área": personal.area,
         "Restricción": personal.restricciones,
       };
+      guardia = personal.guardia.nombre;
+      
     }
     final page = pw.Page(
         pageFormat: PdfPageFormat.a4.copyWith(
@@ -51,7 +55,7 @@ Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFr
                       margin: const pw.EdgeInsets.symmetric(vertical: 8),
                       color: const PdfColor.fromInt(0xFF81C784),
                       child: pw.Text(
-                        "GUARDIA: C",
+                        "GUARDIA: $guardia",
                         style: pw.TextStyle(
                           color: PdfColors.white,
                           fontSize: 20,
@@ -112,8 +116,8 @@ Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFr
                       child: pw.Row(
                         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                         children: [
-                          _userFirm("Entrenador Operaciones Mina"),
-                          _userFirm("Superintendente de Mejora Continua")
+                          userFirm("Entrenador Operaciones Mina"),
+                          userFirm("Superintendente de Mejora Continua")
                         ]
                       )
 
@@ -126,11 +130,6 @@ Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFr
         margin: pw.EdgeInsets.zero,
     );
     return page;
-}
-
-Future<Uint8List> _loadImage(String path) async {
-  final ByteData data = await rootBundle.load(path);
-  return data.buffer.asUint8List();
 }
 
 pw.Widget _equipoMovilText(String label) {
@@ -147,19 +146,3 @@ pw.Widget _equipoMovilText(String label) {
   );
 }
 
-pw.Widget _userFirm(String label) {
-  return  pw.Column(
-    children: [
-      pw.SizedBox(
-        width: 150,
-        child: pw.Divider(color: PdfColors.black),
-      ),
-      pw.Container(
-        width: 150,
-        child: pw.Text(
-          label,
-          textAlign: pw.TextAlign.center)
-      )
-    ]
-  );
-}

@@ -1,19 +1,22 @@
 
-import 'package:flutter/services.dart'; // Para usar rootBundle
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/utils/Extensions/PDF.dart';
+import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
 Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String imageFromAssets ) async {
-  final fondoImageBytes = await _loadImage(imageFromAssets);
-  final imageUserAvatar = await _loadImage('assets/images/user_avatar.png');
-  final imageLogo = await _loadImage('assets/images/logo.png');
-  final imageCheck = await _loadImage('assets/images/check.png');
+  final fondoImageBytes = await loadImage(imageFromAssets);
+  final imageUserAvatar = await loadImage('user_avatar.png');
+  final imageLogo = await loadImage('logo.png');
+  final imageCheck = await loadImage('check.png');
 
   String fechaIngreso = "";
   String nombreCompleto = "";
   String cargo = "";
-
+  String zonaPlataforma = "";
+  String operacionMina = "";
+  
   Map<String, String?> attributesMap = {};
   if(personal != null) {
     attributesMap = {
@@ -27,7 +30,8 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
     fechaIngreso = personal.fechaIngreso.toString();
     nombreCompleto = personal.nombreCompleto;
     cargo = personal.cargo;
-
+    zonaPlataforma = personal.zonaPlataforma;
+    operacionMina = personal.operacionMina;
   }
 
   final page = pw.Page(
@@ -98,7 +102,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
                       children: [
                         ...attributesMap.entries
                           .where((entry) => entry.value != null && entry.value != "")
-                          .map((entry) => _userDetail(entry.key, entry.value!))
+                          .map((entry) => userDetail(entry.key, entry.value!))
                       ]
                     ),
                 ),
@@ -130,41 +134,37 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
                     ],
                   ),
                 ),
-                pw.SizedBox(height: 30),
-                pw.Container(
-                  padding: const pw.EdgeInsets.only(left: 60, right: 60, bottom: 40),
-                  child: 
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Column(
-                        children: [
-                          pw.Text(
-                            "Autorizado para operar en:",
-                            style: pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.blue),
-                          ),
-                          pw.Row(
-                            children: [
-                              pw.Text("Operaciones Mina"),
-                              pw.Checkbox(value: false, name: "Operaciones"),
-                            ],
-                          ),
-                        ],
-                      ),
-                      pw.Row(
-                        children: [
-                          pw.Text("Zona o Plataforma", style: const pw.TextStyle(color: PdfColors.white)),
-                          pw.SizedBox(width: 10),
-                          pw.Image(
-                            pw.MemoryImage(imageCheck),
-                            width: 30,
-                            height: 30,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Column(
+                      children: [
+                        pw.Text(
+                          "Autorizado para operar en:",
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, color: PdfColors.blue),
+                        ),
+                        pw.Row(
+                          children: [
+                            pw.Text(operacionMina),
+                            pw.Checkbox(value: false, name: "Operaciones"),
+                          ],
+                        ),
+                      ],
+                    ),
+                    pw.Row(
+                      children: [
+                        pw.Text(zonaPlataforma, style: const pw.TextStyle(color: PdfColors.white)),
+                        pw.SizedBox(width: 10),
+                        pw.Image(
+                          pw.MemoryImage(imageCheck),
+                          width: 30,
+                          height: 30,
+                        ),
+                      ],
+                    ),
+                  ],
+                ).padding(const pw.EdgeInsets.only(left: 30, right: 30, bottom: 10)),
               ],
             ),
           ),
@@ -173,23 +173,4 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
     );
 
   return page;
-}
-
-// Función para cargar la imagen desde assets
-Future<Uint8List> _loadImage(String path) async {
-  final ByteData data = await rootBundle.load(path);
-  return data.buffer.asUint8List();
-}
-
-pw.Widget _userDetail(String label, String value) {
-  return pw.Padding(
-    padding: const pw.EdgeInsets.symmetric(vertical: 2),
-    child: pw.Row(
-      mainAxisAlignment: pw.MainAxisAlignment.start,
-      children: [
-        pw.SizedBox(width: 120, child: pw.Text(label, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18))),
-        pw.Text(": $value"),
-      ],
-    ),
-  );
 }

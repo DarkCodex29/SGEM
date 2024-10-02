@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal%20training/personal.training.page.dart';
-import 'package:sgem/shared/utils/pdf.viewer.dart';
+import 'package:sgem/shared/utils/pdf.view.certificado.dart';
+import 'package:sgem/shared/utils/pdf.view.diploma.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
 
 class HomePage extends StatefulWidget {
@@ -50,8 +51,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       const PersonalSearchPage(),
       const Center(child: Text("Búsqueda de Monitoreos")),
       const Center(child: Text("Búsqueda de Capacitaciones")),
-      //const Center(child: Text("Consultar Entrenamiento")),
-      const PdfToImageScreen(), //esta aca para hacer pruebas de pdf
+      const Center(child: Text("Consultar Entrenamiento")),
       const Center(child: Text("Administración")),
     ];
 

@@ -466,7 +466,7 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
-    controller.selectedGuardiaKey.value = personal.guardia.key;
+    //controller.selectedGuardiaKey.value = personal.guardia.key;
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();

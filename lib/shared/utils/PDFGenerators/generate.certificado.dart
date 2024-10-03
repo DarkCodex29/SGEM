@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
-import 'package:sgem/shared/utils/Extensions/PDF.dart';
+import 'package:sgem/shared/utils/Extensions/pdf.extensions.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
 Future<pw.Page> generateCertificado(BuildContext contexts) async {

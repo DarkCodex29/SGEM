@@ -466,7 +466,6 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
-    controller.selectedGuardiaKey.value = personal.guardia.key;
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();
@@ -503,8 +502,7 @@ class NuevoPersonalPage extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.text = DateFormat('dd/MM/yyy').format(picked);
-      //controller.text = picked.toString();
+      controller.text = DateFormat('dd/MM/yyyy').format(picked);
     }
   }
 }

@@ -6,9 +6,9 @@ import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
 class PDFGeneratoController extends GetxController {
 
-  Rxn<List<PdfPageImage?>> certificate =  Rxn<List<PdfPageImage?>>();
+  var certificate = <PdfPageImage?>[].obs;
 
-  void getCertoficateImage(double screenWidth, double screenHeigth) async {
+  void getCertoficateImage() async {
     List<Future<pw.Page>> listPagues = [];
     listPagues.add(generateDiploma());
     certificate.value = await getImages(listPagues);

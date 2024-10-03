@@ -10,12 +10,12 @@ import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/pdf.view.certificado.dart';
 import 'package:sgem/shared/utils/pdf.view.diploma.dart';
+import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
-import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -49,7 +49,8 @@ class PersonalSearchPage extends StatelessWidget {
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(controller: controller);
-          case PersonalSearchScreen.carnetPersonal:
+
+          case PersonalSearchScreen.carnetPersonal:            
             return PdfToImageScreen(data: controller.selectedPersonal.value, controller: controller,);
           case PersonalSearchScreen.diplomaPersonal:
             return const PdfToDiplomaScreen();
@@ -240,6 +241,7 @@ class PersonalSearchPage extends StatelessWidget {
                               hintText: "Estado",
                               options: const ["Activo", "Cesado", "Todos"],
                               isSearchable: false,
+                              //selectedValue: "Activo",
                               onChanged: (value) {
                                 if (value == "Activo") {
                                   controller.searchPersonalEstado(95);
@@ -711,10 +713,8 @@ class PersonalSearchPage extends StatelessWidget {
                         controller.showTraining();
                       }),
                       _buildIconButton(
-                        Icons.credit_card_rounded, AppTheme.greenColor,
-                          ()  {
-                            controller.showCarnet(personal);
-
+                          Icons.credit_card_rounded, AppTheme.greenColor, () {
+                        controller.showCarnet(personal);
                       }),
                     ],
             )),

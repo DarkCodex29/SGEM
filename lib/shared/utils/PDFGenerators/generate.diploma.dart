@@ -5,7 +5,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
-Future<pw.Page> generateDiploma(BuildContext contexts) async {
+Future<pw.Page> generateDiploma() async {
   final image = await loadImage('diploma_full.png');
   final dimensionsImage = await getImageDimensions(image);
   final page = pw.Page(
@@ -17,11 +17,7 @@ Future<pw.Page> generateDiploma(BuildContext contexts) async {
         marginTop: 0,
       ),
       build: (pw.Context context) {
-        final screenWidth = MediaQuery.of(contexts).size.width;
-        final screenHeigth = MediaQuery.of(contexts).size.height;
         return pw.Container(
-          width: screenWidth,
-          height: screenHeigth,
           child: 
           pw.Stack(
             children: [

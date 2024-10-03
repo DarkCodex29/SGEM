@@ -7,14 +7,11 @@ import 'package:sgem/shared/utils/Extensions/PDF.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
 Future<pw.Page> generateCertificado(BuildContext contexts) async {
-  
-  double widthPage = MediaQuery.of(contexts).size.width;
   const horamodulo1 = 5;
   const horamodulo2 = 10;
   const totalHoras = horamodulo1 + horamodulo2;
   const double heigthCeldastable = 30;
   final imageIcon = await loadImage('logo.png');
-
 
   final page = pw.Page(
     //orientation: pw.PageOrientation.landscape,

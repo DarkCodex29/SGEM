@@ -1,11 +1,14 @@
 
+import 'dart:typed_data';
+
+import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/Extensions/PDF.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
-Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String imageFromAssets ) async {
+Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String imageFromAssets, Uint8List? photoPerfil) async {
   final fondoImageBytes = await loadImage(imageFromAssets);
   final imageUserAvatar = await loadImage('user_avatar.png');
   final imageLogo = await loadImage('logo.png');
@@ -65,10 +68,14 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
                     child: pw.Container(
                       width: 200,
                       height: 200,
-                      decoration: pw.BoxDecoration(
-                        shape: pw.BoxShape.circle,
-                        image: pw.DecorationImage(
-                          image: pw.MemoryImage(imageUserAvatar),
+                      child: pw.ClipOval(
+                        child: pw.Container(
+                          width: 200,
+                          height: 200,
+                          child: photoPerfil != null
+                              ? pw.Image(pw.MemoryImage(photoPerfil!),
+                                  fit: pw.BoxFit.cover) // Ajustar la imagen al contenedor circular
+                              : pw.Text('No image'),
                         ),
                       ),
                     ),

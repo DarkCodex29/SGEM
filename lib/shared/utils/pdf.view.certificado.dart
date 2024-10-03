@@ -1,12 +1,11 @@
+import 'dart:math';
+
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.certificado.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
-import 'dart:math';
-
-import 'package:sgem/shared/utils/pdfFuntions/prueba.dart';
+import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
 
 class PdfToCertificadoScreen extends StatefulWidget {
 
@@ -19,82 +18,22 @@ class PdfToCertificadoScreen extends StatefulWidget {
 class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
   List<Future<pw.Page>> listPagues = [];
   Future<List<PdfPageImage?>> list = Future.value([]);
+  Future<List<PdfPageImage?>>? _getdata;
+
   
   @override
   void initState() {
     super.initState();
-    getData();
+    _getdata = getData();
   }
 
-  Future<void> getData () async {
+  Future<List<PdfPageImage?>> getData () async {
     listPagues.add(generateCertificado(context));
-    setState(() {
-        list = getImages(listPagues);
-      });
+    return getImages(listPagues);
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeigth = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 500,
-              child:
-                SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: FutureBuilder(
-              future: getImage(generateCertificado(context), 1),
-              builder: (context, AsyncSnapshot<PdfPageImage?> snapshot) {
-                if (snapshot.hasData && snapshot.data != null) {
-                  var image = snapshot.data!.bytes;
-                    return Center(
-                      child: Image.memory(image),
-                    );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text('Error al cargar el PDF: ${snapshot.error}'),
-                  );
-                } else {
-                  return const Center( child: CircularProgressIndicator());
-                }
-              }
-            ),
-          )     
-              ).padding(const EdgeInsets.only(bottom: 20)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                    backgroundColor: Colors.white,
-                  ),
-                  child: const Text("Cancelar", style: TextStyle(color: Colors.black)),
-                ),
-                const SizedBox(width: 15),
-                ElevatedButton(
-                  onPressed: (){
-                      descargarPaginaComoPdf(list);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                    backgroundColor: Colors.blue,
-                  ),
-                  child: const Text("Imprimir", style: TextStyle(color: Colors.white)),
-                )
-              ],
-            ),
-            const SizedBox(height: 20),
-        ]
-        ),
-      ),
-    );
+    return futureViewPdf(context, _getdata, 0);
   }
 }

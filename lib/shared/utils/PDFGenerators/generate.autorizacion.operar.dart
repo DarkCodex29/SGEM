@@ -19,8 +19,8 @@ Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFr
         "Restricción": personal.restricciones,
       };
       guardia = personal.guardia.nombre;
-      
     }
+    
     final page = pw.Page(
         pageFormat: PdfPageFormat.a4.copyWith(
           marginBottom: 0,

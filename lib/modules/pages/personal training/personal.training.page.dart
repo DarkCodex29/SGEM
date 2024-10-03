@@ -50,7 +50,7 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(controller: controller);
           case PersonalSearchScreen.carnetPersonal:
-            return PdfToImageScreen(data: controller.selectedPersonal.value );
+            return PdfToImageScreen(data: controller.selectedPersonal.value, controller: controller,);
           case PersonalSearchScreen.diplomaPersonal:
             return const PdfToDiplomaScreen();
           case PersonalSearchScreen.certificadoPersonal:

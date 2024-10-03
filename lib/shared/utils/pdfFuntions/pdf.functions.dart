@@ -20,19 +20,20 @@ Future<Uint8List> _generatePdfAndConvertToImages(List<Future<pw.Page>> pages) as
   return pdfData;
 }
 
-Future<Uint8List> _generatePdfAndConvertToImage(Future<pw.Page> page) async {
-  final pdf = pw.Document();
-  final futurePage = await page;
-  pdf.addPage(futurePage);
+// Future<Uint8List> _generatePdfAndConvertToImage(Future<pw.Page> page) async {
+//   final pdf = pw.Document();
+//   final futurePage = await page;
+//   pdf.addPage(futurePage);
 
-  final pdfData = await pdf.save();
-  return pdfData;
-}
+//   final pdfData = await pdf.save();
+//   return pdfData;
+// }
 
 Future<List<pdf.PdfPageImage?>> getImages(List<Future<pw.Page>> pages) async {
   List<pdf.PdfPageImage?> listaImagens = [];
   final document = await pdf.PdfDocument.openData(_generatePdfAndConvertToImages(pages));
   final totalPages = document.pagesCount;
+
   for(int i = 1; totalPages >= i; i++) {
     var size = 1.6;
     final page = await document.getPage(i);
@@ -48,7 +49,7 @@ Future<List<pdf.PdfPageImage?>> getImages(List<Future<pw.Page>> pages) async {
 }
 
 Future<pdf.PdfPageImage?> getImage(Future<pw.Page> page, double size) async {
-  final document = await pdf.PdfDocument.openData(_generatePdfAndConvertToImage(page));
+  final document = await pdf.PdfDocument.openAsset("pdf/pagina.pdf");
   final futurePage = await document.getPage(1);
   final image = await futurePage.render(
     width: futurePage.width * size,

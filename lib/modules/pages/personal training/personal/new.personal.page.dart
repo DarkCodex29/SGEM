@@ -485,6 +485,14 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
+    if (isEditing){
+      controller.selectedGuardiaKey.value = personal.guardia.key;
+    }
+    if (!isEditing){
+      controller.clearFields();
+    }
+
+    //controller.selectedGuardiaKey.value = personal.guardia.key;
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();
@@ -521,7 +529,8 @@ class NuevoPersonalPage extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.text = DateFormat('dd/MM/yyyy').format(picked);
+      controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      //controller.text = picked.toString();
     }
   }
 }

@@ -70,7 +70,6 @@ class NewPersonalController extends GetxController {
       if (response.success && response.data != null) {
         personalData = response.data;
         log('Personal encontrado: ${personalData!.toJson().toString()}');
-        await loadPersonalPhoto(personalData!.inPersonalOrigen);
         llenarControladores(personalData!);
       } else {
         log('Error al buscar el personal: ${response.message}');
@@ -95,8 +94,9 @@ class NewPersonalController extends GetxController {
     if (rawDate == null || rawDate.isEmpty) {
       return null;
     }
+
     try {
-      return DateTime.parse(rawDate);
+      return DateTime.parse(rawDate); // Handle ISO 8601 formatted dates
     } catch (e) {
       log('Error al parsear la fecha: $e');
       return null;
@@ -104,7 +104,7 @@ class NewPersonalController extends GetxController {
   }
 
   void llenarControladores(Personal? personal) {
-    if (personal != null) {
+    if(personal != null ){
       dniController.text = personal.numeroDocumento;
       nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
@@ -187,6 +187,44 @@ class NewPersonalController extends GetxController {
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = _verificarTexto(restriccionesController.text);
+
+      /*
+      personalData!
+        ..primerNombre = nombresController.text.split(' ').first
+        ..segundoNombre = nombresController.text.split(' ').length > 1
+            ? nombresController.text.split(' ')[1]
+            : ''
+        ..apellidoPaterno = apellidoPaternoController.text.isNotEmpty
+            ? apellidoPaternoController.text
+            : ''
+        ..apellidoMaterno = apellidoMaternoController.text.isNotEmpty
+            ? apellidoMaternoController.text
+            : ''
+        ..cargo = puestoTrabajoController.text.isNotEmpty
+            ? puestoTrabajoController.text
+            : ''
+        ..codigoMcp =
+            codigoController.text.isNotEmpty ? codigoController.text : ''
+        ..gerencia =
+            gerenciaController.text.isNotEmpty ? gerenciaController.text : ''
+        ..area = areaController.text.isNotEmpty ? areaController.text : ''
+        ..fechaIngreso = fechaIngresoController.text.isNotEmpty
+            ? DateFormat('dd/MM/yyyy').parse(fechaIngresoController.text)
+            : null
+        ..fechaIngresoMina = fechaIngresoMinaController.text.isNotEmpty
+            ? DateFormat('dd/MM/yyyy').parse(fechaIngresoMinaController.text)
+            : null
+        ..licenciaConducir = codigoLicenciaController.text.isNotEmpty
+            ? codigoLicenciaController.text
+            : ''
+        ..licenciaVencimiento = fechaRevalidacionController.text.isNotEmpty
+            ? DateFormat('dd/MM/yyyy').parse(fechaRevalidacionController.text)
+            : null
+        ..operacionMina = isOperacionMina.value ? 'S' : 'N'
+        ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
+        ..restricciones = restriccionesController.text.isNotEmpty
+            ? restriccionesController.text
+            : '';*/
 
       if (accion == 'eliminar') {
         personalData!

@@ -28,6 +28,7 @@ class ArchivoService {
     required String datos,
     required int inTipoArchivo,
     required int inOrigen,
+    re
   }) async {
     final url = '$baseUrl/Archivo/RegistrarArchivo';
 

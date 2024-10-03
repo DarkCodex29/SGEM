@@ -485,10 +485,10 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
-    if (isEditing){
+    if (isEditing) {
       controller.selectedGuardiaKey.value = personal.guardia.key;
     }
-    if (!isEditing){
+    if (!isEditing) {
       controller.clearFields();
     }
 

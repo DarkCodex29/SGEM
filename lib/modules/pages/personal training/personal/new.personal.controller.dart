@@ -96,7 +96,7 @@ class NewPersonalController extends GetxController {
     }
 
     try {
-      return DateTime.parse(rawDate); // Handle ISO 8601 formatted dates
+      return DateTime.parse(rawDate);
     } catch (e) {
       log('Error al parsear la fecha: $e');
       return null;
@@ -104,7 +104,8 @@ class NewPersonalController extends GetxController {
   }
 
   void llenarControladores(Personal? personal) {
-    if(personal != null ){
+    if (personal != null) {
+      loadPersonalPhoto(personal.inPersonalOrigen);
       dniController.text = personal.numeroDocumento;
       nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
@@ -268,7 +269,7 @@ class NewPersonalController extends GetxController {
   }
 
   String formatDate(DateTime date) {
-    return DateFormat('dd/MM/yyyy').format(date);
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   //Validaciones
@@ -352,7 +353,7 @@ class NewPersonalController extends GetxController {
           mime: mimeType,
           datos: datosBase64,
           inTipoArchivo: 1,
-          inOrigen: 123,
+          inOrigen: 1,
         );
 
         if (response.success) {

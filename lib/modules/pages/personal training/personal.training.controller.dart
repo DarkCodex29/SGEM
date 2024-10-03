@@ -44,8 +44,6 @@ extension PersonalSearchScreenExtension on PersonalSearchScreen {
 }
 
 class PersonalSearchController extends GetxController {
-
-
   final codigoMCPController = TextEditingController();
   final documentoIdentidadController = TextEditingController();
   final nombresController = TextEditingController();

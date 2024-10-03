@@ -8,7 +8,6 @@ import 'package:sgem/modules/pages/personal%20training/personal.training.control
 import 'package:sgem/modules/pages/personal%20training/training/training.personal.page.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';

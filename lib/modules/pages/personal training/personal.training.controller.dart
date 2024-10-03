@@ -21,7 +21,6 @@ enum PersonalSearchScreen {
   certificadoPersonal
 }
 
-
 extension PersonalSearchScreenExtension on PersonalSearchScreen {
   String description() {
     switch (this) {
@@ -51,7 +50,7 @@ class PersonalSearchController extends GetxController {
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();
-  
+
   var isExpanded = true.obs;
   var screen = PersonalSearchScreen.none.obs;
 
@@ -59,7 +58,7 @@ class PersonalSearchController extends GetxController {
   var selectedPersonal = Rxn<Personal>();
   RxList<MaestroDetalle> guardiaOptions = <MaestroDetalle>[].obs;
   var selectedGuardiaKey = RxnInt();
-  var selectedEstadoKey = RxnInt();
+  Rx<int?> selectedEstadoKey = 95.obs;
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
@@ -89,8 +88,8 @@ class PersonalSearchController extends GetxController {
     }
   }
 
-  void searchPersonalEstado(int? estadoKey) {
-    selectedEstadoKey.value = estadoKey;
+  void searchPersonalEstado(estadoKey) {
+    selectedEstadoKey.value = estadoKey ?? -1;
   }
 
   Future<void> searchPersonal({int pageNumber = 1, int pageSize = 10}) async {
@@ -103,6 +102,8 @@ class PersonalSearchController extends GetxController {
         nombresController.text.isEmpty ? null : nombresController.text;
     String? apellidos =
         apellidosController.text.isEmpty ? null : apellidosController.text;
+    int? estado =
+        selectedEstadoKey.value == -1 ? null : selectedEstadoKey.value;
 
     try {
       var response = await personalService.listarPersonalEntrenamientoPaginado(
@@ -111,7 +112,7 @@ class PersonalSearchController extends GetxController {
         nombres: nombres,
         apellidos: apellidos,
         inGuardia: selectedGuardiaKey.value,
-        inEstado: selectedEstadoKey.value,
+        inEstado: estado,
         pageSize: pageSize,
         pageNumber: pageNumber,
       );

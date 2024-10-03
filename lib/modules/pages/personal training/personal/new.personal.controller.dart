@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/config/api/archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:file_picker/file_picker.dart';
 
 class NewPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
@@ -38,6 +41,10 @@ class NewPersonalController extends GetxController {
 
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
+
+  var documentoAdjuntoNombre = ''.obs;
+  var documentoAdjuntoBytes = Rxn<Uint8List>();
+  final ArchivoService archivoService = ArchivoService();
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
@@ -208,9 +215,11 @@ class NewPersonalController extends GetxController {
     switch (accion) {
       case 'registrar':
         log('Registrar');
+        await registrarArchivo();
         return personalService.registrarPersona(personalData!);
       case 'actualizar':
         log('Actualizar');
+        await registrarArchivo();
         return personalService.actualizarPersona(personalData!);
       case 'eliminar':
         log('Eliminar');
@@ -243,6 +252,97 @@ class NewPersonalController extends GetxController {
       return false;
     }
     return true;
+  }
+
+  void adjuntarDocumento() async {
+    try {
+      final resultado = await seleccionarArchivo();
+
+      if (resultado != null) {
+        documentoAdjuntoNombre.value = resultado['nombre'];
+        documentoAdjuntoBytes.value = resultado['bytes'];
+        log('Documento adjuntado correctamente: ${documentoAdjuntoNombre.value}');
+      } else {
+        log('No se seleccionó ningún archivo');
+      }
+    } catch (e) {
+      log('Error al adjuntar documento: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> seleccionarArchivo() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
+      );
+
+      if (result != null && result.files.single.bytes != null) {
+        Uint8List fileBytes = result.files.single.bytes!;
+        String fileName = result.files.single.name;
+        return {
+          'nombre': fileName,
+          'bytes': fileBytes,
+        };
+      }
+    } catch (e) {
+      log('Error al seleccionar el archivo: $e');
+      return null;
+    }
+    return null;
+  }
+
+  void eliminarDocumento() {
+    documentoAdjuntoNombre.value = '';
+    documentoAdjuntoBytes.value = null;
+    log('Documento eliminado');
+  }
+
+  Future<void> registrarArchivo() async {
+    if (documentoAdjuntoBytes.value != null &&
+        documentoAdjuntoNombre.value.isNotEmpty) {
+      try {
+        String datosBase64 = base64Encode(documentoAdjuntoBytes.value!);
+
+        String extension = documentoAdjuntoNombre.value.split('.').last;
+        String mimeType = _determinarMimeType(extension);
+
+        final response = await archivoService.registrarArchivo(
+          key: 0,
+          nombre: documentoAdjuntoNombre.value,
+          extension: extension,
+          mime: mimeType,
+          datos: datosBase64,
+          inTipoArchivo: 1,
+          inOrigen: 123,
+        );
+
+        if (response.success) {
+          log('Archivo registrado con éxito');
+        } else {
+          log('Error al registrar el archivo: ${response.message}');
+        }
+      } catch (e) {
+        log('Error inesperado al registrar archivo: $e');
+      }
+    } else {
+      log('No hay archivo adjunto para registrar');
+    }
+  }
+
+  String _determinarMimeType(String extension) {
+    switch (extension) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'xlsx':
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      default:
+        return 'application/octet-stream';
+    }
   }
 
   void resetControllers() {

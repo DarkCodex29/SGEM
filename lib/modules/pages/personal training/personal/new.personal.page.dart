@@ -369,18 +369,37 @@ class NuevoPersonalPage extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        Row(
-          children: [
-            TextButton.icon(
-              onPressed: () {
-                // Acción para eliminar el archivo
-              },
-              icon: const Icon(Icons.close, color: Colors.red),
-              label: const Text("Documento.pdf",
-                  style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        ),
+        Obx(() {
+          if (controller.documentoAdjuntoNombre.value.isNotEmpty) {
+            return Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    controller.eliminarDocumento();
+                  },
+                  icon: const Icon(Icons.close, color: Colors.red),
+                  label: Text(
+                    controller.documentoAdjuntoNombre.value,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    controller.adjuntarDocumento();
+                  },
+                  icon: const Icon(Icons.attach_file, color: Colors.blue),
+                  label: const Text("Adjuntar Documento",
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              ],
+            );
+          }
+        }),
       ],
     );
   }

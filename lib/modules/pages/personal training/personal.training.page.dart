@@ -15,7 +15,6 @@ import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 
-
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
 
@@ -54,7 +53,7 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.diplomaPersonal:
           // TODO: Handle this case.
           case PersonalSearchScreen.certificadoPersonal:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             throw Exception();
         }
       }),
@@ -712,10 +711,8 @@ class PersonalSearchPage extends StatelessWidget {
                         controller.showTraining();
                       }),
                       _buildIconButton(
-                        Icons.credit_card_rounded, AppTheme.greenColor,
-                          ()  {
-                            controller.showCarnet(personal);
-
+                          Icons.credit_card_rounded, AppTheme.greenColor, () {
+                        controller.showCarnet(personal);
                       }),
                     ],
             )),

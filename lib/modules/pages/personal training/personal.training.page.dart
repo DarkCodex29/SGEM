@@ -738,7 +738,7 @@ class PersonalSearchPage extends StatelessWidget {
                       }),
                       _buildIconButton(
                           Icons.credit_card_rounded, AppTheme.greenColor, () {
-                        //controller.showCarnet(personal);
+                        controller.showCarnet(personal);
                       }),
                     ],
             )),

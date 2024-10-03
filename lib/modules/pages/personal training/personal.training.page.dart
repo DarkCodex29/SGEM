@@ -240,6 +240,7 @@ class PersonalSearchPage extends StatelessWidget {
                               hintText: "Estado",
                               options: const ["Activo", "Cesado", "Todos"],
                               isSearchable: false,
+                              //selectedValue: "Activo",
                               onChanged: (value) {
                                 if (value == "Activo") {
                                   controller.searchPersonalEstado(95);

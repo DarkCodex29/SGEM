@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pdfx/pdfx.dart';
@@ -55,6 +53,7 @@ Widget futureViewPdf(BuildContext context, Future<List<PdfPageImage?>>? futurePd
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    //onCancel;
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(

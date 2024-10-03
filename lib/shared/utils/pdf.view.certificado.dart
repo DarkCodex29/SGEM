@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';

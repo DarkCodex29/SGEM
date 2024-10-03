@@ -27,7 +27,7 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
 
   Future<List<PdfPageImage?>> getData () async {
     listPagues.add(generateDiploma());
-    return getImages(listPagues);
+    return getImages(listPagues,);
   }
 
   @override

@@ -13,7 +13,11 @@ class PdfToImageScreen extends StatefulWidget {
   final Personal? data;
   final PersonalSearchController controller;
 
-  const PdfToImageScreen({super.key, required this.data, required this.controller});
+  const PdfToImageScreen({
+    super.key,
+    required this.data,
+    required this.controller
+    });
 
   @override
   State<PdfToImageScreen> createState() => _PdfToImageScreenState();
@@ -21,6 +25,7 @@ class PdfToImageScreen extends StatefulWidget {
 
 class _PdfToImageScreenState extends State<PdfToImageScreen> {
   Future<List<PdfPageImage?>>? _getdata;
+  void oncancel;
 
   @override
   void initState() {
@@ -48,6 +53,6 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  futureViewPdf(context, _getdata, 0);
+    return  futureViewPdf(context, _getdata, 0, widget.controller);
   }
 }

@@ -53,7 +53,7 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.diplomaPersonal:
           // TODO: Handle this case.
           case PersonalSearchScreen.certificadoPersonal:
-          // TODO: Handle this case.
+            // TODO: Handle this case.
             throw Exception();
         }
       }),
@@ -544,12 +544,36 @@ class PersonalSearchPage extends StatelessWidget {
       return DataTable(
         headingRowHeight: 40,
         columns: const [
-          DataColumn(label: Text('Código MCP')),
-          DataColumn(label: Text('Nombre completo')),
-          DataColumn(label: Text('Documento de identidad')),
-          DataColumn(label: Text('Guardia')),
-          DataColumn(label: Text('Estado')),
-          DataColumn(label: Text('Acciones')),
+          DataColumn(
+              label: Text(
+            'Código MCP',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+          DataColumn(
+              label: Text(
+            'Nombre completo',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+          DataColumn(
+              label: Text(
+            'Documento de identidad',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+          DataColumn(
+              label: Text(
+            'Guardia',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+          DataColumn(
+              label: Text(
+            'Estado',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
+          DataColumn(
+              label: Text(
+            'Acciones',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
         ],
         rows: rowsToShow.map((personal) {
           String estado = personal.estado.nombre;
@@ -712,10 +736,8 @@ class PersonalSearchPage extends StatelessWidget {
                         controller.showTraining();
                       }),
                       _buildIconButton(
-                        Icons.credit_card_rounded, AppTheme.greenColor,
-                          ()  {
-                            //controller.showCarnet(personal);
-
+                          Icons.credit_card_rounded, AppTheme.greenColor, () {
+                        //controller.showCarnet(personal);
                       }),
                     ],
             )),

@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/config/api/archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:file_picker/file_picker.dart';
 
 class NewPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
@@ -39,6 +42,10 @@ class NewPersonalController extends GetxController {
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
 
+  var documentoAdjuntoNombre = ''.obs;
+  var documentoAdjuntoBytes = Rxn<Uint8List>();
+  final ArchivoService archivoService = ArchivoService();
+
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =
@@ -63,7 +70,6 @@ class NewPersonalController extends GetxController {
       if (response.success && response.data != null) {
         personalData = response.data;
         log('Personal encontrado: ${personalData!.toJson().toString()}');
-        await loadPersonalPhoto(personalData!.inPersonalOrigen);
         llenarControladores(personalData!);
       } else {
         log('Error al buscar el personal: ${response.message}');
@@ -88,6 +94,7 @@ class NewPersonalController extends GetxController {
     if (rawDate == null || rawDate.isEmpty) {
       return null;
     }
+
     try {
       return DateTime.parse(rawDate);
     } catch (e) {
@@ -98,6 +105,7 @@ class NewPersonalController extends GetxController {
 
   void llenarControladores(Personal? personal) {
     if (personal != null) {
+      loadPersonalPhoto(personal.inPersonalOrigen);
       dniController.text = personal.numeroDocumento;
       nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
@@ -181,6 +189,44 @@ class NewPersonalController extends GetxController {
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = _verificarTexto(restriccionesController.text);
 
+      /*
+      personalData!
+        ..primerNombre = nombresController.text.split(' ').first
+        ..segundoNombre = nombresController.text.split(' ').length > 1
+            ? nombresController.text.split(' ')[1]
+            : ''
+        ..apellidoPaterno = apellidoPaternoController.text.isNotEmpty
+            ? apellidoPaternoController.text
+            : ''
+        ..apellidoMaterno = apellidoMaternoController.text.isNotEmpty
+            ? apellidoMaternoController.text
+            : ''
+        ..cargo = puestoTrabajoController.text.isNotEmpty
+            ? puestoTrabajoController.text
+            : ''
+        ..codigoMcp =
+            codigoController.text.isNotEmpty ? codigoController.text : ''
+        ..gerencia =
+            gerenciaController.text.isNotEmpty ? gerenciaController.text : ''
+        ..area = areaController.text.isNotEmpty ? areaController.text : ''
+        ..fechaIngreso = fechaIngresoController.text.isNotEmpty
+            ? DateFormat('dd/MM/yyyy').parse(fechaIngresoController.text)
+            : null
+        ..fechaIngresoMina = fechaIngresoMinaController.text.isNotEmpty
+            ? DateFormat('dd/MM/yyyy').parse(fechaIngresoMinaController.text)
+            : null
+        ..licenciaConducir = codigoLicenciaController.text.isNotEmpty
+            ? codigoLicenciaController.text
+            : ''
+        ..licenciaVencimiento = fechaRevalidacionController.text.isNotEmpty
+            ? DateFormat('dd/MM/yyyy').parse(fechaRevalidacionController.text)
+            : null
+        ..operacionMina = isOperacionMina.value ? 'S' : 'N'
+        ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
+        ..restricciones = restriccionesController.text.isNotEmpty
+            ? restriccionesController.text
+            : '';*/
+
       if (accion == 'eliminar') {
         personalData!
           ..eliminado = 'S'
@@ -208,9 +254,11 @@ class NewPersonalController extends GetxController {
     switch (accion) {
       case 'registrar':
         log('Registrar');
+        await registrarArchivo();
         return personalService.registrarPersona(personalData!);
       case 'actualizar':
         log('Actualizar');
+        await registrarArchivo();
         return personalService.actualizarPersona(personalData!);
       case 'eliminar':
         log('Eliminar');
@@ -221,7 +269,7 @@ class NewPersonalController extends GetxController {
   }
 
   String formatDate(DateTime date) {
-    return DateFormat('dd/MM/yyyy').format(date);
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   //Validaciones
@@ -243,6 +291,97 @@ class NewPersonalController extends GetxController {
       return false;
     }
     return true;
+  }
+
+  void adjuntarDocumento() async {
+    try {
+      final resultado = await seleccionarArchivo();
+
+      if (resultado != null) {
+        documentoAdjuntoNombre.value = resultado['nombre'];
+        documentoAdjuntoBytes.value = resultado['bytes'];
+        log('Documento adjuntado correctamente: ${documentoAdjuntoNombre.value}');
+      } else {
+        log('No se seleccionó ningún archivo');
+      }
+    } catch (e) {
+      log('Error al adjuntar documento: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>?> seleccionarArchivo() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
+      );
+
+      if (result != null && result.files.single.bytes != null) {
+        Uint8List fileBytes = result.files.single.bytes!;
+        String fileName = result.files.single.name;
+        return {
+          'nombre': fileName,
+          'bytes': fileBytes,
+        };
+      }
+    } catch (e) {
+      log('Error al seleccionar el archivo: $e');
+      return null;
+    }
+    return null;
+  }
+
+  void eliminarDocumento() {
+    documentoAdjuntoNombre.value = '';
+    documentoAdjuntoBytes.value = null;
+    log('Documento eliminado');
+  }
+
+  Future<void> registrarArchivo() async {
+    if (documentoAdjuntoBytes.value != null &&
+        documentoAdjuntoNombre.value.isNotEmpty) {
+      try {
+        String datosBase64 = base64Encode(documentoAdjuntoBytes.value!);
+
+        String extension = documentoAdjuntoNombre.value.split('.').last;
+        String mimeType = _determinarMimeType(extension);
+
+        final response = await archivoService.registrarArchivo(
+          key: 0,
+          nombre: documentoAdjuntoNombre.value,
+          extension: extension,
+          mime: mimeType,
+          datos: datosBase64,
+          inTipoArchivo: 1,
+          inOrigen: 1,
+        );
+
+        if (response.success) {
+          log('Archivo registrado con éxito');
+        } else {
+          log('Error al registrar el archivo: ${response.message}');
+        }
+      } catch (e) {
+        log('Error inesperado al registrar archivo: $e');
+      }
+    } else {
+      log('No hay archivo adjunto para registrar');
+    }
+  }
+
+  String _determinarMimeType(String extension) {
+    switch (extension) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'xlsx':
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      default:
+        return 'application/octet-stream';
+    }
   }
 
   void resetControllers() {

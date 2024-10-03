@@ -4,7 +4,6 @@ import 'package:sgem/modules/pages/personal%20training/personal.training.control
 
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
-// ignore: must_be_immutable
 class TrainingPersonalPage extends StatelessWidget {
   
   PersonalSearchController controller;
@@ -75,7 +74,7 @@ class TrainingPersonalPage extends StatelessWidget {
     TextEditingController controller =
         TextEditingController(text: initialValue);
     return SizedBox(
-      width: 180,
+      width: 180, // Ajuste para dar más espacio
       child: CustomTextField(
         label: label,
         controller: controller,
@@ -84,6 +83,7 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 
+  // Colocamos el botón dentro del encabezado de entrenamientos
   Widget _buildTrainingListHeaderWithButton(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -159,7 +159,7 @@ class TrainingPersonalPage extends StatelessWidget {
   Widget _buildTrainingCard(
       Map<String, String> training, BuildContext context) {
     return Card(
-      color: const Color(0xFFF2F6FF),
+      color: const Color(0xFFF2F6FF), // Fondo azul claro
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -170,7 +170,7 @@ class TrainingPersonalPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment:
-                  CrossAxisAlignment.start,
+                  CrossAxisAlignment.start, // Ajusta la alineación vertical
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

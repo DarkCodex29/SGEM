@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdfx/pdfx.dart' as pdf;
 import 'package:flutter/services.dart';
-import 'package:vector_graphics/vector_graphics.dart';
 import 'dart:ui' as ui;
 
 Future<Uint8List> _generatePdfAndConvertToImages(List<Future<pw.Page>> pages) async {
@@ -67,7 +65,7 @@ Future<Uint8List> loadImage(String path) async {
 Future<Uint8List> loadImageSVG(BuildContext context, String path) async {
   final ByteData data = await SvgPicture.asset(
     'assets/images/$path',
-    colorFilter: ColorFilter.mode(Colors.red, BlendMode.srcIn),
+    colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
   ).bytesLoader.loadBytes(context);;
    
   return await data.buffer.asUint8List();

@@ -131,7 +131,11 @@ class NewPersonalController extends GetxController {
       categoriaLicenciaController.text = personal.licenciaCategoria;
       codigoLicenciaController.text = personal.licenciaConducir;
       restriccionesController.text = personal.restricciones;
-      selectedGuardiaKey.value = personal.guardia.key;
+      if (personal.guardia.key != 0) {
+        selectedGuardiaKey.value = personal.guardia.key;
+      } else {
+        selectedGuardiaKey.value = null;
+      }
       isOperacionMina.value = personal.operacionMina == 'S';
       isZonaPlataforma.value = personal.zonaPlataforma == 'S';
 
@@ -357,9 +361,18 @@ class NewPersonalController extends GetxController {
     gerenciaController.clear();
     fechaIngresoController.clear();
     areaController.clear();
+    categoriaLicenciaController.clear();
     codigoLicenciaController.clear();
     fechaIngresoMinaController.clear();
     fechaRevalidacionController.clear();
     restriccionesController.clear();
+    selectedGuardiaKey.value = null;
+    personalPhoto.value = null;
+    isOperacionMina.value = false;
+    isZonaPlataforma.value = false;
+    estadoPersonal.value = 'Activo';
+    documentoAdjuntoNombre.value = '';
+    documentoAdjuntoBytes.value = null;
+    personalData = null;
   }
 }

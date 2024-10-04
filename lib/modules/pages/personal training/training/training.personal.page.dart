@@ -40,12 +40,12 @@ class TrainingPersonalPage extends StatelessWidget {
       ),
       child: Row(
         crossAxisAlignment:
-            CrossAxisAlignment.start, // Mejor alineación vertical
+            CrossAxisAlignment.start,
         children: [
           const CircleAvatar(
               radius: 40,
               backgroundImage: AssetImage('assets/images/user_avatar.png')),
-          const SizedBox(width: 24), // Ajustar el espaciado aquí
+          const SizedBox(width: 24),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

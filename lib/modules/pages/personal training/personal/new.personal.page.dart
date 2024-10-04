@@ -41,7 +41,11 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.areaController.text = personal.area;
       controller.categoriaLicenciaController.text = personal.licenciaCategoria;
       controller.codigoLicenciaController.text = personal.licenciaConducir;
-      controller.selectedGuardiaKey.value = personal.guardia.key;
+      if (personal.guardia.key != 0) {
+        controller.selectedGuardiaKey.value = personal.guardia.key;
+      } else {
+        controller.selectedGuardiaKey.value = null;
+      }
       controller.restriccionesController.text = personal.restricciones;
       controller.fechaIngresoMinaController.text =
           personal.fechaIngresoMina?.toString() ?? '';
@@ -232,7 +236,6 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDatosAdicionalesSection(BuildContext context) {
-
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -410,7 +413,10 @@ class NuevoPersonalPage extends StatelessWidget {
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(
-        onPressed: onCancel,
+        onPressed: () {
+          controller.resetControllers();
+          onCancel();
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primaryColor,
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
@@ -426,7 +432,10 @@ class NuevoPersonalPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton(
-          onPressed: onCancel,
+          onPressed: () {
+            controller.resetControllers();
+            onCancel();
+          },
           style: TextButton.styleFrom(
             backgroundColor: Colors.white,
             side: const BorderSide(color: Colors.grey),
@@ -487,9 +496,6 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDropdownGuardia() {
-    if (!isViewing) {
-      controllerPersonalSearch.selectedGuardiaKey.value = personal.guardia.key;
-    }
     if (!isEditing) {
       controllerPersonalSearch.clearFields();
     }

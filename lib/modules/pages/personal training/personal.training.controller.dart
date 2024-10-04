@@ -21,7 +21,6 @@ enum PersonalSearchScreen {
   certificadoPersonal
 }
 
-
 extension PersonalSearchScreenExtension on PersonalSearchScreen {
   String description() {
     switch (this) {
@@ -51,7 +50,7 @@ class PersonalSearchController extends GetxController {
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();
-  
+
   var isExpanded = true.obs;
   var screen = PersonalSearchScreen.none.obs;
 
@@ -69,10 +68,10 @@ class PersonalSearchController extends GetxController {
   @override
   void onInit() {
     cargarGuardiaOptions();
+    searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
 
-  
   Future<Uint8List?> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =
@@ -150,8 +149,7 @@ class PersonalSearchController extends GetxController {
           totalPages.value = result['TotalPages'] as int;
           totalRecords.value = result['TotalRecords'] as int;
           rowsPerPage.value = result['PageSize'] as int;
-
-          isExpanded.value = false;
+          toggleExpansion();
           log('Resultados obtenidos: ${personalResults.length}');
         } catch (e) {
           log('Error al procesar la respuesta: $e');
@@ -198,6 +196,9 @@ class PersonalSearchController extends GetxController {
           .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
       cell.value = TextCellValue(headers[i]);
       cell.cellStyle = headerStyle;
+
+      excel.sheets['Personal']!
+          .setColumnWidth(i, headers[i].length.toDouble() + 5);
     }
 
     final dateFormat = DateFormat('dd/MM/yyyy');
@@ -214,7 +215,6 @@ class PersonalSearchController extends GetxController {
         TextCellValue(personal.cargo),
         TextCellValue(personal.gerencia),
         TextCellValue(personal.area),
-        // Formato de la fecha para mostrarlo al usuario
         personal.fechaIngreso != null
             ? TextCellValue(dateFormat.format(personal.fechaIngreso!))
             : TextCellValue(''),
@@ -233,6 +233,11 @@ class PersonalSearchController extends GetxController {
         var cell = excel.sheets['Personal']!.cell(CellIndex.indexByColumnRow(
             columnIndex: colIndex, rowIndex: rowIndex + 1));
         cell.value = row[colIndex];
+
+        double contentWidth = row[colIndex].toString().length.toDouble();
+        if (contentWidth > excel.sheets['Personal']!.getColumnWidth(colIndex)) {
+          excel.sheets['Personal']!.setColumnWidth(colIndex, contentWidth + 5);
+        }
       }
     }
 
@@ -265,6 +270,7 @@ class PersonalSearchController extends GetxController {
     nombresController.clear();
     apellidosController.clear();
     selectedGuardiaKey.value = null;
+    selectedEstadoKey.value = null;
   }
 
   void showNewPersonal() {

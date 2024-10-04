@@ -24,6 +24,7 @@ class PersonalSearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final PersonalSearchController controller =
         Get.put(PersonalSearchController());
+    controller.selectedEstadoKey.value = 95;
 
     return Scaffold(
       appBar: AppBar(
@@ -49,12 +50,18 @@ class PersonalSearchPage extends StatelessWidget {
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(controller: controller);
-          case PersonalSearchScreen.carnetPersonal:            
-            return PdfToImageScreen(data: controller.selectedPersonal.value, controller: controller);
+          case PersonalSearchScreen.carnetPersonal:
+            return PdfToImageScreen(
+                data: controller.selectedPersonal.value,
+                controller: controller);
           case PersonalSearchScreen.diplomaPersonal:
-            return PdfToDiplomaScreen(controller: controller,);
+            return PdfToDiplomaScreen(
+              controller: controller,
+            );
           case PersonalSearchScreen.certificadoPersonal:
-            return PdfToCertificadoScreen(controller: controller,);
+            return PdfToCertificadoScreen(
+              controller: controller,
+            );
         }
       }),
     );
@@ -236,21 +243,33 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: CustomDropdown(
-                              hintText: "Estado",
-                              options: const ["Activo", "Cesado", "Todos"],
-                              isSearchable: false,
-                              //selectedValue: "Activo",
-                              onChanged: (value) {
-                                if (value == "Activo") {
-                                  controller.searchPersonalEstado(95);
-                                } else if (value == "Cesado") {
-                                  controller.searchPersonalEstado(96);
-                                } else {
-                                  controller.searchPersonalEstado(null);
-                                }
-                              },
-                            ),
+                            child: Obx(() {
+                              String? selectedValue;
+                              if (controller.selectedEstadoKey.value == 95) {
+                                selectedValue = "Activo";
+                              } else if (controller.selectedEstadoKey.value ==
+                                  96) {
+                                selectedValue = "Cesado";
+                              } else {
+                                selectedValue = "Todos";
+                              }
+
+                              return CustomDropdown(
+                                hintText: "Estado",
+                                options: const ["Activo", "Cesado", "Todos"],
+                                isSearchable: false,
+                                selectedValue: selectedValue,
+                                onChanged: (value) {
+                                  if (value == "Activo") {
+                                    controller.searchPersonalEstado(95);
+                                  } else if (value == "Cesado") {
+                                    controller.searchPersonalEstado(96);
+                                  } else {
+                                    controller.searchPersonalEstado(null);
+                                  }
+                                },
+                              );
+                            }),
                           ),
                         ],
                       ),
@@ -259,7 +278,9 @@ class PersonalSearchPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: controller.clearFields,
+                      onPressed: () {
+                        controller.clearFields();
+                      },
                       icon: const Icon(
                         Icons.cleaning_services,
                         size: 18,

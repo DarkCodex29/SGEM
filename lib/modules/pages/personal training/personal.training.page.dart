@@ -24,7 +24,6 @@ class PersonalSearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final PersonalSearchController controller =
         Get.put(PersonalSearchController());
-    controller.selectedEstadoKey.value = 95;
 
     return Scaffold(
       appBar: AppBar(
@@ -43,7 +42,7 @@ class PersonalSearchPage extends StatelessWidget {
       body: Obx(() {
         switch (controller.screen.value) {
           case PersonalSearchScreen.none:
-            return _buildSearchPage(controller);
+            return _buildSearchPage(controller, context);
           case PersonalSearchScreen.newPersonal:
           case PersonalSearchScreen.viewPersonal:
           case PersonalSearchScreen.editPersonal:
@@ -55,13 +54,9 @@ class PersonalSearchPage extends StatelessWidget {
                 data: controller.selectedPersonal.value,
                 controller: controller);
           case PersonalSearchScreen.diplomaPersonal:
-            return PdfToDiplomaScreen(
-              controller: controller,
-            );
+            return PdfToDiplomaScreen(controller: controller);
           case PersonalSearchScreen.certificadoPersonal:
-            return PdfToCertificadoScreen(
-              controller: controller,
-            );
+            return PdfToCertificadoScreen(controller: controller);
         }
       }),
     );
@@ -76,6 +71,7 @@ class PersonalSearchPage extends StatelessWidget {
             key: 0,
             tipoPersona: '',
             inPersonalOrigen: 0,
+            fechaIngresoMina: null,
             licenciaConducir: '',
             operacionMina: '',
             zonaPlataforma: '',
@@ -95,7 +91,9 @@ class PersonalSearchPage extends StatelessWidget {
             apellidoMaterno: '',
             primerNombre: '',
             segundoNombre: '',
+            fechaIngreso: null,
             licenciaCategoria: '',
+            licenciaVencimiento: null,
             gerencia: '',
             area: '',
           ),
@@ -105,7 +103,8 @@ class PersonalSearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchPage(PersonalSearchController controller) {
+  Widget _buildSearchPage(
+      PersonalSearchController controller, BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         bool isSmallScreen = constraints.maxWidth < 600;
@@ -115,7 +114,7 @@ class PersonalSearchPage extends StatelessWidget {
             children: [
               _buildFormSection(controller, isSmallScreen),
               const SizedBox(height: 20),
-              _buildResultsSection(controller, isSmallScreen),
+              _buildResultsSection(controller, isSmallScreen, context),
             ],
           ),
         );
@@ -174,12 +173,36 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown(
-                            hintText: "Estado",
-                            options: const ["Activo", "Cesado", "Todos"],
-                            isSearchable: false,
-                            onChanged: (value) {},
-                          ),
+                          Obx(() {
+                            String? selectedValue;
+                            if (controller.selectedEstadoKey.value == null) {
+                              selectedValue = null;
+                            } else if (controller.selectedEstadoKey.value ==
+                                95) {
+                              selectedValue = "Activo";
+                            } else if (controller.selectedEstadoKey.value ==
+                                96) {
+                              selectedValue = "Cesado";
+                            } else {
+                              selectedValue = "Todos";
+                            }
+
+                            return CustomDropdown(
+                              hintText: "Estado",
+                              options: const ["Activo", "Cesado", "Todos"],
+                              selectedValue: selectedValue,
+                              isSearchable: false,
+                              onChanged: (value) {
+                                if (value == "Activo") {
+                                  controller.searchPersonalEstado(95);
+                                } else if (value == "Cesado") {
+                                  controller.searchPersonalEstado(96);
+                                } else {
+                                  controller.searchPersonalEstado(null);
+                                }
+                              },
+                            );
+                          })
                         ],
                       )
                     : Row(
@@ -222,7 +245,15 @@ class PersonalSearchPage extends StatelessWidget {
                             hintText: "Estado",
                             options: const ["Activo", "Cesado", "Todos"],
                             isSearchable: false,
-                            onChanged: (value) {},
+                            onChanged: (value) {
+                              if (value == "Activo") {
+                                controller.searchPersonalEstado(95);
+                              } else if (value == "Cesado") {
+                                controller.searchPersonalEstado(96);
+                              } else {
+                                controller.searchPersonalEstado(null);
+                              }
+                            },
                           ),
                         ],
                       )
@@ -243,33 +274,20 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: Obx(() {
-                              String? selectedValue;
-                              if (controller.selectedEstadoKey.value == 95) {
-                                selectedValue = "Activo";
-                              } else if (controller.selectedEstadoKey.value ==
-                                  96) {
-                                selectedValue = "Cesado";
-                              } else {
-                                selectedValue = "Todos";
-                              }
-
-                              return CustomDropdown(
-                                hintText: "Estado",
-                                options: const ["Activo", "Cesado", "Todos"],
-                                isSearchable: false,
-                                selectedValue: selectedValue,
-                                onChanged: (value) {
-                                  if (value == "Activo") {
-                                    controller.searchPersonalEstado(95);
-                                  } else if (value == "Cesado") {
-                                    controller.searchPersonalEstado(96);
-                                  } else {
-                                    controller.searchPersonalEstado(null);
-                                  }
-                                },
-                              );
-                            }),
+                            child: CustomDropdown(
+                              hintText: "Estado",
+                              options: const ["Activo", "Cesado", "Todos"],
+                              isSearchable: false,
+                              onChanged: (value) {
+                                if (value == "Activo") {
+                                  controller.searchPersonalEstado(95);
+                                } else if (value == "Cesado") {
+                                  controller.searchPersonalEstado(96);
+                                } else {
+                                  controller.searchPersonalEstado(null);
+                                }
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -366,8 +384,8 @@ class PersonalSearchPage extends StatelessWidget {
     });
   }
 
-  Widget _buildResultsSection(
-      PersonalSearchController controller, bool isSmallScreen) {
+  Widget _buildResultsSection(PersonalSearchController controller,
+      bool isSmallScreen, BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -396,25 +414,13 @@ class PersonalSearchPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          //_buildResultsTable(controller),
-          // FutureBuilder para cargar los resultados automáticamente
-          FutureBuilder<void>(
-            future: controller.searchPersonal(
-                pageNumber: controller.currentPage.value,
-                pageSize: controller.rowsPerPage.value),
-            builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // Muestra un indicador de carga mientras se busca
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                // Maneja errores aquí
-                return Text('Error: ${snapshot.error}');
-              } else {
-                // Si no hay errores, muestra la tabla de resultados
-                return _buildResultsTable(controller, context);
-              }
-            },
-          ),
+          Obx(() {
+            if (controller.personalResults.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            } else {
+              return _buildResultsTable(controller, context);
+            }
+          }),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -558,212 +564,242 @@ class PersonalSearchPage extends StatelessWidget {
       if (controller.personalResults.isEmpty) {
         return const Center(child: Text("No se encontraron resultados"));
       }
+
       var rowsToShow = controller.personalResults
           .take(controller.rowsPerPage.value)
           .toList();
 
-      return DataTable(
-        headingRowHeight: 40,
-        columns: const [
-          DataColumn(
-              label: Text(
-            'Código MCP',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          DataColumn(
-              label: Text(
-            'Nombre completo',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          DataColumn(
-              label: Text(
-            'Documento de identidad',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          DataColumn(
-              label: Text(
-            'Guardia',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          DataColumn(
-              label: Text(
-            'Estado',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-          DataColumn(
-              label: Text(
-            'Acciones',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          )),
-        ],
-        rows: rowsToShow.map((personal) {
-          String estado = personal.estado.nombre;
-          return DataRow(cells: [
-            DataCell(Text(personal.codigoMcp)),
-            DataCell(Text(personal.nombreCompleto)),
-            DataCell(Text(personal.numeroDocumento)),
-            DataCell(Text(personal.guardia.nombre)),
-            DataCell(Row(
+      return Column(
+        children: [
+          Container(
+            color: Colors.grey[200],
+            padding:
+                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+            child: const Row(
               children: [
-                Icon(
-                  Icons.circle,
-                  color: estado == 'Activo' ? Colors.green : Colors.grey,
-                  size: 12,
-                ),
-                const SizedBox(width: 5),
-                Text(estado),
+                Expanded(
+                    child: Text('Código MCP',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(
+                    child: Text('Nombre completo',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(
+                    child: Text('Documento de identidad',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(
+                    child: Text('Guardia',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(
+                    child: Text('Estado',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
+                Expanded(
+                    child: Text('Acciones',
+                        style: TextStyle(fontWeight: FontWeight.bold))),
               ],
-            )),
-            DataCell(Row(
-              children: estado == 'Cesado'
-                  ? [
-                      _buildIconButton(
-                          Icons.remove_red_eye, AppTheme.primaryColor, () {
-                        controller.showViewPersonal(personal);
-                      }),
-                      _buildIconButton(
-                          Icons.model_training_sharp, AppTheme.warningColor,
-                          () {
-                        controller.showTraining();
-                      }),
-                    ]
-                  : [
-                      _buildIconButton(Icons.edit, AppTheme.primaryColor, () {
-                        controller.showEditPersonal(personal);
-                      }),
-                      _buildIconButton(Icons.delete, AppTheme.errorColor,
-                          () async {
-                        controller.selectedPersonal.value = personal;
-                        String motivoEliminacion = '';
-
-                        await showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          enableDrag: false,
-                          context: Get.context!,
-                          builder: (context) {
-                            return GestureDetector(
-                              onTap: () => FocusScope.of(context).unfocus(),
-                              child: Padding(
-                                padding: MediaQuery.of(context).viewInsets,
-                                child: DeleteReasonWidget(
-                                  entityType: 'personal',
-                                  onCancel: () {
-                                    Navigator.pop(context);
-                                  },
-                                  onConfirm: (motivo) {
-                                    motivoEliminacion = motivo;
-                                    Navigator.pop(context);
-                                  },
-                                ),
+            ),
+          ),
+          SizedBox(
+            height: 200,
+            child: SingleChildScrollView(
+              child: Column(
+                children: rowsToShow.map((personal) {
+                  String estado = personal.estado.nombre;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    child: Row(
+                      children: [
+                        Expanded(child: Text(personal.codigoMcp)),
+                        Expanded(child: Text(personal.nombreCompleto)),
+                        Expanded(child: Text(personal.numeroDocumento)),
+                        Expanded(child: Text(personal.guardia.nombre)),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.circle,
+                                color: estado == 'Activo'
+                                    ? Colors.green
+                                    : Colors.grey,
+                                size: 12,
                               ),
-                            );
-                          },
-                        );
+                              const SizedBox(width: 5),
+                              Text(estado),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: estado == 'Cesado'
+                                ? [
+                                    _buildIconButton(Icons.remove_red_eye,
+                                        AppTheme.primaryColor, () {
+                                      controller.showViewPersonal(personal);
+                                    }),
+                                    _buildIconButton(Icons.model_training_sharp,
+                                        AppTheme.warningColor, () {
+                                      controller.showTraining();
+                                    }),
+                                  ]
+                                : [
+                                    _buildIconButton(
+                                        Icons.edit, AppTheme.primaryColor, () {
+                                      controller.showEditPersonal(personal);
+                                    }),
+                                    _buildIconButton(
+                                        Icons.delete, AppTheme.errorColor,
+                                        () async {
+                                      controller.selectedPersonal.value =
+                                          personal;
+                                      String motivoEliminacion = '';
 
-                        if (motivoEliminacion.isEmpty) {
-                          return;
-                        }
+                                      await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () => FocusScope.of(context)
+                                                .unfocus(),
+                                            child: Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: DeleteReasonWidget(
+                                                entityType: 'personal',
+                                                onCancel: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                onConfirm: (motivo) {
+                                                  motivoEliminacion = motivo;
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
 
-                        bool confirmarEliminar = false;
+                                      if (motivoEliminacion.isEmpty) {
+                                        return;
+                                      }
 
-                        if (controller.selectedPersonal.value != null) {
-                          String? nombreCompleto =
-                              controller.selectedPersonal.value!.nombreCompleto;
-                          await showModalBottomSheet(
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            enableDrag: false,
-                            context: Get.context!,
-                            builder: (context) {
-                              return GestureDetector(
-                                onTap: () => FocusScope.of(context).unfocus(),
-                                child: Padding(
-                                  padding: MediaQuery.of(context).viewInsets,
-                                  child: ConfirmDeleteWidget(
-                                    itemName: nombreCompleto,
-                                    entityType: 'personal',
-                                    onCancel: () {
-                                      Navigator.pop(context);
-                                    },
-                                    onConfirm: () {
-                                      confirmarEliminar = true;
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        } else {
-                          log('Error: No hay personal seleccionado');
-                          return;
-                        }
-                        if (!confirmarEliminar) {
-                          return;
-                        }
-                        NewPersonalController controllerNew =
-                            Get.put(NewPersonalController());
-                        controllerNew.personalData =
-                            controller.selectedPersonal.value;
-                        try {
-                          bool success = await controllerNew.gestionarPersona(
-                            accion: 'eliminar',
-                            motivoEliminacion: motivoEliminacion,
-                            context: Get.context!,
-                          );
-                          if (success) {
-                            await showModalBottomSheet(
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              enableDrag: false,
-                              context: Get.context!,
-                              builder: (context) {
-                                return const SuccessDeleteWidget();
-                              },
-                            );
+                                      bool confirmarEliminar = false;
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content:
-                                    Text("Persona eliminada exitosamente."),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
+                                      if (controller.selectedPersonal.value !=
+                                          null) {
+                                        String? nombreCompleto = controller
+                                            .selectedPersonal
+                                            .value!
+                                            .nombreCompleto;
+                                        await showModalBottomSheet(
+                                          isScrollControlled: true,
+                                          backgroundColor: Colors.transparent,
+                                          enableDrag: false,
+                                          context: context,
+                                          builder: (context) {
+                                            return GestureDetector(
+                                              onTap: () =>
+                                                  FocusScope.of(context)
+                                                      .unfocus(),
+                                              child: Padding(
+                                                padding: MediaQuery.of(context)
+                                                    .viewInsets,
+                                                child: ConfirmDeleteWidget(
+                                                  itemName: nombreCompleto,
+                                                  entityType: 'personal',
+                                                  onCancel: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  onConfirm: () {
+                                                    confirmarEliminar = true;
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        log('Error: No hay personal seleccionado');
+                                        return;
+                                      }
+                                      if (!confirmarEliminar) {
+                                        return;
+                                      }
+                                      NewPersonalController controllerNew =
+                                          Get.put(NewPersonalController());
+                                      controllerNew.personalData =
+                                          controller.selectedPersonal.value;
+                                      try {
+                                        bool success = await controllerNew
+                                            .gestionarPersona(
+                                          accion: 'eliminar',
+                                          motivoEliminacion: motivoEliminacion,
+                                          context: context,
+                                        );
+                                        if (success) {
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            enableDrag: false,
+                                            context: context,
+                                            builder: (context) {
+                                              return const SuccessDeleteWidget();
+                                            },
+                                          );
 
-                            Get.toNamed('/buscarEntrenamiento');
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    "Error al eliminar la persona. Intenta nuevamente."),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          }
-                        } catch (e) {
-                          log('Error eliminando la persona: $e');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text("Error eliminando la persona: $e"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }),
-                      _buildIconButton(
-                          Icons.model_training_sharp, AppTheme.warningColor,
-                          () {
-                        controller.showTraining();
-                      }),
-                      _buildIconButton(
-                          Icons.credit_card_rounded, AppTheme.greenColor, () {
-                        controller.showCarnet(personal);
-                      }),
-                    ],
-            )),
-          ]);
-        }).toList(),
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "Persona eliminada exitosamente."),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+
+                                          Get.toNamed('/buscarEntrenamiento');
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "Error al eliminar la persona. Intenta nuevamente."),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        log('Error eliminando la persona: $e');
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                                "Error eliminando la persona: $e"),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                    }),
+                                    _buildIconButton(Icons.model_training_sharp,
+                                        AppTheme.warningColor, () {
+                                      controller.showTraining();
+                                    }),
+                                    _buildIconButton(Icons.credit_card_rounded,
+                                        AppTheme.greenColor, () {
+                                      controller.showCarnet(personal);
+                                    }),
+                                  ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        ],
       );
     });
   }

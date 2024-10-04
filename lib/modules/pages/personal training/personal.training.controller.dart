@@ -58,7 +58,7 @@ class PersonalSearchController extends GetxController {
   var selectedPersonal = Rxn<Personal>();
   RxList<MaestroDetalle> guardiaOptions = <MaestroDetalle>[].obs;
   var selectedGuardiaKey = RxnInt();
-  var selectedEstadoKey = RxnInt();
+  var selectedEstadoKey = RxnInt(95);
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
@@ -149,7 +149,7 @@ class PersonalSearchController extends GetxController {
           totalPages.value = result['TotalPages'] as int;
           totalRecords.value = result['TotalRecords'] as int;
           rowsPerPage.value = result['PageSize'] as int;
-          toggleExpansion();
+          isExpanded.value = false;
           log('Resultados obtenidos: ${personalResults.length}');
         } catch (e) {
           log('Error al procesar la respuesta: $e');
@@ -270,7 +270,9 @@ class PersonalSearchController extends GetxController {
     nombresController.clear();
     apellidosController.clear();
     selectedGuardiaKey.value = null;
+    log('Campos limpiados: ${selectedEstadoKey.value}');
     selectedEstadoKey.value = null;
+    log('Campos limpiados: ${selectedEstadoKey.value}');
   }
 
   void showNewPersonal() {

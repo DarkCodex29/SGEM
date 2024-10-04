@@ -380,7 +380,7 @@ class NuevoPersonalPage extends StatelessWidget {
             Text("Archivos adjuntos:"),
             SizedBox(width: 10),
             Text(
-              "(Archivos adjuntos peso máx: 4MB c/u)",
+              "(Archivos adjuntos peso máx: 8MB c/u)",
               style: TextStyle(color: Colors.grey),
             ),
           ],

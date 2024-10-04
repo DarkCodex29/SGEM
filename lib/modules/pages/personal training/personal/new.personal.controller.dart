@@ -297,7 +297,6 @@ class NewPersonalController extends GetxController {
               'nombre': fileName,
               'bytes': fileBytes,
             });
-
             log('Documento adjuntado correctamente: $fileName');
           }
         }
@@ -366,16 +365,20 @@ class NewPersonalController extends GetxController {
         idOrigen: idOrigen,
         idOrigenKey: idOrigenKey,
       );
-
+      log('Response: ${response.data}');
       if (response.success && response.data != null) {
         archivosAdjuntos.clear();
         for (var archivo in response.data!) {
+          List<int> datos = List<int>.from(archivo['Datos']);
+          Uint8List archivoBytes = Uint8List.fromList(datos);
+
           archivosAdjuntos.add({
-            'nombre': archivo['nombre'],
-            'bytes': null,
+            'nombre': archivo['Nombre'],
+            'bytes': archivoBytes,
           });
+
+          log('Archivo ${archivo['Nombre']} obtenido con éxito');
         }
-        log('Archivos obtenidos con éxito');
       } else {
         log('Error al obtener archivos: ${response.message}');
       }

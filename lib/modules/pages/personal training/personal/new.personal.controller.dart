@@ -33,7 +33,7 @@ class NewPersonalController extends GetxController {
   final TextEditingController restriccionesController = TextEditingController();
 
   final PersonalService personalService = PersonalService();
-  var selectedPersonal = Rxn<Personal>();
+  var selectedGuardiaKey = RxnInt();
 
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
@@ -131,7 +131,7 @@ class NewPersonalController extends GetxController {
       categoriaLicenciaController.text = personal.licenciaCategoria;
       codigoLicenciaController.text = personal.licenciaConducir;
       restriccionesController.text = personal.restricciones;
-
+      selectedGuardiaKey.value = personal.guardia.key;
       isOperacionMina.value = personal.operacionMina == 'S';
       isZonaPlataforma.value = personal.zonaPlataforma == 'S';
 
@@ -185,47 +185,10 @@ class NewPersonalController extends GetxController {
         ..fechaIngreso = _parsearFecha(fechaIngresoController.text)
         ..fechaIngresoMina = _parsearFecha(fechaIngresoMinaController.text)
         ..licenciaVencimiento = _parsearFecha(fechaRevalidacionController.text)
+        ..guardia.key = selectedGuardiaKey.value ?? 0
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = _verificarTexto(restriccionesController.text);
-
-      /*
-      personalData!
-        ..primerNombre = nombresController.text.split(' ').first
-        ..segundoNombre = nombresController.text.split(' ').length > 1
-            ? nombresController.text.split(' ')[1]
-            : ''
-        ..apellidoPaterno = apellidoPaternoController.text.isNotEmpty
-            ? apellidoPaternoController.text
-            : ''
-        ..apellidoMaterno = apellidoMaternoController.text.isNotEmpty
-            ? apellidoMaternoController.text
-            : ''
-        ..cargo = puestoTrabajoController.text.isNotEmpty
-            ? puestoTrabajoController.text
-            : ''
-        ..codigoMcp =
-            codigoController.text.isNotEmpty ? codigoController.text : ''
-        ..gerencia =
-            gerenciaController.text.isNotEmpty ? gerenciaController.text : ''
-        ..area = areaController.text.isNotEmpty ? areaController.text : ''
-        ..fechaIngreso = fechaIngresoController.text.isNotEmpty
-            ? DateFormat('dd/MM/yyyy').parse(fechaIngresoController.text)
-            : null
-        ..fechaIngresoMina = fechaIngresoMinaController.text.isNotEmpty
-            ? DateFormat('dd/MM/yyyy').parse(fechaIngresoMinaController.text)
-            : null
-        ..licenciaConducir = codigoLicenciaController.text.isNotEmpty
-            ? codigoLicenciaController.text
-            : ''
-        ..licenciaVencimiento = fechaRevalidacionController.text.isNotEmpty
-            ? DateFormat('dd/MM/yyyy').parse(fechaRevalidacionController.text)
-            : null
-        ..operacionMina = isOperacionMina.value ? 'S' : 'N'
-        ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
-        ..restricciones = restriccionesController.text.isNotEmpty
-            ? restriccionesController.text
-            : '';*/
 
       if (accion == 'eliminar') {
         personalData!

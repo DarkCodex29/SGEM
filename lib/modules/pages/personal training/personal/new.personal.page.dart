@@ -41,6 +41,7 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.areaController.text = personal.area;
       controller.categoriaLicenciaController.text = personal.licenciaCategoria;
       controller.codigoLicenciaController.text = personal.licenciaConducir;
+      controller.selectedGuardiaKey.value = personal.guardia.key;
       controller.restriccionesController.text = personal.restricciones;
       controller.fechaIngresoMinaController.text =
           personal.fechaIngresoMina?.toString() ?? '';
@@ -298,7 +299,7 @@ class NuevoPersonalPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildDropdownGuardia(controllerPersonalSearch),
+                child: _buildDropdownGuardia(),
               ),
               const SizedBox(width: 10),
               const Expanded(
@@ -484,20 +485,19 @@ class NuevoPersonalPage extends StatelessWidget {
     }
   }
 
-  Widget _buildDropdownGuardia(PersonalSearchController controller) {
-    if (isEditing) {
-      controller.selectedGuardiaKey.value = personal.guardia.key;
+  Widget _buildDropdownGuardia() {
+    if (!isViewing) {
+      controllerPersonalSearch.selectedGuardiaKey.value = personal.guardia.key;
     }
     if (!isEditing) {
-      controller.clearFields();
+      controllerPersonalSearch.clearFields();
     }
 
-    //controller.selectedGuardiaKey.value = personal.guardia.key;
     return Obx(() {
-      if (controller.guardiaOptions.isEmpty) {
+      if (controllerPersonalSearch.guardiaOptions.isEmpty) {
         return const CircularProgressIndicator();
       }
-      List<MaestroDetalle> options = controller.guardiaOptions;
+      List<MaestroDetalle> options = controllerPersonalSearch.guardiaOptions;
       return CustomDropdown(
         hintText: 'Selecciona Guardia',
         options: options.map((option) => option.valor).toList(),
@@ -530,7 +530,6 @@ class NuevoPersonalPage extends StatelessWidget {
     );
     if (picked != null) {
       controller.text = DateFormat('yyyy-MM-dd').format(picked);
-      //controller.text = picked.toString();
     }
   }
 }

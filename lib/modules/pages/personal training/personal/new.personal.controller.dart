@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/archivo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';

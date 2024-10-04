@@ -401,7 +401,7 @@ class NuevoPersonalPage extends StatelessWidget {
                       },
                       icon: const Icon(Icons.close, color: Colors.red),
                       label: Text(
-                        archivo['nombre'],
+                        archivo['Nombre']??'',
                         style: const TextStyle(color: Colors.red),
                       ),
                     ),

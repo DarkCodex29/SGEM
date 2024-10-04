@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
-import 'package:sgem/config/api/archivo.dart';
+import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
 class NewPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
@@ -44,6 +45,8 @@ class NewPersonalController extends GetxController {
 
   var documentoAdjuntoNombre = ''.obs;
   var documentoAdjuntoBytes = Rxn<Uint8List>();
+
+  var archivosAdjuntos = <Map<String, dynamic>>[].obs;
   final ArchivoService archivoService = ArchivoService();
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
@@ -72,6 +75,11 @@ class NewPersonalController extends GetxController {
         log('Personal encontrado: ${personalData!.toJson().toString()}');
         llenarControladores(personalData!);
       } else {
+        ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
+          content: Text('Personal no encontrado'),
+          backgroundColor: Colors.red,
+        ));
+        resetControllers();
         log('Error al buscar el personal: ${response.message}');
       }
     } catch (e) {
@@ -144,6 +152,7 @@ class NewPersonalController extends GetxController {
       } else {
         estadoPersonal.value = 'Cesado';
       }
+      obtenerArchivosRegistrados(1, personal.key);
     }
   }
 
@@ -187,6 +196,7 @@ class NewPersonalController extends GetxController {
         ..apellidoMaterno = _verificarTexto(apellidoMaternoController.text)
         ..cargo = _verificarTexto(puestoTrabajoController.text)
         ..fechaIngreso = _parsearFecha(fechaIngresoController.text)
+        ..licenciaConducir = _verificarTexto(codigoLicenciaController.text)
         ..fechaIngresoMina = _parsearFecha(fechaIngresoMinaController.text)
         ..licenciaVencimiento = _parsearFecha(fechaRevalidacionController.text)
         ..guardia.key = selectedGuardiaKey.value ?? 0
@@ -205,6 +215,8 @@ class NewPersonalController extends GetxController {
 
       if (response.success) {
         log('Acción $accion realizada exitosamente');
+        await registrarArchivos(dniController.text);
+        _mostrarMensajeGuardado(context);
         return true;
       } else {
         log('Acción $accion fallida: ${response.message}');
@@ -221,11 +233,9 @@ class NewPersonalController extends GetxController {
     switch (accion) {
       case 'registrar':
         log('Registrar');
-        await registrarArchivo();
         return personalService.registrarPersona(personalData!);
       case 'actualizar':
         log('Actualizar');
-        await registrarArchivo();
         return personalService.actualizarPersona(personalData!);
       case 'eliminar':
         log('Eliminar');
@@ -260,6 +270,7 @@ class NewPersonalController extends GetxController {
     return true;
   }
 
+/*
   void adjuntarDocumento() async {
     try {
       final resultado = await seleccionarArchivo();
@@ -275,7 +286,38 @@ class NewPersonalController extends GetxController {
       log('Error al adjuntar documento: $e');
     }
   }
+*/
+  Future<void> adjuntarDocumentos() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
+      );
 
+      if (result != null) {
+        for (var file in result.files) {
+          if (file.bytes != null) {
+            Uint8List fileBytes = file.bytes!;
+            String fileName = file.name;
+
+            archivosAdjuntos.add({
+              'nombre': fileName,
+              'bytes': fileBytes,
+            });
+
+            log('Documento adjuntado correctamente: $fileName');
+          }
+        }
+      } else {
+        log('No se seleccionaron archivos');
+      }
+    } catch (e) {
+      log('Error al adjuntar documentos: $e');
+    }
+  }
+
+/*
   Future<Map<String, dynamic>?> seleccionarArchivo() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -296,43 +338,79 @@ class NewPersonalController extends GetxController {
       return null;
     }
     return null;
+  }¨*/
+
+  void eliminarArchivo(String nombreArchivo) {
+    archivosAdjuntos
+        .removeWhere((archivo) => archivo['nombre'] == nombreArchivo);
+    log('Archivo $nombreArchivo eliminado');
   }
 
-  void eliminarDocumento() {
-    documentoAdjuntoNombre.value = '';
-    documentoAdjuntoBytes.value = null;
-    log('Documento eliminado');
-  }
+  Future<void> registrarArchivos(String dni) async {
+    try {
+      final personalResponse = await personalService
+          .listarPersonalEntrenamiento(numeroDocumento: dni);
 
-  Future<void> registrarArchivo() async {
-    if (documentoAdjuntoBytes.value != null &&
-        documentoAdjuntoNombre.value.isNotEmpty) {
-      try {
-        String datosBase64 = base64Encode(documentoAdjuntoBytes.value!);
+      if (personalResponse.success && personalResponse.data!.isNotEmpty) {
+        int origenKey = personalResponse.data!.first.key;
+        log('Key del personal obtenida: $origenKey');
 
-        String extension = documentoAdjuntoNombre.value.split('.').last;
-        String mimeType = _determinarMimeType(extension);
+        for (var archivo in archivosAdjuntos) {
+          try {
+            String datosBase64 = base64Encode(archivo['bytes']);
+            String extension = archivo['nombre'].split('.').last;
+            String mimeType = _determinarMimeType(extension);
 
-        final response = await archivoService.registrarArchivo(
-          key: 0,
-          nombre: documentoAdjuntoNombre.value,
-          extension: extension,
-          mime: mimeType,
-          datos: datosBase64,
-          inTipoArchivo: 1,
-          inOrigen: 1,
-        );
+            final response = await archivoService.registrarArchivo(
+              key: 0,
+              nombre: archivo['nombre'],
+              extension: extension,
+              mime: mimeType,
+              datos: datosBase64,
+              inTipoArchivo: 1,
+              inOrigen: 1, // 1: TABLA Personal
+              inOrigenKey: origenKey,
+            );
 
-        if (response.success) {
-          log('Archivo registrado con éxito');
-        } else {
-          log('Error al registrar el archivo: ${response.message}');
+            if (response.success) {
+              log('Archivo ${archivo['nombre']} registrado con éxito');
+            } else {
+              log('Error al registrar archivo ${archivo['nombre']}: ${response.message}');
+            }
+          } catch (e) {
+            log('Error al registrar archivo ${archivo['nombre']}: $e');
+          }
         }
-      } catch (e) {
-        log('Error inesperado al registrar archivo: $e');
+      } else {
+        log('Error al obtener la key del personal');
       }
-    } else {
-      log('No hay archivo adjunto para registrar');
+    } catch (e) {
+      log('Error al registrar archivos: $e');
+    }
+  }
+
+  Future<void> obtenerArchivosRegistrados(int idOrigen, int idOrigenKey) async {
+    log('idOrigen: $idOrigen, idOrigenKey: $idOrigenKey');
+    try {
+      final response = await archivoService.obtenerArchivosPorOrigen(
+        idOrigen: idOrigen,
+        idOrigenKey: idOrigenKey,
+      );
+
+      if (response.success && response.data != null) {
+        archivosAdjuntos.clear();
+        for (var archivo in response.data!) {
+          archivosAdjuntos.add({
+            'nombre': archivo['nombre'],
+            'bytes': null,
+          });
+        }
+        log('Archivos obtenidos con éxito');
+      } else {
+        log('Error al obtener archivos: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener archivos: $e');
     }
   }
 
@@ -349,6 +427,15 @@ class NewPersonalController extends GetxController {
       default:
         return 'application/octet-stream';
     }
+  }
+
+  void _mostrarMensajeGuardado(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MensajeGuardadoWidget();
+      },
+    );
   }
 
   void resetControllers() {

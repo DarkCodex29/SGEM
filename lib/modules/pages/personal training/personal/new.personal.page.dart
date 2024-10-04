@@ -56,6 +56,8 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
       controller.estadoPersonal.value =
           personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
+
+      controller.obtenerArchivosRegistrados(1, personal.inPersonalOrigen);
     }
   }
 
@@ -365,46 +367,50 @@ class NuevoPersonalPage extends StatelessWidget {
           children: [
             Icon(Icons.attach_file, color: Colors.grey),
             SizedBox(width: 10),
-            Text("Adjuntar archivo:"),
+            Text("Archivos adjuntos:"),
             SizedBox(width: 10),
             Text(
-              "(Archivo adjunto peso máx: 4MB)",
+              "(Archivos adjuntos peso máx: 4MB c/u)",
               style: TextStyle(color: Colors.grey),
             ),
           ],
         ),
         const SizedBox(height: 10),
         Obx(() {
-          if (controller.documentoAdjuntoNombre.value.isNotEmpty) {
-            return Row(
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    controller.eliminarDocumento();
-                  },
-                  icon: const Icon(Icons.close, color: Colors.red),
-                  label: Text(
-                    controller.documentoAdjuntoNombre.value,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
-              ],
+          if (controller.archivosAdjuntos.isNotEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: controller.archivosAdjuntos.map((archivo) {
+                return Row(
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {
+                        controller.eliminarArchivo(archivo['nombre']);
+                      },
+                      icon: const Icon(Icons.close, color: Colors.red),
+                      label: Text(
+                        archivo['nombre'],
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
             );
           } else {
-            return Row(
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    controller.adjuntarDocumento();
-                  },
-                  icon: const Icon(Icons.attach_file, color: Colors.blue),
-                  label: const Text("Adjuntar Documento",
-                      style: TextStyle(color: Colors.blue)),
-                ),
-              ],
-            );
+            //TODO
+            return const Text("No hay archivos adjuntos");
           }
         }),
+        const SizedBox(height: 10),
+        TextButton.icon(
+          onPressed: () {
+            controller.adjuntarDocumentos();
+          },
+          icon: const Icon(Icons.attach_file, color: Colors.blue),
+          label: const Text("Adjuntar Documentos",
+              style: TextStyle(color: Colors.blue)),
+        ),
       ],
     );
   }
@@ -447,29 +453,13 @@ class NuevoPersonalPage extends StatelessWidget {
           onPressed: () async {
             bool success = false;
             String accion = isEditing ? 'actualizar' : 'registrar';
-            if (isEditing) {
-              success = await controller.gestionarPersona(
-                  accion: 'actualizar', context: context);
-            } else {
-              success = await controller.gestionarPersona(
-                  accion: 'registrar', context: context);
-            }
+
+            success = await controller.gestionarPersona(
+              accion: accion,
+              context: context,
+            );
             if (success) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content:
-                      Text("Operación de $accion completada exitosamente."),
-                  backgroundColor: Colors.green,
-                ),
-              );
               onCancel();
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("Error al intentar $accion la persona."),
-                  backgroundColor: Colors.red,
-                ),
-              );
             }
           },
           style: ElevatedButton.styleFrom(

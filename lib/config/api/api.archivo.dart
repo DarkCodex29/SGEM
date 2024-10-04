@@ -28,7 +28,7 @@ class ArchivoService {
     required String datos,
     required int inTipoArchivo,
     required int inOrigen,
-    re
+    required int inOrigenKey,
   }) async {
     final url = '$baseUrl/Archivo/RegistrarArchivo';
 
@@ -40,6 +40,7 @@ class ArchivoService {
       "Datos": datos,
       "InTipoArchivo": inTipoArchivo,
       "InOrigen": inOrigen,
+      "InOrigenKey": inOrigenKey,
     };
 
     try {
@@ -62,6 +63,38 @@ class ArchivoService {
       }
     } on DioException catch (e) {
       log('Error al registrar archivo. Datos: $requestBody, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<List<dynamic>>> obtenerArchivosPorOrigen({
+    required int idOrigen,
+    required int idOrigenKey,
+  }) async {
+    final url = '$baseUrl/Archivo/ObtenerArchivosPorOrigen';
+
+    try {
+      final response = await dio.get(
+        url,
+        queryParameters: {
+          'idOrigen': idOrigen,
+          'idOrigenKey': idOrigenKey,
+        },
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return ResponseHandler.handleSuccess<List<dynamic>>(response.data);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener archivos por origen',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al obtener archivos por origen. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

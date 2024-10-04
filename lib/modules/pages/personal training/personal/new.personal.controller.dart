@@ -7,9 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
-import 'package:sgem/shared/modules/archivo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
 class NewPersonalController extends GetxController {
@@ -73,10 +73,22 @@ class NewPersonalController extends GetxController {
   Future<void> buscarPersonalPorDni(String dni) async {
     try {
       isLoadingDni.value = true;
-      final response = await personalService.buscarPersonalPorDni(dni);
+      final responseListar = await personalService.listarPersonalEntrenamiento(
+        numeroDocumento: dni,
+      );
 
-      if (response.success && response.data != null) {
-        personalData = response.data;
+      if (responseListar.success &&
+          responseListar.data != null &&
+          responseListar.data!.isNotEmpty) {
+        _mostrarErroresValidacion(Get.context!,
+            ['La persona ya se encuentra registrada en el sistema.']);
+        return;
+      }
+
+      final responseBuscar = await personalService.buscarPersonalPorDni(dni);
+
+      if (responseBuscar.success && responseBuscar.data != null) {
+        personalData = responseBuscar.data;
         log('Personal encontrado: ${personalData!.toJson().toString()}');
         llenarControladores(personalData!);
       } else {
@@ -85,23 +97,12 @@ class NewPersonalController extends GetxController {
           backgroundColor: Colors.red,
         ));
         resetControllers();
-        log('Error al buscar el personal: ${response.message}');
+        log('Error al buscar el personal: ${responseBuscar.message}');
       }
     } catch (e) {
       log('Error inesperado al buscar el personal: $e');
     } finally {
       isLoadingDni.value = false;
-    }
-  }
-
-  Future<void> buscarPersonalPorId(String id) async {
-    try {
-      final personalJson = await personalService.buscarPersonalPorId(id);
-      personalData = Personal.fromJson(personalJson);
-
-      llenarControladores(personalData);
-    } catch (e) {
-      log('Error al buscar el personal: $e');
     }
   }
 
@@ -169,14 +170,9 @@ class NewPersonalController extends GetxController {
     required BuildContext context,
   }) async {
     log('Gestionando persona con la acción: $accion');
-/*
-    if (!validate(context)) {
-      log('Datos incompletos');
-      return false;
-    }
-*/
     try {
       isSaving.value = true;
+
       String _obtenerPrimerNombre(String nombres) {
         List<String> nombresSplit = nombres.split(' ');
         return nombresSplit.isNotEmpty ? nombresSplit.first : '';
@@ -261,22 +257,52 @@ class NewPersonalController extends GetxController {
 
   //Validaciones
   bool validate(BuildContext context) {
-    /*
-    if (dniController.text.isEmpty || dniController.text.length != 8) {
-      return false;
+    List<String> errores = [];
+
+    if (dniController.text.isEmpty ||
+        dniController.text.length != 11 ||
+        !RegExp(r'^\d+$').hasMatch(dniController.text)) {
+      errores.add('El DNI debe tener exactamente 11 caracteres numéricos.');
     }
+
     if (nombresController.text.isEmpty) {
-      return false;
+      errores.add('El campo de nombres no puede estar vacío.');
     }
     if (apellidoPaternoController.text.isEmpty) {
-      return false;
+      errores.add('El campo de apellido paterno no puede estar vacío.');
     }
     if (apellidoMaternoController.text.isEmpty) {
-      return false;
-    }*/
-    if (codigoLicenciaController.text.isEmpty) {
+      errores.add('El campo de apellido materno no puede estar vacío.');
+    }
+    DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
+    DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
+
+    if (fechaIngreso != null &&
+        fechaIngresoMina != null &&
+        fechaIngresoMina.isBefore(fechaIngreso)) {
+      errores.add(
+          'La fecha de ingreso a la mina debe ser igual o mayor que la fecha de ingreso a la empresa.');
+    }
+
+    if (codigoLicenciaController.text.isEmpty ||
+        codigoLicenciaController.text.length != 12) {
+      errores
+          .add('El código de licencia debe tener 12 caracteres alfanuméricos.');
+    }
+
+    if (selectedGuardiaKey.value == null) {
+      errores.add('Debe seleccionar una guardia.');
+    }
+    if (restriccionesController.text.length > 100) {
+      errores
+          .add('El campo de restricciones no debe exceder los 100 caracteres.');
+    }
+
+    if (errores.isNotEmpty) {
+      _mostrarErroresValidacion(context, errores);
       return false;
     }
+
     return true;
   }
 
@@ -408,6 +434,15 @@ class NewPersonalController extends GetxController {
       context: context,
       builder: (BuildContext context) {
         return const MensajeGuardadoWidget();
+      },
+    );
+  }
+
+  void _mostrarErroresValidacion(BuildContext context, List<String> errores) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MensajeValidacionWidget(errores: errores);
       },
     );
   }

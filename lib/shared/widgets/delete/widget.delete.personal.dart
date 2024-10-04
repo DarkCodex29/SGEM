@@ -74,18 +74,16 @@ class ConfirmDeleteWidget extends StatelessWidget {
                   ),
                   Align(
                     alignment: AlignmentDirectional.center,
-                    child: Flexible(
-                      child: Text(
-                        '¿Eliminar $entityType $itemName?',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: 'Calibri',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
+                    child: Text(
+                      '¿Eliminar $entityType $itemName?',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: 'Calibri',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
                     ),
                   ),
                   const SizedBox(height: 20),

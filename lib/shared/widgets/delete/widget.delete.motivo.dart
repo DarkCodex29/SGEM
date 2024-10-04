@@ -16,7 +16,7 @@ class DeleteReasonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: AlignmentDirectional(0, 0),
+      alignment: const AlignmentDirectional(0, 0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Container(
@@ -36,7 +36,7 @@ class DeleteReasonWidget extends StatelessWidget {
               Container(
                 width: double.infinity,
                 height: 80,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xFF051367),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(8),
@@ -49,7 +49,7 @@ class DeleteReasonWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Align(
-                        alignment: AlignmentDirectional(-1, 0),
+                        alignment: const AlignmentDirectional(-1, 0),
                         child: Text(
                           'Eliminar $entityType',
                           style: const TextStyle(

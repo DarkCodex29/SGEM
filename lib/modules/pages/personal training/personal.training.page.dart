@@ -49,13 +49,12 @@ class PersonalSearchPage extends StatelessWidget {
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(controller: controller);
-
           case PersonalSearchScreen.carnetPersonal:            
-            return PdfToImageScreen(data: controller.selectedPersonal.value, controller: controller,);
+            return PdfToImageScreen(data: controller.selectedPersonal.value, controller: controller);
           case PersonalSearchScreen.diplomaPersonal:
-            return const PdfToDiplomaScreen();
+            return PdfToDiplomaScreen(controller: controller,);
           case PersonalSearchScreen.certificadoPersonal:
-            return const PdfToCertificadoScreen();
+            return PdfToCertificadoScreen(controller: controller,);
         }
       }),
     );

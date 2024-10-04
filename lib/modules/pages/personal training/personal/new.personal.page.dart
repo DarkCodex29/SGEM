@@ -232,6 +232,7 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildDatosAdicionalesSection(BuildContext context) {
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(

@@ -81,7 +81,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
                 ),
                 pw.SizedBox(height: 10),
                 
-                pw.Text('Fecha de emision: ${fechaIngreso}',
+                pw.Text('Fecha de emision: $fechaIngreso',
                   style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.SizedBox(height: 10),

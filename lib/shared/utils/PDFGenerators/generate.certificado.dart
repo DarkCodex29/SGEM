@@ -1,12 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:sgem/shared/utils/Extensions/pdf.extensions.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
-Future<pw.Page> generateCertificado(BuildContext contexts) async {
+Future<pw.Page> generateCertificado() async {
   const horamodulo1 = 5;
   const horamodulo2 = 10;
   const totalHoras = horamodulo1 + horamodulo2;

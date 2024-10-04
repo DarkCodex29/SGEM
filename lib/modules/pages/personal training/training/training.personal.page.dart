@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
 
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/entrenamiento/widget.entrenamiento.nuevo.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
   
@@ -74,7 +76,7 @@ class TrainingPersonalPage extends StatelessWidget {
     TextEditingController controller =
         TextEditingController(text: initialValue);
     return SizedBox(
-      width: 180, // Ajuste para dar más espacio
+      width: 200, // Ajuste para dar más espacio
       child: CustomTextField(
         label: label,
         controller: controller,
@@ -96,17 +98,28 @@ class TrainingPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                enableDrag: false,
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () => FocusScope.of(context).unfocus(),
-                  );
-                },
-              );
+
+               await showModalBottomSheet(
+                 isScrollControlled: true,
+                 backgroundColor: Colors.transparent,
+                 enableDrag: false,
+                 context: Get.context!,
+                 builder: (context) {
+                   return GestureDetector(
+                     onTap: () => FocusScope.of(context).unfocus(),
+                     child: Padding(
+                       padding: MediaQuery.of(context).viewInsets,
+                     child: EntrenamientoNuevo(
+                       onCancel: () {
+                         Navigator.pop(context);
+                       },
+                     ),
+                     ),
+                   );
+                 },
+               );
+
+
             },
             icon: const Icon(
               Icons.add,

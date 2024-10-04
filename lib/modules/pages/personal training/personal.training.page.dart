@@ -599,7 +599,7 @@ class PersonalSearchPage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height: 200,
+            height: 500,
             child: SingleChildScrollView(
               child: Column(
                 children: rowsToShow.map((personal) {

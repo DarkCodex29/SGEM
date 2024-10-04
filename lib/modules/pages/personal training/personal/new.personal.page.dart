@@ -57,7 +57,7 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.estadoPersonal.value =
           personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
 
-      controller.obtenerArchivosRegistrados(1, personal.inPersonalOrigen);
+      controller.obtenerArchivosRegistrados(1, personal.key);
     }
   }
 
@@ -156,9 +156,19 @@ class NuevoPersonalPage extends StatelessWidget {
                   CustomTextField(
                     label: "DNI",
                     controller: controller.dniController,
-                    icon: _getSearchIcon(),
+                    icon: Obx(() {
+                      return controller.isLoadingDni.value
+                          ? const CircularProgressIndicator()
+                          : const Icon(Icons.search);
+                    }),
                     isReadOnly: isEditing || isViewing,
-                    onIconPressed: _searchPersonalByDNI,
+                    onIconPressed: () {
+                      if (!controller.isLoadingDni.value &&
+                          !isEditing &&
+                          !isViewing) {
+                        _searchPersonalByDNI();
+                      }
+                    },
                   ),
                   const SizedBox(height: 15),
                   CustomTextField(
@@ -278,7 +288,7 @@ class NuevoPersonalPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Fecha Ingreso a Mina",
                   controller: controller.fechaIngresoMinaController,
-                  icon: Icons.calendar_today,
+                  icon: const Icon(Icons.calendar_today),
                   isReadOnly: isViewing,
                   isRequired: !isViewing,
                   onIconPressed: () {
@@ -294,7 +304,7 @@ class NuevoPersonalPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Fecha de Revalidación",
                   controller: controller.fechaRevalidacionController,
-                  icon: Icons.calendar_today,
+                  icon: const Icon(Icons.calendar_today),
                   isReadOnly: true,
                   isRequired: false,
                 ),
@@ -377,7 +387,9 @@ class NuevoPersonalPage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Obx(() {
-          if (controller.archivosAdjuntos.isNotEmpty) {
+          if (controller.archivosAdjuntos.isEmpty) {
+            return const Text("No hay archivos adjuntos.");
+          } else {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: controller.archivosAdjuntos.map((archivo) {
@@ -397,9 +409,6 @@ class NuevoPersonalPage extends StatelessWidget {
                 );
               }).toList(),
             );
-          } else {
-            //TODO
-            return const Text("No hay archivos adjuntos");
           }
         }),
         const SizedBox(height: 10),
@@ -450,23 +459,31 @@ class NuevoPersonalPage extends StatelessWidget {
           child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
         ),
         ElevatedButton(
-          onPressed: () async {
-            bool success = false;
-            String accion = isEditing ? 'actualizar' : 'registrar';
+          onPressed: controller.isSaving.value
+              ? null
+              : () async {
+                  bool success = false;
+                  String accion = isEditing ? 'actualizar' : 'registrar';
 
-            success = await controller.gestionarPersona(
-              accion: accion,
-              context: context,
-            );
-            if (success) {
-              onCancel();
-            }
-          },
+                  success = await controller.gestionarPersona(
+                    accion: accion,
+                    context: context,
+                  );
+                  if (success) {
+                    onCancel();
+                  }
+                },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
           ),
-          child: const Text("Guardar", style: TextStyle(color: Colors.white)),
+          child: Obx(() {
+            return controller.isSaving.value
+                ? const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )
+                : const Text("Guardar", style: TextStyle(color: Colors.white));
+          }),
         ),
       ],
     );
@@ -474,9 +491,9 @@ class NuevoPersonalPage extends StatelessWidget {
 
   IconData? _getSearchIcon() {
     if (!isEditing && !isViewing) {
-      return Icons.search;
+      return null;
     }
-    return null;
+    return Icons.search;
   }
 
   void _searchPersonalByDNI() async {

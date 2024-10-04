@@ -6,7 +6,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final bool isPassword;
   final TextInputType keyboardType;
-  final IconData? icon;
+  final Widget? icon;
   final bool isRequired;
   final Function()? onIconPressed;
   final bool isReadOnly;
@@ -42,7 +42,7 @@ class CustomTextField extends StatelessWidget {
                 ),
                 suffixIcon: icon != null
                     ? IconButton(
-                        icon: Icon(icon, color: AppTheme.primaryColor),
+                        icon: icon!,
                         onPressed: onIconPressed,
                       )
                     : null,

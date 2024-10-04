@@ -49,6 +49,9 @@ class NewPersonalController extends GetxController {
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
   final ArchivoService archivoService = ArchivoService();
 
+  RxBool isLoadingDni = false.obs;
+  RxBool isSaving = false.obs;
+
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =
@@ -68,6 +71,7 @@ class NewPersonalController extends GetxController {
 
   Future<void> buscarPersonalPorDni(String dni) async {
     try {
+      isLoadingDni.value = true;
       final response = await personalService.buscarPersonalPorDni(dni);
 
       if (response.success && response.data != null) {
@@ -84,6 +88,8 @@ class NewPersonalController extends GetxController {
       }
     } catch (e) {
       log('Error inesperado al buscar el personal: $e');
+    } finally {
+      isLoadingDni.value = false;
     }
   }
 
@@ -169,6 +175,7 @@ class NewPersonalController extends GetxController {
     }
 */
     try {
+      isSaving.value = true;
       String _obtenerPrimerNombre(String nombres) {
         List<String> nombresSplit = nombres.split(' ');
         return nombresSplit.isNotEmpty ? nombresSplit.first : '';
@@ -225,6 +232,8 @@ class NewPersonalController extends GetxController {
     } catch (e) {
       log('Error al $accion persona: $e');
       return false;
+    } finally {
+      isSaving.value = false;
     }
   }
 
@@ -270,23 +279,6 @@ class NewPersonalController extends GetxController {
     return true;
   }
 
-/*
-  void adjuntarDocumento() async {
-    try {
-      final resultado = await seleccionarArchivo();
-
-      if (resultado != null) {
-        documentoAdjuntoNombre.value = resultado['nombre'];
-        documentoAdjuntoBytes.value = resultado['bytes'];
-        log('Documento adjuntado correctamente: ${documentoAdjuntoNombre.value}');
-      } else {
-        log('No se seleccionó ningún archivo');
-      }
-    } catch (e) {
-      log('Error al adjuntar documento: $e');
-    }
-  }
-*/
   Future<void> adjuntarDocumentos() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -316,29 +308,6 @@ class NewPersonalController extends GetxController {
       log('Error al adjuntar documentos: $e');
     }
   }
-
-/*
-  Future<Map<String, dynamic>?> seleccionarArchivo() async {
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
-      );
-
-      if (result != null && result.files.single.bytes != null) {
-        Uint8List fileBytes = result.files.single.bytes!;
-        String fileName = result.files.single.name;
-        return {
-          'nombre': fileName,
-          'bytes': fileBytes,
-        };
-      }
-    } catch (e) {
-      log('Error al seleccionar el archivo: $e');
-      return null;
-    }
-    return null;
-  }¨*/
 
   void eliminarArchivo(String nombreArchivo) {
     archivosAdjuntos
@@ -390,6 +359,7 @@ class NewPersonalController extends GetxController {
   }
 
   Future<void> obtenerArchivosRegistrados(int idOrigen, int idOrigenKey) async {
+    log('Obteniendo archivos registrados');
     log('idOrigen: $idOrigen, idOrigenKey: $idOrigenKey');
     try {
       final response = await archivoService.obtenerArchivosPorOrigen(

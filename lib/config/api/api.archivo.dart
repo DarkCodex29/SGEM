@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/archivo.dart';
 
 class ArchivoService {
   final String baseUrl =
@@ -84,7 +85,7 @@ class ArchivoService {
           followRedirects: false,
         ),
       );
-
+log(response.data.toString());
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<List<dynamic>>(response.data);
       } else {

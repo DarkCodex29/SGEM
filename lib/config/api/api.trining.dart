@@ -26,10 +26,10 @@ class TriningService {
   }
 
   Future<ResponseHandler<bool>> registerTraining(RegisterTraining registerTraining) async {
-    log('Registrando nuevo entrenamiento: ${jsonEncode(registerTraining.toJson())}');
+    print('Registrando nuevo entrenamiento: ${jsonEncode(registerTraining.toJson())}');
     final url = '$baseUrl/Entrenamiento/RegistrarEntrenamiento';
     try {
-      log('Registrando nuevo entrenamiento: ${jsonEncode(registerTraining.toJson())}');
+      print('Registrando nuevo entrenamiento: ${jsonEncode(registerTraining.toJson())}');
       final response = await dio.post(
         url,
         data: jsonEncode(registerTraining.toJson()),
@@ -37,7 +37,7 @@ class TriningService {
           followRedirects: false,
         ),
       );
-
+      print("RESPONSE..: $response");
       if (response.statusCode == 200 && response.data != null) {
         if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
           return ResponseHandler.handleSuccess<bool>(true);
@@ -54,7 +54,7 @@ class TriningService {
         );
       }
     } on DioException catch (e) {
-      log('Error al registrar entrenamiento. Datos: ${jsonEncode(registerTraining.toJson())}, Error: ${e.response?.data}');
+      print('Error al registrar entrenamiento. Datos: ${jsonEncode(registerTraining.toJson())}, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

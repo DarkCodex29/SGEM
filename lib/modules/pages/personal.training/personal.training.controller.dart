@@ -7,10 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
-import 'package:sgem/config/api/api.trining.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/modules/registrar.training.dart';
 
 enum PersonalSearchScreen {
   none,
@@ -52,8 +50,6 @@ class PersonalSearchController extends GetxController {
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();
-
-  final trainingService = TriningService();
   
   var isExpanded = true.obs;
   var screen = PersonalSearchScreen.none.obs;
@@ -76,21 +72,6 @@ class PersonalSearchController extends GetxController {
     super.onInit();
   }
 
-  Future<bool> registertraining(RegisterTraining register) async {
-    try{
-      final response = await trainingService.registerTraining(register);
-      if(response.success && response.data != null) {
-        return true;
-      } else {
-        log('Error al registrar entrenamiento: ${response.message}');
-        return false;
-      }
-    } catch (e) {
-      log('Error al registrar entrenamiento: $e');
-      return false;
-    }
-  }
-  
   Future<Uint8List?> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =

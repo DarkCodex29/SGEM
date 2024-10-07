@@ -7,8 +7,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
+import 'package:sgem/config/api/api.trining.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/modules/registrar.training.dart';
 
 class RegisterTrainingController extends GetxController {
 
@@ -19,6 +21,9 @@ class RegisterTrainingController extends GetxController {
   
   MaestroDetalle? equipoSelected;
 
+  final trainingService = TriningService();
+
+  var isLoading = false.obs;
   var documentoAdjuntoNombre = ''.obs;
   
   var documentoAdjuntoBytes = Rxn<Uint8List>();
@@ -32,10 +37,12 @@ class RegisterTrainingController extends GetxController {
   }
   
   void getEquipos() {
+    isLoading.value = true;
      repository.listarMaestroDetallePorMaestro(MaestroDetalleTypes.equipo.rawValue, (p0) {
       if (p0 != null) {
         equipoDetalle.assignAll(p0);
       }
+      isLoading.value = false;
     });
   }
 
@@ -63,7 +70,12 @@ class RegisterTrainingController extends GetxController {
   }
 
   DateTime transformDate(String date) {// Formato dd/MM/yyyy
-    DateTime dateTime = DateFormat("dd/MM/yyyy").parse(date);
+    DateTime dateTime = DateFormat("yyyy-MM-dd").parse(date);
+    return dateTime;
+  }
+
+  DateTime transformDateFormat(String date, String format) {// Formato dd/MM/yyyy
+    DateTime dateTime = DateFormat(format).parse(date);
     return dateTime;
   }
 
@@ -88,5 +100,23 @@ class RegisterTrainingController extends GetxController {
     }
     return null;
   }
+    
+  void registertraining(RegisterTraining register) async {
+    print('func: registertraining');
+    try{
+      isLoading.value = true;
+      final response = await trainingService.registerTraining(register);
+      isLoading.value = false;
+      if(response.success && response.data != null) {
+        print('Registrar entrenamiento exitoso: ${response.data}');
+      } else {
+        print('Error al registrar entrenamiento: ${response.message}');
+      }
+    } catch (e) {
+      isLoading.value = false;
+      print('CATCH: Error al registrar entrenamiento: $e');
+    }
+  }
+  
 
 }

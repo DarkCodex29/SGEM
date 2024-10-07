@@ -1,10 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/dialogs/registerTraining/RegisterTrainingController.dart';
-import 'package:sgem/modules/dialogs/registerTraining/custom.popup.newEntrenamiento.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
@@ -14,15 +11,15 @@ import 'package:sgem/shared/widgets/custom.textfield.dart';
 class RegisterTrainingDialog extends StatelessWidget {
 
   final Personal data;
-  RegisterTrainingDialog({Key? key, required this.data}) : super(key: key);
-
   final RegisterTrainingController controller = Get.put(RegisterTrainingController());
-    double paddingVertical = 60;
+  double paddingVertical = 60;
+
+  RegisterTrainingDialog({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      if (controller.equipoDetalle.isEmpty) {
+      if (controller.isLoading.value) {
         return const CircularProgressIndicator();
       } else {
       return Scaffold( 
@@ -78,12 +75,12 @@ class RegisterTrainingDialog extends StatelessWidget {
                 () =>{
                   
                 }, 
-                () => controller.personalSearchController.registertraining(RegisterTraining(
+                () => controller.registertraining(RegisterTraining(
                   inTipoActividad: 1, 
                   inPersona: data.inPersonalOrigen,
                   inEquipo: 0, 
                   inCondicion: 0, 
-                  fechaInicio: controller.transformDate(controller.fechaInicioEntrenamiento.text),
+                  fechaInicio: controller.transformDateFormat(controller.fechaInicioEntrenamiento.text, "yyyy-MM-dd"),
                   fechaTermino: controller.transformDate(controller.fechaTerminoEntrenamiento.text),
                 ),
                 )
@@ -185,7 +182,7 @@ Widget customTextFieldDate(String label, TextEditingController fechaIngresoMinaC
     child: CustomTextField(
       label: label,
       controller: fechaIngresoMinaController,
-      icon: Icons.calendar_today,
+      icon: const Icon(Icons.calendar_today) ,
       isReadOnly: isViewing,
       isRequired: !isViewing,
       onIconPressed: () {

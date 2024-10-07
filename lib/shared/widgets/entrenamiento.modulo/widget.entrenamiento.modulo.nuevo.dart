@@ -115,11 +115,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             label: "Responsable",
             controller: controller.responsableController,
             //controller: controller.dniController,
-            // icon: Obx(() {
-            //   return controller.isLoadingDni.value
-            //       ? const CircularProgressIndicator()
-            //       : const Icon(Icons.search);
-            // }),
+            icon: Obx(() {
+              return controller.isLoadingResponsable.value
+                  ? const CircularProgressIndicator()
+                  : const Icon(Icons.search);
+            }),
             // isReadOnly: isEditing || isViewing,
             // onIconPressed: () {
             //   if (!controller.isLoadingDni.value &&
@@ -222,9 +222,8 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller: controller.notaPracticaController,
             ),
             CustomTextField(
-              label: 'Fecha de termino:',
-              controller:
-                  controller.fechaTerminoController, //cambiar controller
+              label: 'Fecha de examen:',
+              controller: controller.fechaExamenController, //cambiar controller
               icon: const Icon(Icons.calendar_month),
               onIconPressed: () {
                 _selectDate(context,
@@ -283,7 +282,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   Widget _buildBotones(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10,20,10,10),
+      padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -300,7 +299,13 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              bool success = false;
+              success = await controller.registrarModulo(context);
+              if (success) {
+                onCancel();
+              }
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
@@ -310,7 +315,8 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                   ? const CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     )
-                  : const Text("Guardar", style: TextStyle(color: Colors.white));
+                  : const Text("Guardar",
+                      style: TextStyle(color: Colors.white));
             }),
           ),
         ],

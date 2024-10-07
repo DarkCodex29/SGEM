@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
-
+import 'package:sgem/modules/dialogs/registerTraining/RegisterTrainingDialog.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
@@ -96,17 +96,23 @@ class TrainingPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                enableDrag: false,
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () => FocusScope.of(context).unfocus(),
-                  );
-                },
-              );
+                await showModalBottomSheet(
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  enableDrag: false,
+                  context: context,
+                  builder: (context) {
+                    if (controller.selectedPersonal.value != null)  { 
+                    return GestureDetector(
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: Center(child: RegisterTrainingDialog(data: controller.selectedPersonal.value!)),
+                    );
+                    } else {
+                      return const Text("Null person");
+                    }
+                  },
+                );
+              
             },
             icon: const Icon(
               Icons.add,
@@ -123,6 +129,7 @@ class TrainingPersonalPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+
             ),
           ),
         ),

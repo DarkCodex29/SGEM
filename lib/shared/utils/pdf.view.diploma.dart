@@ -1,7 +1,7 @@
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.diploma.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 import 'dart:math';

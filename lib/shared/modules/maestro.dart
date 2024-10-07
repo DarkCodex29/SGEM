@@ -1,6 +1,6 @@
 class MaestroBasico {
   int key;
-  String nombre;
+  String? nombre;
 
   MaestroBasico({
     required this.key,
@@ -83,7 +83,23 @@ class MaestroCompleto {
     }
   }
 
+  static DateTime? parseDateNullable(String? dateString) {
+    if (dateString == null) {
+      return null;
+    } else {
+      return parseDate(dateString);
+    }
+  }
+
   static String toJsonDate(DateTime date) {
     return '/Date(${date.millisecondsSinceEpoch})/';
+  }
+
+  static String? toJsonDateNullable(DateTime? date) {
+    if (date == null) {
+      return null;
+    } else {
+      return toJsonDate(date);
+    }
   }
 }

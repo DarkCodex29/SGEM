@@ -162,8 +162,7 @@ class MaestroDetalleService {
     }
   }
 
-  Future<ResponseHandler<List<MaestroDetalle>>> listarMaestroDetallePorMaestro(
-      int maestroKey) async {
+  Future<ResponseHandler<List<MaestroDetalle>>> listarMaestroDetallePorMaestro(int maestroKey) async {
     final url =
         '$baseUrl/MaestroDetalle/ListarMaestroDetallePorMaestro?id=$maestroKey';
 
@@ -177,10 +176,8 @@ class MaestroDetalleService {
 
       if (response.statusCode == 200 && response.data != null) {
         List<MaestroDetalle> detalles = (response.data as List)
-            .map(
-                (json) => MaestroDetalle.fromJson(json as Map<String, dynamic>))
+            .map( (json) => MaestroDetalle.fromJson(json as Map<String, dynamic>))
             .toList();
-
         return ResponseHandler.handleSuccess<List<MaestroDetalle>>(detalles);
       } else {
         return ResponseHandler(

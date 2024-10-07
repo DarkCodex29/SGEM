@@ -3,12 +3,12 @@ import 'package:sgem/shared/modules/maestro.dart';
 class MaestroDetalle {
   int key;
   MaestroBasico maestro;
-  String valor;
+  String? valor;
   String? usuarioRegistro;
-  DateTime fechaRegistro;
+  DateTime? fechaRegistro;
   String? usuarioModifica;
   DateTime? fechaModifica;
-  String activo;
+  String? activo;
 
   MaestroDetalle({
     required this.key,
@@ -27,12 +27,12 @@ class MaestroDetalle {
       maestro: MaestroBasico.fromJson(json['Maestro']),
       valor: json['Valor'] ?? 'Desconocido',
       usuarioRegistro: json['UsuarioRegistro'] ?? 'Desconocido',
-      fechaRegistro: MaestroCompleto.parseDate(json['FechaRegistro']),
+      fechaRegistro: MaestroCompleto.parseDateNullable(json['FechaRegistro']),
       usuarioModifica: json['UsuarioModifica']?.isNotEmpty == true
           ? json['UsuarioModifica']
           : 'Desconocido',
       fechaModifica: json['FechaModifica'] != null
-          ? MaestroCompleto.parseDate(json['FechaModifica'])
+          ? MaestroCompleto.parseDate(json['FechaModifica'] ?? "")
           : null,
       activo: json['Activo'] ?? 'N',
     );
@@ -44,11 +44,9 @@ class MaestroDetalle {
       'Maestro': maestro.toJson(),
       'Valor': valor,
       'UsuarioRegistro': usuarioRegistro,
-      'FechaRegistro': MaestroCompleto.toJsonDate(fechaRegistro),
+      'FechaRegistro': MaestroCompleto.toJsonDateNullable(fechaRegistro),
       'UsuarioModifica': usuarioModifica,
-      'FechaModifica': fechaModifica != null
-          ? MaestroCompleto.toJsonDate(fechaModifica!)
-          : null,
+      'FechaModifica': MaestroCompleto.toJsonDateNullable(fechaModifica),
       'Activo': activo,
     };
   }

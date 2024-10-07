@@ -220,7 +220,10 @@ class NewPersonalController extends GetxController {
       if (response.success) {
         log('Acción $accion realizada exitosamente');
         await registrarArchivos(dniController.text);
-        _mostrarMensajeGuardado(context);
+        if (accion == 'registrar' || accion == 'actualizar') {
+          _mostrarMensajeGuardado(context);
+        }
+
         return true;
       } else {
         log('Acción $accion fallida: ${response.message}');

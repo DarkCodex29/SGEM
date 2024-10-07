@@ -56,7 +56,6 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
       controller.estadoPersonal.value =
           personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
-
       controller.obtenerArchivosRegistrados(1, personal.key);
     }
   }
@@ -314,6 +313,7 @@ class NuevoPersonalPage extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
+              const SizedBox(width: 10),
               Expanded(
                 child: _buildDropdownGuardia(),
               ),
@@ -401,7 +401,7 @@ class NuevoPersonalPage extends StatelessWidget {
                       },
                       icon: const Icon(Icons.close, color: Colors.red),
                       label: Text(
-                        archivo['Nombre']??'',
+                        archivo['nombre'] ?? '',
                         style: const TextStyle(color: Colors.red),
                       ),
                     ),

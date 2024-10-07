@@ -653,10 +653,7 @@ class PersonalSearchPage extends StatelessWidget {
                                           personal;
                                       String motivoEliminacion = '';
 
-                                      await showModalBottomSheet(
-                                        isScrollControlled: true,
-                                        backgroundColor: Colors.transparent,
-                                        enableDrag: false,
+                                      await showDialog(
                                         context: context,
                                         builder: (context) {
                                           return GestureDetector(
@@ -692,10 +689,10 @@ class PersonalSearchPage extends StatelessWidget {
                                             .selectedPersonal
                                             .value!
                                             .nombreCompleto;
-                                        await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          enableDrag: false,
+                                        await showDialog(
+                                          //isScrollControlled: true,
+                                          //backgroundColor: Colors.transparent,
+                                          //enableDrag: false,
                                           context: context,
                                           builder: (context) {
                                             return GestureDetector(
@@ -739,10 +736,10 @@ class PersonalSearchPage extends StatelessWidget {
                                           context: context,
                                         );
                                         if (success) {
-                                          await showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.transparent,
-                                            enableDrag: false,
+                                          await showDialog(
+                                            //isScrollControlled: true,
+                                            //backgroundColor: Colors.transparent,
+                                            //enableDrag: false,
                                             context: context,
                                             builder: (context) {
                                               return const SuccessDeleteWidget();

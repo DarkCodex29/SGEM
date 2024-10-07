@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
-
 class EntrenamientoNuevo extends StatelessWidget {
   final VoidCallback onCancel;
 

@@ -4,13 +4,13 @@ import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
 
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.dart';
 import 'package:sgem/shared/widgets/entrenamiento/widget.entrenamiento.nuevo.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
-  
-  PersonalSearchController controller;
+  final PersonalSearchController controller;
 
-  TrainingPersonalPage({required this.controller, super.key});
+  const TrainingPersonalPage({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,7 @@ class TrainingPersonalPage extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CircleAvatar(
               radius: 40,
@@ -98,28 +97,25 @@ class TrainingPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
-
-               await showModalBottomSheet(
-                 isScrollControlled: true,
-                 backgroundColor: Colors.transparent,
-                 enableDrag: false,
-                 context: Get.context!,
-                 builder: (context) {
-                   return GestureDetector(
-                     onTap: () => FocusScope.of(context).unfocus(),
-                     child: Padding(
-                       padding: MediaQuery.of(context).viewInsets,
-                     child: EntrenamientoNuevo(
-                       onCancel: () {
-                         Navigator.pop(context);
-                       },
-                     ),
-                     ),
-                   );
-                 },
-               );
-
-
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: Get.context!,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    child: Padding(
+                      padding: MediaQuery.of(context).viewInsets,
+                      child: EntrenamientoNuevo(
+                        onCancel: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
             },
             icon: const Icon(
               Icons.add,
@@ -263,8 +259,26 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle_outline,
                   color: AppTheme.primaryColor),
-              onPressed: () {
-                // Lógica de agregar más entrenamientos
+              onPressed:  () async {
+                await showModalBottomSheet(
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  enableDrag: false,
+                  context: Get.context!,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: EntrenamientoModuloNuevo(
+                          onCancel: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ],

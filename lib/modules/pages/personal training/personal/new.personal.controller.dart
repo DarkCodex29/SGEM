@@ -52,6 +52,7 @@ class NewPersonalController extends GetxController {
 
   RxBool isLoadingDni = false.obs;
   RxBool isSaving = false.obs;
+  List<String> errores = [];
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
@@ -169,7 +170,13 @@ class NewPersonalController extends GetxController {
     String? motivoEliminacion,
     required BuildContext context,
   }) async {
+    errores.clear();
     log('Gestionando persona con la acción: $accion');
+    bool esValido = validate(context);
+    if (!esValido) {
+      _mostrarErroresValidacion(context, errores);
+      return false;
+    }
     try {
       isSaving.value = true;
 
@@ -260,13 +267,12 @@ class NewPersonalController extends GetxController {
 
   //Validaciones
   bool validate(BuildContext context) {
-    List<String> errores = [];
-
+    /*
     if (dniController.text.isEmpty ||
         dniController.text.length != 11 ||
         !RegExp(r'^\d+$').hasMatch(dniController.text)) {
       errores.add('El DNI debe tener exactamente 11 caracteres numéricos.');
-    }
+    }*/
 
     if (nombresController.text.isEmpty) {
       errores.add('El campo de nombres no puede estar vacío.');
@@ -300,12 +306,9 @@ class NewPersonalController extends GetxController {
       errores
           .add('El campo de restricciones no debe exceder los 100 caracteres.');
     }
-
     if (errores.isNotEmpty) {
-      _mostrarErroresValidacion(context, errores);
       return false;
     }
-
     return true;
   }
 

@@ -60,7 +60,7 @@ class EntrenamientoNuevo extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(16.0),
+              const Padding(padding: EdgeInsets.all(16.0),
               child: Text('Nuevo'),)
             ],
           ),

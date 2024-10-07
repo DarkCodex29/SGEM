@@ -277,7 +277,7 @@ class NewPersonalController extends GetxController {
         dniController.text.length != 8 ||
         !RegExp(r'^\d+$').hasMatch(dniController.text)) {
       errores.add('Debe ingresar un DNI válido.');
-    }*/
+    }
 
     if (nombresController.text.isEmpty) {
       errores.add('El campo de nombres no puede estar vacío.');
@@ -287,7 +287,7 @@ class NewPersonalController extends GetxController {
     }
     if (apellidoMaternoController.text.isEmpty) {
       errores.add('El campo de apellido materno no puede estar vacío.');
-    }
+    }*/
     DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
     DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
 

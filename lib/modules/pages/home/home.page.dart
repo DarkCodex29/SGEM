@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.page.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.page.dart';
+import 'package:sgem/modules/dialogs/registerTraining/custom.popup.newEntrenamiento.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
 
 class HomePage extends StatefulWidget {

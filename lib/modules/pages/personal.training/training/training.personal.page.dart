@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
-
+import 'package:sgem/modules/dialogs/registerTraining/RegisterTrainingDialog.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.dart';
 import 'package:sgem/shared/widgets/entrenamiento/widget.entrenamiento.nuevo.dart';
@@ -97,25 +97,26 @@ class TrainingPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                enableDrag: false,
-                context: Get.context!,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () => FocusScope.of(context).unfocus(),
-                    child: Padding(
-                      padding: MediaQuery.of(context).viewInsets,
-                      child: EntrenamientoNuevo(
-                        onCancel: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  );
-                },
-              );
+                await showModalBottomSheet(
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  enableDrag: false,
+                  context: context,
+                  builder: (context) {
+                    if (controller.selectedPersonal.value != null)  { 
+                    return GestureDetector(
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: Center(child: RegisterTrainingDialog(data: controller.selectedPersonal.value!,  close: () {
+                        Navigator.pop(context);
+
+                      })),
+                    );
+                    } else {
+                      return const Text("Null person");
+                    }
+                  },
+                );
+              
             },
             icon: const Icon(
               Icons.add,
@@ -132,6 +133,7 @@ class TrainingPersonalPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
+
             ),
           ),
         ),

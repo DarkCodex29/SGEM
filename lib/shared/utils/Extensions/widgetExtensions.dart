@@ -6,6 +6,14 @@ extension WidgetExtension on Widget {
     return Container(
       padding: insets,
       child: this
-      );
+    );
+  }
+
+  Widget size(double? height, double? width) {
+    return Container(
+      height: height,
+      width: width,
+      child: this
+    );
   }
 }

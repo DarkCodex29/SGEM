@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sgem/modules/dialogs/registerTraining/RegisterTrainingController.dart';
+import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
@@ -9,14 +9,14 @@ import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
-class RegisterTrainingDialog extends StatelessWidget {
+class EntrenamientoNuevoModal extends StatelessWidget {
   final Personal data;
-  final RegisterTrainingController controller =
-      Get.put(RegisterTrainingController());
+  final EntrenamientoNuevoController controller =
+      Get.put(EntrenamientoNuevoController());
   final double paddingVertical = 60;
   final VoidCallback close;
 
-  RegisterTrainingDialog({super.key, required this.data, required this.close});
+  EntrenamientoNuevoModal({super.key, required this.data, required this.close});
 
   Widget content(BuildContext context) {
     return Column(
@@ -71,7 +71,7 @@ class RegisterTrainingDialog extends StatelessWidget {
               body: (controller.isLoading.value)
                   ? const Center(child: CircularProgressIndicator())
                   : content(context))
-          .size(400, null);
+          .size(400, 800);
     });
   }
 
@@ -142,7 +142,7 @@ class RegisterTrainingDialog extends StatelessWidget {
   }
 }
 
-Widget adjuntarDocumentoPDF(RegisterTrainingController controller) {
+Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
   return Obx(() {
     if (controller.documentoAdjuntoNombre.value.isNotEmpty) {
       return Row(

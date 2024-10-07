@@ -14,7 +14,7 @@ import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
-class RegisterTrainingController extends GetxController {
+class EntrenamientoNuevoController extends GetxController {
 
   TextEditingController fechaInicioEntrenamiento = TextEditingController();
   TextEditingController fechaTerminoEntrenamiento = TextEditingController();

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/dialogs/registerTraining/RegisterTrainingDialog.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.dart';
-import 'package:sgem/shared/widgets/entrenamiento/widget.entrenamiento.nuevo.dart';
+import '../../../dialogs/entrenamiento/entrenamiento.nuevo.modal.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
   final PersonalSearchController controller;
@@ -106,7 +105,7 @@ class TrainingPersonalPage extends StatelessWidget {
                     if (controller.selectedPersonal.value != null)  { 
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
-                      child: Center(child: RegisterTrainingDialog(data: controller.selectedPersonal.value!,  close: () {
+                      child: Center(child: EntrenamientoNuevoModal(data: controller.selectedPersonal.value!,  close: () {
                         Navigator.pop(context);
 
                       })),

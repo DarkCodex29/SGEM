@@ -78,7 +78,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                         children: [
                           CustomTextField(
                             label: "Responsable",
-                            controller: ,
+                            controller:controller.responsableController ,
                             //controller: controller.dniController,
                             // icon: Obx(() {
                             //   return controller.isLoadingDni.value

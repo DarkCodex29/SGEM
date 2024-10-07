@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/dialogs/registerTraining/RegisterTrainingController.dart';
+import 'package:sgem/modules/dialogs/registerTraining/custom.popup.newEntrenamiento.dart';
+import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
@@ -13,34 +16,24 @@ class RegisterTrainingDialog extends StatelessWidget {
   final Personal data;
   final RegisterTrainingController controller = Get.put(RegisterTrainingController());
   double paddingVertical = 60;
+  VoidCallback close;
 
-  RegisterTrainingDialog({super.key, required this.data});
+  RegisterTrainingDialog({super.key, required this.data, required this.close});
 
-  @override
-  Widget build(BuildContext context) {
-    return Obx(() {
-      if (controller.isLoading.value) {
-        return const CircularProgressIndicator();
-      } else {
-      return Scaffold( 
-        appBar: AppBar(title: const Text ("Nuevo Entrenamiento")),
-        body: 
-          Column(
+  Widget content(BuildContext context) {
+    return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Expanded( child: 
-                    CustomDropdown(
+                    CustomGenericDropdown<MaestroDetalle>(
                       hintText: "Equipo",
-                      options: controller.equipoDetalle
-                        .map((equipoDetalle) => (equipoDetalle.valor!)
-                        ).toList(),
+                      options: controller.equipoDetalle,
+                      
+                      selectedValue: controller.equipoSelectedBinding,
                       isSearchable: false,
                       isRequired: true,
-                      onChanged: (value) {
-                        //equipoSelected = value
-                      },
                     )
                   ),
                   SizedBox(width: paddingVertical),
@@ -53,14 +46,12 @@ class RegisterTrainingDialog extends StatelessWidget {
               Row(
                 children: [
                   Expanded( child: 
-                    CustomDropdown(
+                    CustomGenericDropdown<MaestroDetalle>(
                       hintText: "Condicion",
-                      options: const ["Experiencia", "Entrenamiento (Sin experiencia)"],
+                      options: controller.condicionDetalleList,
+                      selectedValue: controller.condicionSelectedBinding,
                       isSearchable: false,
                       isRequired: true,
-                      //selectedValue: "Activo",
-                      onChanged: (value) {
-                      },
                     )
                   ),
                   SizedBox(width: paddingVertical),
@@ -72,25 +63,48 @@ class RegisterTrainingDialog extends StatelessWidget {
               adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
               adjuntarDocumentoPDF(controller),
               customButtonsCancelAndAcept(
-                () =>{
-                  
-                }, 
-                () => controller.registertraining(RegisterTraining(
-                  inTipoActividad: 1, 
-                  inPersona: data.inPersonalOrigen,
-                  inEquipo: 0, 
-                  inCondicion: 0, 
-                  fechaInicio: controller.transformDateFormat(controller.fechaInicioEntrenamiento.text, "yyyy-MM-dd"),
-                  fechaTermino: controller.transformDate(controller.fechaTerminoEntrenamiento.text),
-                ),
-                )
-                )
+                () => 
+                  close()
+                , 
+                () =>  registertraining()
+              )
             ],
-          ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 30))
+          ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 30));
+        
+  }
+  @override
+  Widget build(BuildContext context) {
+
+    return Obx(() {
+      return Scaffold( 
+        appBar: AppBar(title: const Text ("Nuevo Entrenamiento")),
+        body: 
+           (controller.isLoading.value) ? 
+        const Center(child: CircularProgressIndicator())
+      : content(context)
+        
       ).size(400, null);
-      }
+    });
+  }
+
+  void registertraining() {
+    if (controller.equipoSelected.value != null && controller.condicionSelected.value != null) {
+      controller.registertraining(
+        RegisterTraining(
+          inTipoActividad: 1, 
+          inPersona: data.key,
+          inEquipo: controller.equipoSelected.value!.key, 
+          inCondicion: controller.condicionSelected.value!.key, 
+          fechaInicio: controller.transformDate(controller.fechaInicioEntrenamiento.text),
+          fechaTermino: controller.transformDate(controller.fechaTerminoEntrenamiento.text),
+        ), (isSucces) { 
+          if(isSucces != null) {
+            close();
+          } else {
+
+          }
+      });
     }
-    );
   }
 
   Widget adjuntarArchivoText() {

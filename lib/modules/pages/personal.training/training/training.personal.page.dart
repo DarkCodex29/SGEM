@@ -107,9 +107,13 @@ class TrainingPersonalPage extends StatelessWidget {
                     if (controller.selectedPersonal.value != null)  { 
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
-                      child: Center(child: RegisterTrainingDialog(data: controller.selectedPersonal.value!)),
+                      child: Center(child: RegisterTrainingDialog(data: controller.selectedPersonal.value!,  close: () {
+                        Navigator.pop(context);
+
+                      })),
                     );
                     } else {
+                      
                       return const Text("Null person");
                     }
                   },

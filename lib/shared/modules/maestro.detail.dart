@@ -1,6 +1,7 @@
 import 'package:sgem/shared/modules/maestro.dart';
+import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
-class MaestroDetalle {
+class MaestroDetalle implements DropdownElement {
   int key;
   MaestroBasico maestro;
   String? valor;
@@ -10,6 +11,14 @@ class MaestroDetalle {
   DateTime? fechaModifica;
   String? activo;
 
+   
+  @override
+  String get value => valor ?? "none";
+
+  @override
+  int get id => key ;
+
+  
   MaestroDetalle({
     required this.key,
     required this.maestro,
@@ -51,3 +60,5 @@ class MaestroDetalle {
     };
   }
 }
+
+

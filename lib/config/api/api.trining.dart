@@ -39,7 +39,7 @@ class TriningService {
       );
       print("RESPONSE..: $response");
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+        if (response.data) {
           return ResponseHandler.handleSuccess<bool>(true);
         } else {
           return ResponseHandler(

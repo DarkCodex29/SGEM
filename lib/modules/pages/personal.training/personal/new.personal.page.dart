@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
@@ -514,7 +514,7 @@ class NuevoPersonalPage extends StatelessWidget {
       List<MaestroDetalle> options = controllerPersonalSearch.guardiaOptions;
       return CustomDropdown(
         hintText: 'Selecciona Guardia',
-        options: options.map((option) => option.valor).toList(),
+        options: options.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
             ? options
                 .firstWhere((option) =>

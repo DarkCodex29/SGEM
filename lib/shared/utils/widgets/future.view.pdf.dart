@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
 

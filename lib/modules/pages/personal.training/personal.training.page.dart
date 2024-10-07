@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal%20training/personal/new.personal.controller.dart';
-import 'package:sgem/modules/pages/personal%20training/personal/new.personal.page.dart';
-import 'package:sgem/modules/pages/personal%20training/personal.training.controller.dart';
-import 'package:sgem/modules/pages/personal%20training/training/training.personal.page.dart';
+import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal/new.personal.page.dart';
+import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/training/training.personal.page.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/pdf.view.certificado.dart';
@@ -364,7 +364,7 @@ class PersonalSearchPage extends StatelessWidget {
       List<MaestroDetalle> options = controller.guardiaOptions;
       return CustomDropdown(
         hintText: 'Selecciona Guardia',
-        options: options.map((option) => option.valor).toList(),
+        options: options.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
             ? options
                 .firstWhere((option) =>
@@ -638,7 +638,7 @@ class PersonalSearchPage extends StatelessWidget {
                                     }),
                                     _buildIconButton(Icons.model_training_sharp,
                                         AppTheme.warningColor, () {
-                                      controller.showTraining();
+                                      controller.showTraining(personal);
                                     }),
                                   ]
                                 : [
@@ -783,7 +783,7 @@ class PersonalSearchPage extends StatelessWidget {
                                     }),
                                     _buildIconButton(Icons.model_training_sharp,
                                         AppTheme.warningColor, () {
-                                      controller.showTraining();
+                                      controller.showTraining(personal);
                                     }),
                                     _buildIconButton(Icons.credit_card_rounded,
                                         AppTheme.greenColor, () {

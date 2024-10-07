@@ -227,7 +227,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               icon: const Icon(Icons.calendar_month),
               onIconPressed: () {
                 _selectDate(context,
-                    controller.fechaTerminoController); //cambiar controller
+                    controller.fechaExamenController); //cambiar controller
               },
             ),
           ],

@@ -11,11 +11,11 @@ class MensajeValidacionWidget extends StatelessWidget {
       alignment: const AlignmentDirectional(0, 0),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
-        child: Material(  // Wrap Container with Material
-          elevation: 4,   // Optional: add elevation for a shadow effect
+        child: Material(
+          elevation: 4,
           borderRadius: BorderRadius.circular(12),
           child: Container(
-            width: 350,
+            width: 400,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
@@ -33,9 +33,18 @@ class MensajeValidacionWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         child: Image.asset(
                           'assets/images/alert.png',
-                          width: 80,
-                          height: 80,
+                          width: 40,
+                          height: 40,
                           fit: BoxFit.cover,
+                        ),
+                      ),
+                      const Text(
+                        'Errores de validación',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Calibri',
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       IconButton(
@@ -46,20 +55,11 @@ class MensajeValidacionWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Errores de validación',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'Calibri',
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+
                   const SizedBox(height: 10),
                   // Change to a SizedBox to avoid ListView error
                   SizedBox(
-                    height: 150, // Set a fixed height for the ListView
+                    height: 200, // Set a fixed height for the ListView
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: errores.length,

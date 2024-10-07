@@ -72,6 +72,11 @@ class NewPersonalController extends GetxController {
   }
 
   Future<void> buscarPersonalPorDni(String dni) async {
+    if (dni.isEmpty) {
+      _mostrarErroresValidacion(Get.context!, ['Ingrese un DNI válido.']);
+      resetControllers();
+      return;
+    }
     try {
       isLoadingDni.value = true;
       final responseListar = await personalService.listarPersonalEntrenamiento(
@@ -269,9 +274,9 @@ class NewPersonalController extends GetxController {
   bool validate(BuildContext context) {
     /*
     if (dniController.text.isEmpty ||
-        dniController.text.length != 11 ||
+        dniController.text.length != 8 ||
         !RegExp(r'^\d+$').hasMatch(dniController.text)) {
-      errores.add('El DNI debe tener exactamente 11 caracteres numéricos.');
+      errores.add('Debe ingresar un DNI válido.');
     }*/
 
     if (nombresController.text.isEmpty) {
@@ -286,17 +291,24 @@ class NewPersonalController extends GetxController {
     DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
     DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
 
-    if (fechaIngreso != null &&
-        fechaIngresoMina != null &&
-        fechaIngresoMina.isBefore(fechaIngreso)) {
-      errores.add(
-          'La fecha de ingreso a la mina debe ser igual o mayor que la fecha de ingreso a la empresa.');
+    if (fechaIngresoMina == null) {
+      errores.add('Debe seleccionar una fecha de ingreso a la mina.');
+    } else {
+      if (fechaIngresoMina.isBefore(DateTime.now())) {
+        errores.add(
+            'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
+      }
+
+      if (fechaIngreso != null && fechaIngresoMina.isBefore(fechaIngreso)) {
+        errores.add(
+            'La fecha de ingreso a la mina debe ser mayor que la fecha de ingreso a la empresa.');
+      }
     }
 
     if (codigoLicenciaController.text.isEmpty ||
-        codigoLicenciaController.text.length != 12) {
+        codigoLicenciaController.text.length != 9) {
       errores
-          .add('El código de licencia debe tener 12 caracteres alfanuméricos.');
+          .add('El código de licencia debe tener 9 caracteres alfanuméricos.');
     }
 
     if (selectedGuardiaKey.value == null) {

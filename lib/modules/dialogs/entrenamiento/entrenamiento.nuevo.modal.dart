@@ -13,7 +13,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final Personal data;
   final EntrenamientoNuevoController controller =
       Get.put(EntrenamientoNuevoController());
-  final double paddingVertical = 60;
+  final double paddingVertical = 20;
   final VoidCallback close;
 
   EntrenamientoNuevoModal({super.key, required this.data, required this.close});
@@ -34,8 +34,9 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             )),
             SizedBox(width: paddingVertical),
             Expanded(
-                child: customTextFieldDate("Fecha de inicio dd/mm/yyy",
-                    controller.fechaInicioEntrenamiento, true, false, context))
+              child: customTextFieldDate("Fecha de inicio dd/mm/yyy",
+                  controller.fechaInicioEntrenamiento, true, false, context),
+            )
           ],
         ).padding(
             EdgeInsets.only(left: paddingVertical, right: paddingVertical)),
@@ -60,7 +61,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         adjuntarDocumentoPDF(controller),
         customButtonsCancelAndAcept(() => close(), () => registertraining())
       ],
-    ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 30, right: 30));
+    ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10));
   }
 
   @override
@@ -69,7 +70,9 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       return Scaffold(
               appBar: AppBar(title: const Text("Nuevo Entrenamiento")),
               body: (controller.isLoading.value)
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
                   : content(context))
           .size(400, 800);
     });
@@ -89,10 +92,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             fechaTermino: controller
                 .transformDate(controller.fechaTerminoEntrenamiento.text),
           ), (isSucces) {
-        if (isSucces != null) {
-          close();
-        } else {}
-      });
+        close();
+            });
     }
   }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.controller.dart';
+import '../../../config/theme/app_theme.dart';
 import '../custom.textfield.dart';
 
 class EntrenamientoModuloNuevo extends StatelessWidget {
@@ -39,8 +41,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                   children: [
                     _buildPrimeraFila(),
                     _buildSegundaFila(context),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     _buildTerceraFila(context),
+                    _buildBotones(context)
                   ],
                 ),
               )
@@ -272,6 +277,43 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBotones(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10,20,10,10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton(
+            onPressed: () {
+              controller.resetControllers();
+              onCancel();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+              side: const BorderSide(color: Colors.grey),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            ),
+            child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            ),
+            child: Obx(() {
+              return controller.isSaving.value
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text("Guardar", style: TextStyle(color: Colors.white));
+            }),
+          ),
+        ],
       ),
     );
   }

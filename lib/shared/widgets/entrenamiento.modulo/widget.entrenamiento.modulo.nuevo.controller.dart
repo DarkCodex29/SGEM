@@ -11,4 +11,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController totalHorasModuloController = TextEditingController();
   TextEditingController horasAcumuladasController = TextEditingController();
   TextEditingController horasMinestarController = TextEditingController();
+
+  RxBool isSaving = false.obs;
+
+  void resetControllers(){
+
+  }
 }

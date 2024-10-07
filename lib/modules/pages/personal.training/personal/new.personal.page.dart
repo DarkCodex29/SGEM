@@ -402,7 +402,11 @@ class NuevoPersonalPage extends StatelessWidget {
                       icon: const Icon(Icons.close, color: Colors.red),
                       label: Text(
                         archivo['nombre'] ?? '',
-                        style: const TextStyle(color: Colors.red),
+                        style: TextStyle(
+                          color: archivo['nuevo'] == true
+                              ? Colors.red
+                              : Colors.green,
+                        ),
                       ),
                     ),
                   ],

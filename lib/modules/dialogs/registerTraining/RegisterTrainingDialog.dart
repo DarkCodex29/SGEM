@@ -219,7 +219,7 @@ Future<void> _selectDate(
     );
     if (picked != null) {
       controller.text = DateFormat('yyyy-MM-dd').format(picked);
-      //controller.text = picked.toString();
     }
+    
 }
   

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 
 class EntrenamientoNuevo extends StatelessWidget {
   final VoidCallback onCancel;
@@ -62,8 +61,10 @@ class EntrenamientoNuevo extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(16.0),
-              child: Text('Nuevo'),)
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Nuevo'),
+              )
             ],
           ),
         ),

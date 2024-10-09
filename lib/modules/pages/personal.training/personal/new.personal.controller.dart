@@ -304,13 +304,11 @@ class NewPersonalController extends GetxController {
             'La fecha de ingreso a la mina debe ser mayor que la fecha de ingreso a la empresa.');
       }
     }
-
     if (codigoLicenciaController.text.isEmpty ||
         codigoLicenciaController.text.length != 9) {
       errores
           .add('El código de licencia debe tener 9 caracteres alfanuméricos.');
     }
-
     if (selectedGuardiaKey.value == null) {
       errores.add('Debe seleccionar una guardia.');
     }

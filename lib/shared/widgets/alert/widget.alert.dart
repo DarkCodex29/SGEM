@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class MensajeValidacionWidget extends StatelessWidget {
   final List<String> errores;
-
   const MensajeValidacionWidget({super.key, required this.errores});
 
   @override
@@ -39,7 +38,7 @@ class MensajeValidacionWidget extends StatelessWidget {
                         ),
                       ),
                       const Text(
-                        'Errores de validación',
+                       "Errores de validación",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Calibri',

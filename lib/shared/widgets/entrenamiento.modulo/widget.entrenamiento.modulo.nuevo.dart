@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.controller.dart';
+import '../../../config/theme/app_theme.dart';
 import '../custom.textfield.dart';
 
 class EntrenamientoModuloNuevo extends StatelessWidget {
@@ -39,8 +41,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                   children: [
                     _buildPrimeraFila(),
                     _buildSegundaFila(context),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     _buildTerceraFila(context),
+                    _buildBotones(context)
                   ],
                 ),
               )
@@ -110,11 +115,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             label: "Responsable",
             controller: controller.responsableController,
             //controller: controller.dniController,
-            // icon: Obx(() {
-            //   return controller.isLoadingDni.value
-            //       ? const CircularProgressIndicator()
-            //       : const Icon(Icons.search);
-            // }),
+            icon: Obx(() {
+              return controller.isLoadingResponsable.value
+                  ? const CircularProgressIndicator()
+                  : const Icon(Icons.search);
+            }),
             // isReadOnly: isEditing || isViewing,
             // onIconPressed: () {
             //   if (!controller.isLoadingDni.value &&
@@ -217,13 +222,12 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller: controller.notaPracticaController,
             ),
             CustomTextField(
-              label: 'Fecha de termino:',
-              controller:
-                  controller.fechaTerminoController, //cambiar controller
+              label: 'Fecha de examen:',
+              controller: controller.fechaExamenController, //cambiar controller
               icon: const Icon(Icons.calendar_month),
               onIconPressed: () {
                 _selectDate(context,
-                    controller.fechaTerminoController); //cambiar controller
+                    controller.fechaExamenController); //cambiar controller
               },
             ),
           ],
@@ -272,6 +276,50 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBotones(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextButton(
+            onPressed: () {
+              controller.resetControllers();
+              onCancel();
+            },
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white,
+              side: const BorderSide(color: Colors.grey),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            ),
+            child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              bool success = false;
+              success = await controller.registrarModulo(context);
+              if (success) {
+                onCancel();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            ),
+            child: Obx(() {
+              return controller.isSaving.value
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text("Guardar",
+                      style: TextStyle(color: Colors.white));
+            }),
+          ),
+        ],
       ),
     );
   }

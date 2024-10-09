@@ -54,12 +54,17 @@ class TrainingPersonalPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildCustomTextField('Código', '2564'),
-                    const SizedBox(width: 32),
+                    _buildCustomTextField('Código',
+                        controller.selectedPersonal.value?.codigoMcp ?? ''),
                     _buildCustomTextField(
-                        'Nombres y Apellidos', 'Juan Alberto Casas Mayta'),
-                    const SizedBox(width: 32),
-                    _buildCustomTextField('Guardia', 'A'),
+                        'Nombres y Apellidos',
+                        '${controller.selectedPersonal.value?.primerNombre ?? ''} '
+                            '${controller.selectedPersonal.value?.apellidoPaterno ?? ''} '
+                            '${controller.selectedPersonal.value?.apellidoMaterno ?? ''}'),
+                    _buildCustomTextField(
+                        'Guardia',
+                        controller.selectedPersonal.value?.guardia.nombre ??
+                            ''),
                   ],
                 ),
               ],
@@ -96,26 +101,27 @@ class TrainingPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
-                await showModalBottomSheet(
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  enableDrag: false,
-                  context: context,
-                  builder: (context) {
-                    if (controller.selectedPersonal.value != null)  { 
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  if (controller.selectedPersonal.value != null) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
-                      child: Center(child: EntrenamientoNuevoModal(data: controller.selectedPersonal.value!,  close: () {
-                        Navigator.pop(context);
-
-                      })),
+                      child: Center(
+                          child: EntrenamientoNuevoModal(
+                              data: controller.selectedPersonal.value!,
+                              close: () {
+                                Navigator.pop(context);
+                              })),
                     );
-                    } else {
-                      return const Text("Null person");
-                    }
-                  },
-                );
-              
+                  } else {
+                    return const Text("Null person");
+                  }
+                },
+              );
             },
             icon: const Icon(
               Icons.add,
@@ -132,7 +138,6 @@ class TrainingPersonalPage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-
             ),
           ),
         ),
@@ -260,7 +265,7 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle_outline,
                   color: AppTheme.primaryColor),
-              onPressed:  () async {
+              onPressed: () async {
                 await showModalBottomSheet(
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,

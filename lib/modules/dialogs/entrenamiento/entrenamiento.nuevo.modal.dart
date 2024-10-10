@@ -57,8 +57,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           ],
         ).padding(
             EdgeInsets.only(left: paddingVertical, right: paddingVertical)),
-        adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
-        adjuntarDocumentoPDF(controller),
+        //adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
+        //adjuntarDocumentoPDF(controller),
         customButtonsCancelAndAcept(() => close(), () => registertraining())
       ],
     ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10));
@@ -93,7 +93,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
                 .transformDate(controller.fechaTerminoEntrenamiento.text),
           ), (isSucces) {
         close();
-            });
+      });
     }
   }
 

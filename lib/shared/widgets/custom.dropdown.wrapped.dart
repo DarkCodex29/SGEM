@@ -17,7 +17,7 @@ class _DropdownFieldState extends State<DropdownField> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Select an option',
         border: OutlineInputBorder(),
       ),

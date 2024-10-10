@@ -50,7 +50,7 @@ class PersonalSearchController extends GetxController {
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();
-  
+
   var isExpanded = true.obs;
   var screen = PersonalSearchScreen.none.obs;
 
@@ -71,7 +71,7 @@ class PersonalSearchController extends GetxController {
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
-  
+
   Future<Uint8List?> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =
@@ -90,6 +90,7 @@ class PersonalSearchController extends GetxController {
       return null;
     }
   }
+
   Future<void> cargarGuardiaOptions() async {
     try {
       var response =

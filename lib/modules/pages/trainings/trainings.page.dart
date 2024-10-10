@@ -279,6 +279,8 @@ class TrainingsPage extends StatelessWidget {
             height: 20,
           ),
           _buildSeccionResultadoTabla(controller),
+          const SizedBox(height: 20,),
+          _buildSeccionResultadoTablaPaginado(controller),
         ],
       ),
     );
@@ -461,7 +463,6 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  /*
   Widget _buildSeccionResultadoTablaPaginado(TrainingsController controller){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -488,23 +489,23 @@ class TrainingsPage extends StatelessWidget {
                 ))
                     .toList(),
                 onChanged: (value) {
-                  if (value != null) {
-                    controller.rowsPerPage.value = value;
-                    controller.currentPage.value = 1;
-                    controller.searchPersonal(
-                        pageNumber: controller.currentPage.value,
-                        pageSize: value);
-                  }
+                  // if (value != null) {
+                  //   controller.rowsPerPage.value = value;
+                  //   controller.currentPage.value = 1;
+                  //   controller.searchPersonal(
+                  //       pageNumber: controller.currentPage.value,
+                  //       pageSize: value);
+                  // }
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                  controller.currentPage.value--;
-                  controller.searchPersonal(
-                      pageNumber: controller.currentPage.value,
-                      pageSize: controller.rowsPerPage.value);
+                  // controller.currentPage.value--;
+                  // controller.searchPersonal(
+                  //     pageNumber: controller.currentPage.value,
+                  //     pageSize: controller.rowsPerPage.value);
                 }
                     : null,
               ),
@@ -515,10 +516,10 @@ class TrainingsPage extends StatelessWidget {
                 onPressed: controller.currentPage.value <
                     controller.totalPages.value
                     ? () {
-                  controller.currentPage.value++;
-                  controller.searchPersonal(
-                      pageNumber: controller.currentPage.value,
-                      pageSize: controller.rowsPerPage.value);
+                  // controller.currentPage.value++;
+                  // controller.searchPersonal(
+                  //     pageNumber: controller.currentPage.value,
+                  //     pageSize: controller.rowsPerPage.value);
                 }
                     : null,
               ),
@@ -528,5 +529,5 @@ class TrainingsPage extends StatelessWidget {
       ],
     );
   }
-     */
+
 }

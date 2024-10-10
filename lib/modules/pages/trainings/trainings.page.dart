@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class TrainingsPage extends StatelessWidget {
@@ -5,10 +6,25 @@ class TrainingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Contenido de Búsqueda de Capacitaciones'),
-      ),
+    return Scaffold(
+        body: _buildConsultaEntrenamiento(context)
+    );
+  }
+
+  Widget _buildConsultaEntrenamiento(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return const SingleChildScrollView(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 }

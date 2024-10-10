@@ -18,8 +18,11 @@ class TrainingPersonalPage extends StatelessWidget {
       Get.put(TrainingPersonalController());
   final VoidCallback onCancel;
 
-  TrainingPersonalPage(
-      {required this.onCancel, super.key, required this.controllerPersonal}) {
+  TrainingPersonalPage({
+    required this.controllerPersonal,
+    required this.onCancel,
+    super.key,
+  }) {
     controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
     controllerNewPersonal.loadPersonalPhoto(
         controllerPersonal.selectedPersonal.value!.inPersonalOrigen);
@@ -142,10 +145,7 @@ class TrainingPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                enableDrag: false,
+              await showDialog(
                 context: context,
                 builder: (context) {
                   if (controllerPersonal.selectedPersonal.value != null) {

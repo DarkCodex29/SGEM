@@ -1,5 +1,4 @@
 class RegisterTraining {
-  
   int key;
   int inTipoActividad;
   int inCapacitacion;

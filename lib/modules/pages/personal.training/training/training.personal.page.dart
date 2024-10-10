@@ -1,15 +1,29 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
+import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
+import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.dart';
 import '../../../dialogs/entrenamiento/entrenamiento.nuevo.modal.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
-  final PersonalSearchController controller;
+  final PersonalSearchController controllerPersonal;
+  final NewPersonalController controllerNewPersonal =
+      Get.put(NewPersonalController());
+  final TrainingPersonalController controller =
+      Get.put(TrainingPersonalController());
+  final VoidCallback onCancel;
 
-  const TrainingPersonalPage({required this.controller, super.key});
+  TrainingPersonalPage(
+      {required this.onCancel, super.key, required this.controllerPersonal}) {
+    controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
+    controllerNewPersonal.loadPersonalPhoto(
+        controllerPersonal.selectedPersonal.value!.inPersonalOrigen);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +37,8 @@ class TrainingPersonalPage extends StatelessWidget {
             _buildTrainingListHeaderWithButton(context),
             const SizedBox(height: 16),
             Expanded(child: _buildTrainingList(context)),
+            const SizedBox(height: 16),
+            _buildRegresarButton(context),
           ],
         ),
       ),
@@ -40,9 +56,32 @@ class TrainingPersonalPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(
-              radius: 40,
-              backgroundImage: AssetImage('assets/images/user_avatar.png')),
+          Obx(() {
+            if (controllerNewPersonal.personalPhoto.value != null &&
+                controllerNewPersonal.personalPhoto.value!.isNotEmpty) {
+              try {
+                return CircleAvatar(
+                  backgroundImage:
+                      MemoryImage(controllerNewPersonal.personalPhoto.value!),
+                  radius: 60,
+                  backgroundColor: Colors.grey,
+                );
+              } catch (e) {
+                log('Error al cargar la imagen: $e');
+                return const CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/user_avatar.png'),
+                  radius: 60,
+                  backgroundColor: Colors.grey,
+                );
+              }
+            } else {
+              return const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/user_avatar.png'),
+                radius: 60,
+                backgroundColor: Colors.grey,
+              );
+            }
+          }),
           const SizedBox(width: 24),
           Expanded(
             child: Column(
@@ -54,16 +93,19 @@ class TrainingPersonalPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildCustomTextField('Código',
-                        controller.selectedPersonal.value?.codigoMcp ?? ''),
+                    _buildCustomTextField(
+                        'Código',
+                        controllerPersonal.selectedPersonal.value?.codigoMcp ??
+                            ''),
                     _buildCustomTextField(
                         'Nombres y Apellidos',
-                        '${controller.selectedPersonal.value?.primerNombre ?? ''} '
-                            '${controller.selectedPersonal.value?.apellidoPaterno ?? ''} '
-                            '${controller.selectedPersonal.value?.apellidoMaterno ?? ''}'),
+                        '${controllerPersonal.selectedPersonal.value?.primerNombre ?? ''} '
+                            '${controllerPersonal.selectedPersonal.value?.apellidoPaterno ?? ''} '
+                            '${controllerPersonal.selectedPersonal.value?.apellidoMaterno ?? ''}'),
                     _buildCustomTextField(
                         'Guardia',
-                        controller.selectedPersonal.value?.guardia.nombre ??
+                        controllerPersonal
+                                .selectedPersonal.value?.guardia.nombre ??
                             ''),
                   ],
                 ),
@@ -79,7 +121,7 @@ class TrainingPersonalPage extends StatelessWidget {
     TextEditingController controller =
         TextEditingController(text: initialValue);
     return SizedBox(
-      width: 200, // Ajuste para dar más espacio
+      width: 200,
       child: CustomTextField(
         label: label,
         controller: controller,
@@ -88,7 +130,6 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 
-  // Colocamos el botón dentro del encabezado de entrenamientos
   Widget _buildTrainingListHeaderWithButton(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -107,12 +148,12 @@ class TrainingPersonalPage extends StatelessWidget {
                 enableDrag: false,
                 context: context,
                 builder: (context) {
-                  if (controller.selectedPersonal.value != null) {
+                  if (controllerPersonal.selectedPersonal.value != null) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
                       child: Center(
                           child: EntrenamientoNuevoModal(
-                              data: controller.selectedPersonal.value!,
+                              data: controllerPersonal.selectedPersonal.value!,
                               close: () {
                                 Navigator.pop(context);
                               })),
@@ -146,35 +187,24 @@ class TrainingPersonalPage extends StatelessWidget {
   }
 
   Widget _buildTrainingList(BuildContext context) {
-    final List<Map<String, String>> trainingData = [
-      {
-        'code': 'E00M',
-        'equipment': 'HEX390DL',
-        'status': 'Entrenando',
-        'startDate': '10-05-2024',
-        'endDate': '10-06-2024',
-        'hours': '100/200',
-        'condition': 'Experiencia',
-        'noteTheory': '85',
-        'notePractice': '80',
-        'module': 'Módulo IV',
-        'trainer': 'Juan Perez'
-      },
-    ];
+    return Obx(() {
+      if (controller.trainingList.isEmpty) {
+        return const Center(child: Text('No hay entrenamientos disponibles'));
+      }
 
-    return ListView.builder(
-      itemCount: trainingData.length,
-      itemBuilder: (context, index) {
-        final training = trainingData[index];
-        return _buildTrainingCard(training, context);
-      },
-    );
+      return ListView.builder(
+        itemCount: controller.trainingList.length,
+        itemBuilder: (context, index) {
+          final training = controller.trainingList[index];
+          return _buildTrainingCard(training, context);
+        },
+      );
+    });
   }
 
-  Widget _buildTrainingCard(
-      Map<String, String> training, BuildContext context) {
+  Widget _buildTrainingCard(Entrenamiento training, BuildContext context) {
     return Card(
-      color: const Color(0xFFF2F6FF), // Fondo azul claro
+      color: const Color(0xFFF2F6FF),
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -184,23 +214,24 @@ class TrainingPersonalPage extends StatelessWidget {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start, // Ajusta la alineación vertical
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCustomTextField(
-                        'Código de entrenamiento', training['code']!),
-                    _buildCustomTextField(
-                        'Estado de avance actual', training['module']!),
+                        'Código de entrenamiento', training.key.toString()),
+                    _buildCustomTextField('Estado de avance actual',
+                        training.inModulo.toString()),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildCustomTextField('Equipo', training['equipment']!),
-                    _buildCustomTextField('Entrenador', training['trainer']!),
+                    _buildCustomTextField(
+                        'Equipo', training.inEquipo.toString()),
+                    _buildCustomTextField(
+                        'Entrenador', training.inEntrenador.toString()),
                   ],
                 ),
                 Column(
@@ -211,16 +242,16 @@ class TrainingPersonalPage extends StatelessWidget {
                         const Icon(Icons.radio_button_checked,
                             color: Colors.orange),
                         const SizedBox(width: 4),
-                        _buildCustomTextField(
-                            'Estado entrenamiento', training['status']!),
+                        _buildCustomTextField('Estado entrenamiento',
+                            training.inEstado.toString()),
                       ],
                     ),
                     Row(
                       children: [
                         const Icon(Icons.radio_button_on, color: Colors.green),
                         const SizedBox(width: 4),
-                        _buildCustomTextField(
-                            'Horas de entrenamiento', training['hours']!),
+                        _buildCustomTextField('Horas de entrenamiento',
+                            '${training.inHorasAcumuladas}/${training.inTotalHoras}'),
                       ],
                     ),
                   ],
@@ -229,12 +260,13 @@ class TrainingPersonalPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCustomTextField('Fecha inicio / Fin',
-                        '${training['startDate']} / ${training['endDate']}'),
+                        '${training.fechaInicio} / ${training.fechaTermino}'),
                     _buildCustomTextField('Nota teórica / práctica',
-                        '${training['noteTheory']} / ${training['notePractice']}'),
+                        '${training.inNotaTeorica} / ${training.inNotaPractica}'),
                   ],
                 ),
-                _buildCustomTextField('Condición', training['condition']!),
+                _buildCustomTextField(
+                    'Condición', training.inCondicion.toString()),
                 _buildActionButtons(context),
               ],
             ),
@@ -294,14 +326,14 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.stars_sharp, color: AppTheme.primaryColor),
               onPressed: () {
-                controller.showDiploma();
+                controllerPersonal.showDiploma();
               },
             ),
             IconButton(
               icon: const Icon(Icons.file_copy_sharp,
                   color: AppTheme.primaryColor),
               onPressed: () {
-                controller.showCertificado();
+                controllerPersonal.showCertificado();
               },
             ),
           ],
@@ -310,16 +342,18 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 
-  void _showNewTrainingModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: const Text('Nuevo Entrenamiento Formulario'),
-        );
-      },
+  Widget _buildRegresarButton(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          onCancel();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+        ),
+        child: const Text("Regresar", style: TextStyle(color: Colors.white)),
+      ),
     );
   }
 }

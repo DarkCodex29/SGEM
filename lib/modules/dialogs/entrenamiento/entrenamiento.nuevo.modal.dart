@@ -6,6 +6,7 @@ import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controlle
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
+import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
@@ -17,12 +18,28 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final double paddingVertical = 20;
   final VoidCallback close;
   final bool isEdit;
+  final Entrenamiento? training;
 
   EntrenamientoNuevoModal(
       {super.key,
       required this.data,
       required this.close,
-      this.isEdit = false});
+      this.isEdit = false,
+      this.training}) {
+    if (isEdit && training != null) {
+      controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
+          (element) => element.key == training!.inEquipo,
+          orElse: () => controller.equipoDetalle.first);
+      controller.condicionSelected.value = controller.condicionDetalleList
+          .firstWhere((element) => element.key == training!.inCondicion,
+              orElse: () => controller.condicionDetalleList.first);
+      controller.fechaInicioEntrenamiento.text = DateFormat('yyyy-MM-dd')
+          .format(DateTime.parse(training!.fechaInicio.toString()));
+      controller.fechaTerminoEntrenamiento.text = DateFormat('yyyy-MM-dd')
+          .format(DateTime.parse(training!.fechaTermino.toString()));
+        
+    }
+  }
 
   Widget content(BuildContext context) {
     return Column(
@@ -120,7 +137,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         Text("Adjuntar archivo:"),
         SizedBox(width: 10),
         Text(
-          "(Archivo adjunto peso máx: 4MB)",
+          "(Archivo adjunto peso máx: 8MB)",
           style: TextStyle(color: Colors.grey),
         ),
       ],

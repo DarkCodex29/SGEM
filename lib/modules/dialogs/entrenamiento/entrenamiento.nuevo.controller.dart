@@ -37,6 +37,7 @@ class EntrenamientoNuevoController extends GetxController {
         activo: null)
   ];
 
+
   var equipoSelected = Rxn<MaestroDetalle?>();
   late final equipoSelectedBinding = Binding(get: () {
     return equipoSelected.value;

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
+import 'package:sgem/shared/modules/training.dart';
 
 class TrainingService {
   final String baseUrl =
@@ -76,6 +77,58 @@ class TrainingService {
       }
     } on DioException catch (e) {
       log('Error al listar entrenamientos para la persona con ID: $id. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<bool>> actualizarEntrenamiento(
+      RegisterTraining training) async {
+    final url = '$baseUrl/Entrenamiento/ActualizarEntrenamiento';
+    try {
+      log('Actualizando entrenamiento: ${jsonEncode(training.toJson())}');
+      final response = await dio.put(
+        url,
+        data: jsonEncode(training.toJson()),
+        options: Options(followRedirects: false),
+      );
+      log('RESPONSE PUT: $response');
+
+      if (response.statusCode == 200 && response.data != null) {
+        return ResponseHandler.handleSuccess<bool>(true);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al actualizar el entrenamiento',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al actualizar el entrenamiento. Datos: ${jsonEncode(training.toJson())}, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<bool>> eliminarEntrenamiento(
+      Entrenamiento training) async {
+    final url = '$baseUrl/Entrenamiento/EliminarEntrenamiento';
+    try {
+      log('Eliminando entrenamiento');
+      final response = await dio.delete(
+        url,
+        data: jsonEncode(training.toJson()),
+        options: Options(followRedirects: false),
+      );
+      log('RESPONSE DELETE: $response');
+
+      if (response.statusCode == 200 && response.data != null) {
+        return ResponseHandler.handleSuccess<bool>(true);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al eliminar el entrenamiento',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al eliminar el entrenamiento. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

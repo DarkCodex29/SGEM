@@ -291,12 +291,15 @@ class TrainingPersonalPage extends StatelessWidget {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
                       child: Center(
-                          child: EntrenamientoNuevoModal(
-                              data: controllerPersonal.selectedPersonal.value!,
-                              isEdit: true, // Indicamos que es edición
-                              close: () {
-                                Navigator.pop(context);
-                              })),
+                        child: EntrenamientoNuevoModal(
+                          data: controllerPersonal.selectedPersonal.value!,
+                          isEdit: true,
+                          close: () {
+                            Navigator.pop(context);
+                          },
+                          training: controller.trainingList[0],
+                        ),
+                      ),
                     );
                   },
                 );
@@ -304,8 +307,32 @@ class TrainingPersonalPage extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () {
-                // Lógica de eliminar
+              onPressed: () async {
+                bool confirmed = await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Eliminar entrenamiento'),
+                      content: const Text(
+                          '¿Estás seguro de que deseas eliminar este entrenamiento?'),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancelar'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Eliminar'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (confirmed) {
+                  await controller
+                      .eliminarEntrenamiento(controller.trainingList[0]);
+                }
               },
             ),
             IconButton(

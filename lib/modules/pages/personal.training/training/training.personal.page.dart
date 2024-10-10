@@ -284,8 +284,22 @@ class TrainingPersonalPage extends StatelessWidget {
           children: [
             IconButton(
               icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
-              onPressed: () {
-                // Lógica de editar
+              onPressed: () async {
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: Center(
+                          child: EntrenamientoNuevoModal(
+                              data: controllerPersonal.selectedPersonal.value!,
+                              isEdit: true, // Indicamos que es edición
+                              close: () {
+                                Navigator.pop(context);
+                              })),
+                    );
+                  },
+                );
               },
             ),
             IconButton(

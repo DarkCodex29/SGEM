@@ -8,6 +8,7 @@ import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/maestro.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
@@ -18,6 +19,8 @@ class EntrenamientoNuevoController extends GetxController {
   TextEditingController fechaTerminoEntrenamiento = TextEditingController();
   PersonalSearchController personalSearchController =
       PersonalSearchController();
+  TrainingPersonalController controllerPersonal =
+      Get.put(TrainingPersonalController());
   RxList<MaestroDetalle> equipoDetalle = <MaestroDetalle>[].obs;
   final List<MaestroDetalle> condicionDetalleList = [
     MaestroDetalle(
@@ -142,6 +145,7 @@ class EntrenamientoNuevoController extends GetxController {
       isLoading.value = false;
       if (response.success && response.data != null) {
         print('Registrar entrenamiento exitoso: ${response.data}');
+        controllerPersonal.fetchTrainings(register.inPersona);
         callback(true);
       } else {
         print('Error al registrar entrenamiento: ${response.message}');

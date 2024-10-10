@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
@@ -15,8 +16,13 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       Get.put(EntrenamientoNuevoController());
   final double paddingVertical = 20;
   final VoidCallback close;
+  final bool isEdit;
 
-  EntrenamientoNuevoModal({super.key, required this.data, required this.close});
+  EntrenamientoNuevoModal(
+      {super.key,
+      required this.data,
+      required this.close,
+      this.isEdit = false});
 
   Widget content(BuildContext context) {
     return Column(
@@ -57,6 +63,9 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           ],
         ).padding(
             EdgeInsets.only(left: paddingVertical, right: paddingVertical)),
+        if (isEdit)
+          adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
+        isEdit ? adjuntarDocumentoPDF(controller) : Container(),
         //adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
         //adjuntarDocumentoPDF(controller),
         customButtonsCancelAndAcept(() => close(), () => registertraining())
@@ -68,7 +77,12 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
-              appBar: AppBar(title: const Text("Nuevo Entrenamiento")),
+              appBar: AppBar(
+                title: isEdit
+                    ? const Text("Editar Entrenamiento")
+                    : const Text("Nuevo Entrenamiento"),
+                backgroundColor: AppTheme.primaryColor,
+              ),
               body: (controller.isLoading.value)
                   ? const Center(
                       child: CircularProgressIndicator(),
@@ -131,7 +145,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       ElevatedButton(
         onPressed: onSave,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
+          backgroundColor: AppTheme.primaryColor,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
         child: const Text(
@@ -167,9 +181,9 @@ Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
             onPressed: () {
               controller.adjuntarDocumento();
             },
-            icon: const Icon(Icons.attach_file, color: Colors.blue),
+            icon: const Icon(Icons.attach_file, color: Colors.grey),
             label: const Text("Adjuntar Documento",
-                style: TextStyle(color: Colors.blue)),
+                style: TextStyle(color: Colors.grey)),
           ),
         ],
       );

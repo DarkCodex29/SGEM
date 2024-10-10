@@ -48,7 +48,7 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.editPersonal:
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.trainingForm:
-            return TrainingPersonalPage(controller: controller);
+            return TrainingPersonalPage(controllerPersonal: controller, onCancel: () {  },);
           case PersonalSearchScreen.carnetPersonal:
             return PdfToImageScreen(
                 data: controller.selectedPersonal.value,

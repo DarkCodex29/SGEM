@@ -8,6 +8,12 @@ class TrainingsController extends GetxController{
   DateTime? fechaInicio;
   DateTime? fechaTermino;
   RxBool isExpanded = true.obs;
+  var entrenamientosResultado = [].obs;
+
+  var rowsPerPage = 10.obs;
+  var currentPage = 1.obs;
+  var totalPages = 1.obs;
+  var totalRecords = 0.obs;
 
   void clearFields() {
 

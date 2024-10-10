@@ -66,7 +66,7 @@ Future<Uint8List> loadImageSVG(BuildContext context, String path) async {
   final ByteData data = await SvgPicture.asset(
     'assets/images/$path',
     colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
-  ).bytesLoader.loadBytes(context);;
+  ).bytesLoader.loadBytes(context);
    
   return await data.buffer.asUint8List();
 }

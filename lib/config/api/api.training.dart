@@ -1,9 +1,5 @@
 import 'dart:convert';
-<<<<<<< HEAD:lib/config/api/api.training.dart
 import 'dart:developer';
-=======
-
->>>>>>> 8b900eac5ebef058a76da44f1467556d17d78eb0:lib/config/api/api.trining.dart
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';

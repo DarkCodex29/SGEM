@@ -18,7 +18,8 @@ enum PersonalSearchScreen {
   viewPersonal,
   carnetPersonal,
   diplomaPersonal,
-  certificadoPersonal
+  certificadoPersonal,
+  actualizacionMasiva
 }
 
 extension PersonalSearchScreenExtension on PersonalSearchScreen {
@@ -36,6 +37,8 @@ extension PersonalSearchScreenExtension on PersonalSearchScreen {
         return "Visualizar";
       case PersonalSearchScreen.carnetPersonal:
         return "Carnet del Personal";
+      case PersonalSearchScreen.actualizacionMasiva:
+        return "Actualizacion Masiva";
       default:
         return "Entrenamientos";
     }
@@ -334,6 +337,9 @@ class PersonalSearchController extends GetxController {
     screen.value = PersonalSearchScreen.trainingForm;
   }
 
+  void showActualizacionMasiva() {
+    screen.value = PersonalSearchScreen.actualizacionMasiva;
+  }
   void showCarnet(Personal personal) {
     selectedPersonal.value = personal;
     screen.value = PersonalSearchScreen.carnetPersonal;

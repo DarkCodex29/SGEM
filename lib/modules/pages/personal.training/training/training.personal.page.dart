@@ -7,6 +7,9 @@ import 'package:sgem/modules/pages/personal.training/personal/new.personal.contr
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.dart';
 import '../../../dialogs/entrenamiento/entrenamiento.nuevo.modal.dart';
 
@@ -308,30 +311,85 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () async {
-                bool confirmed = await showDialog(
+                String motivoEliminacion = '';
+
+                await showDialog(
                   context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Eliminar entrenamiento'),
-                      content: const Text(
-                          '¿Estás seguro de que deseas eliminar este entrenamiento?'),
-                      actions: <Widget>[
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('Cancelar'),
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: DeleteReasonWidget(
+                          entityType: 'entrenamiento',
+                          onCancel: () {
+                            Navigator.pop(context);
+                          },
+                          onConfirm: (motivo) {
+                            motivoEliminacion = motivo;
+                            Navigator.pop(context);
+                          },
                         ),
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text('Eliminar'),
-                        ),
-                      ],
+                      ),
                     );
                   },
                 );
 
-                if (confirmed) {
-                  await controller
-                      .eliminarEntrenamiento(controller.trainingList[0]);
+                if (motivoEliminacion.isEmpty) return;
+
+                bool confirmarEliminar = false;
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: () => FocusScope.of(context).unfocus(),
+                      child: Padding(
+                        padding: MediaQuery.of(context).viewInsets,
+                        child: ConfirmDeleteWidget(
+                          itemName: 'entrenamiento',
+                          entityType: '',
+                          onCancel: () {
+                            Navigator.pop(context);
+                          },
+                          onConfirm: () {
+                            confirmarEliminar = true;
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                );
+
+                if (!confirmarEliminar) return;
+                try {
+                  bool success = await controller.eliminarEntrenamiento(
+                    controller.trainingList[0],
+                  );
+
+                  if (success) {
+                    await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const SuccessDeleteWidget();
+                      },
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Error al eliminar el entrenamiento."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  log('Error eliminando el entrenamiento: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Error eliminando el entrenamiento: $e"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
             ),

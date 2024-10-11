@@ -22,18 +22,38 @@ class TrainingPersonalController extends GetxController {
     }
   }
 
-  Future<void> eliminarEntrenamiento(Entrenamiento training) async {
+  Future<bool> eliminarEntrenamiento(Entrenamiento training) async {
     try {
       final response = await trainingService.eliminarEntrenamiento(training);
       if (response.success) {
         trainingList.remove(training);
-        Get.snackbar('Éxito', 'Entrenamiento eliminado correctamente',
-            snackPosition: SnackPosition.BOTTOM, colorText: Colors.black);
+        Get.snackbar(
+          'Éxito',
+          'Entrenamiento eliminado correctamente',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        return true; // Operación exitosa
       } else {
-        Get.snackbar('Error', 'No se pudo eliminar el entrenamiento');
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el entrenamiento',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return false;
       }
     } catch (e) {
-      Get.snackbar('Error', 'Ocurrió un problema al eliminar el entrenamiento');
+      Get.snackbar(
+        'Error',
+        'Ocurrió un problema al eliminar el entrenamiento',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
     }
   }
 }

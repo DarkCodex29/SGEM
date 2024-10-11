@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/personal.training/actualizacion.masiva/personal.actualizacion.masiva.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
@@ -47,6 +48,8 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.viewPersonal:
           case PersonalSearchScreen.editPersonal:
             return _buildNewPersonalForm(controller);
+          case PersonalSearchScreen.actualizacionMasiva:
+            return const PersonalActualizacionMasivaPage();
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(
               controllerPersonal: controller,
@@ -501,6 +504,7 @@ class PersonalSearchPage extends StatelessWidget {
       ElevatedButton.icon(
         onPressed: () {
           // Acción para actualización masiva
+          controller.showActualizacionMasiva();
         },
         icon: const Icon(
           Icons.refresh,

@@ -103,11 +103,13 @@ class TrainingPersonalPage extends StatelessWidget {
                         'Código',
                         controllerPersonal.selectedPersonal.value?.codigoMcp ??
                             ''),
+                    SizedBox(width: 20,),
                     _buildCustomTextField(
                         'Nombres y Apellidos',
                         '${controllerPersonal.selectedPersonal.value?.primerNombre ?? ''} '
                             '${controllerPersonal.selectedPersonal.value?.apellidoPaterno ?? ''} '
                             '${controllerPersonal.selectedPersonal.value?.apellidoMaterno ?? ''}'),
+                    SizedBox(width: 20,),
                     _buildCustomTextField(
                         'Guardia',
                         controllerPersonal
@@ -456,3 +458,4 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 }
+

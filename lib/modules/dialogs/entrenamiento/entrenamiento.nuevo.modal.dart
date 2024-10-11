@@ -37,7 +37,6 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           .format(DateTime.parse(training!.fechaInicio.toString()));
       controller.fechaTerminoEntrenamiento.text = DateFormat('yyyy-MM-dd')
           .format(DateTime.parse(training!.fechaTermino.toString()));
-        
     }
   }
 
@@ -62,7 +61,11 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             )
           ],
         ).padding(
-            EdgeInsets.only(left: paddingVertical, right: paddingVertical)),
+          EdgeInsets.only(
+            left: paddingVertical,
+            right: paddingVertical,
+          ),
+        ),
         Row(
           children: [
             Expanded(

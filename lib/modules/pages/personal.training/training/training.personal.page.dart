@@ -398,3 +398,4 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 }
+

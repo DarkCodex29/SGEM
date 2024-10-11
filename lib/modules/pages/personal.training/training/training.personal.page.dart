@@ -126,7 +126,7 @@ class TrainingPersonalPage extends StatelessWidget {
     TextEditingController controller =
         TextEditingController(text: initialValue);
     return SizedBox(
-      width: 300,
+      width: 200,
       child: CustomTextField(
         label: label,
         controller: controller,

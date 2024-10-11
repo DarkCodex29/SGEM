@@ -20,13 +20,14 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final bool isEdit;
   final Entrenamiento? training;
 
-  EntrenamientoNuevoModal(
-      {super.key,
-      required this.data,
-      required this.close,
-      this.isEdit = false,
-      this.training}) {
-    if (isEdit && training != null) {
+  EntrenamientoNuevoModal({
+    super.key,
+    required this.data,
+    required this.close,
+    this.isEdit = false,
+    this.training,
+  }) {
+    if (isEdit && training != null && controller.equipoDetalle.isNotEmpty) {
       controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
           (element) => element.key == training!.inEquipo,
           orElse: () => controller.equipoDetalle.first);

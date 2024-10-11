@@ -37,7 +37,6 @@ class EntrenamientoNuevoController extends GetxController {
         activo: null)
   ];
 
-
   var equipoSelected = Rxn<MaestroDetalle?>();
   late final equipoSelectedBinding = Binding(get: () {
     return equipoSelected.value;
@@ -74,7 +73,7 @@ class EntrenamientoNuevoController extends GetxController {
     repository.listarMaestroDetallePorMaestro(
         MaestroDetalleTypes.equipo.rawValue, (p0) {
       if (p0 != null) {
-        log("equipos: $p0");
+        log("equipos: ${p0.toString()}");
         equipoDetalle.assignAll(p0);
       }
       isLoading.value = false;

@@ -103,13 +103,17 @@ class TrainingPersonalPage extends StatelessWidget {
                         'Código',
                         controllerPersonal.selectedPersonal.value?.codigoMcp ??
                             ''),
-                    SizedBox(width: 20,),
+                    SizedBox(
+                      width: 20,
+                    ),
                     _buildCustomTextField(
                         'Nombres y Apellidos',
                         '${controllerPersonal.selectedPersonal.value?.primerNombre ?? ''} '
                             '${controllerPersonal.selectedPersonal.value?.apellidoPaterno ?? ''} '
                             '${controllerPersonal.selectedPersonal.value?.apellidoMaterno ?? ''}'),
-                    SizedBox(width: 20,),
+                    SizedBox(
+                      width: 20,
+                    ),
                     _buildCustomTextField(
                         'Guardia',
                         controllerPersonal
@@ -272,7 +276,7 @@ class TrainingPersonalPage extends StatelessWidget {
                 ),
                 _buildCustomTextField(
                     'Condición', training.inCondicion.toString()),
-                _buildActionButtons(context),
+                _buildActionButtons(context, training),
               ],
             ),
           ],
@@ -281,7 +285,7 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(BuildContext context, Entrenamiento training) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -302,7 +306,7 @@ class TrainingPersonalPage extends StatelessWidget {
                           close: () {
                             Navigator.pop(context);
                           },
-                          training: controller.trainingList[0],
+                          training: training,
                         ),
                       ),
                     );
@@ -365,9 +369,8 @@ class TrainingPersonalPage extends StatelessWidget {
 
                 if (!confirmarEliminar) return;
                 try {
-                  bool success = await controller.eliminarEntrenamiento(
-                    controller.trainingList[0],
-                  );
+                  bool success =
+                      await controller.eliminarEntrenamiento(training);
 
                   if (success) {
                     await showDialog(
@@ -458,4 +461,3 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 }
-

@@ -56,4 +56,6 @@ class TrainingPersonalController extends GetxController {
       return false;
     }
   }
+
+  
 }

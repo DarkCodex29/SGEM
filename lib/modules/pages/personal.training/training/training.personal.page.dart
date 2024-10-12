@@ -303,10 +303,10 @@ class TrainingPersonalPage extends StatelessWidget {
                         child: EntrenamientoNuevoModal(
                           data: controllerPersonal.selectedPersonal.value!,
                           isEdit: true,
+                          training: training,
                           close: () {
                             Navigator.pop(context);
                           },
-                          training: training,
                         ),
                       ),
                     );

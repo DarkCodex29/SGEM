@@ -31,9 +31,10 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
           (element) => element.key == training!.inEquipo,
           orElse: () => controller.equipoDetalle.first);
-      controller.condicionSelected.value = controller.condicionDetalleList
+      controller.condicionSelected.value = controller.condicionDetalle
           .firstWhere((element) => element.key == training!.inCondicion,
-              orElse: () => controller.condicionDetalleList.first);
+              orElse: () => controller.condicionDetalle.first);
+
       controller.fechaInicioEntrenamiento.text = DateFormat('yyyy-MM-dd')
           .format(DateTime.parse(training!.fechaInicio.toString()));
       controller.fechaTerminoEntrenamiento.text = DateFormat('yyyy-MM-dd')
@@ -72,7 +73,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             Expanded(
                 child: CustomGenericDropdown<MaestroDetalle>(
               hintText: "Condicion",
-              options: controller.condicionDetalleList,
+              options: controller.condicionDetalle,
               selectedValue: controller.condicionSelectedBinding,
               isSearchable: false,
               isRequired: true,

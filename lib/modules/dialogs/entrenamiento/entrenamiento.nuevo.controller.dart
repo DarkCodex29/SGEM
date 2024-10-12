@@ -9,7 +9,6 @@ import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
-import 'package:sgem/shared/modules/maestro.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/registrar.training.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
@@ -22,20 +21,7 @@ class EntrenamientoNuevoController extends GetxController {
   TrainingPersonalController controllerPersonal =
       Get.put(TrainingPersonalController());
   RxList<MaestroDetalle> equipoDetalle = <MaestroDetalle>[].obs;
-  final List<MaestroDetalle> condicionDetalleList = [
-    MaestroDetalle(
-        key: 0,
-        maestro: MaestroBasico(key: 1, nombre: ""),
-        valor: "Experiencia",
-        fechaRegistro: null,
-        activo: null),
-    MaestroDetalle(
-        key: 1,
-        maestro: MaestroBasico(key: 0, nombre: ""),
-        valor: "Entrenamiento (Sin experiencia)",
-        fechaRegistro: null,
-        activo: null)
-  ];
+  RxList<MaestroDetalle> condicionDetalle = <MaestroDetalle>[].obs;
 
   var equipoSelected = Rxn<MaestroDetalle?>();
   late final equipoSelectedBinding = Binding(get: () {
@@ -64,19 +50,34 @@ class EntrenamientoNuevoController extends GetxController {
 
   @override
   void onInit() {
-    getEquipos();
+    getEquiposAndConditions();
     super.onInit();
   }
 
-  void getEquipos() {
+  void getEquiposAndConditions() {
     isLoading.value = true;
+    getEquipos();
+    getCondiciones();
+    isLoading.value = false;
+  }
+
+  void getEquipos() {
     repository.listarMaestroDetallePorMaestro(
         MaestroDetalleTypes.equipo.rawValue, (p0) {
       if (p0 != null) {
         log("equipos: ${p0.toString()}");
         equipoDetalle.assignAll(p0);
       }
-      isLoading.value = false;
+    });
+  }
+
+  void getCondiciones() {
+    repository.listarMaestroDetallePorMaestro(
+        MaestroDetalleTypes.condition.rawValue, (p0) {
+      if (p0 != null) {
+        log("condiciones: ${p0.toString()}");
+        condicionDetalle.assignAll(p0);
+      }
     });
   }
 

@@ -22,6 +22,44 @@ class TrainingPersonalController extends GetxController {
     }
   }
 
+  Future<bool> actualizarEntrenamiento(Entrenamiento training) async {
+    try {
+      final response = await trainingService.actualizarEntrenamiento(training);
+      if (response.success) {
+        int index = trainingList.indexWhere((t) => t.key == training.key);
+        if (index != -1) {
+          trainingList[index] = training;
+        }
+        Get.snackbar(
+          'Éxito',
+          'Entrenamiento actualizado correctamente',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        return true;
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo actualizar el entrenamiento',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return false;
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Ocurrió un problema al actualizar el entrenamiento',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+  }
+
   Future<bool> eliminarEntrenamiento(Entrenamiento training) async {
     try {
       final response = await trainingService.eliminarEntrenamiento(training);
@@ -56,6 +94,4 @@ class TrainingPersonalController extends GetxController {
       return false;
     }
   }
-
-  
 }

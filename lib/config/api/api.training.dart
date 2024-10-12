@@ -82,7 +82,7 @@ class TrainingService {
   }
 
   Future<ResponseHandler<bool>> actualizarEntrenamiento(
-      RegisterTraining training) async {
+      Entrenamiento training) async {
     final url = '$baseUrl/Entrenamiento/ActualizarEntrenamiento';
     try {
       log('Actualizando entrenamiento: ${jsonEncode(training.toJson())}');

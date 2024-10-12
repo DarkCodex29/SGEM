@@ -294,7 +294,7 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
               onPressed: () async {
-                await showDialog(
+                final Entrenamiento? updatedTraining = await showDialog(
                   context: context,
                   builder: (context) {
                     return GestureDetector(
@@ -312,6 +312,20 @@ class TrainingPersonalPage extends StatelessWidget {
                     );
                   },
                 );
+
+                if (updatedTraining != null) {
+                  bool success =
+                      await controller.actualizarEntrenamiento(updatedTraining);
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text("Entrenamiento actualizado correctamente"),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+                }
               },
             ),
             IconButton(

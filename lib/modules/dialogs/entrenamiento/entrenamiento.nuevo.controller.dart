@@ -10,7 +10,7 @@ import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/registrar.training.dart';
+import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
 class EntrenamientoNuevoController extends GetxController {
@@ -50,35 +50,54 @@ class EntrenamientoNuevoController extends GetxController {
 
   @override
   void onInit() {
-    getEquiposAndConditions();
     super.onInit();
+    getEquiposAndConditions();
   }
 
-  void getEquiposAndConditions() {
-    isLoading.value = true;
-    getEquipos();
-    getCondiciones();
-    isLoading.value = false;
+  Future<void> getEquiposAndConditions() async {
+    try {
+      isLoading.value = true;
+
+      await Future.wait([getEquipos(), getCondiciones()]);
+      log('Datos de equipos y condiciones cargados correctamente');
+    } catch (e) {
+      log('Error al cargar equipos o condiciones: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  void getEquipos() {
-    repository.listarMaestroDetallePorMaestro(
-        MaestroDetalleTypes.equipo.rawValue, (p0) {
-      if (p0 != null) {
-        log("equipos: ${p0.toString()}");
-        equipoDetalle.assignAll(p0);
+  Future<void> getEquipos() async {
+    try {
+      final List<MaestroDetalle>? equipos = await repository
+          .listarMaestroDetallePorMaestro(MaestroDetalleTypes.equipo.rawValue);
+
+      if (equipos != null) {
+        log("Equipos cargados: ${equipos.toString()}");
+        equipoDetalle.assignAll(equipos);
+      } else {
+        log("No se cargaron equipos");
       }
-    });
+    } catch (e) {
+      log('Error al cargar equipos: $e');
+    }
   }
 
-  void getCondiciones() {
-    repository.listarMaestroDetallePorMaestro(
-        MaestroDetalleTypes.condition.rawValue, (p0) {
-      if (p0 != null) {
-        log("condiciones: ${p0.toString()}");
-        condicionDetalle.assignAll(p0);
+  Future<void> getCondiciones() async {
+    try {
+      final List<MaestroDetalle>? condiciones =
+          await repository.listarMaestroDetallePorMaestro(
+              MaestroDetalleTypes.condition.rawValue);
+
+      if (condiciones != null) {
+        log("Condiciones cargadas: ${condiciones.toString()}");
+        condicionDetalle.assignAll(condiciones);
+      } else {
+        log("No se cargaron condiciones");
       }
-    });
+    } catch (e) {
+      log('Error al cargar condiciones: $e');
+    }
   }
 
   void eliminarDocumento() {
@@ -137,13 +156,10 @@ class EntrenamientoNuevoController extends GetxController {
     return null;
   }
 
-  void registertraining(
-      RegisterTraining register, Function(bool) callback) async {
-    print('func: registertraining');
+  void registertraining(Entrenamiento register, Function(bool) callback) async {
     try {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);
-      isLoading.value = false;
       if (response.success && response.data != null) {
         print('Registrar entrenamiento exitoso: ${response.data}');
         controllerPersonal.fetchTrainings(register.inPersona);
@@ -153,9 +169,10 @@ class EntrenamientoNuevoController extends GetxController {
         callback(false);
       }
     } catch (e) {
-      isLoading.value = false;
-      callback(false);
       print('CATCH: Error al registrar entrenamiento: $e');
+      callback(false);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

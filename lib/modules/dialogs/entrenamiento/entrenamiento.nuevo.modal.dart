@@ -5,7 +5,6 @@ import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/modules/registrar.training.dart';
 import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
@@ -58,7 +57,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             )),
             SizedBox(width: paddingVertical),
             Expanded(
-              child: customTextFieldDate("Fecha de inicio dd/mm/yyy",
+              child: customTextFieldDate("Fecha de inicio dd/MM/yyyy",
                   controller.fechaInicioEntrenamiento, true, false, context),
             )
           ],
@@ -80,7 +79,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             )),
             SizedBox(width: paddingVertical),
             Expanded(
-                child: customTextFieldDate("Fecha de termino dd/mm/yyy",
+                child: customTextFieldDate("Fecha de termino dd/MM/yyyy",
                     controller.fechaTerminoEntrenamiento, true, false, context))
           ],
         ).padding(
@@ -88,9 +87,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         if (isEdit)
           adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
         isEdit ? adjuntarDocumentoPDF(controller) : Container(),
-        //adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
-        //adjuntarDocumentoPDF(controller),
-        customButtonsCancelAndAcept(() => close(), () => registertraining())
+        customButtonsCancelAndAcept(() => close(), () => registerTraining())
       ],
     ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10));
   }
@@ -114,21 +111,49 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     });
   }
 
-  void registertraining() {
+  void registerTraining() {
     if (controller.equipoSelected.value != null &&
         controller.condicionSelected.value != null) {
-      controller.registertraining(
-          RegisterTraining(
-            inTipoActividad: 1,
-            inPersona: data.key,
-            inEquipo: controller.equipoSelected.value!.key,
-            inCondicion: controller.condicionSelected.value!.key,
-            fechaInicio: controller
-                .transformDate(controller.fechaInicioEntrenamiento.text),
-            fechaTermino: controller
-                .transformDate(controller.fechaTerminoEntrenamiento.text),
-          ), (isSucces) {
-        close();
+      Entrenamiento newTraining = Entrenamiento(
+        key: 0,
+        inTipoActividad: 1,
+        inCapacitacion: 0,
+        inModulo: 0,
+        modulo: Modulo(key: 0, nombre: ''),
+        inTipoPersona: 1,
+        inPersona: data.key,
+        inActividadEntrenamiento: 0,
+        inCategoria: 0,
+        inEquipo: controller.equipoSelected.value!.key,
+        equipo: Equipo(key: controller.equipoSelected.value!.key, nombre: ''),
+        inEntrenador: 0,
+        entrenador: Entrenador(key: 0, nombre: ''),
+        inEmpresaCapacitadora: 0,
+        inCondicion: controller.condicionSelected.value!.key,
+        condicion:
+            Condicion(key: controller.condicionSelected.value!.key, nombre: ''),
+        fechaInicio:
+            controller.transformDate(controller.fechaInicioEntrenamiento.text),
+        fechaTermino:
+            controller.transformDate(controller.fechaTerminoEntrenamiento.text),
+        fechaExamen: null,
+        fechaRealMonitoreo: null,
+        fechaProximoMonitoreo: null,
+        inNotaTeorica: 0,
+        inNotaPractica: 0,
+        inTotalHoras: 0,
+        inHorasAcumuladas: 0,
+        inHorasMinestar: 0,
+        inEstado: 1,
+        comentarios: '',
+        eliminado: '',
+        motivoEliminado: '',
+      );
+
+      controller.registertraining(newTraining, (isSuccess) {
+        if (isSuccess) {
+          close();
+        }
       });
     }
   }
@@ -219,19 +244,17 @@ Widget customTextFieldDate(
     bool isEditing,
     bool isViewing,
     BuildContext context) {
-  return Expanded(
-    child: CustomTextField(
-      label: label,
-      controller: fechaIngresoMinaController,
-      icon: const Icon(Icons.calendar_today),
-      isReadOnly: isViewing,
-      isRequired: !isViewing,
-      onIconPressed: () {
-        if (!isViewing) {
-          _selectDate(context, fechaIngresoMinaController);
-        }
-      },
-    ),
+  return CustomTextField(
+    label: label,
+    controller: fechaIngresoMinaController,
+    icon: const Icon(Icons.calendar_today),
+    isReadOnly: isViewing,
+    isRequired: !isViewing,
+    onIconPressed: () {
+      if (!isViewing) {
+        _selectDate(context, fechaIngresoMinaController);
+      }
+    },
   );
 }
 

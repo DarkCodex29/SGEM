@@ -102,7 +102,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
                 title: isEdit
                     ? const Text("Editar Entrenamiento")
                     : const Text("Nuevo Entrenamiento"),
-                backgroundColor: AppTheme.primaryColor,
+                backgroundColor: AppTheme.backgroundBlue,
               ),
               body: (controller.isLoading.value)
                   ? const Center(

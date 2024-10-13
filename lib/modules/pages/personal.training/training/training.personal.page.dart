@@ -262,7 +262,7 @@ class TrainingPersonalPage extends StatelessWidget {
                         const SizedBox(width: 4),
                         _buildCustomTextField(
                           'Estado entrenamiento',
-                          _getEstadoEntrenamiento(training.inEstado),
+                          _getEstadoEntrenamiento(training.inEstado!),
                         ),
                       ],
                     ),

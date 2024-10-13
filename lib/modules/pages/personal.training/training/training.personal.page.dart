@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
@@ -229,18 +230,26 @@ class TrainingPersonalPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCustomTextField(
-                        'Código de entrenamiento', training.key.toString()),
-                    _buildCustomTextField('Estado de avance actual',
-                        training.inModulo.toString()),
+                      'Código de entrenamiento',
+                      training.key.toString(),
+                    ),
+                    _buildCustomTextField(
+                      'Estado de avance actual',
+                      training.modulo?.nombre ?? 'Sin módulo',
+                    ),
                   ],
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildCustomTextField(
-                        'Equipo', training.inEquipo.toString()),
+                      'Equipo',
+                      training.equipo?.nombre ?? 'Sin equipo',
+                    ),
                     _buildCustomTextField(
-                        'Entrenador', training.inEntrenador.toString()),
+                      'Entrenador',
+                      training.entrenador?.nombre ?? 'Sin entrenador',
+                    ),
                   ],
                 ),
                 Column(
@@ -251,16 +260,20 @@ class TrainingPersonalPage extends StatelessWidget {
                         const Icon(Icons.radio_button_checked,
                             color: Colors.orange),
                         const SizedBox(width: 4),
-                        _buildCustomTextField('Estado entrenamiento',
-                            training.inEstado.toString()),
+                        _buildCustomTextField(
+                          'Estado entrenamiento',
+                          _getEstadoEntrenamiento(training.inEstado),
+                        ),
                       ],
                     ),
                     Row(
                       children: [
                         const Icon(Icons.radio_button_on, color: Colors.green),
                         const SizedBox(width: 4),
-                        _buildCustomTextField('Horas de entrenamiento',
-                            '${training.inHorasAcumuladas}/${training.inTotalHoras}'),
+                        _buildCustomTextField(
+                          'Horas de entrenamiento',
+                          '${training.inHorasAcumuladas}/${training.inTotalHoras}', // Mostrar horas acumuladas y totales
+                        ),
                       ],
                     ),
                   ],
@@ -268,14 +281,20 @@ class TrainingPersonalPage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildCustomTextField('Fecha inicio / Fin',
-                        '${training.fechaInicio} / ${training.fechaTermino}'),
-                    _buildCustomTextField('Nota teórica / práctica',
-                        '${training.inNotaTeorica} / ${training.inNotaPractica}'),
+                    _buildCustomTextField(
+                      'Fecha inicio / Fin',
+                      '${_formatDate(training.fechaInicio)} / ${_formatDate(training.fechaTermino)}', // Formatear las fechas correctamente
+                    ),
+                    _buildCustomTextField(
+                      'Nota teórica / práctica',
+                      '${training.inNotaTeorica} / ${training.inNotaPractica}', // Mostrar las notas teóricas y prácticas
+                    ),
                   ],
                 ),
                 _buildCustomTextField(
-                    'Condición', training.inCondicion.toString()),
+                  'Condición',
+                  training.condicion?.nombre ?? 'Sin condición',
+                ),
                 _buildActionButtons(context, training),
               ],
             ),
@@ -473,5 +492,21 @@ class TrainingPersonalPage extends StatelessWidget {
         child: const Text("Regresar", style: TextStyle(color: Colors.white)),
       ),
     );
+  }
+
+  String _getEstadoEntrenamiento(int estado) {
+    switch (estado) {
+      case 0:
+        return 'Inactivo';
+      case 1:
+        return 'Activo';
+      default:
+        return 'Desconocido';
+    }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Sin fecha';
+    return DateFormat('dd/MM/yyyy').format(date);
   }
 }

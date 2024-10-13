@@ -153,6 +153,7 @@ class PersonalSearchController extends GetxController {
           totalRecords.value = result['TotalRecords'] as int;
           rowsPerPage.value = result['PageSize'] as int;
           isExpanded.value = false;
+
           log('Resultados obtenidos: ${personalResults.length}');
         } catch (e) {
           log('Error al procesar la respuesta: $e');
@@ -340,6 +341,7 @@ class PersonalSearchController extends GetxController {
   void showActualizacionMasiva() {
     screen.value = PersonalSearchScreen.actualizacionMasiva;
   }
+
   void showCarnet(Personal personal) {
     selectedPersonal.value = personal;
     screen.value = PersonalSearchScreen.carnetPersonal;

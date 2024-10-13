@@ -278,8 +278,18 @@ class TrainingsPage extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          _buildSeccionResultadoTabla(controller),
-          const SizedBox(height: 20,),
+          Obx(
+            () {
+              if (controller.entrenamientoResultados.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return _buildSeccionResultadoTabla(controller);
+              }
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
           _buildSeccionResultadoTablaPaginado(controller),
         ],
       ),
@@ -318,50 +328,58 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Widget _buildSeccionResultadoTabla(TrainingsController controller) {
-    var rowsToShow = controller.entrenamientosResultado
-        .take(controller.rowsPerPage.value)
-        .toList();
+    return Obx(
+      () {
+        if (controller.entrenamientoResultados.isEmpty) {
+          return const Center(child: Text("No se encontraron resultados"));
+        }
 
-    return Column(
-      children: [
-        Container(
-          color: Colors.grey[200],
-          padding: const EdgeInsets.symmetric(
-            vertical: 10.0,
-            horizontal: 16.0,
-          ),
-          child: _buildSeccionResultadoTablaCabezera(),
-        ),
-        SizedBox(
-          height: 500,
-          child: SingleChildScrollView(
-            child: Column(
-              children: rowsToShow.map((entrenamiento) {
-                return  Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                      Expanded(child: Text(entrenamiento)),
-                    ],
-                  ),
-                );
-              }).toList(),
+        var rowsToShow = controller.entrenamientoResultados
+            .take(controller.rowsPerPage.value)
+            .toList();
+
+        return Column(
+          children: [
+            Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 16.0,
+              ),
+              child: _buildSeccionResultadoTablaCabezera(),
             ),
-          ),
-        ),
-      ],
+            SizedBox(
+              height: 500,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: rowsToShow.map((entrenamiento) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text('Código MCP')),
+                          Expanded(child: Text('Nombres y Apellidos')),
+                          Expanded(child: Text('Guardia')),
+                          Expanded(child: Text('Estado de entrenamiento')),
+                          Expanded(child: Text('Estado de avance')),
+                          Expanded(child: Text( 'Condicion')),
+                          Expanded(child: Text( 'Equipo')),
+                          Expanded(child: Text( 'Fecha de inicio')),
+                          Expanded(child: Text(  'Entrenador responsable')),
+                          Expanded(child: Text( 'Nota teorica')),
+                          Expanded(child: Text(  'Nota practica')),
+                          Expanded(child: Text(  'Horas acumuladas')),
+                          Expanded(child: Text( 'Horas operativas acumuladas')),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -463,30 +481,30 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoTablaPaginado(TrainingsController controller){
+  Widget _buildSeccionResultadoTablaPaginado(TrainingsController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Obx(() => Text(
-          'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
+              'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
               '${controller.currentPage.value * controller.rowsPerPage.value > controller.totalRecords.value ? controller.totalRecords.value : controller.currentPage.value * controller.rowsPerPage.value} '
               'de ${controller.totalRecords.value} registros',
-          style: const TextStyle(fontSize: 14),
-        )),
+              style: const TextStyle(fontSize: 14),
+            )),
         Obx(
-              () => Row(
+          () => Row(
             children: [
               const Text("Items por página: "),
               DropdownButton<int>(
                 value: controller.rowsPerPage.value > 0 &&
-                    controller.rowsPerPage.value <= 50
+                        controller.rowsPerPage.value <= 50
                     ? controller.rowsPerPage.value
                     : null,
                 items: [10, 20, 50]
                     .map((value) => DropdownMenuItem<int>(
-                  value: value,
-                  child: Text(value.toString()),
-                ))
+                          value: value,
+                          child: Text(value.toString()),
+                        ))
                     .toList(),
                 onChanged: (value) {
                   // if (value != null) {
@@ -502,26 +520,26 @@ class TrainingsPage extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                  // controller.currentPage.value--;
-                  // controller.searchPersonal(
-                  //     pageNumber: controller.currentPage.value,
-                  //     pageSize: controller.rowsPerPage.value);
-                }
+                        // controller.currentPage.value--;
+                        // controller.searchPersonal(
+                        //     pageNumber: controller.currentPage.value,
+                        //     pageSize: controller.rowsPerPage.value);
+                      }
                     : null,
               ),
               Text(
                   '${controller.currentPage.value} de ${controller.totalPages.value}'),
               IconButton(
                 icon: const Icon(Icons.arrow_forward),
-                onPressed: controller.currentPage.value <
-                    controller.totalPages.value
-                    ? () {
-                  // controller.currentPage.value++;
-                  // controller.searchPersonal(
-                  //     pageNumber: controller.currentPage.value,
-                  //     pageSize: controller.rowsPerPage.value);
-                }
-                    : null,
+                onPressed:
+                    controller.currentPage.value < controller.totalPages.value
+                        ? () {
+                            // controller.currentPage.value++;
+                            // controller.searchPersonal(
+                            //     pageNumber: controller.currentPage.value,
+                            //     pageSize: controller.rowsPerPage.value);
+                          }
+                        : null,
               ),
             ],
           ),
@@ -529,5 +547,4 @@ class TrainingsPage extends StatelessWidget {
       ],
     );
   }
-
 }

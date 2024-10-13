@@ -162,7 +162,7 @@ class EntrenamientoNuevoController extends GetxController {
       final response = await trainingService.registerTraining(register);
       if (response.success && response.data != null) {
         print('Registrar entrenamiento exitoso: ${response.data}');
-        controllerPersonal.fetchTrainings(register.inPersona);
+        controllerPersonal.fetchTrainings(register.inPersona!);
         callback(true);
       } else {
         print('Error al registrar entrenamiento: ${response.message}');

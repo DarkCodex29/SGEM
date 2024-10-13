@@ -569,139 +569,103 @@ class PersonalSearchPage extends StatelessWidget {
 
   Widget _buildResultsTable(
       PersonalSearchController controller, BuildContext context) {
-    return Obx(() {
-      if (controller.personalResults.isEmpty) {
-        return const Center(child: Text("No se encontraron resultados"));
-      }
+    return Obx(
+      () {
+        if (controller.personalResults.isEmpty) {
+          return const Center(child: Text("No se encontraron resultados"));
+        }
 
-      var rowsToShow = controller.personalResults
-          .take(controller.rowsPerPage.value)
-          .toList();
+        var rowsToShow = controller.personalResults
+            .take(controller.rowsPerPage.value)
+            .toList();
 
-      return Column(
-        children: [
-          Container(
-            color: Colors.grey[200],
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-            child: const Row(
-              children: [
-                Expanded(
-                    child: Text('Código MCP',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(
-                    child: Text('Nombre completo',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(
-                    child: Text('Documento de identidad',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(
-                    child: Text('Guardia',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(
-                    child: Text('Estado',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                Expanded(
-                    child: Text('Acciones',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-              ],
+        return Column(
+          children: [
+            Container(
+              color: Colors.grey[200],
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+              child: const Row(
+                children: [
+                  Expanded(
+                      child: Text('Código MCP',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Nombre completo',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Documento de identidad',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Guardia',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Estado',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                  Expanded(
+                      child: Text('Acciones',
+                          style: TextStyle(fontWeight: FontWeight.bold))),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 500,
-            child: SingleChildScrollView(
-              child: Column(
-                children: rowsToShow.map((personal) {
-                  String estado = personal.estado.nombre;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    child: Row(
-                      children: [
-                        Expanded(child: Text(personal.codigoMcp)),
-                        Expanded(child: Text(personal.nombreCompleto)),
-                        Expanded(child: Text(personal.numeroDocumento)),
-                        Expanded(child: Text(personal.guardia.nombre)),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.circle,
-                                color: estado == 'Activo'
-                                    ? Colors.green
-                                    : Colors.grey,
-                                size: 12,
-                              ),
-                              const SizedBox(width: 5),
-                              Text(estado),
-                            ],
+            SizedBox(
+              height: 500,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: rowsToShow.map((personal) {
+                    String estado = personal.estado.nombre;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(personal.codigoMcp)),
+                          Expanded(child: Text(personal.nombreCompleto)),
+                          Expanded(child: Text(personal.numeroDocumento)),
+                          Expanded(child: Text(personal.guardia.nombre)),
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.circle,
+                                  color: estado == 'Activo'
+                                      ? Colors.green
+                                      : Colors.grey,
+                                  size: 12,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(estado),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: estado == 'Cesado'
-                                ? [
-                                    _buildIconButton(Icons.remove_red_eye,
-                                        AppTheme.primaryColor, () {
-                                      controller.showViewPersonal(personal);
-                                    }),
-                                    _buildIconButton(Icons.model_training_sharp,
-                                        AppTheme.warningColor, () {
-                                      controller.showTraining(personal);
-                                    }),
-                                  ]
-                                : [
-                                    _buildIconButton(
-                                        Icons.edit, AppTheme.primaryColor, () {
-                                      controller.showEditPersonal(personal);
-                                    }),
-                                    _buildIconButton(
-                                        Icons.delete, AppTheme.errorColor,
-                                        () async {
-                                      controller.selectedPersonal.value =
-                                          personal;
-                                      String motivoEliminacion = '';
+                          Expanded(
+                            child: Row(
+                              children: estado == 'Cesado'
+                                  ? [
+                                      _buildIconButton(Icons.remove_red_eye,
+                                          AppTheme.primaryColor, () {
+                                        controller.showViewPersonal(personal);
+                                      }),
+                                      _buildIconButton(
+                                          Icons.model_training_sharp,
+                                          AppTheme.warningColor, () {
+                                        controller.showTraining(personal);
+                                      }),
+                                    ]
+                                  : [
+                                      _buildIconButton(
+                                          Icons.edit, AppTheme.primaryColor,
+                                          () {
+                                        controller.showEditPersonal(personal);
+                                      }),
+                                      _buildIconButton(
+                                          Icons.delete, AppTheme.errorColor,
+                                          () async {
+                                        controller.selectedPersonal.value =
+                                            personal;
+                                        String motivoEliminacion = '';
 
-                                      await showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return GestureDetector(
-                                            onTap: () => FocusScope.of(context)
-                                                .unfocus(),
-                                            child: Padding(
-                                              padding: MediaQuery.of(context)
-                                                  .viewInsets,
-                                              child: DeleteReasonWidget(
-                                                entityType: 'personal',
-                                                onCancel: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                onConfirm: (motivo) {
-                                                  motivoEliminacion = motivo;
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-
-                                      if (motivoEliminacion.isEmpty) {
-                                        return;
-                                      }
-
-                                      bool confirmarEliminar = false;
-
-                                      if (controller.selectedPersonal.value !=
-                                          null) {
-                                        String? nombreCompleto = controller
-                                            .selectedPersonal
-                                            .value!
-                                            .nombreCompleto;
                                         await showDialog(
-                                          //isScrollControlled: true,
-                                          //backgroundColor: Colors.transparent,
-                                          //enableDrag: false,
                                           context: context,
                                           builder: (context) {
                                             return GestureDetector(
@@ -711,14 +675,13 @@ class PersonalSearchPage extends StatelessWidget {
                                               child: Padding(
                                                 padding: MediaQuery.of(context)
                                                     .viewInsets,
-                                                child: ConfirmDeleteWidget(
-                                                  itemName: nombreCompleto,
+                                                child: DeleteReasonWidget(
                                                   entityType: 'personal',
                                                   onCancel: () {
                                                     Navigator.pop(context);
                                                   },
-                                                  onConfirm: () {
-                                                    confirmarEliminar = true;
+                                                  onConfirm: (motivo) {
+                                                    motivoEliminacion = motivo;
                                                     Navigator.pop(context);
                                                   },
                                                 ),
@@ -726,88 +689,134 @@ class PersonalSearchPage extends StatelessWidget {
                                             );
                                           },
                                         );
-                                      } else {
-                                        log('Error: No hay personal seleccionado');
-                                        return;
-                                      }
-                                      if (!confirmarEliminar) {
-                                        return;
-                                      }
-                                      NewPersonalController controllerNew =
-                                          Get.put(NewPersonalController());
-                                      controllerNew.personalData =
-                                          controller.selectedPersonal.value;
-                                      try {
-                                        bool success = await controllerNew
-                                            .gestionarPersona(
-                                          accion: 'eliminar',
-                                          motivoEliminacion: motivoEliminacion,
-                                          context: context,
-                                        );
-                                        if (success) {
+
+                                        if (motivoEliminacion.isEmpty) {
+                                          return;
+                                        }
+
+                                        bool confirmarEliminar = false;
+
+                                        if (controller.selectedPersonal.value !=
+                                            null) {
+                                          String? nombreCompleto = controller
+                                              .selectedPersonal
+                                              .value!
+                                              .nombreCompleto;
                                           await showDialog(
                                             //isScrollControlled: true,
                                             //backgroundColor: Colors.transparent,
                                             //enableDrag: false,
                                             context: context,
                                             builder: (context) {
-                                              return const SuccessDeleteWidget();
+                                              return GestureDetector(
+                                                onTap: () =>
+                                                    FocusScope.of(context)
+                                                        .unfocus(),
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.of(context)
+                                                          .viewInsets,
+                                                  child: ConfirmDeleteWidget(
+                                                    itemName: nombreCompleto,
+                                                    entityType: 'personal',
+                                                    onCancel: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    onConfirm: () {
+                                                      confirmarEliminar = true;
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ),
+                                              );
                                             },
                                           );
-
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                  "Persona eliminada exitosamente."),
-                                              backgroundColor: Colors.green,
-                                            ),
-                                          );
-
-                                          Get.toNamed('/buscarEntrenamiento');
                                         } else {
+                                          log('Error: No hay personal seleccionado');
+                                          return;
+                                        }
+                                        if (!confirmarEliminar) {
+                                          return;
+                                        }
+                                        NewPersonalController controllerNew =
+                                            Get.put(NewPersonalController());
+                                        controllerNew.personalData =
+                                            controller.selectedPersonal.value;
+                                        try {
+                                          bool success = await controllerNew
+                                              .gestionarPersona(
+                                            accion: 'eliminar',
+                                            motivoEliminacion:
+                                                motivoEliminacion,
+                                            context: context,
+                                          );
+                                          if (success) {
+                                            await showDialog(
+                                              //isScrollControlled: true,
+                                              //backgroundColor: Colors.transparent,
+                                              //enableDrag: false,
+                                              context: context,
+                                              builder: (context) {
+                                                return const SuccessDeleteWidget();
+                                              },
+                                            );
+
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "Persona eliminada exitosamente."),
+                                                backgroundColor: Colors.green,
+                                              ),
+                                            );
+
+                                            Get.toNamed('/buscarEntrenamiento');
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                    "Error al eliminar la persona. Intenta nuevamente."),
+                                                backgroundColor: Colors.red,
+                                              ),
+                                            );
+                                          }
+                                        } catch (e) {
+                                          log('Error eliminando la persona: $e');
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
-                                            const SnackBar(
+                                            SnackBar(
                                               content: Text(
-                                                  "Error al eliminar la persona. Intenta nuevamente."),
+                                                  "Error eliminando la persona: $e"),
                                               backgroundColor: Colors.red,
                                             ),
                                           );
                                         }
-                                      } catch (e) {
-                                        log('Error eliminando la persona: $e');
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                                "Error eliminando la persona: $e"),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
-                                      }
-                                    }),
-                                    _buildIconButton(Icons.model_training_sharp,
-                                        AppTheme.warningColor, () {
-                                      controller.showTraining(personal);
-                                    }),
-                                    _buildIconButton(Icons.credit_card_rounded,
-                                        AppTheme.greenColor, () {
-                                      controller.showCarnet(personal);
-                                    }),
-                                  ],
+                                      }),
+                                      _buildIconButton(
+                                          Icons.model_training_sharp,
+                                          AppTheme.warningColor, () {
+                                        controller.showTraining(personal);
+                                      }),
+                                      _buildIconButton(
+                                          Icons.credit_card_rounded,
+                                          AppTheme.greenColor, () {
+                                        controller.showCarnet(personal);
+                                      }),
+                                    ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildIconButton(IconData icon, Color color, VoidCallback onPressed) {

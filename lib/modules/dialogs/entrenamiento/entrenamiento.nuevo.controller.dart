@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
@@ -7,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.training.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
+import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/training.dart';
@@ -16,8 +17,7 @@ import 'package:sgem/shared/widgets/custom.dropdown.dart';
 class EntrenamientoNuevoController extends GetxController {
   TextEditingController fechaInicioEntrenamiento = TextEditingController();
   TextEditingController fechaTerminoEntrenamiento = TextEditingController();
-  PersonalSearchController personalSearchController =
-      PersonalSearchController();
+
   TrainingPersonalController controllerPersonal =
       Get.put(TrainingPersonalController());
   RxList<MaestroDetalle> equipoDetalle = <MaestroDetalle>[].obs;
@@ -40,11 +40,12 @@ class EntrenamientoNuevoController extends GetxController {
   });
 
   final trainingService = TrainingService();
+  final archivoService = ArchivoService();
 
   var isLoading = false.obs;
   var documentoAdjuntoNombre = ''.obs;
-
   var documentoAdjuntoBytes = Rxn<Uint8List>();
+  var archivosAdjuntos = <Map<String, dynamic>>[].obs;
 
   var repository = MainRepository();
 
@@ -123,14 +124,7 @@ class EntrenamientoNuevoController extends GetxController {
   }
 
   DateTime transformDate(String date) {
-    // Formato dd/MM/yyyy
     DateTime dateTime = DateFormat("yyyy-MM-dd").parse(date);
-    return dateTime;
-  }
-
-  DateTime transformDateFormat(String date, String format) {
-    // Formato dd/MM/yyyy
-    DateTime dateTime = DateFormat(format).parse(date);
     return dateTime;
   }
 
@@ -156,20 +150,99 @@ class EntrenamientoNuevoController extends GetxController {
     return null;
   }
 
+  Future<void> registrarArchivos(int inOrigenKey) async {
+    try {
+      var archivosNuevos = archivosAdjuntos
+          .where((archivo) => archivo['nuevo'] == true)
+          .toList();
+      for (var archivo in archivosNuevos) {
+        try {
+          String datosBase64 = base64Encode(archivo['bytes']);
+          String extension = archivo['nombre'].split('.').last;
+          String mimeType = _determinarMimeType(extension);
+
+          final response = await archivoService.registrarArchivo(
+            key: 0,
+            nombre: archivo['nombre'],
+            extension: extension,
+            mime: mimeType,
+            datos: datosBase64,
+            inTipoArchivo: 1,
+            inOrigen: 2, // TABLA Entrenamiento
+            inOrigenKey: inOrigenKey,
+          );
+
+          if (response.success) {
+            archivo['nuevo'] = false;
+          }
+        } catch (e) {
+          log('Error al registrar archivo ${archivo['nombre']}: $e');
+        }
+      }
+    } catch (e) {
+      log('Error al registrar archivos: $e');
+    }
+  }
+
+  Future<void> obtenerArchivosRegistrados(int inOrigenKey) async {
+    log('Obteniendo archivos registrados');
+    log('inOrigenKey: $inOrigenKey');
+    try {
+      final response = await archivoService.obtenerArchivosPorOrigen(
+        idOrigen: 2, // TABLA Entrenamiento
+        idOrigenKey: inOrigenKey,
+      );
+      log('Response: ${response.data}');
+      if (response.success && response.data != null) {
+        archivosAdjuntos.clear();
+        for (var archivo in response.data!) {
+          List<int> datos = List<int>.from(archivo['Datos']);
+          Uint8List archivoBytes = Uint8List.fromList(datos);
+
+          archivosAdjuntos.add({
+            'nombre': archivo['Nombre'],
+            'bytes': archivoBytes,
+          });
+
+          log('Archivo ${archivo['Nombre']} obtenido con éxito');
+        }
+      } else {
+        log('Error al obtener archivos: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener archivos: $e');
+    }
+  }
+
+  String _determinarMimeType(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'xlsx':
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
   void registertraining(Entrenamiento register, Function(bool) callback) async {
     try {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);
       if (response.success && response.data != null) {
-        print('Registrar entrenamiento exitoso: ${response.data}');
+        await registrarArchivos(register.inPersona!); 
         controllerPersonal.fetchTrainings(register.inPersona!);
         callback(true);
       } else {
-        print('Error al registrar entrenamiento: ${response.message}');
+        log('Error al registrar entrenamiento: ${response.message}');
         callback(false);
       }
     } catch (e) {
-      print('CATCH: Error al registrar entrenamiento: $e');
+      log('CATCH: Error al registrar entrenamiento: $e');
       callback(false);
     } finally {
       isLoading.value = false;

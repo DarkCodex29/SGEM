@@ -27,6 +27,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     this.isEdit = false,
     this.training,
   }) {
+    controller.archivosAdjuntos.clear();
     if (isEdit && training != null && controller.equipoDetalle.isNotEmpty) {
       controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
           (element) => element.key == training!.inEquipo,
@@ -39,6 +40,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           .format(DateTime.parse(training!.fechaInicio.toString()));
       controller.fechaTerminoEntrenamiento.text = DateFormat('yyyy-MM-dd')
           .format(DateTime.parse(training!.fechaTermino.toString()));
+      controller.obtenerArchivosRegistrados(training!.key);
     }
   }
 

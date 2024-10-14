@@ -272,22 +272,6 @@ class NewPersonalController extends GetxController {
 
   //Validaciones
   bool validate(BuildContext context) {
-    /*
-    if (dniController.text.isEmpty ||
-        dniController.text.length != 8 ||
-        !RegExp(r'^\d+$').hasMatch(dniController.text)) {
-      errores.add('Debe ingresar un DNI válido.');
-    }
-
-    if (nombresController.text.isEmpty) {
-      errores.add('El campo de nombres no puede estar vacío.');
-    }
-    if (apellidoPaternoController.text.isEmpty) {
-      errores.add('El campo de apellido paterno no puede estar vacío.');
-    }
-    if (apellidoMaternoController.text.isEmpty) {
-      errores.add('El campo de apellido materno no puede estar vacío.');
-    }*/
     DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
     DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
 

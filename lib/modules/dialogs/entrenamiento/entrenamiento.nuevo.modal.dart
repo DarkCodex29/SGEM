@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
+import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/training.dart';
@@ -115,7 +116,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     if (controller.equipoSelected.value != null &&
         controller.condicionSelected.value != null) {
       Entrenamiento newTraining = Entrenamiento(
-        key: 0,
+        key: isEdit ? training!.key : 0, // Usar la key existente si es edición
         inTipoActividad: 1,
         inCapacitacion: 0,
         inModulo: 0,
@@ -150,11 +151,24 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         motivoEliminado: '',
       );
 
-      controller.registertraining(newTraining, (isSuccess) {
-        if (isSuccess) {
-          close();
-        }
-      });
+      final TrainingPersonalController trainingPersonalController = Get.find();
+      if (isEdit) {
+        trainingPersonalController
+            .actualizarEntrenamiento(newTraining)
+            .then((isSuccess) {
+          if (isSuccess) {
+            trainingPersonalController.fetchTrainings(data.key);
+            close();
+          }
+        });
+      } else {
+        controller.registertraining(newTraining, (isSuccess) {
+          if (isSuccess) {
+            trainingPersonalController.fetchTrainings(data.key);
+            close();
+          }
+        });
+      }
     }
   }
 

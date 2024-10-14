@@ -29,6 +29,7 @@ class TrainingPersonalController extends GetxController {
         int index = trainingList.indexWhere((t) => t.key == training.key);
         if (index != -1) {
           trainingList[index] = training;
+          trainingList.refresh();
         }
         Get.snackbar(
           'Éxito',

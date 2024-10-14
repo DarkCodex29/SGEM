@@ -39,6 +39,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           .format(DateTime.parse(training!.fechaInicio.toString()));
       controller.fechaTerminoEntrenamiento.text = DateFormat('yyyy-MM-dd')
           .format(DateTime.parse(training!.fechaTermino.toString()));
+      controller.obtenerArchivosRegistrados(training!.key);
     }
   }
 
@@ -220,27 +221,35 @@ class EntrenamientoNuevoModal extends StatelessWidget {
 
 Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
   return Obx(() {
-    if (controller.documentoAdjuntoNombre.value.isNotEmpty) {
-      return Row(
-        children: [
-          TextButton.icon(
-            onPressed: () {
-              controller.eliminarDocumento();
-            },
-            icon: const Icon(Icons.close, color: Colors.red),
-            label: Text(
-              controller.documentoAdjuntoNombre.value,
-              style: const TextStyle(color: Colors.red),
-            ),
-          ),
-        ],
+    if (controller.isLoadingFiles.value) {
+      return const Center(
+          child: CircularProgressIndicator());
+    }
+    if (controller.archivosAdjuntos.isNotEmpty) {
+      return Column(
+        children: controller.archivosAdjuntos.map((archivo) {
+          return Row(
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  controller.eliminarArchivo(archivo['nombre']);
+                },
+                icon: const Icon(Icons.close, color: Colors.red),
+                label: Text(
+                  archivo['nombre'],
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          );
+        }).toList(),
       );
     } else {
       return Row(
         children: [
           TextButton.icon(
             onPressed: () {
-              controller.adjuntarDocumento();
+              controller.adjuntarDocumentos();
             },
             icon: const Icon(Icons.attach_file, color: Colors.grey),
             label: const Text("Adjuntar Documento",

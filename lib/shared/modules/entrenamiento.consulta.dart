@@ -17,6 +17,8 @@ class EntrenamientoConsulta {
   int notaPractica;
   int horasAcumuladas;
   Condicion condicion;
+  Equipo equipo;
+  DateTime fechaInicio;
 
   EntrenamientoConsulta({
     required this.key,
@@ -30,7 +32,9 @@ class EntrenamientoConsulta {
     required this.notaTeorica,
     required this.notaPractica,
     required this.horasAcumuladas,
-    required this.condicion
+    required this.condicion,
+    required this.equipo,
+    required this.fechaInicio,
   });
 
   factory EntrenamientoConsulta.fromJson(Map<String, dynamic> json) => EntrenamientoConsulta(
@@ -46,6 +50,8 @@ class EntrenamientoConsulta {
     notaPractica: json["NotaPractica"],
     horasAcumuladas: json["HorasAcumuladas"],
     condicion: Condicion.fromJson(json["Condicion"]),
+    equipo: Equipo.fromJson(json["Equipo"]),
+    fechaInicio: _fromDotNetDate(json["FechaInicio"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -61,8 +67,22 @@ class EntrenamientoConsulta {
     "NotaPractica": notaPractica,
     "HorasAcumuladas": horasAcumuladas,
     "Condicion": condicion.toJson(),
+    "Equipo": equipo.toJson(),
+    "FechaInicio": _toDotNetDate(fechaInicio),
   };
+
+  // Método para deserializar la fecha en formato .NET
+  static DateTime _fromDotNetDate(String dotNetDate) {
+    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
+    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
+  }
+
+  // Método para serializar la fecha de vuelta al formato .NET
+  static String _toDotNetDate(DateTime date) {
+    return '/Date(${date.millisecondsSinceEpoch})/';
+  }
 }
+
 class Guardia {
   int key;
   String nombre;
@@ -149,6 +169,25 @@ class Condicion {
   });
 
   factory Condicion.fromJson(Map<String, dynamic> json) => Condicion(
+    key: json["Key"],
+    nombre: json["Nombre"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "Key": key,
+    "Nombre": nombre,
+  };
+}
+class Equipo {
+  int key;
+  String nombre;
+
+  Equipo({
+    required this.key,
+    required this.nombre,
+  });
+
+  factory Equipo.fromJson(Map<String, dynamic> json) => Equipo(
     key: json["Key"],
     nombre: json["Nombre"],
   );

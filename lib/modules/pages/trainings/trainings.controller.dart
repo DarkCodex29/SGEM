@@ -7,9 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/modules/modulo.maestro.dart';
 
 import '../../../config/api/api.maestro.detail.dart';
 
@@ -23,7 +25,7 @@ class TrainingsController extends GetxController {
 
   final entrenamientoService = TrainingService();
   final maestroDetalleService = MaestroDetalleService();
-//final moduloService = ModuloService();
+  final moduloService = ModuloMaestroService();
   RxBool isExpanded = true.obs;
   var entrenamientoResultados = <EntrenamientoConsulta>[].obs;
 
@@ -33,10 +35,12 @@ class TrainingsController extends GetxController {
   var selectedEstadoEntrenamientoKey = RxnInt();
   var selectedCondicionKey = RxnInt();
 
+  RxList<ModuloMaestro> moduloOpciones = <ModuloMaestro>[].obs;
   RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> equipoOpciones = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> estadoEntrenamientoOpciones = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> condicionOpciones = <MaestroDetalle>[].obs;
+
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
   var totalPages = 1.obs;
@@ -44,6 +48,7 @@ class TrainingsController extends GetxController {
 
   @override
   void onInit() {
+    cargarModulo();
     cargarEquipo();
     cargarGuardia();
     cargarEstadoEntrenamiento();
@@ -271,16 +276,32 @@ class TrainingsController extends GetxController {
     }
   }
 
+  Future<void> cargarModulo() async {
+    try {
+      var response = await moduloService.listarMaestros();
+
+      if (response.success && response.data != null) {
+        moduloOpciones.assignAll(response.data!);
+
+        log('Modulos maestro opciones cargadas correctamente: $guardiaOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de Modulos maestro: $e');
+    }
+  }
+
   void clearFields() {
     codigoMcpController.clear();
     selectedEquipoKey.value = null;
-
-    selectedGuardiaKey.value=null;
-    selectedEstadoEntrenamientoKey.value=null;
-    selectedCondicionKey.value=null;
+    selectedModuloKey.value = null;
+    selectedGuardiaKey.value = null;
+    selectedEstadoEntrenamientoKey.value = null;
+    selectedCondicionKey.value = null;
     rangoFechaController.clear();
-    fechaInicio=null;
-    fechaTermino=null;
+    fechaInicio = null;
+    fechaTermino = null;
     nombresController.clear();
   }
 }

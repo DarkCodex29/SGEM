@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/trainings/trainings.controller.dart';
+import 'package:sgem/shared/modules/modulo.maestro.dart';
 
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
@@ -102,12 +103,7 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
-            hintText: "Estado de avance",
-            options: const ["A", "B", "C"],
-            isSearchable: false,
-            onChanged: (value) {},
-          ),
+          child: _buildDropdownModulo(controller),
         ),
       ],
     );
@@ -203,7 +199,7 @@ class TrainingsPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () async {
             await controller.buscarEntrenamientos();
-            controller.isExpanded.value = false;
+            controller.isExpanded.value = true;
           },
           icon: const Icon(
             Icons.search,
@@ -660,6 +656,34 @@ class TrainingsPage extends StatelessWidget {
           );
           controller.selectedCondicionKey.value = selectedOption.key;
           log('Condicion seleccionada - Key del Maestro: ${controller.selectedCondicionKey.value}, Valor: $value');
+        },
+      );
+    });
+  }
+  Widget _buildDropdownModulo(TrainingsController controller) {
+    return Obx(() {
+      if (controller.moduloOpciones.isEmpty) {
+        return const SizedBox(
+            height: 50, width: 50, child: CircularProgressIndicator());
+      }
+      List<ModuloMaestro> options = controller.moduloOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona estado de avance ',
+        options: options.map((option) => option.modulo).toList(),
+        selectedValue: controller.selectedModuloKey.value != null
+            ? options
+            .firstWhere((option) =>
+        option.key == controller.selectedModuloKey.value)
+            .modulo
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+                (option) => option.modulo == value,
+          );
+          controller.selectedModuloKey.value = selectedOption.key;
+          log('Condicion seleccionada - Key del Maestro: ${controller.selectedModuloKey.value}, Valor: $value');
         },
       );
     });

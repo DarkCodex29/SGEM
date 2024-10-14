@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
@@ -313,6 +314,9 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
               onPressed: () async {
+                EntrenamientoNuevoController controllerModal =
+                    Get.put(EntrenamientoNuevoController());
+                await controllerModal.getEquiposAndConditions();
                 final Entrenamiento? updatedTraining = await showDialog(
                   context: context,
                   builder: (context) {

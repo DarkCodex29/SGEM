@@ -72,7 +72,7 @@ class TrainingPersonalController extends GetxController {
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
-        return true; // Operación exitosa
+        return true;
       } else {
         Get.snackbar(
           'Error',

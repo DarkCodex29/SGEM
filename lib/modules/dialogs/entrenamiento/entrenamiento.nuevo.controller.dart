@@ -48,6 +48,7 @@ class EntrenamientoNuevoController extends GetxController {
   var documentoAdjuntoNombre = ''.obs;
   var documentoAdjuntoBytes = Rxn<Uint8List>();
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
+  var isLoadingFiles = false.obs;
 
   var repository = MainRepository();
 
@@ -182,6 +183,7 @@ class EntrenamientoNuevoController extends GetxController {
     log('Obteniendo archivos registrados');
     log('inOrigenKey: $inOrigenKey');
     try {
+      isLoadingFiles.value = true;
       final response = await archivoService.obtenerArchivosPorOrigen(
         idOrigen: 2, // TABLA Entrenamiento
         idOrigenKey: inOrigenKey,
@@ -205,6 +207,8 @@ class EntrenamientoNuevoController extends GetxController {
       }
     } catch (e) {
       log('Error al obtener archivos: $e');
+    } finally {
+      isLoadingFiles.value = false;
     }
   }
 

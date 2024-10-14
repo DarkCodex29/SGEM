@@ -221,6 +221,10 @@ class EntrenamientoNuevoModal extends StatelessWidget {
 
 Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
   return Obx(() {
+    if (controller.isLoadingFiles.value) {
+      return const Center(
+          child: CircularProgressIndicator());
+    }
     if (controller.archivosAdjuntos.isNotEmpty) {
       return Column(
         children: controller.archivosAdjuntos.map((archivo) {

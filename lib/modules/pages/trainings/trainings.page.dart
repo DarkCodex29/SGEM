@@ -357,12 +357,12 @@ class TrainingsPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          Expanded(child: Text('Código MCP')),
-                          Expanded(child: Text('Nombres y Apellidos')),
-                          Expanded(child: Text('Guardia')),
-                          Expanded(child: Text('Estado de entrenamiento')),
-                          Expanded(child: Text('Estado de avance')),
-                          Expanded(child: Text( 'Condicion')),
+                          Expanded(child: Text(entrenamiento.codigoMcp)),
+                          Expanded(child: Text(entrenamiento.nombreCompleto)),
+                          Expanded(child: Text(entrenamiento.guardia.nombre)),
+                          Expanded(child: Text(entrenamiento.estadoEntrenamiento.nombre)),
+                          Expanded(child: Text(entrenamiento.modulo.nombre)),
+                          Expanded(child: Text(entrenamiento.condicion.nombre)),
                           Expanded(child: Text( 'Equipo')),
                           Expanded(child: Text( 'Fecha de inicio')),
                           Expanded(child: Text(  'Entrenador responsable')),

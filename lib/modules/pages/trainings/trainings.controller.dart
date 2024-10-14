@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.training.dart';
+import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
 import 'package:sgem/shared/modules/training.dart';
 
 class TrainingsController extends GetxController {
@@ -16,7 +17,7 @@ class TrainingsController extends GetxController {
 
   final entrenamientoService = TrainingService();
   RxBool isExpanded = true.obs;
-  var entrenamientoResultados = <Entrenamiento>[].obs;
+  var entrenamientoResultados = <EntrenamientoConsulta>[].obs;
 
   var selectedEquipoKey = RxnInt();
   var selectedModuloKey = RxnInt();
@@ -63,7 +64,7 @@ class TrainingsController extends GetxController {
           var result = response.data as Map<String, dynamic>;
           log('Respuesta recibida correctamente $result');
 
-          var items = result['Items'] as List<Entrenamiento>;
+          var items = result['Items'] as List<EntrenamientoConsulta>;
           log('Items obtenidos: $items');
 
           entrenamientoResultados.assignAll(items);

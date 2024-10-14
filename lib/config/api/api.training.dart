@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/training.dart';
 
+import '../../shared/modules/entrenamiento.consulta.dart';
+
 class TrainingService {
   final String baseUrl =
       'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
@@ -201,7 +203,7 @@ class TrainingService {
 
       final items = result['Items'] as List;
       final entrenamientoList = items
-          .map((entrenamientoJson) => Entrenamiento.fromJson(entrenamientoJson))
+          .map((entrenamientoJson) => EntrenamientoConsulta.fromJson(entrenamientoJson))
           .toList();
 
       final responseData = {

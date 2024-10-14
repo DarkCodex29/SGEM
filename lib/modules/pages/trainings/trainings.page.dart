@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/trainings/trainings.controller.dart';
 
 import '../../../config/theme/app_theme.dart';
+import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/widgets/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 
@@ -93,12 +96,7 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
-            hintText: "Equipo",
-            options: const ["A", "B", "C"],
-            isSearchable: false,
-            onChanged: (value) {},
-          ),
+          child: _buildDropdownEquipo(controller),
         ),
         const SizedBox(
           width: 20,
@@ -119,34 +117,19 @@ class TrainingsPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: CustomDropdown(
-            hintText: "Guardia",
-            options: const ["A", "B", "C"],
-            isSearchable: false,
-            onChanged: (value) {},
-          ),
+          child: _buildDropdownGuardia(controller),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
-            hintText: "Estado de Entrenamiento",
-            options: const ["A", "B", "C"],
-            isSearchable: false,
-            onChanged: (value) {},
-          ),
+          child: _buildDropdownEstadoEntrenamiento(controller),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
-            hintText: "Condicion",
-            options: const ["A", "B", "C"],
-            isSearchable: false,
-            onChanged: (value) {},
-          ),
+          child: _buildDropdownCondicion(controller),
         ),
       ],
     );
@@ -172,14 +155,15 @@ class TrainingsPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Nombres y Apellidos del personal",
-            controller: controller.codigoMcpController,
+            controller: controller.nombresController,
           ),
         ),
         const SizedBox(
           width: 20,
         ),
         const Expanded(
-          flex: 1, // El espacio estará vacío para que ocupe solo la mitad
+          flex:
+              1, // El espacio estará vacío para que ocupe el espacio disponible
           child: SizedBox.shrink(),
         ),
       ],
@@ -191,8 +175,10 @@ class TrainingsPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton.icon(
-          onPressed: () {
+          onPressed: () async {
             controller.clearFields();
+            await controller.buscarEntrenamientos();
+            controller.isExpanded.value = false;
           },
           icon: const Icon(
             Icons.cleaning_services,
@@ -216,7 +202,7 @@ class TrainingsPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () async {
-            // await controller.searchPersonal();
+            await controller.buscarEntrenamientos();
             controller.isExpanded.value = false;
           },
           icon: const Icon(
@@ -274,19 +260,11 @@ class TrainingsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _buildSeccionResultadoBarraSuperior(),
+          _buildSeccionResultadoBarraSuperior(controller),
           const SizedBox(
             height: 20,
           ),
-          Obx(
-            () {
-              if (controller.entrenamientoResultados.isEmpty) {
-                return const Center(child: CircularProgressIndicator());
-              } else {
-                return _buildSeccionResultadoTabla(controller);
-              }
-            },
-          ),
+          _buildSeccionResultadoTabla(controller),
           const SizedBox(
             height: 20,
           ),
@@ -296,7 +274,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoBarraSuperior() {
+  Widget _buildSeccionResultadoBarraSuperior(TrainingsController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -306,7 +284,7 @@ class TrainingsPage extends StatelessWidget {
         ),
         ElevatedButton.icon(
           onPressed: () async {
-            //await controller.downloadExcel();
+            await controller.downloadExcel();
           },
           icon: const Icon(Icons.download,
               size: 18, color: AppTheme.primaryColor),
@@ -360,16 +338,38 @@ class TrainingsPage extends StatelessWidget {
                           Expanded(child: Text(entrenamiento.codigoMcp)),
                           Expanded(child: Text(entrenamiento.nombreCompleto)),
                           Expanded(child: Text(entrenamiento.guardia.nombre)),
-                          Expanded(child: Text(entrenamiento.estadoEntrenamiento.nombre)),
+                          Expanded(
+                              child: Text(
+                                  entrenamiento.estadoEntrenamiento.nombre)),
                           Expanded(child: Text(entrenamiento.modulo.nombre)),
                           Expanded(child: Text(entrenamiento.condicion.nombre)),
-                          Expanded(child: Text( entrenamiento.equipo.nombre)),
-                          Expanded(child: Text(DateFormat('dd/MM/yyyy').format(entrenamiento.fechaInicio)),),
-                          Expanded(child: Text( entrenamiento.entrenador.nombre)),
-                          Expanded(child: Text( entrenamiento.notaTeorica.toString())),
-                          Expanded(child: Text(  entrenamiento.notaPractica.toString())),
-                          Expanded(child: Text( entrenamiento.horasAcumuladas.toString())),
-                          Expanded(child: Text(entrenamiento.horasAcumuladas.toString())),
+                          Expanded(child: Text(entrenamiento.equipo.nombre)),
+                          Expanded(
+                            child: Text(DateFormat('dd/MM/yyyy')
+                                .format(entrenamiento.fechaInicio!)),
+                          ),
+                          Expanded(
+                              child: Text(entrenamiento.entrenador.nombre)),
+                          Expanded(
+                              child: Text(
+                            entrenamiento.notaTeorica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                              child: Text(
+                            entrenamiento.notaPractica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                              child: Text(
+                            entrenamiento.horasAcumuladas.toString(),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                              child: Text(
+                            entrenamiento.horasAcumuladas.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                         ],
                       ),
                     );
@@ -546,5 +546,122 @@ class TrainingsPage extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildDropdownEquipo(TrainingsController controller) {
+    return Obx(() {
+      if (controller.equipoOpciones.isEmpty) {
+        return const SizedBox(
+            height: 50, width: 50, child: CircularProgressIndicator());
+      }
+      List<MaestroDetalle> options = controller.equipoOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona Equipo',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedEquipoKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedEquipoKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedEquipoKey.value = selectedOption.key;
+          log('Equipo seleccionado - Key del Maestro: ${controller.selectedEquipoKey.value}, Valor: $value');
+        },
+      );
+    });
+  }
+
+  Widget _buildDropdownGuardia(TrainingsController controller) {
+    return Obx(() {
+      if (controller.guardiaOpciones.isEmpty) {
+        return const SizedBox(
+            height: 50, width: 50, child: CircularProgressIndicator());
+      }
+      List<MaestroDetalle> options = controller.guardiaOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona Guardia',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedGuardiaKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedGuardiaKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedGuardiaKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+        },
+      );
+    });
+  }
+
+  Widget _buildDropdownEstadoEntrenamiento(TrainingsController controller) {
+    return Obx(() {
+      if (controller.estadoEntrenamientoOpciones.isEmpty) {
+        return const SizedBox(
+            height: 50, width: 50, child: CircularProgressIndicator());
+      }
+      List<MaestroDetalle> options = controller.estadoEntrenamientoOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona Estado Entrenamiento',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedEstadoEntrenamientoKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key ==
+                    controller.selectedEstadoEntrenamientoKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedEstadoEntrenamientoKey.value = selectedOption.key;
+          log('Estado entrenamiento seleccionado - Key del Maestro: ${controller.selectedEstadoEntrenamientoKey.value}, Valor: $value');
+        },
+      );
+    });
+  }
+
+  Widget _buildDropdownCondicion(TrainingsController controller) {
+    return Obx(() {
+      if (controller.condicionOpciones.isEmpty) {
+        return const SizedBox(
+            height: 50, width: 50, child: CircularProgressIndicator());
+      }
+      List<MaestroDetalle> options = controller.condicionOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona condicion',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedCondicionKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedCondicionKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedCondicionKey.value = selectedOption.key;
+          log('Condicion seleccionada - Key del Maestro: ${controller.selectedCondicionKey.value}, Valor: $value');
+        },
+      );
+    });
   }
 }

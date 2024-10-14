@@ -1,11 +1,17 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
+import 'package:excel/excel.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
-import 'package:sgem/shared/modules/training.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
+
+import '../../../config/api/api.maestro.detail.dart';
 
 class TrainingsController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
@@ -16,6 +22,8 @@ class TrainingsController extends GetxController {
   DateTime? fechaTermino;
 
   final entrenamientoService = TrainingService();
+  final maestroDetalleService = MaestroDetalleService();
+//final moduloService = ModuloService();
   RxBool isExpanded = true.obs;
   var entrenamientoResultados = <EntrenamientoConsulta>[].obs;
 
@@ -25,6 +33,10 @@ class TrainingsController extends GetxController {
   var selectedEstadoEntrenamientoKey = RxnInt();
   var selectedCondicionKey = RxnInt();
 
+  RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
+  RxList<MaestroDetalle> equipoOpciones = <MaestroDetalle>[].obs;
+  RxList<MaestroDetalle> estadoEntrenamientoOpciones = <MaestroDetalle>[].obs;
+  RxList<MaestroDetalle> condicionOpciones = <MaestroDetalle>[].obs;
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
   var totalPages = 1.obs;
@@ -32,7 +44,10 @@ class TrainingsController extends GetxController {
 
   @override
   void onInit() {
-    //cargarGuardiaOptions();
+    cargarEquipo();
+    cargarGuardia();
+    cargarEstadoEntrenamiento();
+    cargarCondicion();
     buscarEntrenamientos(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
@@ -87,5 +102,185 @@ class TrainingsController extends GetxController {
     }
   }
 
-  void clearFields() {}
+  Future<void> downloadExcel() async {
+    var excel = Excel.createExcel();
+    excel.rename('Sheet1', 'Entrenamiento');
+
+    CellStyle headerStyle = CellStyle(
+      backgroundColorHex: ExcelColor.blue,
+      fontColorHex: ExcelColor.white,
+      bold: true,
+      horizontalAlign: HorizontalAlign.Center,
+      verticalAlign: VerticalAlign.Center,
+    );
+    List<String> headers = [
+      'CODIGO_MCP',
+      'NOMBRES Y APELLIDOS',
+      'GUARDIA',
+      'ESTADO_ENTRENAMIENTO',
+      'ESTADO_AVANCE',
+      ' CONDICIÓN',
+      ' EQUIPO',
+      'FECHA_INICIO',
+      'FECHA_FIN',
+      'ENTRENADOR_RESPONSABLE',
+      'NOTA_TEÓRICA',
+      'NOTA_PRÁCTICA',
+      'HORAS_ACUMULADAS'
+    ];
+
+    for (int i = 0; i < headers.length; i++) {
+      var cell = excel.sheets['Entrenamiento']!
+          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
+      cell.value = TextCellValue(headers[i]);
+      cell.cellStyle = headerStyle;
+
+      excel.sheets['Entrenamiento']!
+          .setColumnWidth(i, headers[i].length.toDouble() + 5);
+    }
+
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
+    for (int rowIndex = 0;
+        rowIndex < entrenamientoResultados.length;
+        rowIndex++) {
+      var entrenamiento = entrenamientoResultados[rowIndex];
+      List<CellValue> row = [
+        TextCellValue(entrenamiento.codigoMcp),
+        TextCellValue(entrenamiento.nombreCompleto),
+        TextCellValue(entrenamiento.guardia.nombre),
+        TextCellValue(entrenamiento.estadoEntrenamiento.nombre),
+        TextCellValue(entrenamiento.modulo.nombre),
+        TextCellValue(entrenamiento.condicion.nombre),
+        TextCellValue(entrenamiento.equipo.nombre),
+        entrenamiento.fechaInicio != null
+            ? TextCellValue(dateFormat.format(entrenamiento.fechaInicio!))
+            : TextCellValue(''),
+        entrenamiento.fechaTermino != null
+            ? TextCellValue(dateFormat.format(entrenamiento.fechaTermino!))
+            : TextCellValue(''),
+        TextCellValue(entrenamiento.entrenador.nombre),
+        TextCellValue(entrenamiento.notaTeorica.toString()),
+        TextCellValue(entrenamiento.notaPractica.toString()),
+        TextCellValue(entrenamiento.horasAcumuladas.toString()),
+      ];
+
+      for (int colIndex = 0; colIndex < row.length; colIndex++) {
+        var cell = excel.sheets['Entrenamiento']!.cell(
+            CellIndex.indexByColumnRow(
+                columnIndex: colIndex, rowIndex: rowIndex + 1));
+        cell.value = row[colIndex];
+
+        double contentWidth = row[colIndex].toString().length.toDouble();
+        if (contentWidth >
+            excel.sheets['Entrenamiento']!.getColumnWidth(colIndex)) {
+          excel.sheets['Entrenamiento']!
+              .setColumnWidth(colIndex, contentWidth + 5);
+        }
+      }
+    }
+
+    var excelBytes = excel.encode();
+    Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
+
+    String fileName = generateExcelFileName();
+    await FileSaver.instance.saveFile(
+        name: fileName,
+        bytes: uint8ListBytes,
+        ext: "xlsx",
+        mimeType: MimeType.microsoftExcel);
+  }
+
+  String generateExcelFileName() {
+    final now = DateTime.now();
+    final day = now.day.toString().padLeft(2, '0');
+    final month = now.month.toString().padLeft(2, '0');
+    final year = now.year.toString().substring(2);
+    final hour = now.hour.toString().padLeft(2, '0');
+    final minute = now.minute.toString().padLeft(2, '0');
+    final second = now.second.toString().padLeft(2, '0');
+
+    return 'ENTRENAMIENTOS_MINA_$day$month$year$hour$minute$second.xlsx';
+  }
+
+  Future<void> cargarEquipo() async {
+    try {
+      var response = await maestroDetalleService
+          .listarMaestroDetallePorMaestro(5); //Maestro de Equipos
+
+      if (response.success && response.data != null) {
+        equipoOpciones.assignAll(response.data!);
+
+        log('Equipos opciones cargadas correctamente: $equipoOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de guardia maestro: $e');
+    }
+  }
+
+  Future<void> cargarGuardia() async {
+    try {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+
+      if (response.success && response.data != null) {
+        guardiaOpciones.assignAll(response.data!);
+
+        log('Guardia opciones cargadas correctamente: $guardiaOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de guardia maestro: $e');
+    }
+  }
+
+  Future<void> cargarEstadoEntrenamiento() async {
+    try {
+      var response = await maestroDetalleService.listarMaestroDetallePorMaestro(
+          4); //Catalogo de Estado de Entrenamiento
+
+      if (response.success && response.data != null) {
+        estadoEntrenamientoOpciones.assignAll(response.data!);
+
+        log('Estado entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de estado entrenamiento maestro: $e');
+    }
+  }
+
+  Future<void> cargarCondicion() async {
+    try {
+      var response = await maestroDetalleService.listarMaestroDetallePorMaestro(
+          3); //Catalogo de condicion de entrenamiento
+
+      if (response.success && response.data != null) {
+        condicionOpciones.assignAll(response.data!);
+
+        log('Condicion de entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de condicion de entrenamiento maestro: $e');
+    }
+  }
+
+  void clearFields() {
+    codigoMcpController.clear();
+    selectedEquipoKey.value = null;
+
+    selectedGuardiaKey.value=null;
+    selectedEstadoEntrenamientoKey.value=null;
+    selectedCondicionKey.value=null;
+    rangoFechaController.clear();
+    fechaInicio=null;
+    fechaTermino=null;
+    nombresController.clear();
+  }
 }

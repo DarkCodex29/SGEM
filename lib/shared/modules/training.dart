@@ -85,12 +85,11 @@ class Entrenamiento {
       condicion: json['Condicion'] != null
           ? Condicion.fromJson(json['Condicion'])
           : null,
-      fechaInicio: DateTime.tryParse(json['FechaInicio'] ?? ''),
-      fechaTermino: DateTime.tryParse(json['FechaTermino'] ?? ''),
-      fechaExamen: DateTime.tryParse(json['FechaExamen'] ?? ''),
-      fechaRealMonitoreo: DateTime.tryParse(json['FechaRealMonitoreo'] ?? ''),
-      fechaProximoMonitoreo:
-          DateTime.tryParse(json['FechaProximoMonitoreo'] ?? ''),
+      fechaInicio: _parseDate(json['FechaInicio']),
+      fechaTermino: _parseDate(json['FechaTermino']),
+      fechaExamen: _parseDate(json['FechaExamen']),
+      fechaRealMonitoreo: _parseDate(json['FechaRealMonitoreo']),
+      fechaProximoMonitoreo: _parseDate(json['FechaProximoMonitoreo']),
       inNotaTeorica: json['InNotaTeorica'],
       inNotaPractica: json['InNotaPractica'],
       inTotalHoras: json['InTotalHoras'],
@@ -137,6 +136,14 @@ class Entrenamiento {
       'MotivoEliminado': motivoEliminado,
     };
   }
+}
+
+DateTime? _parseDate(String? dateString) {
+  if (dateString == null || dateString.isEmpty) return null;
+  final milliseconds =
+      int.tryParse(dateString.replaceAll(RegExp(r'[^\d]'), ''));
+  if (milliseconds == null) return null;
+  return DateTime.fromMillisecondsSinceEpoch(milliseconds);
 }
 
 class Modulo {

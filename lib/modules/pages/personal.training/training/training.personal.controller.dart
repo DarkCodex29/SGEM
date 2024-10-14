@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.training.dart';
+import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/training.dart';
 
 class TrainingPersonalController extends GetxController {
@@ -31,6 +32,13 @@ class TrainingPersonalController extends GetxController {
           trainingList[index] = training;
           trainingList.refresh();
         }
+        EntrenamientoNuevoController controller =
+            Get.put(EntrenamientoNuevoController());
+        await controller.registrarArchivos(training.key);
+        controller.archivosAdjuntos.clear();
+        controller.documentoAdjuntoNombre.value = '';
+        controller.documentoAdjuntoBytes.value = null;
+        
         Get.snackbar(
           'Éxito',
           'Entrenamiento actualizado correctamente',

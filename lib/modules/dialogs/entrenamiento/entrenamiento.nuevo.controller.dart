@@ -40,9 +40,11 @@ class EntrenamientoNuevoController extends GetxController {
   });
 
   final trainingService = TrainingService();
+
   final archivoService = ArchivoService();
 
   var isLoading = false.obs;
+
   var documentoAdjuntoNombre = ''.obs;
   var documentoAdjuntoBytes = Rxn<Uint8List>();
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
@@ -101,53 +103,46 @@ class EntrenamientoNuevoController extends GetxController {
     }
   }
 
-  void eliminarDocumento() {
+  void eliminarArchivo(String nombreArchivo) {
+    archivosAdjuntos.removeWhere((archivo) =>
+        archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
     documentoAdjuntoNombre.value = '';
-    documentoAdjuntoBytes.value = null;
-    log('Documento eliminado');
+    log('Archivo $nombreArchivo eliminado');
   }
 
-  void adjuntarDocumento() async {
+  Future<void> adjuntarDocumentos() async {
     try {
-      final resultado = await seleccionarArchivo();
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
+      );
 
-      if (resultado != null) {
-        documentoAdjuntoNombre.value = resultado['nombre'];
-        documentoAdjuntoBytes.value = resultado['bytes'];
-        log('Documento adjuntado correctamente: ${documentoAdjuntoNombre.value}');
+      if (result != null) {
+        for (var file in result.files) {
+          if (file.bytes != null) {
+            Uint8List fileBytes = file.bytes!;
+            String fileName = file.name;
+            archivosAdjuntos.add({
+              'nombre': fileName,
+              'bytes': fileBytes,
+              'nuevo': true,
+            });
+            documentoAdjuntoNombre.value = fileName;
+            log('Documento adjuntado correctamente: $fileName');
+          }
+        }
       } else {
-        log('No se seleccionó ningún archivo');
+        log('No se seleccionaron archivos');
       }
     } catch (e) {
-      log('Error al adjuntar documento: $e');
+      log('Error al adjuntar documentos: $e');
     }
   }
 
   DateTime transformDate(String date) {
     DateTime dateTime = DateFormat("yyyy-MM-dd").parse(date);
     return dateTime;
-  }
-
-  Future<Map<String, dynamic>?> seleccionarArchivo() async {
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
-      );
-
-      if (result != null && result.files.single.bytes != null) {
-        Uint8List fileBytes = result.files.single.bytes!;
-        String fileName = result.files.single.name;
-        return {
-          'nombre': fileName,
-          'bytes': fileBytes,
-        };
-      }
-    } catch (e) {
-      log('Error al seleccionar el archivo: $e');
-      return null;
-    }
-    return null;
   }
 
   Future<void> registrarArchivos(int inOrigenKey) async {
@@ -160,7 +155,6 @@ class EntrenamientoNuevoController extends GetxController {
           String datosBase64 = base64Encode(archivo['bytes']);
           String extension = archivo['nombre'].split('.').last;
           String mimeType = _determinarMimeType(extension);
-
           final response = await archivoService.registrarArchivo(
             key: 0,
             nombre: archivo['nombre'],
@@ -171,7 +165,7 @@ class EntrenamientoNuevoController extends GetxController {
             inOrigen: 2, // TABLA Entrenamiento
             inOrigenKey: inOrigenKey,
           );
-
+          log('Response..................: ${response.data}');
           if (response.success) {
             archivo['nuevo'] = false;
           }
@@ -234,7 +228,6 @@ class EntrenamientoNuevoController extends GetxController {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);
       if (response.success && response.data != null) {
-        await registrarArchivos(register.inPersona!); 
         controllerPersonal.fetchTrainings(register.inPersona!);
         callback(true);
       } else {

@@ -46,8 +46,8 @@ class NewPersonalController extends GetxController {
 
   var documentoAdjuntoNombre = ''.obs;
   var documentoAdjuntoBytes = Rxn<Uint8List>();
-
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
+
   final ArchivoService archivoService = ArchivoService();
 
   RxBool isLoadingDni = false.obs;
@@ -323,7 +323,7 @@ class NewPersonalController extends GetxController {
             archivosAdjuntos.add({
               'nombre': fileName,
               'bytes': fileBytes,
-              'new': true,
+              'nuevo': true,
             });
             log('Documento adjuntado correctamente: $fileName');
           }

@@ -68,7 +68,7 @@ Future<Uint8List> loadImageSVG(BuildContext context, String path) async {
     colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
   ).bytesLoader.loadBytes(context);
    
-  return await data.buffer.asUint8List();
+  return data.buffer.asUint8List();
 }
 
 pw.Widget userFirm(String label) {

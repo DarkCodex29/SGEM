@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/', page: () => const HomePage()),
         //GetPage(name: '/buscarEntrenamiento', page: () => const PersonalSearchPage()),
       ],
-      unknownRoute: GetPage(name: '/notfound', page: () => NotFoundPage()),
+      unknownRoute: GetPage(name: '/notfound', page: () => const NotFoundPage()),
       home: const HomePage(),
     );
   }

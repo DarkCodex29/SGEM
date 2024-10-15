@@ -10,7 +10,7 @@ extension WidgetExtension on Widget {
   }
 
   Widget size(double? height, double? width) {
-    return Container(
+    return SizedBox(
       height: height,
       width: width,
       child: this

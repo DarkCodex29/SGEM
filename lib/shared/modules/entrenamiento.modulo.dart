@@ -115,7 +115,6 @@ class EntrenamientoModulo {
         motivoEliminado: json["MotivoEliminado"] ?? '',
       );
 
-  /// Método para convertir el objeto EntrenamientoModulo a un JSON
   Map<String, dynamic> toJson() => {
         "Key": key,
         "InTipoActividad": inTipoActividad,

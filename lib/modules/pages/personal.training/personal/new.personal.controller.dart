@@ -185,40 +185,40 @@ class NewPersonalController extends GetxController {
     try {
       isSaving.value = true;
 
-      String _obtenerPrimerNombre(String nombres) {
+      String obtenerPrimerNombre(String nombres) {
         List<String> nombresSplit = nombres.split(' ');
         return nombresSplit.isNotEmpty ? nombresSplit.first : '';
       }
 
-      String _obtenerSegundoNombre(String nombres) {
+      String obtenerSegundoNombre(String nombres) {
         List<String> nombresSplit = nombres.split(' ');
         return nombresSplit.length > 1 ? nombresSplit[1] : '';
       }
 
-      String _verificarTexto(String texto) {
+      String verificarTexto(String texto) {
         return texto.isNotEmpty ? texto : '';
       }
 
-      DateTime? _parsearFecha(String fechaTexto) {
+      DateTime? parsearFecha(String fechaTexto) {
         return fechaTexto.isNotEmpty
             ? DateFormat('yyyy-MM-dd').parse(fechaTexto)
             : null;
       }
 
       personalData!
-        ..primerNombre = _obtenerPrimerNombre(nombresController.text)
-        ..segundoNombre = _obtenerSegundoNombre(nombresController.text)
-        ..apellidoPaterno = _verificarTexto(apellidoPaternoController.text)
-        ..apellidoMaterno = _verificarTexto(apellidoMaternoController.text)
-        ..cargo = _verificarTexto(puestoTrabajoController.text)
-        ..fechaIngreso = _parsearFecha(fechaIngresoController.text)
-        ..licenciaConducir = _verificarTexto(codigoLicenciaController.text)
-        ..fechaIngresoMina = _parsearFecha(fechaIngresoMinaController.text)
-        ..licenciaVencimiento = _parsearFecha(fechaRevalidacionController.text)
+        ..primerNombre = obtenerPrimerNombre(nombresController.text)
+        ..segundoNombre = obtenerSegundoNombre(nombresController.text)
+        ..apellidoPaterno = verificarTexto(apellidoPaternoController.text)
+        ..apellidoMaterno = verificarTexto(apellidoMaternoController.text)
+        ..cargo = verificarTexto(puestoTrabajoController.text)
+        ..fechaIngreso = parsearFecha(fechaIngresoController.text)
+        ..licenciaConducir = verificarTexto(codigoLicenciaController.text)
+        ..fechaIngresoMina = parsearFecha(fechaIngresoMinaController.text)
+        ..licenciaVencimiento = parsearFecha(fechaRevalidacionController.text)
         ..guardia.key = selectedGuardiaKey.value ?? 0
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
-        ..restricciones = _verificarTexto(restriccionesController.text);
+        ..restricciones = verificarTexto(restriccionesController.text);
 
       if (accion == 'eliminar') {
         personalData!

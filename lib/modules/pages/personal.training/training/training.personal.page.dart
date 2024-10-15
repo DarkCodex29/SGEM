@@ -7,6 +7,7 @@ import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controlle
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
@@ -306,21 +307,113 @@ class TrainingPersonalPage extends StatelessWidget {
                 title: const Text('Módulos del entrenamiento'),
                 children: modulos.isNotEmpty
                     ? modulos.map((modulo) {
-                        return ListTile(
-                          title: Text(modulo.modulo.nombre),
-                          subtitle: Text('Horas: ${modulo.inHorasAcumuladas}'),
-                        );
+                        return _buildModuleDetails(modulo);
                       }).toList()
                     : [
                         const Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Text('No hay módulos disponibles'),
-                        ),
+                        )
                       ],
               );
             }),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildModuleDetails(EntrenamientoModulo modulo) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 36),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  modulo.modulo.nombre,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Horas de entrenamiento:',
+                  style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  '${modulo.inHorasAcumuladas}/${modulo.inTotalHoras}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Horas minestar:',
+                  style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  '${modulo.inHorasMinestar}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Nota teórica:',
+                  style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  '${modulo.inNotaTeorica}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Nota práctica:',
+                  style: TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                Text(
+                  '${modulo.inNotaPractica}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

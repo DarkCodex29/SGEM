@@ -6,10 +6,9 @@ import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import 'package:sgem/shared/modules/training.dart';
 
 class TrainingPersonalController extends GetxController {
-  var trainingList = <Entrenamiento>[].obs;
+  var trainingList = <EntrenamientoModulo>[].obs;
   final TrainingService trainingService = TrainingService();
   final ModuloMaestroService moduloMaestroService = ModuloMaestroService();
 
@@ -21,7 +20,7 @@ class TrainingPersonalController extends GetxController {
           await trainingService.listarEntrenamientoPorPersona(personId);
       if (response.success) {
         trainingList.value =
-            response.data!.map((json) => Entrenamiento.fromJson(json)).toList();
+            response.data!.map((json) => EntrenamientoModulo.fromJson(json)).toList();
         await _fetchModulosParaEntrenamientos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los entrenamientos');
@@ -52,7 +51,7 @@ class TrainingPersonalController extends GetxController {
     return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
 
-  Future<bool> actualizarEntrenamiento(Entrenamiento training) async {
+  Future<bool> actualizarEntrenamiento(EntrenamientoModulo training) async {
     try {
       final response = await trainingService.actualizarEntrenamiento(training);
       if (response.success) {
@@ -98,18 +97,11 @@ class TrainingPersonalController extends GetxController {
     }
   }
 
-  Future<bool> eliminarEntrenamiento(Entrenamiento training) async {
+  Future<bool> eliminarEntrenamiento(EntrenamientoModulo training) async {
     try {
       final response = await trainingService.eliminarEntrenamiento(training);
       if (response.success) {
-        trainingList.remove(training);
-        Get.snackbar(
-          'Éxito',
-          'Entrenamiento eliminado correctamente',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        trainingList.remove(training); 
         return true;
       } else {
         Get.snackbar(
@@ -137,13 +129,12 @@ class TrainingPersonalController extends GetxController {
     try {
       final response = await moduloMaestroService.eliminarModulo(modulo);
       if (response.success) {
-        modulosPorEntrenamiento[modulo.key]?.remove(modulo);
-        modulosPorEntrenamiento.refresh();
+        await _fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento);
         return true;
       } else {
         Get.snackbar(
           'Error',
-          'No se pudo eliminar el módulo',
+          response.message ?? 'No se pudo eliminar el módulo',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,
@@ -159,6 +150,22 @@ class TrainingPersonalController extends GetxController {
         colorText: Colors.white,
       );
       return false;
+    }
+  }
+
+  Future<void> _fetchModulosPorEntrenamiento(int entrenamientoKey) async {
+    try {
+      final response = await moduloMaestroService
+          .listarModulosPorEntrenamiento(entrenamientoKey);
+      if (response.success) {
+        modulosPorEntrenamiento[entrenamientoKey] =
+            RxList<EntrenamientoModulo>(response.data!);
+        modulosPorEntrenamiento.refresh();
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar los módulos actualizados');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos');
     }
   }
 }

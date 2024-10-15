@@ -45,8 +45,7 @@ class PersonalService {
   }
 
   Future<Map<String, dynamic>> buscarPersonalPorId(String id) async {
-    final url =
-        '$baseUrl/Personal/ObtenerPersonalPorId?id=$id';
+    final url = '$baseUrl/Personal/ObtenerPersonalPorId?id=$id';
 
     try {
       final response = await dio.get(
@@ -302,6 +301,29 @@ class PersonalService {
       }
     } on DioException catch (e) {
       log('Error al obtener la foto del personal. idOrigen: $idOrigen, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<List<Personal>>> listarEntrenadores() async {
+    final url = '$baseUrl/Personal/ListarEntrenadores';
+
+    try {
+      log('Solicitando lista de entrenadores...');
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
+
+      log('Respuesta recibida para listarEntrenadores: ${response.data}');
+
+      final entrenadoresList = (response.data as List)
+          .map((entrenadorJson) => Personal.fromJson(entrenadorJson))
+          .toList();
+
+      return ResponseHandler.handleSuccess<List<Personal>>(entrenadoresList);
+    } on DioException catch (e) {
+      log('Error al listar entrenadores: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

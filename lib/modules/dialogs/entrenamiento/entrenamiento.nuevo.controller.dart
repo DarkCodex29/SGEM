@@ -10,8 +10,8 @@ import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
 class EntrenamientoNuevoController extends GetxController {
@@ -227,12 +227,13 @@ class EntrenamientoNuevoController extends GetxController {
     }
   }
 
-  void registertraining(Entrenamiento register, Function(bool) callback) async {
+  void registertraining(
+      EntrenamientoModulo register, Function(bool) callback) async {
     try {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);
       if (response.success && response.data != null) {
-        controllerPersonal.fetchTrainings(register.inPersona!);
+        controllerPersonal.fetchTrainings(register.inPersona);
         callback(true);
       } else {
         log('Error al registrar entrenamiento: ${response.message}');

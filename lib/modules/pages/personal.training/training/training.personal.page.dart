@@ -8,7 +8,6 @@ import 'package:sgem/modules/pages/personal.training/personal.training.controlle
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
@@ -214,7 +213,8 @@ class TrainingPersonalPage extends StatelessWidget {
     });
   }
 
-  Widget _buildTrainingCard(Entrenamiento training, BuildContext context) {
+  Widget _buildTrainingCard(
+      EntrenamientoModulo training, BuildContext context) {
     return Card(
       color: const Color(0xFFF2F6FF),
       elevation: 2,
@@ -237,7 +237,7 @@ class TrainingPersonalPage extends StatelessWidget {
                     ),
                     _buildCustomTextField(
                       'Estado de avance actual',
-                      training.modulo?.nombre ?? 'Sin módulo',
+                      training.modulo.nombre,
                     ),
                   ],
                 ),
@@ -246,11 +246,11 @@ class TrainingPersonalPage extends StatelessWidget {
                   children: [
                     _buildCustomTextField(
                       'Equipo',
-                      training.equipo?.nombre ?? 'Sin equipo',
+                      training.equipo.nombre,
                     ),
                     _buildCustomTextField(
                       'Entrenador',
-                      training.entrenador?.nombre ?? 'Sin entrenador',
+                      training.entrenador.nombre,
                     ),
                   ],
                 ),
@@ -264,7 +264,7 @@ class TrainingPersonalPage extends StatelessWidget {
                         const SizedBox(width: 4),
                         _buildCustomTextField(
                           'Estado entrenamiento',
-                          _getEstadoEntrenamiento(training.inEstado!),
+                          _getEstadoEntrenamiento(training.inEstado),
                         ),
                       ],
                     ),
@@ -295,7 +295,7 @@ class TrainingPersonalPage extends StatelessWidget {
                 ),
                 _buildCustomTextField(
                   'Condición',
-                  training.condicion?.nombre ?? 'Sin condición',
+                  training.condicion.nombre,
                 ),
                 _buildActionButtons(context, training),
               ],
@@ -501,7 +501,8 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, Entrenamiento training) {
+  Widget _buildActionButtons(
+      BuildContext context, EntrenamientoModulo training) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -513,7 +514,7 @@ class TrainingPersonalPage extends StatelessWidget {
                 EntrenamientoNuevoController controllerModal =
                     Get.put(EntrenamientoNuevoController());
                 await controllerModal.getEquiposAndConditions();
-                final Entrenamiento? updatedTraining = await showDialog(
+                final EntrenamientoModulo? updatedTraining = await showDialog(
                   context: context,
                   builder: (context) {
                     return GestureDetector(
@@ -604,7 +605,6 @@ class TrainingPersonalPage extends StatelessWidget {
                 try {
                   bool success =
                       await controller.eliminarEntrenamiento(training);
-
                   if (success) {
                     await showDialog(
                       context: context,
@@ -635,7 +635,7 @@ class TrainingPersonalPage extends StatelessWidget {
               icon: const Icon(Icons.add_circle_outline,
                   color: AppTheme.primaryColor),
               onPressed: () async {
-                await showModalBottomSheet(
+                final bool? success = await showModalBottomSheet(
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   enableDrag: false,
@@ -646,6 +646,7 @@ class TrainingPersonalPage extends StatelessWidget {
                       child: Padding(
                         padding: MediaQuery.of(context).viewInsets,
                         child: EntrenamientoModuloNuevo(
+                          entrenamiento: training,
                           onCancel: () {
                             Navigator.pop(context);
                           },
@@ -654,6 +655,10 @@ class TrainingPersonalPage extends StatelessWidget {
                     );
                   },
                 );
+                if (success != null && success) {
+                  controller.fetchTrainings(
+                      controllerPersonal.selectedPersonal.value!.key);
+                }
               },
             ),
           ],

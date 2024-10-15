@@ -108,10 +108,10 @@ class ModuloMaestroService {
 
   Future<ResponseHandler<bool>> registrarModulo(
       EntrenamientoModulo entrenamientoModulo) async {
-    log('Registrando nuevo entrenamiento: ${jsonEncode(entrenamientoModulo.toJson())}');
+    log('Registrando nuevo modulo: ${jsonEncode(entrenamientoModulo.toJson())}');
     const url = '${ConfigFile.apiUrl}/modulo/RegistrarModulo';
     try {
-      log('Registrando nuevo entrenamiento: ${jsonEncode(entrenamientoModulo.toJson())}');
+      log('Registrando nuevo modulo: ${jsonEncode(entrenamientoModulo.toJson())}');
       final response = await dio.post(
         url,
         data: jsonEncode(entrenamientoModulo.toJson()),

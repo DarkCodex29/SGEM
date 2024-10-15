@@ -92,10 +92,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
-    if (!validar(context)) {
-      _mostrarErroresValidacion(context, errores);
-      return false;
-    }
+    // if (!validar(context)) {
+    //   _mostrarErroresValidacion(context, errores);
+    //   return false;
+    // }
 
     try {
       return true;

@@ -56,8 +56,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 
-  Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
+  Future<DateTime?> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -65,7 +64,9 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.text = DateFormat('yyyy-MM-dd').format(picked);
+      return picked;
+    } else {
+      return null;
     }
   }
 
@@ -150,9 +151,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             controller: controller.fechaInicioController,
             isRequired: true,
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: () {
-              _selectDate(context,
-                  controller.fechaInicioController); //cambiar controller
+            onIconPressed: ()async  {
+              controller.fechaInicio =
+                 await  _selectDate(context);
+              controller.fechaInicioController.text=DateFormat('dd/MM/yyyy').format(controller.fechaInicio!);
             },
           ),
         ),
@@ -164,9 +166,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             label: 'Fecha de termino:',
             controller: controller.fechaTerminoController, //cambiar controller
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: () {
-              _selectDate(context,
-                  controller.fechaTerminoController); //cambiar controller
+            onIconPressed: () async{
+              controller.fechaTermino =
+                  await _selectDate(context);
+              controller.fechaTerminoController.text=DateFormat('dd/MM/yyyy').format(controller.fechaTermino!);
             },
           ),
         ),
@@ -225,9 +228,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               label: 'Fecha de examen:',
               controller: controller.fechaExamenController, //cambiar controller
               icon: const Icon(Icons.calendar_month),
-              onIconPressed: () {
-                _selectDate(context,
-                    controller.fechaExamenController); //cambiar controller
+              onIconPressed: ()async {
+                controller.fechaExamen =
+                await _selectDate(context);
+                controller.fechaExamenController.text=DateFormat('dd/MM/yyyy').format(controller.fechaExamen!);
               },
             ),
           ],

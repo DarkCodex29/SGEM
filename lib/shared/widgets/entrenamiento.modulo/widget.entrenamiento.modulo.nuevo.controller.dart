@@ -110,9 +110,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: 0,
       inTipoActividad: 3,
-      inActividadEntrenamiento: 11,
-      inPersona: 2,
-      inEntrenador: 1,
+      inActividadEntrenamiento: 11,// Hay que pasar de la ventana previa
+      inPersona: 2,// Hay que pasar de la ventana previa
+      inEntrenador: 1,// Hay que pasar de la busqueda debe ser key de origen InPersonalOrigen
       entrenador: Entidad(key: 0, nombre: ' '),
       fechaInicio: fechaInicio,
       fechaTermino: fechaTermino,

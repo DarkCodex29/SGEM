@@ -137,8 +137,7 @@ class TrainingPersonalController extends GetxController {
     try {
       final response = await moduloMaestroService.eliminarModulo(modulo);
       if (response.success) {
-        modulosPorEntrenamiento[modulo.inActividadEntrenamiento]
-            ?.remove(modulo);
+        modulosPorEntrenamiento[modulo.key]?.remove(modulo);
         modulosPorEntrenamiento.refresh();
         return true;
       } else {

@@ -304,7 +304,9 @@ class TrainingPersonalPage extends StatelessWidget {
               final modulos =
                   controller.obtenerModulosPorEntrenamiento(training.key);
               return ExpansionTile(
-                title: const Text('Módulos del entrenamiento'),
+                title: const Text('Módulos del entrenamiento',
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 children: modulos.isNotEmpty
                     ? modulos.map((modulo) {
                         return _buildModuleDetails(modulo);
@@ -352,8 +354,7 @@ class TrainingPersonalPage extends StatelessWidget {
               children: [
                 const Text(
                   'Horas de entrenamiento:',
-                  style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 Text(
                   '${modulo.inHorasAcumuladas}/${modulo.inTotalHoras}',
@@ -369,8 +370,7 @@ class TrainingPersonalPage extends StatelessWidget {
               children: [
                 const Text(
                   'Horas minestar:',
-                  style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 Text(
                   '${modulo.inHorasMinestar}',
@@ -386,8 +386,7 @@ class TrainingPersonalPage extends StatelessWidget {
               children: [
                 const Text(
                   'Nota teórica:',
-                  style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 Text(
                   '${modulo.inNotaTeorica}',
@@ -403,8 +402,7 @@ class TrainingPersonalPage extends StatelessWidget {
               children: [
                 const Text(
                   'Nota práctica:',
-                  style: TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 Text(
                   '${modulo.inNotaPractica}',

@@ -73,4 +73,33 @@ class ModuloMaestroService {
       return ResponseHandler.handleFailure<List<EntrenamientoModulo>>(e);
     }
   }
+
+  Future<ResponseHandler<bool>> eliminarModulo(
+      EntrenamientoModulo modulo) async {
+    const url = '${ConfigFile.apiUrl}/modulo/EliminarModulo';
+
+    try {
+      final response = await dio.delete(
+        url,
+        data: modulo.toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return ResponseHandler.handleSuccess<bool>(true);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al eliminar el módulo',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<bool>(e);
+    }
+  }
 }

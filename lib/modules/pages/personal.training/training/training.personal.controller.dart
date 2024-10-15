@@ -132,4 +132,34 @@ class TrainingPersonalController extends GetxController {
       return false;
     }
   }
+
+  Future<bool> eliminarModulo(EntrenamientoModulo modulo) async {
+    try {
+      final response = await moduloMaestroService.eliminarModulo(modulo);
+      if (response.success) {
+        modulosPorEntrenamiento[modulo.inActividadEntrenamiento]
+            ?.remove(modulo);
+        modulosPorEntrenamiento.refresh();
+        return true;
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el módulo',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return false;
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Ocurrió un problema al eliminar el módulo',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+  }
 }

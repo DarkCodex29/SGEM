@@ -329,8 +329,7 @@ class TrainingPersonalPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 36),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             flex: 2,
@@ -410,6 +409,92 @@ class TrainingPersonalPage extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
+                onPressed: () {
+                  Get.snackbar(
+                      'Editar módulo', 'Módulo actualizado correctamente',
+                      colorText: Colors.white, backgroundColor: Colors.green);
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () async {
+                  String motivoEliminacion = '';
+                  await showDialog(
+                    context: Get.context!,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: DeleteReasonWidget(
+                            entityType: 'módulo',
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                            onConfirm: (motivo) {
+                              motivoEliminacion = motivo;
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  if (motivoEliminacion.isEmpty) return;
+
+                  bool confirmarEliminar = false;
+                  await showDialog(
+                    context: Get.context!,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: ConfirmDeleteWidget(
+                            itemName: 'módulo',
+                            entityType: '',
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                            onConfirm: () {
+                              confirmarEliminar = true;
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+
+                  if (!confirmarEliminar) return;
+
+                  bool success = await controller.eliminarModulo(modulo);
+
+                  if (success) {
+                    await showDialog(
+                      context: Get.context!,
+                      builder: (context) {
+                        return const SuccessDeleteWidget();
+                      },
+                    );
+                  } else {
+                    ScaffoldMessenger.of(Get.context!).showSnackBar(
+                      const SnackBar(
+                        content: Text("Error al eliminar el módulo."),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),

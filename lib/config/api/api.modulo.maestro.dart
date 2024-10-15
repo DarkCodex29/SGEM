@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 
 class ModuloMaestroService {
@@ -45,24 +46,23 @@ class ModuloMaestroService {
     }
   }
 
-  Future<ResponseHandler<List<ModuloMaestro>>> listarModulosPorEntrenamiento(
-      int entrenamientoId) async {
+  Future<ResponseHandler<List<EntrenamientoModulo>>>
+      listarModulosPorEntrenamiento(int entrenamientoId) async {
     final url =
         '${ConfigFile.apiUrl}/modulo/ListarModulosPorEntrenamiento/$entrenamientoId';
 
     try {
       final response = await dio.get(
         url,
-        options: Options(
-          followRedirects: false,
-        ),
+        options: Options(followRedirects: false),
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        List<ModuloMaestro> modulos = List<ModuloMaestro>.from(
-          response.data.map((json) => ModuloMaestro.fromJson(json)),
+        List<EntrenamientoModulo> modulos = List<EntrenamientoModulo>.from(
+          response.data.map((json) => EntrenamientoModulo.fromJson(json)),
         );
-        return ResponseHandler.handleSuccess<List<ModuloMaestro>>(modulos);
+        return ResponseHandler.handleSuccess<List<EntrenamientoModulo>>(
+            modulos);
       } else {
         return ResponseHandler(
           success: false,
@@ -70,7 +70,7 @@ class ModuloMaestroService {
         );
       }
     } on DioException catch (e) {
-      return ResponseHandler.handleFailure<List<ModuloMaestro>>(e);
+      return ResponseHandler.handleFailure<List<EntrenamientoModulo>>(e);
     }
   }
 }

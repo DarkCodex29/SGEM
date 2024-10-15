@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
-import 'package:sgem/shared/modules/modulo.maestro.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/training.dart';
 
 class TrainingPersonalController extends GetxController {
@@ -13,7 +13,7 @@ class TrainingPersonalController extends GetxController {
   final TrainingService trainingService = TrainingService();
   final ModuloMaestroService moduloMaestroService = ModuloMaestroService();
 
-  var modulosPorEntrenamiento = <int, RxList<ModuloMaestro>>{}.obs;
+  var modulosPorEntrenamiento = <int, RxList<EntrenamientoModulo>>{}.obs;
 
   Future<void> fetchTrainings(int personId) async {
     try {
@@ -38,30 +38,17 @@ class TrainingPersonalController extends GetxController {
             .listarModulosPorEntrenamiento(entrenamiento.key);
         log('Modulos por entrenamiento: ${response.data}');
         if (response.success) {
-          if (modulosPorEntrenamiento.containsKey(entrenamiento.key)) {
-            modulosPorEntrenamiento[entrenamiento.key]!.assignAll(
-              response.data!
-                  .map((json) =>
-                      ModuloMaestro.fromJson(json as Map<String, dynamic>))
-                  .toList(),
-            );
-          } else {
-            modulosPorEntrenamiento[entrenamiento.key] = RxList<ModuloMaestro>(
-              response.data!
-                  .map((json) =>
-                      ModuloMaestro.fromJson(json as Map<String, dynamic>))
-                  .toList(),
-            );
-          }
+          modulosPorEntrenamiento[entrenamiento.key] =
+              RxList<EntrenamientoModulo>(response.data!);
         }
       } catch (e) {
-        Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos');
+        log('Error al cargar los módulos: $e');
+        Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos, $e');
       }
     }
   }
 
-  List<ModuloMaestro> obtenerModulosPorEntrenamiento(int trainingKey) {
-    log('obtenerModulosPorEntrenamiento: $trainingKey');
+  List<EntrenamientoModulo> obtenerModulosPorEntrenamiento(int trainingKey) {
     return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
 

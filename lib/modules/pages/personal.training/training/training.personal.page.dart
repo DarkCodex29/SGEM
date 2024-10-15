@@ -307,8 +307,8 @@ class TrainingPersonalPage extends StatelessWidget {
                 children: modulos.isNotEmpty
                     ? modulos.map((modulo) {
                         return ListTile(
-                          title: Text(modulo.modulo),
-                          subtitle: Text('Horas: ${modulo.inHoras}'),
+                          title: Text(modulo.modulo.nombre),
+                          subtitle: Text('Horas: ${modulo.inHorasAcumuladas}'),
                         );
                       }).toList()
                     : [

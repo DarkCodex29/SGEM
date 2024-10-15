@@ -105,7 +105,7 @@ class TrainingPersonalPage extends StatelessWidget {
                         'Código',
                         controllerPersonal.selectedPersonal.value?.codigoMcp ??
                             ''),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     _buildCustomTextField(
@@ -113,7 +113,7 @@ class TrainingPersonalPage extends StatelessWidget {
                         '${controllerPersonal.selectedPersonal.value?.primerNombre ?? ''} '
                             '${controllerPersonal.selectedPersonal.value?.apellidoPaterno ?? ''} '
                             '${controllerPersonal.selectedPersonal.value?.apellidoMaterno ?? ''}'),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     _buildCustomTextField(
@@ -299,6 +299,26 @@ class TrainingPersonalPage extends StatelessWidget {
                 _buildActionButtons(context, training),
               ],
             ),
+            Obx(() {
+              final modulos =
+                  controller.obtenerModulosPorEntrenamiento(training.key);
+              return ExpansionTile(
+                title: const Text('Módulos del entrenamiento'),
+                children: modulos.isNotEmpty
+                    ? modulos.map((modulo) {
+                        return ListTile(
+                          title: Text(modulo.modulo),
+                          subtitle: Text('Horas: ${modulo.inHoras}'),
+                        );
+                      }).toList()
+                    : [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('No hay módulos disponibles'),
+                        ),
+                      ],
+              );
+            }),
           ],
         ),
       ),

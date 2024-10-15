@@ -1,12 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
+import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/training.dart';
 
 class TrainingPersonalController extends GetxController {
   var trainingList = <Entrenamiento>[].obs;
   final TrainingService trainingService = TrainingService();
+  final ModuloMaestroService moduloMaestroService = ModuloMaestroService();
+
+  var modulosPorEntrenamiento = <int, RxList<ModuloMaestro>>{}.obs;
 
   Future<void> fetchTrainings(int personId) async {
     try {
@@ -15,12 +22,47 @@ class TrainingPersonalController extends GetxController {
       if (response.success) {
         trainingList.value =
             response.data!.map((json) => Entrenamiento.fromJson(json)).toList();
+        await _fetchModulosParaEntrenamientos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los entrenamientos');
       }
     } catch (e) {
       Get.snackbar('Error', 'Ocurrió un problema al cargar los entrenamientos');
     }
+  }
+
+  Future<void> _fetchModulosParaEntrenamientos() async {
+    for (var entrenamiento in trainingList) {
+      try {
+        final response = await moduloMaestroService
+            .listarModulosPorEntrenamiento(entrenamiento.key);
+        log('Modulos por entrenamiento: ${response.data}');
+        if (response.success) {
+          if (modulosPorEntrenamiento.containsKey(entrenamiento.key)) {
+            modulosPorEntrenamiento[entrenamiento.key]!.assignAll(
+              response.data!
+                  .map((json) =>
+                      ModuloMaestro.fromJson(json as Map<String, dynamic>))
+                  .toList(),
+            );
+          } else {
+            modulosPorEntrenamiento[entrenamiento.key] = RxList<ModuloMaestro>(
+              response.data!
+                  .map((json) =>
+                      ModuloMaestro.fromJson(json as Map<String, dynamic>))
+                  .toList(),
+            );
+          }
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos');
+      }
+    }
+  }
+
+  List<ModuloMaestro> obtenerModulosPorEntrenamiento(int trainingKey) {
+    log('obtenerModulosPorEntrenamiento: $trainingKey');
+    return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
 
   Future<bool> actualizarEntrenamiento(Entrenamiento training) async {
@@ -38,7 +80,7 @@ class TrainingPersonalController extends GetxController {
         controller.archivosAdjuntos.clear();
         controller.documentoAdjuntoNombre.value = '';
         controller.documentoAdjuntoBytes.value = null;
-        
+
         Get.snackbar(
           'Éxito',
           'Entrenamiento actualizado correctamente',

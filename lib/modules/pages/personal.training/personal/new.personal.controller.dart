@@ -48,6 +48,10 @@ class NewPersonalController extends GetxController {
   var documentoAdjuntoBytes = Rxn<Uint8List>();
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
 
+  DateTime? fechaIngreso;
+  DateTime? fechaIngresoMina;
+  DateTime? fechaRevalidacion;
+
   final ArchivoService archivoService = ArchivoService();
 
   RxBool isLoadingDni = false.obs;

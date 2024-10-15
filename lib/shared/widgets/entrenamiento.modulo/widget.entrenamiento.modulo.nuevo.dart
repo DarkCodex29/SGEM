@@ -135,6 +135,43 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                 onSelected: (Personal entrenador) {
                   controller.seleccionarEntrenador(entrenador);
                 },
+                optionsViewBuilder: (context, onSelected, options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4.0,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 200, // Set max height to avoid overflow
+                          maxWidth: 350, // Limit the width of the dropdown
+                        ),
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          itemCount: options.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            final Personal entrenador =
+                                options.elementAt(index);
+                            return InkWell(
+                              onTap: () {
+                                onSelected(entrenador);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 15),
+                                child: Text(
+                                  entrenador.nombreCompleto,
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
                 fieldViewBuilder:
                     (context, controllerField, focusNode, onFieldSubmitted) {
                   return Obx(() {

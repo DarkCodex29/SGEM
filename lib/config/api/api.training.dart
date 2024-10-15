@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/training.dart';
 
 import '../../shared/modules/entrenamiento.consulta.dart';
@@ -25,7 +26,7 @@ class TrainingService {
   }
 
   Future<ResponseHandler<bool>> registerTraining(
-      Entrenamiento entrenamiento) async {
+      EntrenamientoModulo entrenamiento) async {
     log('Registrando nuevo entrenamiento: ${jsonEncode(entrenamiento.toJson())}');
     final url = '$baseUrl/Entrenamiento/RegistrarEntrenamiento';
     try {
@@ -108,7 +109,7 @@ class TrainingService {
   }
 
   Future<ResponseHandler<bool>> actualizarEntrenamiento(
-      Entrenamiento training) async {
+      EntrenamientoModulo training) async {
     final url = '$baseUrl/Entrenamiento/ActualizarEntrenamiento';
     try {
       log('Actualizando entrenamiento: ${jsonEncode(training.toJson())}');
@@ -134,7 +135,7 @@ class TrainingService {
   }
 
   Future<ResponseHandler<bool>> eliminarEntrenamiento(
-      Entrenamiento training) async {
+      EntrenamientoModulo training) async {
     final url = '$baseUrl/Entrenamiento/EliminarEntrenamiento';
     try {
       log('Eliminando entrenamiento');
@@ -203,7 +204,8 @@ class TrainingService {
 
       final items = result['Items'] as List;
       final entrenamientoList = items
-          .map((entrenamientoJson) => EntrenamientoConsulta.fromJson(entrenamientoJson))
+          .map((entrenamientoJson) =>
+              EntrenamientoConsulta.fromJson(entrenamientoJson))
           .toList();
 
       final responseData = {

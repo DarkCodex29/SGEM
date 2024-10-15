@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/modules/training.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
@@ -18,7 +18,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final double paddingVertical = 20;
   final VoidCallback close;
   final bool isEdit;
-  final Entrenamiento? training;
+  final EntrenamientoModulo? training;
 
   EntrenamientoNuevoModal({
     super.key,
@@ -116,24 +116,24 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   void registerTraining() {
     if (controller.equipoSelected.value != null &&
         controller.condicionSelected.value != null) {
-      Entrenamiento newTraining = Entrenamiento(
+      EntrenamientoModulo newTraining = EntrenamientoModulo(
         key: isEdit ? training!.key : 0, // Usar la key existente si es edición
         inTipoActividad: 1,
         inCapacitacion: 0,
         inModulo: 0,
-        modulo: Modulo(key: 0, nombre: ''),
+        modulo: Entidad(key: 0, nombre: ''),
         inTipoPersona: 1,
         inPersona: data.key,
         inActividadEntrenamiento: 0,
         inCategoria: 0,
         inEquipo: controller.equipoSelected.value!.key,
-        equipo: Equipo(key: controller.equipoSelected.value!.key, nombre: ''),
+        equipo: Entidad(key: controller.equipoSelected.value!.key, nombre: ''),
         inEntrenador: 0,
-        entrenador: Entrenador(key: 0, nombre: ''),
+        entrenador: Entidad(key: 0, nombre: ''),
         inEmpresaCapacitadora: 0,
         inCondicion: controller.condicionSelected.value!.key,
         condicion:
-            Condicion(key: controller.condicionSelected.value!.key, nombre: ''),
+            Entidad(key: controller.condicionSelected.value!.key, nombre: ''),
         fechaInicio:
             controller.transformDate(controller.fechaInicioEntrenamiento.text),
         fechaTermino:
@@ -222,8 +222,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
 Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
   return Obx(() {
     if (controller.isLoadingFiles.value) {
-      return const Center(
-          child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     if (controller.archivosAdjuntos.isNotEmpty) {
       return Column(

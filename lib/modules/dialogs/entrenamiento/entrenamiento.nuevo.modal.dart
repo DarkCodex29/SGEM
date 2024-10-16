@@ -98,11 +98,30 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
+
               appBar: AppBar(
+                toolbarHeight: 80,
+                leadingWidth: 0,
                 title: isEdit
-                    ? const Text("Editar Entrenamiento")
+                    ? const Text("Editar Entrenamiento" , style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),)
                     : const Text("Nuevo Entrenamiento"),
                 backgroundColor: AppTheme.backgroundBlue,
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  )
+                ],
               ),
               body: (controller.isLoading.value)
                   ? const Center(

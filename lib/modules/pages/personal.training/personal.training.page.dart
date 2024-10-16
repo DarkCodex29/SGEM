@@ -306,6 +306,7 @@ class PersonalSearchPage extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () {
                         controller.clearFields();
+                        controller.searchPersonal();
                       },
                       icon: const Icon(
                         Icons.cleaning_services,
@@ -774,6 +775,8 @@ class PersonalSearchPage extends StatelessWidget {
                                                 return const SuccessDeleteWidget();
                                               },
                                             );
+                                            //TODO: refrescar listado de personal
+                                            controller.searchPersonal();
 
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(

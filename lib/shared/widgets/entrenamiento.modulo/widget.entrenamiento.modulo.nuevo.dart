@@ -141,9 +141,9 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                     child: Material(
                       elevation: 4.0,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxHeight: 200, // Set max height to avoid overflow
-                          maxWidth: 350, // Limit the width of the dropdown
+                        constraints: const BoxConstraints(
+                          maxHeight: 200,
+                          maxWidth: 350,
                         ),
                         child: ListView.builder(
                           padding: EdgeInsets.zero,

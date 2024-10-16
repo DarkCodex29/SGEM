@@ -36,8 +36,9 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.apellidoPaternoController.text = personal.apellidoPaterno;
       controller.apellidoMaternoController.text = personal.apellidoMaterno;
       controller.gerenciaController.text = personal.gerencia;
-      controller.fechaIngreso=personal.fechaIngreso;
-      controller.fechaIngresoController.text = DateFormat('dd/MM/yyyy').format(controller.fechaIngreso!);
+      controller.fechaIngreso = personal.fechaIngreso;
+      controller.fechaIngresoController.text =
+          DateFormat('dd/MM/yyyy').format(controller.fechaIngreso!);
 
       controller.areaController.text = personal.area;
       controller.categoriaLicenciaController.text = personal.licenciaCategoria;
@@ -49,10 +50,14 @@ class NuevoPersonalPage extends StatelessWidget {
       }
       controller.restriccionesController.text = personal.restricciones;
       controller.fechaIngresoMina = personal.fechaIngresoMina;
-      controller.fechaIngresoMinaController.text =DateFormat('dd/MM/yyyy').format(controller.fechaIngresoMina!);
+      controller.fechaIngresoMinaController.text =
+          DateFormat('dd/MM/yyyy').format(controller.fechaIngresoMina!);
 
-      controller.fechaRevalidacion=personal.licenciaVencimiento;
-      controller.fechaRevalidacionController.text =DateFormat('dd/MM/yyyy').format(controller.fechaRevalidacion!);
+      controller.fechaRevalidacion = personal.licenciaVencimiento;
+      controller.fechaRevalidacionController.text =
+          controller.fechaRevalidacion != null
+              ? DateFormat('dd/MM/yyyy').format(controller.fechaRevalidacion!)
+              : ' ';
 
       controller.isOperacionMina.value = personal.operacionMina == 'S';
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
@@ -295,7 +300,9 @@ class NuevoPersonalPage extends StatelessWidget {
                   onIconPressed: () async {
                     if (!isViewing) {
                       controller.fechaIngresoMina = await _selectDate(context);
-                      controller.fechaIngresoMinaController.text= DateFormat('dd/MM/yyyy').format(controller.fechaIngresoMina!);
+                      controller.fechaIngresoMinaController.text =
+                          DateFormat('dd/MM/yyyy')
+                              .format(controller.fechaIngresoMina!);
                     }
                   },
                 ),

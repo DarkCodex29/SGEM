@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
@@ -30,6 +31,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   ModuloMaestroService moduloMaestroService = ModuloMaestroService();
   PersonalService personalService = PersonalService();
+  TrainingService trainingService = TrainingService();
 
   List<String> errores = [];
 
@@ -175,12 +177,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   Future<int> obtenerSiguienteModulo() async {
     try {
-      final modulos = await moduloMaestroService
-          .listarModulosPorEntrenamiento(entrenamiento.key);
-      if (modulos.success && modulos.data != null && modulos.data!.isNotEmpty) {
-        int ultimoModulo = modulos.data!.last.modulo.key;
-        return ultimoModulo + 1;
+      final modulos = await trainingService
+          .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key);
+      log('Modulos: ${modulos.data}');
+      if (modulos.success && modulos.data != null) {
+        int ultimosModulos = modulos.data!.inModulo;
+        return ultimosModulos + 1;
       } else {
+        log('Error obteniendo el siguiente módulo: ${modulos.message}');
         return 1;
       }
     } catch (e) {

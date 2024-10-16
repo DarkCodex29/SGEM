@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import 'package:sgem/shared/modules/training.dart';
 
 import '../../shared/modules/entrenamiento.consulta.dart';
 
@@ -60,7 +59,7 @@ class TrainingService {
     }
   }
 
-  Future<ResponseHandler<Entrenamiento>> obtenerUltimoModuloPorEntrenamiento(
+  Future<ResponseHandler<EntrenamientoModulo>> obtenerUltimoModuloPorEntrenamiento(
       int entrenamientoId) async {
     final url =
         '$baseUrl/Entrenamiento/ObtenerUltimoModuloPorEntrenamiento?inEntrenamiento=$entrenamientoId';
@@ -71,8 +70,8 @@ class TrainingService {
       log('RESPONSE OBTENER ÚLTIMO MÓDULO: $response');
 
       if (response.statusCode == 200 && response.data != null) {
-        Entrenamiento ultimoModulo = Entrenamiento.fromJson(response.data);
-        return ResponseHandler.handleSuccess<Entrenamiento>(ultimoModulo);
+        EntrenamientoModulo ultimoModulo = EntrenamientoModulo.fromJson(response.data);
+        return ResponseHandler.handleSuccess<EntrenamientoModulo>(ultimoModulo);
       } else {
         return ResponseHandler(
           success: false,

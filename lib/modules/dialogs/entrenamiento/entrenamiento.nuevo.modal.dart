@@ -35,9 +35,9 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           .firstWhere((element) => element.key == training!.inCondicion,
               orElse: () => controller.condicionDetalle.first);
 
-      controller.fechaInicioEntrenamiento.text = DateFormat('yyyy-MM-dd')
+      controller.fechaInicioEntrenamiento.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaInicio.toString()));
-      controller.fechaTerminoEntrenamiento.text = DateFormat('yyyy-MM-dd')
+      controller.fechaTerminoEntrenamiento.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaTermino.toString()));
       controller.obtenerArchivosRegistrados(training!.key);
     }
@@ -289,6 +289,6 @@ Future<void> _selectDate(
     lastDate: DateTime(2100),
   );
   if (picked != null) {
-    controller.text = DateFormat('yyyy-MM-dd').format(picked);
+    controller.text = DateFormat('dd-MM-yyyy').format(picked);
   }
 }

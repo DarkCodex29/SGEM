@@ -264,7 +264,8 @@ class TrainingPersonalPage extends StatelessWidget {
                         const SizedBox(width: 4),
                         _buildCustomTextField(
                           'Estado entrenamiento',
-                          _getEstadoEntrenamiento(training.inEstado),
+                          //TODO
+                          training.inEstado.toString(),
                         ),
                       ],
                     ),
@@ -699,19 +700,8 @@ class TrainingPersonalPage extends StatelessWidget {
     );
   }
 
-  String _getEstadoEntrenamiento(int estado) {
-    switch (estado) {
-      case 0:
-        return 'Inactivo';
-      case 1:
-        return 'Activo';
-      default:
-        return 'Desconocido';
-    }
-  }
-
   String _formatDate(DateTime? date) {
     if (date == null) return 'Sin fecha';
-    return DateFormat('yyyy-MM-dd').format(date);
+    return DateFormat('dd-MM-yyyy').format(date);
   }
 }

@@ -145,10 +145,10 @@ class NewPersonalController extends GetxController {
       fechaIngreso = personal.fechaIngreso;
       fechaIngresoController.text =
           DateFormat('dd/MM/yyyy').format(fechaIngreso!) ?? ' ';
-      fechaIngresoMina= personal.fechaIngresoMina;
+      fechaIngresoMina = personal.fechaIngresoMina;
       fechaIngresoMinaController.text =
           DateFormat('dd/MM/yyyy').format(fechaIngresoMina!) ?? ' ';
-      fechaRevalidacion= personal.licenciaVencimiento;
+      fechaRevalidacion = personal.licenciaVencimiento;
       fechaRevalidacionController.text =
           DateFormat('dd/MM/yyyy').format(fechaRevalidacion!) ?? ' ';
 
@@ -165,11 +165,11 @@ class NewPersonalController extends GetxController {
       isZonaPlataforma.value = personal.zonaPlataforma == 'S';
 
       if (personal.estado.key == 95) {
-        estadoPersonal.value=personal.estado.nombre;
+        estadoPersonal.value = personal.estado.nombre;
         //estadoPersonal.value = 'Activo';
       } else {
         //estadoPersonal.value = 'Cesado';
-        estadoPersonal.value=personal.estado.nombre;
+        estadoPersonal.value = personal.estado.nombre;
       }
       obtenerArchivosRegistrados(1, personal.key);
     }
@@ -183,7 +183,7 @@ class NewPersonalController extends GetxController {
     errores.clear();
     log('Gestionando persona con la acción: $accion');
     bool esValido = validate(context);
-    if (!esValido) {
+    if (!esValido && accion!='eliminar') {
       _mostrarErroresValidacion(context, errores);
       return false;
     }

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
@@ -39,7 +40,7 @@ class NewPersonalController extends GetxController {
 
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
-  var estadoPersonal = 'Cesado'.obs;
+  RxString estadoPersonal = ''.obs;
 
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
@@ -164,9 +165,11 @@ class NewPersonalController extends GetxController {
       isZonaPlataforma.value = personal.zonaPlataforma == 'S';
 
       if (personal.estado.key == 95) {
-        estadoPersonal.value = 'Activo';
+        estadoPersonal.value=personal.estado.nombre;
+        //estadoPersonal.value = 'Activo';
       } else {
-        estadoPersonal.value = 'Cesado';
+        //estadoPersonal.value = 'Cesado';
+        estadoPersonal.value=personal.estado.nombre;
       }
       obtenerArchivosRegistrados(1, personal.key);
     }

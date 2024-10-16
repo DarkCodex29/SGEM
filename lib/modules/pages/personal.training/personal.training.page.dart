@@ -424,7 +424,7 @@ class PersonalSearchPage extends StatelessWidget {
           const SizedBox(height: 10),
           Obx(() {
             if (controller.personalResults.isEmpty) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: Text('No se encontraron registros.'),);
             } else {
               return _buildResultsTable(controller, context);
             }

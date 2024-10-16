@@ -136,7 +136,7 @@ class NuevoPersonalPage extends StatelessWidget {
                 return Row(
                   children: [
                     Icon(Icons.circle, color: estadoColor, size: 12),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: 10),
                     Text(estado, style: const TextStyle(fontSize: 14)),
                   ],
                 );

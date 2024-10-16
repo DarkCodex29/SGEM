@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import '../alert/widget.alert.dart';
@@ -12,13 +12,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController fechaInicioController = TextEditingController();
   TextEditingController fechaTerminoController = TextEditingController();
   TextEditingController responsableController = TextEditingController();
-
   TextEditingController notaTeoricaController =
       TextEditingController(text: '0');
   TextEditingController notaPracticaController =
       TextEditingController(text: '0');
   TextEditingController fechaExamenController = TextEditingController();
-
   TextEditingController totalHorasModuloController =
       TextEditingController(text: '0');
   TextEditingController horasAcumuladasController =
@@ -70,8 +68,16 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   void setDatosEntrenamiento(EntrenamientoModulo entrenamiento) {
     this.entrenamiento = entrenamiento;
-    fechaInicioController.text = entrenamiento.fechaInicio.toString();
-    fechaTerminoController.text = entrenamiento.fechaTermino.toString();
+
+    if (entrenamiento.fechaInicio != null) {
+      fechaInicio = entrenamiento.fechaInicio;
+      fechaInicioController.text = entrenamiento.fechaInicio.toString();
+    }
+
+    if (entrenamiento.fechaTermino != null) {
+      fechaTermino = entrenamiento.fechaTermino;
+      fechaTerminoController.text = entrenamiento.fechaTermino.toString();
+    }
   }
 
   void resetControllers() {
@@ -91,21 +97,41 @@ class EntrenamientoModuloNuevoController extends GetxController {
     isLoadingResponsable.value = false;
   }
 
-//Validaciones
   bool validar(BuildContext context) {
     bool respuesta = true;
     errores.clear();
 
-    // Validación de la fecha de inicio
-    if (fechaInicioController.text.isEmpty) {
+    // Validación del entrenador
+    if (responsableController.text.isEmpty) {
       respuesta = false;
-      errores.add("Debe seleccionar una fecha de inicio.");
+      errores.add("Debe seleccionar un entrenador responsable.");
+    }
+
+    // Validación de la fecha de inicio del Módulo I
+    if (entrenamiento.inModulo == 1) {
+      if (fechaInicio == null ||
+          fechaInicio!.isBefore(entrenamiento.fechaInicio!)) {
+        respuesta = false;
+        errores.add(
+            "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
+      }
+    }
+
+    // Validación de la fecha de inicio del módulo que no sea I
+    if (entrenamiento.inModulo > 1) {
+      if (fechaInicio == null ||
+          fechaInicio!.isBefore(entrenamiento.fechaTermino!)) {
+        respuesta = false;
+        errores.add(
+            "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
+      }
     }
 
     // Validación de la fecha de término
-    if (fechaTerminoController.text.isEmpty) {
+    if (fechaTermino == null || fechaTermino!.isBefore(fechaInicio!)) {
       respuesta = false;
-      errores.add("Debe seleccionar una fecha de término.");
+      errores.add(
+          "La fecha de término no puede ser anterior a la fecha de inicio.");
     }
 
     // Validación de la nota teórica
@@ -120,7 +146,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    // Validación de la nota práctica (cambiado el mensaje)
+    // Validación de la nota práctica
     if (notaPracticaController.text.isEmpty) {
       respuesta = false;
       errores.add("Debe ingresar una nota práctica.");
@@ -132,22 +158,50 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    // Validación de la fecha del examen
+    // Validación de la fecha de examen
     if (fechaExamenController.text.isEmpty) {
       respuesta = false;
       errores.add("Debe seleccionar una fecha de examen.");
+    } else {
+      if (fechaExamen == null || fechaExamen!.isBefore(fechaInicio!)) {
+        respuesta = false;
+        errores.add(
+            "La fecha del examen no puede ser anterior a la fecha de inicio del módulo.");
+      }
     }
 
     return respuesta;
   }
 
+  Future<int> obtenerSiguienteModulo() async {
+    try {
+      final modulos = await moduloMaestroService
+          .listarModulosPorEntrenamiento(entrenamiento.key);
+      if (modulos.success && modulos.data != null && modulos.data!.isNotEmpty) {
+        int ultimoModulo = modulos.data!.last.modulo.key;
+        return ultimoModulo + 1;
+      } else {
+        return 1;
+      }
+    } catch (e) {
+      log('Error obteniendo el siguiente módulo: $e');
+      return 1;
+    }
+  }
+
   Future<bool> registrarModulo(BuildContext context) async {
+    if (!validar(context)) {
+      _mostrarErroresValidacion(context, errores);
+      return false;
+    }
+    int siguienteModulo = await obtenerSiguienteModulo();
+
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: 0,
       inTipoActividad: entrenamiento.inTipoActividad,
       inActividadEntrenamiento: entrenamiento.key,
       inPersona: entrenamiento.inPersona,
-      inEntrenador: entrenamiento.inEntrenador,
+      inEntrenador: responsableSeleccionado!.inPersonalOrigen,
       entrenador: entrenamiento.entrenador,
       fechaInicio: fechaInicio,
       fechaTermino: fechaTermino,
@@ -157,8 +211,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inTotalHoras: int.parse(totalHorasModuloController.text),
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
-      inModulo: entrenamiento.inModulo,
-      modulo: entrenamiento.modulo,
+      inModulo: siguienteModulo,
+      modulo: Entidad(key: siguienteModulo, nombre: 'Módulo $siguienteModulo'),
       eliminado: 'N',
       motivoEliminado: '',
       inTipoPersona: entrenamiento.inTipoPersona,
@@ -183,6 +237,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
             backgroundColor: Colors.green,
           ),
         );
+        TrainingPersonalController controller =
+            Get.find<TrainingPersonalController>();
+        controller.fetchModulosPorEntrenamiento(entrenamiento.key);
+
         return true;
       } else {
         log('Error al registrar módulo: ${response.message}');

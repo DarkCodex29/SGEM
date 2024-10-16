@@ -333,8 +333,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             ),
             CustomTextField(
               label: 'Horas minestar',
-              controller:
-                  controller.horasMinestarController, //cambiar controller
+              controller: controller.horasMinestarController,
               icon: const Icon(Icons.lock_clock_outlined),
             ),
           ],

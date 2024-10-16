@@ -19,8 +19,9 @@ class TrainingPersonalController extends GetxController {
       final response =
           await trainingService.listarEntrenamientoPorPersona(personId);
       if (response.success) {
-        trainingList.value =
-            response.data!.map((json) => EntrenamientoModulo.fromJson(json)).toList();
+        trainingList.value = response.data!
+            .map((json) => EntrenamientoModulo.fromJson(json))
+            .toList();
         await _fetchModulosParaEntrenamientos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los entrenamientos');
@@ -101,7 +102,7 @@ class TrainingPersonalController extends GetxController {
     try {
       final response = await trainingService.eliminarEntrenamiento(training);
       if (response.success) {
-        trainingList.remove(training); 
+        trainingList.remove(training);
         return true;
       } else {
         Get.snackbar(
@@ -129,7 +130,7 @@ class TrainingPersonalController extends GetxController {
     try {
       final response = await moduloMaestroService.eliminarModulo(modulo);
       if (response.success) {
-        await _fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento);
+        await fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento);
         return true;
       } else {
         Get.snackbar(
@@ -153,7 +154,7 @@ class TrainingPersonalController extends GetxController {
     }
   }
 
-  Future<void> _fetchModulosPorEntrenamiento(int entrenamientoKey) async {
+  Future<void> fetchModulosPorEntrenamiento(int entrenamientoKey) async {
     try {
       final response = await moduloMaestroService
           .listarModulosPorEntrenamiento(entrenamientoKey);

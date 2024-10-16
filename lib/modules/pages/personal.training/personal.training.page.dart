@@ -620,11 +620,19 @@ class PersonalSearchPage extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(child: Text(personal.codigoMcp)),
-                          Expanded(child: Column(
+                          Expanded(
+                              child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(personal.nombreCompleto),
-                              Text(personal.cargo, style: const TextStyle(fontSize: 12, color: AppTheme.backgroundBlue),),
+                              Text(
+                                personal.cargo,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppTheme.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           )),
                           Expanded(child: Text(personal.numeroDocumento)),

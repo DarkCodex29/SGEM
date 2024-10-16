@@ -163,7 +163,7 @@ class NewPersonalController extends GetxController {
       isOperacionMina.value = personal.operacionMina == 'S';
       isZonaPlataforma.value = personal.zonaPlataforma == 'S';
 
-      if (personal.estado.nombre == 'Activo') {
+      if (personal.estado.key == 95) {
         estadoPersonal.value = 'Activo';
       } else {
         estadoPersonal.value = 'Cesado';

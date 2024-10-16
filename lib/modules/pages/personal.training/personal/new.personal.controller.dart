@@ -141,17 +141,15 @@ class NewPersonalController extends GetxController {
       apellidoMaternoController.text = personal.apellidoMaterno;
       gerenciaController.text = personal.gerencia;
 
-      fechaIngresoController.text = personal.fechaIngreso != null
-          ? formatDate(personal.fechaIngreso!)
-          : '';
-
-      fechaIngresoMinaController.text = personal.fechaIngresoMina != null
-          ? formatDate(personal.fechaIngresoMina!)
-          : '';
-
-      fechaRevalidacionController.text = personal.licenciaVencimiento != null
-          ? formatDate(personal.licenciaVencimiento!)
-          : '';
+      fechaIngreso = personal.fechaIngreso;
+      fechaIngresoController.text =
+          DateFormat('dd/MM/yyyy').format(fechaIngreso!) ?? ' ';
+      fechaIngresoMina= personal.fechaIngresoMina;
+      fechaIngresoMinaController.text =
+          DateFormat('dd/MM/yyyy').format(fechaIngresoMina!) ?? ' ';
+      fechaRevalidacion= personal.licenciaVencimiento;
+      fechaRevalidacionController.text =
+          DateFormat('dd/MM/yyyy').format(fechaRevalidacion!) ?? ' ';
 
       areaController.text = personal.area;
       categoriaLicenciaController.text = personal.licenciaCategoria;
@@ -203,22 +201,16 @@ class NewPersonalController extends GetxController {
         return texto.isNotEmpty ? texto : '';
       }
 
-      DateTime? parsearFecha(String fechaTexto) {
-        return fechaTexto.isNotEmpty
-            ? DateFormat('yyyy-MM-dd').parse(fechaTexto)
-            : null;
-      }
-
       personalData!
         ..primerNombre = obtenerPrimerNombre(nombresController.text)
         ..segundoNombre = obtenerSegundoNombre(nombresController.text)
         ..apellidoPaterno = verificarTexto(apellidoPaternoController.text)
         ..apellidoMaterno = verificarTexto(apellidoMaternoController.text)
         ..cargo = verificarTexto(puestoTrabajoController.text)
-        ..fechaIngreso = parsearFecha(fechaIngresoController.text)
+        ..fechaIngreso = fechaIngreso
         ..licenciaConducir = verificarTexto(codigoLicenciaController.text)
-        ..fechaIngresoMina = parsearFecha(fechaIngresoMinaController.text)
-        ..licenciaVencimiento = parsearFecha(fechaRevalidacionController.text)
+        ..fechaIngresoMina = fechaIngresoMina
+        ..licenciaVencimiento = fechaRevalidacion
         ..guardia.key = selectedGuardiaKey.value ?? 0
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
@@ -271,25 +263,36 @@ class NewPersonalController extends GetxController {
   }
 
   String formatDate(DateTime date) {
-    return DateFormat('yyyy-MM-dd').format(date);
+    return DateFormat('dd/MM/yyyy').format(date);
   }
 
   //Validaciones
   bool validate(BuildContext context) {
-    DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
-    DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
+    // DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
+    // DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
 
+    // if (fechaIngresoMina == null) {
+    //   errores.add('Debe seleccionar una fecha de ingreso a la mina.');
+    // } else {
+    //   if (fechaIngresoMina.isBefore(DateTime.now())) {
+    //     errores.add(
+    //         'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
+    //   }
+    //
+    //   if (fechaIngreso != null && fechaIngresoMina.isBefore(fechaIngreso)) {
+    //     errores.add(
+    //         'La fecha de ingreso a la mina debe ser mayor que la fecha de ingreso a la empresa.');
+    //   }
+    // }
+    log('Validando la fecha de ingreso a mina');
+    log('Fecha de ingreso mina: ${fechaIngresoMina}');
     if (fechaIngresoMina == null) {
       errores.add('Debe seleccionar una fecha de ingreso a la mina.');
     } else {
-      if (fechaIngresoMina.isBefore(DateTime.now())) {
+      if (fechaIngresoMina!.isBefore(DateTime.now())) {
+        log('Fecha de ingreso mina: ${fechaIngresoMina}');
         errores.add(
             'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
-      }
-
-      if (fechaIngreso != null && fechaIngresoMina.isBefore(fechaIngreso)) {
-        errores.add(
-            'La fecha de ingreso a la mina debe ser mayor que la fecha de ingreso a la empresa.');
       }
     }
     if (codigoLicenciaController.text.isEmpty ||

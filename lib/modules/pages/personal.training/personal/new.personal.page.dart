@@ -36,8 +36,9 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.apellidoPaternoController.text = personal.apellidoPaterno;
       controller.apellidoMaternoController.text = personal.apellidoMaterno;
       controller.gerenciaController.text = personal.gerencia;
-      controller.fechaIngresoController.text =
-          personal.fechaIngreso?.toString() ?? '';
+      controller.fechaIngreso=personal.fechaIngreso;
+      controller.fechaIngresoController.text = DateFormat('dd/MM/yyyy').format(controller.fechaIngreso!);
+
       controller.areaController.text = personal.area;
       controller.categoriaLicenciaController.text = personal.licenciaCategoria;
       controller.codigoLicenciaController.text = personal.licenciaConducir;
@@ -47,10 +48,11 @@ class NuevoPersonalPage extends StatelessWidget {
         controller.selectedGuardiaKey.value = null;
       }
       controller.restriccionesController.text = personal.restricciones;
-      controller.fechaIngresoMinaController.text =
-          personal.fechaIngresoMina?.toString() ?? '';
-      controller.fechaRevalidacionController.text =
-          personal.licenciaVencimiento?.toString() ?? '';
+      controller.fechaIngresoMina = personal.fechaIngresoMina;
+      controller.fechaIngresoMinaController.text =DateFormat('dd/MM/yyyy').format(controller.fechaIngresoMina!);
+
+      controller.fechaRevalidacion=personal.licenciaVencimiento;
+      controller.fechaRevalidacionController.text =DateFormat('dd/MM/yyyy').format(controller.fechaRevalidacion!);
 
       controller.isOperacionMina.value = personal.operacionMina == 'S';
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
@@ -290,10 +292,10 @@ class NuevoPersonalPage extends StatelessWidget {
                   icon: const Icon(Icons.calendar_today),
                   isReadOnly: isViewing,
                   isRequired: !isViewing,
-                  onIconPressed: () {
+                  onIconPressed: () async {
                     if (!isViewing) {
-                      _selectDate(
-                          context, controller.fechaIngresoMinaController);
+                      controller.fechaIngresoMina = await _selectDate(context);
+                      controller.fechaIngresoMinaController.text= DateFormat('dd/MM/yyyy').format(controller.fechaIngresoMina!);
                     }
                   },
                 ),
@@ -538,16 +540,13 @@ class NuevoPersonalPage extends StatelessWidget {
     });
   }
 
-  Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
+  Future<DateTime?> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-    if (picked != null) {
-      controller.text = DateFormat('yyyy-MM-dd').format(picked);
-    }
+    return picked;
   }
 }

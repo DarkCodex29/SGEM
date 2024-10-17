@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/modules/maestro.detail.dart';
@@ -12,7 +13,7 @@ import 'personal.actualizacion.masiva.controller.dart';
 
 class PersonalActualizacionMasivaPage extends StatelessWidget {
   final VoidCallback onCancel;
-   const PersonalActualizacionMasivaPage({super.key, required this.onCancel});
+  const PersonalActualizacionMasivaPage({super.key, required this.onCancel});
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +39,10 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              // _buildSeccionResultado(controller),
-              // const SizedBox(
-              //   height: 20,
-              // ),
+               _buildSeccionResultado(controller),
+               const SizedBox(
+                 height: 20,
+               ),
               _buildRegresarButton(context)
             ],
           ),
@@ -166,7 +167,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         ),
         const Expanded(
           flex:
-          1, // El espacio estará vacío para que ocupe el espacio disponible
+              1, // El espacio estará vacío para que ocupe el espacio disponible
           child: SizedBox.shrink(),
         ),
       ],
@@ -316,6 +317,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(
@@ -332,4 +334,163 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     );
   }
 
+  Widget _buildSeccionResultado(ActualizacionMasivaController controller) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSeccionResultadoBarraSuperior(controller),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildSeccionResultadoTabla(controller),
+          const SizedBox(
+            height: 20,
+          ),
+          //_buildSeccionResultadoTablaPaginado(controller),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeccionResultadoBarraSuperior(ActualizacionMasivaController controller) {
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          "Entrenamientos",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        /*
+        ElevatedButton.icon(
+          onPressed: () async {
+           // await controller.downloadExcel();
+          },
+          icon: const Icon(Icons.download,
+              size: 18, color: AppTheme.primaryColor),
+          label: const Text(
+            "Descargar Excel",
+            style: TextStyle(fontSize: 16, color: AppTheme.primaryColor),
+          ),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: AppTheme.primaryColor),
+            ),
+          ),
+        ),
+         */
+      ],
+    );
+  }
+  Widget _buildSeccionResultadoTabla(ActualizacionMasivaController controller) {
+    return Obx(
+          () {
+            //TODO: validar registros
+        // if (controller.entrenamientoResultados.isEmpty) {
+        //   return const Center(child: Text("No se encontraron resultados"));
+        // }
+
+        var rowsToShow = controller.entrenamientoResultados
+            .take(controller.rowsPerPage.value)
+            .toList();
+
+        return Column(
+          children: [
+            Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 16.0,
+              ),
+              child: _buildSeccionResultadoTablaCabezera(),
+            ),
+            SizedBox(
+              height: 500,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: rowsToShow.map((entrenamiento) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(entrenamiento.codigoMcp)),
+                          Expanded(child: Text(entrenamiento.nombreCompleto)),
+                          Expanded(child: Text(entrenamiento.guardia.nombre)),
+                          Expanded(child: Text(entrenamiento.equipo.nombre)),
+                          Expanded(child: Text(entrenamiento.modulo.nombre)),
+                          Expanded(
+                                child: Text(
+                                entrenamiento.notaPractica.toString(),
+                                textAlign: TextAlign.center,
+                              )),
+                          Expanded(
+                              child: Text(
+                                entrenamiento.notaTeorica.toString(),
+                                textAlign: TextAlign.center,
+                              )),
+                          //Todo: Cambiar por fecha de examen
+                          // Expanded(
+                          //   child: Text(DateFormat('dd/MM/yyyy')
+                          //       .format(entrenamiento.fechaExamen!)),
+                          // ),
+                                             Expanded(
+                              child: Text(
+                                entrenamiento.horasAcumuladas.toString(),
+                                textAlign: TextAlign.center,
+                              )),
+                          Expanded(
+                            child: Text(DateFormat('dd/MM/yyyy')
+                                .format(entrenamiento.fechaInicio!)),
+                          ),
+                          Expanded(
+                            child: Text(DateFormat('dd/MM/yyyy')
+                                .format(entrenamiento.fechaTermino!)),
+                          ),
+                          //Todo: Botones de accion
+                          Expanded(
+                              child: Text(
+                               "Editar",
+                              )),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildSeccionResultadoTablaCabezera() {
+    const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
+
+    return const Row(
+      children: [
+        Expanded(flex: 1, child: Text('Código MCP', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Nombres y Apellidos', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Guardia', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Equipo', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Estado de avance', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Nota práctica', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Nota teórica', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Fecha de examen', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Horas de entrenamiento acumuladas', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Fecha de inicio', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Fecha de término', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Acciones', style: boldTextStyle)),
+      ],
+    );
+  }
 }

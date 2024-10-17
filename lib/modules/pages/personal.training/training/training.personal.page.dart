@@ -259,8 +259,11 @@ class TrainingPersonalPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.radio_button_checked,
-                            color: Colors.orange),
+                        Icon(
+                          Icons.radio_button_checked,
+                          color: _getColorByEstado(
+                              training.estadoEntrenamiento.nombre),
+                        ),
                         const SizedBox(width: 4),
                         _buildCustomTextField(
                           'Estado entrenamiento',
@@ -273,8 +276,11 @@ class TrainingPersonalPage extends StatelessWidget {
                         const Icon(Icons.radio_button_on, color: Colors.green),
                         const SizedBox(width: 4),
                         _buildCustomTextField(
-                          'Horas de entrenamiento',
-                          '${training.inHorasAcumuladas}/${training.inTotalHoras}', // Mostrar horas acumuladas y totales
+                          'Estado de avance actual',
+                          _getEstadoAvanceActual(
+                              training.estadoEntrenamiento.nombre,
+                              training.inHorasAcumuladas,
+                              training.inTotalHoras),
                         ),
                       ],
                     ),
@@ -304,6 +310,10 @@ class TrainingPersonalPage extends StatelessWidget {
               final modulos =
                   controller.obtenerModulosPorEntrenamiento(training.key);
               return ExpansionTile(
+                backgroundColor: Colors.grey.shade100,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 title: const Text('Módulos del entrenamiento',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -702,5 +712,27 @@ class TrainingPersonalPage extends StatelessWidget {
   String _formatDate(DateTime? date) {
     if (date == null) return 'Sin fecha';
     return DateFormat('dd-MM-yyyy').format(date);
+  }
+
+  String _getEstadoAvanceActual(
+      String estadoEntrenamiento, int horasAcumuladas, int totalHoras) {
+    if (estadoEntrenamiento.toLowerCase() == 'autorizado') {
+      return 'Finalizado';
+    } else {
+      return '$horasAcumuladas/$totalHoras';
+    }
+  }
+
+  Color _getColorByEstado(String estado) {
+    switch (estado.toLowerCase()) {
+      case 'autorizado':
+        return Colors.green;
+      case 'entrenando':
+        return Colors.orange;
+      case 'paralizado':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
   }
 }

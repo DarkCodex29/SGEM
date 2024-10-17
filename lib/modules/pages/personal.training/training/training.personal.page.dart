@@ -262,7 +262,7 @@ class TrainingPersonalPage extends StatelessWidget {
                         Icon(
                           Icons.radio_button_checked,
                           color: _getColorByEstado(
-                              training.estadoEntrenamiento.nombre),
+                              training.estadoEntrenamiento.key),
                         ),
                         const SizedBox(width: 4),
                         _buildCustomTextField(
@@ -723,14 +723,14 @@ class TrainingPersonalPage extends StatelessWidget {
     }
   }
 
-  Color _getColorByEstado(String estado) {
-    switch (estado.toLowerCase()) {
-      case 'autorizado':
-        return Colors.green;
-      case 'entrenando':
-        return Colors.orange;
-      case 'paralizado':
-        return Colors.red;
+  Color _getColorByEstado(int estado) {
+    switch (estado) {
+      case 13:
+        return Colors.green; // AUTOIRZADO
+      case 11:
+        return Colors.orange; // ENTRENANDO
+      case 12:
+        return Colors.red; //PARALIZADO
       default:
         return Colors.grey;
     }

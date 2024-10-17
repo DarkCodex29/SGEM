@@ -270,7 +270,6 @@ class PersonalService {
     final url =
         '$baseUrl/Personal/ObtenerPersonalFotoPorCodigoOrigen?idOrigen=$idOrigen';
     try {
-      log('Obteniendo foto para el código de origen: $idOrigen');
       final response = await dio.get(
         url,
         options: Options(
@@ -280,8 +279,6 @@ class PersonalService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        log('Foto obtenida con éxito para el idOrigen $idOrigen');
-
         final jsonResponse = response.data;
         if (jsonResponse.containsKey('Datos')) {
           Uint8List imageData =

@@ -61,8 +61,9 @@ class NuevoPersonalPage extends StatelessWidget {
 
       controller.isOperacionMina.value = personal.operacionMina == 'S';
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
-      controller.estadoPersonal.value =
-          personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
+      //controller.estadoPersonal.value =
+      //  personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
+      controller.estadoPersonalKey.value = personal.estado.key;
       controller.obtenerArchivosRegistrados(1, personal.key);
     }
   }
@@ -130,14 +131,25 @@ class NuevoPersonalPage extends StatelessWidget {
               }),
               const SizedBox(height: 10),
               Obx(() {
-                String estado = controller.estadoPersonal.value;
-                Color estadoColor =
-                    estado == 'Activo' ? Colors.green : Colors.red;
+                int estado = controller.estadoPersonalKey.value;
+                Color estadoColor;
+                switch (estado) {
+                  case 95:
+                    estadoColor = Colors.green;
+                    break;
+                  case 96:
+                    estadoColor = Colors.red;
+                    break;
+                  default:
+                    estadoColor = Colors.grey;
+                    break;
+                }
                 return Row(
                   children: [
                     Icon(Icons.circle, color: estadoColor, size: 12),
                     const SizedBox(width: 10),
-                    Text(estado, style: const TextStyle(fontSize: 14)),
+                    Text(estado.toString(),
+                        style: const TextStyle(fontSize: 14)),
                   ],
                 );
               }),

@@ -1,6 +1,6 @@
 import 'dart:developer';
-
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
 class ResponseHandler<T> {
   final T? data;
@@ -45,8 +45,29 @@ class ResponseHandler<T> {
     if (response is Map<String, dynamic>) {
       log('Respuesta exitosa con datos de mapa');
       if (T == Personal) {
-        final personal = Personal.fromJson(response);
-        return ResponseHandler<T>(success: true, data: personal as T);
+        try {
+          final personal = Personal.fromJson(response);
+          return ResponseHandler<T>(success: true, data: personal as T);
+        } catch (e) {
+          log('Error al mapear la respuesta a Personal: $e');
+          return ResponseHandler<T>(
+            success: false,
+            message: 'Error al mapear la respuesta a Personal.',
+          );
+        }
+      }
+      if (T == EntrenamientoModulo) {
+        try {
+          final entrenamientoModulo = EntrenamientoModulo.fromJson(response);
+          return ResponseHandler<T>(
+              success: true, data: entrenamientoModulo as T);
+        } catch (e) {
+          log('Error al mapear la respuesta a EntrenamientoModulo: $e');
+          return ResponseHandler<T>(
+            success: false,
+            message: 'Error al mapear la respuesta a EntrenamientoModulo.',
+          );
+        }
       }
       return ResponseHandler<T>(success: true, data: response as T);
     }

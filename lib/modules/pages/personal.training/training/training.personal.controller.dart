@@ -22,12 +22,33 @@ class TrainingPersonalController extends GetxController {
         trainingList.value = response.data!
             .map((json) => EntrenamientoModulo.fromJson(json))
             .toList();
+        for (var training in trainingList) {
+          await _fetchAndCombineUltimoModulo(training);
+        }
         await _fetchModulosParaEntrenamientos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar los entrenamientos');
       }
     } catch (e) {
       Get.snackbar('Error', 'Ocurrió un problema al cargar los entrenamientos');
+    }
+  }
+
+  Future<void> _fetchAndCombineUltimoModulo(
+      EntrenamientoModulo training) async {
+    try {
+      final response = await trainingService
+          .obtenerUltimoModuloPorEntrenamiento(training.key);
+      if (response.success && response.data != null) {
+        EntrenamientoModulo ultimoModulo = response.data!;
+        training.actualizarConUltimoModulo(ultimoModulo);
+
+        trainingList.refresh();
+      } else {
+        log('Error al obtener el último módulo: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener el último módulo: $e');
     }
   }
 
@@ -67,7 +88,6 @@ class TrainingPersonalController extends GetxController {
         controller.archivosAdjuntos.clear();
         controller.documentoAdjuntoNombre.value = '';
         controller.documentoAdjuntoBytes.value = null;
-
         Get.snackbar(
           'Éxito',
           'Entrenamiento actualizado correctamente',

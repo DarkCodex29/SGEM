@@ -73,6 +73,20 @@ class EntrenamientoModulo {
     required this.motivoEliminado,
   });
 
+  void actualizarConUltimoModulo(EntrenamientoModulo ultimoModulo) {
+    if (ultimoModulo.entrenador.nombre.isNotEmpty) {
+      entrenador = ultimoModulo.entrenador;
+    }
+    if (ultimoModulo.estadoEntrenamiento.nombre.isNotEmpty) {
+      estadoEntrenamiento = ultimoModulo.estadoEntrenamiento;
+    }
+    inNotaTeorica = ultimoModulo.inNotaTeorica;
+    inNotaPractica = ultimoModulo.inNotaPractica;
+    inHorasAcumuladas = ultimoModulo.inHorasAcumuladas;
+    inTotalHoras = ultimoModulo.inTotalHoras;
+    modulo = ultimoModulo.modulo;
+  }
+
   factory EntrenamientoModulo.fromJson(Map<String, dynamic> json) =>
       EntrenamientoModulo(
         key: json["Key"] ?? 0,

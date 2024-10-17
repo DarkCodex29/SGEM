@@ -227,6 +227,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inCondicion: entrenamiento.inCondicion,
       condicion: entrenamiento.condicion,
       inEstado: 0,
+      estadoEntrenamiento: Entidad(key: 0, nombre: 'Pendiente'),
       comentarios: '',
       inCapacitacion: 0,
     );

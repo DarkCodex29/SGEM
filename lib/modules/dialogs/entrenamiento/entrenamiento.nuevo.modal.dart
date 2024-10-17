@@ -98,16 +98,18 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Scaffold(
-
               appBar: AppBar(
                 toolbarHeight: 80,
                 leadingWidth: 0,
                 title: isEdit
-                    ? const Text("Editar Entrenamiento" , style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),)
+                    ? const Text(
+                        "Editar Entrenamiento",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      )
                     : const Text("Nuevo Entrenamiento"),
                 backgroundColor: AppTheme.backgroundBlue,
                 actions: [
@@ -166,6 +168,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         inHorasAcumuladas: 0,
         inHorasMinestar: 0,
         inEstado: 1,
+        estadoEntrenamiento: Entidad(key: 1, nombre: 'Pendiente'),
         comentarios: '',
         eliminado: '',
         motivoEliminado: '',

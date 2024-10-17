@@ -79,17 +79,12 @@ class PersonalSearchController extends GetxController {
     try {
       final photoResponse =
           await personalService.obtenerFotoPorCodigoOrigen(idOrigen);
-      log(photoResponse.data.toString());
-
       if (photoResponse.success && photoResponse.data != null) {
-        log('Foto del personal cargada con éxito');
         return photoResponse.data;
       } else {
-        log('Error al cargar la foto: ${photoResponse.message}');
         return null;
       }
     } catch (e) {
-      log('Error al cargar la foto del personal: $e');
       return null;
     }
   }
@@ -101,7 +96,6 @@ class PersonalSearchController extends GetxController {
 
       if (response.success && response.data != null) {
         guardiaOptions.assignAll(response.data!);
-
         log('Guardia opciones cargadas correctamente: $guardiaOptions');
       } else {
         log('Error: ${response.message}');
@@ -265,7 +259,7 @@ class PersonalSearchController extends GetxController {
     final minute = now.minute.toString().padLeft(2, '0');
     final second = now.second.toString().padLeft(2, '0');
 
-    return 'PERSONAL_MINA_$day$month$year$hour$minute$second.xlsx';
+    return 'PERSONAL_MINA_$day$month$year$hour$minute$second';
   }
 
   void clearFields() {
@@ -274,9 +268,7 @@ class PersonalSearchController extends GetxController {
     nombresController.clear();
     apellidosController.clear();
     selectedGuardiaKey.value = null;
-    log('Campos limpiados: ${selectedEstadoKey.value}');
     selectedEstadoKey.value = null;
-    log('Campos limpiados: ${selectedEstadoKey.value}');
   }
 
   void showNewPersonal() {

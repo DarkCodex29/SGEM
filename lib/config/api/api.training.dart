@@ -26,10 +26,8 @@ class TrainingService {
 
   Future<ResponseHandler<bool>> registerTraining(
       EntrenamientoModulo entrenamiento) async {
-    log('Registrando nuevo entrenamiento: ${jsonEncode(entrenamiento.toJson())}');
     final url = '$baseUrl/Entrenamiento/RegistrarEntrenamiento';
     try {
-      log('Registrando nuevo entrenamiento: ${jsonEncode(entrenamiento.toJson())}');
       final response = await dio.post(
         url,
         data: jsonEncode(entrenamiento.toJson()),
@@ -37,7 +35,6 @@ class TrainingService {
           followRedirects: false,
         ),
       );
-      log("RESPONSE: $response");
       if (response.statusCode == 200 && response.data != null) {
         if (response.data) {
           return ResponseHandler.handleSuccess<bool>(true);
@@ -54,33 +51,40 @@ class TrainingService {
         );
       }
     } on DioException catch (e) {
-      log('Error al registrar entrenamiento. Datos: ${jsonEncode(entrenamiento.toJson())}, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }
 
-  Future<ResponseHandler<EntrenamientoModulo>> obtenerUltimoModuloPorEntrenamiento(
-      int entrenamientoId) async {
+  Future<ResponseHandler<EntrenamientoModulo>>
+      obtenerUltimoModuloPorEntrenamiento(int entrenamientoId) async {
     final url =
         '$baseUrl/Entrenamiento/ObtenerUltimoModuloPorEntrenamiento?inEntrenamiento=$entrenamientoId';
     try {
-      log('Obteniendo el último módulo para el entrenamiento con ID: $entrenamientoId');
       final response =
           await dio.get(url, options: Options(followRedirects: false));
-      log('RESPONSE OBTENER ÚLTIMO MÓDULO: $response');
 
       if (response.statusCode == 200 && response.data != null) {
-        EntrenamientoModulo ultimoModulo = EntrenamientoModulo.fromJson(response.data);
-        return ResponseHandler.handleSuccess<EntrenamientoModulo>(ultimoModulo);
+        try {
+          EntrenamientoModulo ultimoModulo =
+              EntrenamientoModulo.fromJson(response.data);
+          return ResponseHandler<EntrenamientoModulo>(
+              success: true, data: ultimoModulo);
+        } catch (e) {
+          return ResponseHandler<EntrenamientoModulo>(
+            success: false,
+            message: 'Error al mapear los datos a EntrenamientoModulo.',
+          );
+        }
       } else {
-        return ResponseHandler(
+        log('Error en la respuesta del servidor: ${response.statusCode}, Datos: ${response.data}');
+        return ResponseHandler<EntrenamientoModulo>(
           success: false,
           message: 'Error al obtener el último módulo',
         );
       }
     } on DioException catch (e) {
       log('Error al obtener el último módulo para el entrenamiento con ID: $entrenamientoId. Error: ${e.response?.data}');
-      return ResponseHandler.handleFailure(e);
+      return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
     }
   }
 

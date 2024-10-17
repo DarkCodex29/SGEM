@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
@@ -39,9 +40,8 @@ class NewPersonalController extends GetxController {
 
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
-  RxString estadoPersonal = ''.obs;
+  //RxString estadoPersonal = 'Cesado'.obs;
   RxInt estadoPersonalKey = 0.obs;
-
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
 
@@ -63,11 +63,9 @@ class NewPersonalController extends GetxController {
     try {
       final photoResponse =
           await personalService.obtenerFotoPorCodigoOrigen(idOrigen);
-      log(photoResponse.data.toString());
 
       if (photoResponse.success && photoResponse.data != null) {
         personalPhoto.value = photoResponse.data;
-        log('Foto del personal cargada con éxito');
       } else {
         log('Error al cargar la foto: ${photoResponse.message}');
       }
@@ -93,19 +91,21 @@ class NewPersonalController extends GetxController {
           responseListar.data!.isNotEmpty) {
         _mostrarErroresValidacion(Get.context!,
             ['La persona ya se encuentra registrada en el sistema.']);
+        resetControllers();
         return;
       }
 
       final responseBuscar = await personalService.buscarPersonalPorDni(dni);
-
       if (responseBuscar.success && responseBuscar.data != null) {
         personalData = responseBuscar.data;
         llenarControladores(personalData!);
       } else {
-        ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
-          content: Text('Personal no encontrado'),
-          backgroundColor: Colors.red,
-        ));
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          const SnackBar(
+            content: Text('Personal no encontrado'),
+            backgroundColor: Colors.red,
+          ),
+        );
         resetControllers();
       }
     } catch (e) {
@@ -128,50 +128,41 @@ class NewPersonalController extends GetxController {
     }
   }
 
-  void llenarControladores(Personal? personal) {
-    resetControllers();
-    if (personal != null) {
-      loadPersonalPhoto(personal.inPersonalOrigen);
-      dniController.text = personal.numeroDocumento;
-      nombresController.text =
-          '${personal.primerNombre} ${personal.segundoNombre}';
-      puestoTrabajoController.text = personal.cargo;
-      codigoController.text = personal.codigoMcp;
-      apellidoPaternoController.text = personal.apellidoPaterno;
-      apellidoMaternoController.text = personal.apellidoMaterno;
-      gerenciaController.text = personal.gerencia;
+  void llenarControladores(Personal personal) {
+    loadPersonalPhoto(personal.inPersonalOrigen);
+    dniController.text = personal.numeroDocumento;
+    nombresController.text =
+        '${personal.primerNombre} ${personal.segundoNombre}';
+    puestoTrabajoController.text = personal.cargo;
+    codigoController.text = personal.codigoMcp;
+    apellidoPaternoController.text = personal.apellidoPaterno;
+    apellidoMaternoController.text = personal.apellidoMaterno;
+    gerenciaController.text = personal.gerencia;
 
-      fechaIngreso = personal.fechaIngreso;
-      fechaIngresoController.text =
-          DateFormat('dd/MM/yyyy').format(fechaIngreso!) ?? ' ';
-      fechaIngresoMina = personal.fechaIngresoMina;
-      fechaIngresoMinaController.text =
-          DateFormat('dd/MM/yyyy').format(fechaIngresoMina!) ?? ' ';
-      fechaRevalidacion = personal.licenciaVencimiento;
-      fechaRevalidacionController.text =
-          DateFormat('dd/MM/yyyy').format(fechaRevalidacion!) ?? ' ';
+    fechaIngreso = personal.fechaIngreso;
+    fechaIngresoController.text =
+        DateFormat('dd/MM/yyyy').format(fechaIngreso!);
+    fechaIngresoMina = personal.fechaIngresoMina;
+    fechaIngresoMinaController.text =
+        DateFormat('dd/MM/yyyy').format(fechaIngresoMina!);
+    fechaRevalidacion = personal.licenciaVencimiento;
+    fechaRevalidacionController.text =
+        DateFormat('dd/MM/yyyy').format(fechaRevalidacion!);
 
-      areaController.text = personal.area;
-      categoriaLicenciaController.text = personal.licenciaCategoria;
-      codigoLicenciaController.text = personal.licenciaConducir;
-      restriccionesController.text = personal.restricciones;
-      if (personal.guardia.key != 0) {
-        selectedGuardiaKey.value = personal.guardia.key;
-      } else {
-        selectedGuardiaKey.value = null;
-      }
-      isOperacionMina.value = personal.operacionMina == 'S';
-      isZonaPlataforma.value = personal.zonaPlataforma == 'S';
-
-      if (personal.estado.key == 95) {
-        estadoPersonal.value = personal.estado.nombre;
-      }
-      if (personal.estado.key == 96) {
-        estadoPersonal.value = personal.estado.nombre;
-      }
-
-      obtenerArchivosRegistrados(1, personal.key);
+    areaController.text = personal.area;
+    categoriaLicenciaController.text = personal.licenciaCategoria;
+    codigoLicenciaController.text = personal.licenciaConducir;
+    restriccionesController.text = personal.restricciones;
+    if (personal.guardia.key != 0) {
+      selectedGuardiaKey.value = personal.guardia.key;
+    } else {
+      selectedGuardiaKey.value = null;
     }
+    isOperacionMina.value = personal.operacionMina == 'S';
+    isZonaPlataforma.value = personal.zonaPlataforma == 'S';
+    //estadoPersonal.value = personal.estado.nombre;
+    estadoPersonalKey.value = personal.estado.key;
+    obtenerArchivosRegistrados(1, personal.key);
   }
 
   Future<bool> gestionarPersona({
@@ -459,7 +450,8 @@ class NewPersonalController extends GetxController {
     personalPhoto.value = null;
     isOperacionMina.value = false;
     isZonaPlataforma.value = false;
-    estadoPersonal.value = 'Activo';
+    estadoPersonalKey.value = 0;
+    //estadoPersonal.value = '';
     documentoAdjuntoNombre.value = '';
     documentoAdjuntoBytes.value = null;
     personalData = null;

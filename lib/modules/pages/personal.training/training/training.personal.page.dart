@@ -726,7 +726,7 @@ class TrainingPersonalPage extends StatelessWidget {
   Color _getColorByEstado(int estado) {
     switch (estado) {
       case 13:
-        return Colors.green; // AUTOIRZADO
+        return Colors.green; // AUTORIZADO
       case 11:
         return Colors.orange; // ENTRENANDO
       case 12:

@@ -40,6 +40,7 @@ class NewPersonalController extends GetxController {
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   RxString estadoPersonal = ''.obs;
+  RxInt estadoPersonalKey = 0.obs;
 
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
@@ -99,7 +100,6 @@ class NewPersonalController extends GetxController {
 
       if (responseBuscar.success && responseBuscar.data != null) {
         personalData = responseBuscar.data;
-        log('Personal encontrado: ${personalData!.toJson().toString()}');
         llenarControladores(personalData!);
       } else {
         ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(
@@ -107,7 +107,6 @@ class NewPersonalController extends GetxController {
           backgroundColor: Colors.red,
         ));
         resetControllers();
-        log('Error al buscar el personal: ${responseBuscar.message}');
       }
     } catch (e) {
       log('Error inesperado al buscar el personal: $e');
@@ -130,6 +129,7 @@ class NewPersonalController extends GetxController {
   }
 
   void llenarControladores(Personal? personal) {
+    resetControllers();
     if (personal != null) {
       loadPersonalPhoto(personal.inPersonalOrigen);
       dniController.text = personal.numeroDocumento;
@@ -165,11 +165,11 @@ class NewPersonalController extends GetxController {
 
       if (personal.estado.key == 95) {
         estadoPersonal.value = personal.estado.nombre;
-        //estadoPersonal.value = 'Activo';
-      } else {
-        //estadoPersonal.value = 'Cesado';
+      }
+      if (personal.estado.key == 96) {
         estadoPersonal.value = personal.estado.nombre;
       }
+
       obtenerArchivosRegistrados(1, personal.key);
     }
   }
@@ -182,7 +182,7 @@ class NewPersonalController extends GetxController {
     errores.clear();
     log('Gestionando persona con la acción: $accion');
     bool esValido = validate(context);
-    if (!esValido && accion!='eliminar') {
+    if (!esValido && accion != 'eliminar') {
       _mostrarErroresValidacion(context, errores);
       return false;
     }
@@ -264,28 +264,8 @@ class NewPersonalController extends GetxController {
     }
   }
 
-  String formatDate(DateTime date) {
-    return DateFormat('dd/MM/yyyy').format(date);
-  }
-
   //Validaciones
   bool validate(BuildContext context) {
-    // DateTime? fechaIngreso = parseDate(fechaIngresoController.text);
-    // DateTime? fechaIngresoMina = parseDate(fechaIngresoMinaController.text);
-
-    // if (fechaIngresoMina == null) {
-    //   errores.add('Debe seleccionar una fecha de ingreso a la mina.');
-    // } else {
-    //   if (fechaIngresoMina.isBefore(DateTime.now())) {
-    //     errores.add(
-    //         'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
-    //   }
-    //
-    //   if (fechaIngreso != null && fechaIngresoMina.isBefore(fechaIngreso)) {
-    //     errores.add(
-    //         'La fecha de ingreso a la mina debe ser mayor que la fecha de ingreso a la empresa.');
-    //   }
-    // }
     log('Validando la fecha de ingreso a mina');
     log('Fecha de ingreso mina: ${fechaIngresoMina}');
     if (fechaIngresoMina == null) {

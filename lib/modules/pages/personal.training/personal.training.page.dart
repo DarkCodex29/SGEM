@@ -49,7 +49,9 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.editPersonal:
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.actualizacionMasiva:
-            return const PersonalActualizacionMasivaPage();
+            return PersonalActualizacionMasivaPage(onCancel: () {
+              controller.hideForms();
+            },);
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(
               controllerPersonal: controller,

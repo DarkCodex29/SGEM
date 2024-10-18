@@ -235,7 +235,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     return Obx(() {
       if (controller.guardiaOpciones.isEmpty) {
         return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
+            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
       }
       List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(
@@ -264,7 +264,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     return Obx(() {
       if (controller.equipoOpciones.isEmpty) {
         return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
+            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
       }
       List<MaestroDetalle> options = controller.equipoOpciones;
       return CustomDropdown(
@@ -293,7 +293,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     return Obx(() {
       if (controller.moduloOpciones.isEmpty) {
         return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
+            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
       }
       List<ModuloMaestro> options = controller.moduloOpciones;
       return CustomDropdown(

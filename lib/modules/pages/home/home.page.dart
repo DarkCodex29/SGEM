@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/capacitaciones/capacitacion.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.page.dart';
 import 'package:sgem/modules/pages/trainings/trainings.page.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
@@ -50,7 +51,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       _buildHomeContent(isLargeScreen, isSmallScreen),
       const PersonalSearchPage(),
       const Center(child: Text("Búsqueda de Monitoreos")),
-      const Center(child: Text("Búsqueda de Capacitaciones")),
+      CapacitacionPage(),
        TrainingsPage(),
       const Center(child: Text("Administración")),
     ];

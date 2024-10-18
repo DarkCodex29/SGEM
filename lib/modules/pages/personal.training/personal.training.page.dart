@@ -370,7 +370,7 @@ class PersonalSearchPage extends StatelessWidget {
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
-        return const CircularProgressIndicator();
+        return const LinearProgressIndicator(backgroundColor: Colors.white,);
       }
       List<MaestroDetalle> options = controller.guardiaOptions;
       return CustomDropdown(

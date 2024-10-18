@@ -51,7 +51,9 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       _buildHomeContent(isLargeScreen, isSmallScreen),
       const PersonalSearchPage(),
       const Center(child: Text("Búsqueda de Monitoreos")),
-      CapacitacionPage(),
+      CapacitacionPage(onCancel:(){
+
+      } ,),
        TrainingsPage(),
       const Center(child: Text("Administración")),
     ];

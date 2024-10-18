@@ -273,7 +273,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
   Widget _buildDropdownEquipo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.equipoOpciones.isEmpty) {
@@ -302,7 +301,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
   Widget _buildDropdownModulo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.moduloOpciones.isEmpty) {
@@ -331,7 +329,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(
@@ -347,7 +344,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildSeccionResultado(ActualizacionMasivaController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -372,7 +368,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildSeccionResultadoBarraSuperior(
       ActualizacionMasivaController controller) {
     return const Row(

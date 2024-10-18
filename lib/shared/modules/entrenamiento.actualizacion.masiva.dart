@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:sgem/shared/modules/OptionValue.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 
 List<EntrenamientoActualizacionMasiva> entrenamientoActualizacionMasivaFromJson(String str) => List<EntrenamientoActualizacionMasiva>.from(json.decode(str).map((x) => EntrenamientoActualizacionMasiva.fromJson(x)));
 

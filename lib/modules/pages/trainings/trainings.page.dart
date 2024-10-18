@@ -333,19 +333,19 @@ class TrainingsPage extends StatelessWidget {
                         children: [
                           Expanded(child: Text(entrenamiento.codigoMcp)),
                           Expanded(child: Text(entrenamiento.nombreCompleto)),
-                          Expanded(child: Text(entrenamiento.guardia.nombre)),
+                          Expanded(child: Text(entrenamiento.guardia.nombre!)),
                           Expanded(
                               child: Text(
-                                  entrenamiento.estadoEntrenamiento.nombre)),
-                          Expanded(child: Text(entrenamiento.modulo.nombre)),
-                          Expanded(child: Text(entrenamiento.condicion.nombre)),
-                          Expanded(child: Text(entrenamiento.equipo.nombre)),
+                                  entrenamiento.estadoEntrenamiento.nombre!)),
+                          Expanded(child: Text(entrenamiento.modulo.nombre!)),
+                          Expanded(child: Text(entrenamiento.condicion.nombre!)),
+                          Expanded(child: Text(entrenamiento.equipo.nombre!)),
                           Expanded(
                             child: Text(DateFormat('dd/MM/yyyy')
                                 .format(entrenamiento.fechaInicio!)),
                           ),
                           Expanded(
-                              child: Text(entrenamiento.entrenador.nombre)),
+                              child: Text(entrenamiento.entrenador.nombre!)),
                           Expanded(
                               child: Text(
                             entrenamiento.notaTeorica.toString(),

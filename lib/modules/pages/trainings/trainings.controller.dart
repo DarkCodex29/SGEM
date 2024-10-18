@@ -153,18 +153,18 @@ class TrainingsController extends GetxController {
       List<CellValue> row = [
         TextCellValue(entrenamiento.codigoMcp),
         TextCellValue(entrenamiento.nombreCompleto),
-        TextCellValue(entrenamiento.guardia.nombre),
-        TextCellValue(entrenamiento.estadoEntrenamiento.nombre),
-        TextCellValue(entrenamiento.modulo.nombre),
-        TextCellValue(entrenamiento.condicion.nombre),
-        TextCellValue(entrenamiento.equipo.nombre),
+        TextCellValue(entrenamiento.guardia.nombre!),
+        TextCellValue(entrenamiento.estadoEntrenamiento.nombre!),
+        TextCellValue(entrenamiento.modulo.nombre!),
+        TextCellValue(entrenamiento.condicion.nombre!),
+        TextCellValue(entrenamiento.equipo.nombre!),
         entrenamiento.fechaInicio != null
             ? TextCellValue(dateFormat.format(entrenamiento.fechaInicio!))
             : TextCellValue(''),
         entrenamiento.fechaTermino != null
             ? TextCellValue(dateFormat.format(entrenamiento.fechaTermino!))
             : TextCellValue(''),
-        TextCellValue(entrenamiento.entrenador.nombre),
+        TextCellValue(entrenamiento.entrenador.nombre!),
         TextCellValue(entrenamiento.notaTeorica.toString()),
         TextCellValue(entrenamiento.notaPractica.toString()),
         TextCellValue(entrenamiento.horasAcumuladas.toString()),

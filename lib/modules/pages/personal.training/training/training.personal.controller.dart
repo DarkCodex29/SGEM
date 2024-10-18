@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.training.dart';
-import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
+import 'package:sgem/modules/pages/personal.training/training/modales/new%20training/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
 class TrainingPersonalController extends GetxController {

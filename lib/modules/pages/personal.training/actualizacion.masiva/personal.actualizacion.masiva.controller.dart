@@ -8,7 +8,6 @@ import '../../../../config/api/api.maestro.detail.dart';
 import '../../../../config/api/api.modulo.maestro.dart';
 import '../../../../config/api/api.training.dart';
 import '../../../../shared/modules/entrenamiento.actualizacion.masiva.dart';
-import '../../../../shared/modules/entrenamiento.consulta.dart';
 import '../../../../shared/modules/maestro.detail.dart';
 
 class ActualizacionMasivaController extends GetxController {

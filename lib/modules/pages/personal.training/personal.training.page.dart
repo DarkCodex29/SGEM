@@ -49,9 +49,11 @@ class PersonalSearchPage extends StatelessWidget {
           case PersonalSearchScreen.editPersonal:
             return _buildNewPersonalForm(controller);
           case PersonalSearchScreen.actualizacionMasiva:
-            return PersonalActualizacionMasivaPage(onCancel: () {
-              controller.hideForms();
-            },);
+            return PersonalActualizacionMasivaPage(
+              onCancel: () {
+                controller.hideForms();
+              },
+            );
           case PersonalSearchScreen.trainingForm:
             return TrainingPersonalPage(
               controllerPersonal: controller,
@@ -370,7 +372,9 @@ class PersonalSearchPage extends StatelessWidget {
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
     return Obx(() {
       if (controller.guardiaOptions.isEmpty) {
-        return const LinearProgressIndicator(backgroundColor: Colors.white,);
+        return const LinearProgressIndicator(
+          backgroundColor: Colors.white,
+        );
       }
       List<MaestroDetalle> options = controller.guardiaOptions;
       return CustomDropdown(
@@ -427,7 +431,9 @@ class PersonalSearchPage extends StatelessWidget {
           const SizedBox(height: 10),
           Obx(() {
             if (controller.personalResults.isEmpty) {
-              return const Center(child: Text('No se encontraron registros.'),);
+              return const Center(
+                child: Text('No se encontraron registros.'),
+              );
             } else {
               return _buildResultsTable(controller, context);
             }
@@ -506,7 +512,6 @@ class PersonalSearchPage extends StatelessWidget {
     return [
       ElevatedButton.icon(
         onPressed: () {
-          // Acción para actualización masiva
           controller.showActualizacionMasiva();
         },
         icon: const Icon(
@@ -720,9 +725,6 @@ class PersonalSearchPage extends StatelessWidget {
                                               .value!
                                               .nombreCompleto;
                                           await showDialog(
-                                            //isScrollControlled: true,
-                                            //backgroundColor: Colors.transparent,
-                                            //enableDrag: false,
                                             context: context,
                                             builder: (context) {
                                               return GestureDetector(
@@ -769,15 +771,11 @@ class PersonalSearchPage extends StatelessWidget {
                                           );
                                           if (success) {
                                             await showDialog(
-                                              //isScrollControlled: true,
-                                              //backgroundColor: Colors.transparent,
-                                              //enableDrag: false,
                                               context: context,
                                               builder: (context) {
                                                 return const SuccessDeleteWidget();
                                               },
                                             );
-                                            //TODO: refrescar listado de personal
                                             controller.searchPersonal();
 
                                             ScaffoldMessenger.of(context)
@@ -788,7 +786,6 @@ class PersonalSearchPage extends StatelessWidget {
                                                 backgroundColor: Colors.green,
                                               ),
                                             );
-
                                             Get.toNamed('/buscarEntrenamiento');
                                           } else {
                                             ScaffoldMessenger.of(context)

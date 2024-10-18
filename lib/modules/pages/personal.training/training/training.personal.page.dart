@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/dialogs/entrenamiento/entrenamiento.nuevo.controller.dart';
+import 'package:sgem/modules/pages/personal.training/training/modales/new%20training/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
@@ -12,8 +12,8 @@ import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
-import 'package:sgem/shared/widgets/entrenamiento.modulo/widget.entrenamiento.modulo.nuevo.dart';
-import '../../../dialogs/entrenamiento/entrenamiento.nuevo.modal.dart';
+import 'package:sgem/modules/pages/personal.training/training/modales/new%20module/entrenamiento.modulo.nuevo.dart';
+import 'modales/new training/entrenamiento.nuevo.modal.dart';
 
 class TrainingPersonalPage extends StatelessWidget {
   final PersonalSearchController controllerPersonal;

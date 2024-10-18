@@ -7,7 +7,7 @@ import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import '../alert/widget.alert.dart';
+import '../../../../../../shared/widgets/alert/widget.alert.dart';
 
 class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController fechaInicioController = TextEditingController();

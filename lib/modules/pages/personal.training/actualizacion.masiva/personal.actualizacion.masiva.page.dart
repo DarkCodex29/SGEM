@@ -396,7 +396,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
   Widget _buildSeccionResultadoTabla(ActualizacionMasivaController controller) {
     return Obx(
       () {
-        //TODO: validar registros
         if (controller.entrenamientoResultados.isEmpty) {
           return const Center(child: Text("No se encontraron resultados"));
         }
@@ -446,20 +445,19 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text(
-                            '',
-                            //entrenamiento.horasAcumuladas.toString(),
+                            entrenamiento.inHorasAcumuladas.toString(),
                             textAlign: TextAlign.center,
                           )),
                           Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy').format(
-                                entrenamiento.fechaInicio! as DateTime)),
+                            child: Text(DateFormat('dd/MM/yyyy')
+                                .format(entrenamiento.fechaInicio!)),
                           ),
                           Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy').format(
-                                entrenamiento.fechaTermino! as DateTime)),
+                            child: Text(DateFormat('dd/MM/yyyy')
+                                .format(entrenamiento.fechaTermino!)),
                           ),
                           //Todo: Botones de accion
-                          Expanded(
+                          const Expanded(
                               child: Text(
                             "Editar",
                           )),

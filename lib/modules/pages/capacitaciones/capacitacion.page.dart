@@ -353,7 +353,7 @@ class CapacitacionPage extends StatelessWidget {
       // }
       List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(
-        hintText: 'Selecciona Guardia',
+        hintText: 'Entrenador responsable',
         options: options.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
             ? options

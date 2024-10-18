@@ -233,9 +233,23 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
 
   Widget _buildDropdownGuardia(ActualizacionMasivaController controller) {
     return Obx(() {
+      if (controller.isLoadingGuardia.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
       if (controller.guardiaOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
+        return const Center(
+          child: Text(
+            'No se encontraron guardias',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
       }
       List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(

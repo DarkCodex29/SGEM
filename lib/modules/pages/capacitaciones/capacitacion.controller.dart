@@ -16,7 +16,7 @@ class CapacitacionController extends GetxController {
   DateTime? fechaTermino;
 
   RxBool isExpanded = true.obs;
-
+RxBool isLoadingGuardia = false.obs;
   var selectedGuardiaKey = RxnInt();
 
   RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;

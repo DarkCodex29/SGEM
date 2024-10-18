@@ -39,10 +39,10 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-               _buildSeccionResultado(controller),
-               const SizedBox(
-                 height: 20,
-               ),
+              _buildSeccionResultado(controller),
+              const SizedBox(
+                height: 20,
+              ),
               _buildRegresarButton(context)
             ],
           ),
@@ -359,7 +359,8 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoBarraSuperior(ActualizacionMasivaController controller) {
+  Widget _buildSeccionResultadoBarraSuperior(
+      ActualizacionMasivaController controller) {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -391,13 +392,14 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildSeccionResultadoTabla(ActualizacionMasivaController controller) {
     return Obx(
-          () {
-            //TODO: validar registros
-        // if (controller.entrenamientoResultados.isEmpty) {
-        //   return const Center(child: Text("No se encontraron resultados"));
-        // }
+      () {
+        //TODO: validar registros
+        if (controller.entrenamientoResultados.isEmpty) {
+          return const Center(child: Text("No se encontraron resultados"));
+        }
 
         var rowsToShow = controller.entrenamientoResultados
             .take(controller.rowsPerPage.value)
@@ -422,44 +424,45 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          Expanded(child: Text(entrenamiento.codigoMcp)),
-                          Expanded(child: Text(entrenamiento.nombreCompleto)),
-                          Expanded(child: Text(entrenamiento.guardia.nombre)),
-                          Expanded(child: Text(entrenamiento.equipo.nombre)),
-                          Expanded(child: Text(entrenamiento.modulo.nombre)),
-                          Expanded(
-                                child: Text(
-                                entrenamiento.notaPractica.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                          Expanded(child: Text(entrenamiento.codigoMcp!)),
+                          Expanded(child: Text(entrenamiento.nombreCompleto!)),
+                          Expanded(child: Text(entrenamiento.guardia!.nombre!)),
+                          Expanded(child: Text(entrenamiento.equipo!.nombre!)),
+                          Expanded(child: Text(entrenamiento.modulo!.nombre!)),
                           Expanded(
                               child: Text(
-                                entrenamiento.notaTeorica.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.inNotaPractica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                              child: Text(
+                            entrenamiento.inNotaTeorica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                           //Todo: Cambiar por fecha de examen
-                          // Expanded(
-                          //   child: Text(DateFormat('dd/MM/yyyy')
-                          //       .format(entrenamiento.fechaExamen!)),
-                          // ),
-                                             Expanded(
-                              child: Text(
-                                entrenamiento.horasAcumuladas.toString(),
-                                textAlign: TextAlign.center,
-                              )),
                           Expanded(
                             child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaInicio!)),
+                                .format(entrenamiento.fechaExamen as DateTime)),
                           ),
                           Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaTermino!)),
+                              child: Text(
+                            '',
+                            //entrenamiento.horasAcumuladas.toString(),
+                            textAlign: TextAlign.center,
+                          )),
+                          Expanded(
+                            child: Text(DateFormat('dd/MM/yyyy').format(
+                                entrenamiento.fechaInicio! as DateTime)),
+                          ),
+                          Expanded(
+                            child: Text(DateFormat('dd/MM/yyyy').format(
+                                entrenamiento.fechaTermino! as DateTime)),
                           ),
                           //Todo: Botones de accion
                           Expanded(
                               child: Text(
-                               "Editar",
-                              )),
+                            "Editar",
+                          )),
                         ],
                       ),
                     );
@@ -479,16 +482,22 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     return const Row(
       children: [
         Expanded(flex: 1, child: Text('Código MCP', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Nombres y Apellidos', style: boldTextStyle)),
+        Expanded(
+            flex: 1, child: Text('Nombres y Apellidos', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Guardia', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Equipo', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Estado de avance', style: boldTextStyle)),
+        Expanded(
+            flex: 1, child: Text('Estado de avance', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Nota práctica', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Nota teórica', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Fecha de examen', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Horas de entrenamiento acumuladas', style: boldTextStyle)),
+        Expanded(
+            flex: 1,
+            child: Text('Horas de entrenamiento acumuladas',
+                style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Fecha de inicio', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Fecha de término', style: boldTextStyle)),
+        Expanded(
+            flex: 1, child: Text('Fecha de término', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Acciones', style: boldTextStyle)),
       ],
     );

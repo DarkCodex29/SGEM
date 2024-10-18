@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
+import 'package:sgem/shared/modules/entrenamiento.actualizacion.masiva.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
 import '../../shared/modules/entrenamiento.consulta.dart';
@@ -209,6 +211,68 @@ class TrainingService {
       final entrenamientoList = items
           .map((entrenamientoJson) =>
               EntrenamientoConsulta.fromJson(entrenamientoJson))
+          .toList();
+
+      final responseData = {
+        'Items': entrenamientoList,
+        'PageNumber': result['PageNumber'],
+        'TotalPages': result['TotalPages'],
+        'TotalRecords': result['TotalRecords'],
+        'PageSize': result['PageSize'],
+      };
+
+      return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);
+    } on DioException catch (e) {
+      log('Error al consultar entrenamientos paginado. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<Map<String, dynamic>>> ActualizacionMasivaPaginado({
+    String? codigoMcp,
+    String? numeroDocumento,
+    int? inGuardia,
+    String? nombres,
+    String? apellidos,
+    int? inEquipo,
+    int? inModulo,
+
+    int? pageSize,
+    int? pageNumber,
+  }) async {
+    log('Llamando al endpoint actuaalizacion masiva');
+    const url = '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoActualizacionMasivaPaginado';
+    Map<String, dynamic> queryParams = {
+      'parametros.codigoMcp': codigoMcp,
+      'parametros.numeroDocumento': numeroDocumento,
+      'parametros.inGuardia': inGuardia,
+      'parametros.nombres': nombres,
+      'parametros.apellidos': apellidos,
+      'parametros.inEquipo': inEquipo,
+      'parametros.inModulo': inModulo,
+
+      'parametros.pageSize': pageSize,
+      'parametros.pageNumber': pageNumber,
+    };
+    try {
+      log('Listando personal de entrenamiento paginado con parámetros: $queryParams');
+      final response = await dio.get(
+        url,
+        queryParameters: queryParams
+          ..removeWhere((key, value) => value == null),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      log('Respuesta recibida para actualizacion masiva Paginado: ${response.data}');
+
+      final result = response.data as Map<String, dynamic>;
+
+      final items = result['Items'] as List;
+      final entrenamientoList = items
+          .map((entrenamientoJson) =>
+          EntrenamientoActualizacionMasiva.fromJson(entrenamientoJson))
           .toList();
 
       final responseData = {

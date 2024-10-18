@@ -1,27 +1,33 @@
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 
 import '../../../../config/api/api.maestro.detail.dart';
 import '../../../../config/api/api.modulo.maestro.dart';
+import '../../../../config/api/api.training.dart';
+import '../../../../shared/modules/entrenamiento.actualizacion.masiva.dart';
 import '../../../../shared/modules/entrenamiento.consulta.dart';
 import '../../../../shared/modules/maestro.detail.dart';
 
-class  ActualizacionMasivaController extends GetxController{
+class ActualizacionMasivaController extends GetxController {
   RxBool isExpanded = true.obs;
-  RxnInt selectedGuardiaKey = RxnInt();
-  RxnInt selectedEquipoKey = RxnInt();
-  RxnInt selectedModuloKey = RxnInt();
+  var selectedGuardiaKey = RxnInt();
+  var selectedEquipoKey = RxnInt();
+  var selectedModuloKey = RxnInt();
 
   TextEditingController codigoMcpController = TextEditingController();
-  TextEditingController documentoIdentidadController = TextEditingController();
+  TextEditingController numeroDocumentoController = TextEditingController();
+  TextEditingController nombresController = TextEditingController();
+  TextEditingController apellidosController = TextEditingController();
 
   RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> equipoOpciones = <MaestroDetalle>[].obs;
   RxList<ModuloMaestro> moduloOpciones = <ModuloMaestro>[].obs;
 
-  RxList<EntrenamientoConsulta> entrenamientoResultados = <EntrenamientoConsulta>[].obs;
+  RxList<EntrenamientoActualizacionMasiva> entrenamientoResultados =
+      <EntrenamientoActualizacionMasiva>[].obs;
 
   final moduloMaestroService = ModuloMaestroService();
   final maestroDetalleService = MaestroDetalleService();
@@ -31,13 +37,15 @@ class  ActualizacionMasivaController extends GetxController{
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
 
+  final entrenamientoService = TrainingService();
+
   @override
   void onInit() {
     cargarModulo();
     cargarEquipo();
     cargarGuardia();
-    // buscarEntrenamientos(
-    //     pageNumber: currentPage.value, pageSize: rowsPerPage.value);
+    buscarActualizacionMasiva(
+        pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
 
@@ -56,6 +64,7 @@ class  ActualizacionMasivaController extends GetxController{
       log('Error cargando la data de Modulos maestro: $e');
     }
   }
+
   Future<void> cargarEquipo() async {
     try {
       var response = await maestroDetalleService
@@ -72,10 +81,11 @@ class  ActualizacionMasivaController extends GetxController{
       log('Error cargando la data de guardia maestro: $e');
     }
   }
+
   Future<void> cargarGuardia() async {
     try {
       var response =
-      await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
 
       if (response.success && response.data != null) {
         guardiaOpciones.assignAll(response.data!);
@@ -89,34 +99,38 @@ class  ActualizacionMasivaController extends GetxController{
     }
   }
 
-  /*
-  Future<void> buscarEntrenamientos(
+  Future<void> buscarActualizacionMasiva(
       {int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =
-    codigoMcpController.text.isEmpty ? null : codigoMcpController.text;
+        codigoMcpController.text.isEmpty ? null : codigoMcpController.text;
+    String? numeroDocumento = numeroDocumentoController.text.isEmpty
+        ? null
+        : numeroDocumentoController.text;
     String? nombres =
-    nombresController.text.isEmpty ? null : nombresController.text;
+        nombresController.text.isEmpty ? null : nombresController.text;
+    String? apellidos =
+        apellidosController.text.isEmpty ? null : apellidosController.text;
+    log('llamando al servicio de actualizaicon masiva antes del try');
     try {
-      var response = await entrenamientoService.consultarEntrenamientoPaginado(
+      log('llamando al servicio de actualizaicon masiva');
+      var response = await entrenamientoService.ActualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
+        numeroDocumento: numeroDocumento,
+        inGuardia: selectedGuardiaKey.value,
+        nombres: nombres,
+        apellidos: apellidos,
         inEquipo: selectedEquipoKey.value,
         inModulo: selectedModuloKey.value,
-        inGuardia: selectedGuardiaKey.value,
-        inEstadoEntrenamiento: selectedEstadoEntrenamientoKey.value,
-        inCondicion: selectedCondicionKey.value,
-        fechaInicio: fechaInicio,
-        fechaTermino: fechaTermino,
-        nombres: nombres,
         pageSize: pageSize,
         pageNumber: pageNumber,
       );
-
+      log('Se termino de llamar al servicio de actualizacion masiva');
       if (response.success && response.data != null) {
         try {
           var result = response.data as Map<String, dynamic>;
           log('Respuesta recibida correctamente $result');
 
-          var items = result['Items'] as List<EntrenamientoConsulta>;
+          var items = result['Items'] as List<EntrenamientoActualizacionMasiva>;
           log('Items obtenidos: $items');
 
           entrenamientoResultados.assignAll(items);
@@ -135,8 +149,7 @@ class  ActualizacionMasivaController extends GetxController{
         log('Error en la búsqueda: ${response.message}');
       }
     } catch (e) {
-      log('Error en la búsqueda 2: $e');
+      log('Error en la actualizacion masiva búsqueda 2: $e');
     }
   }
-  */
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
+import 'package:sgem/shared/modules/personal.dart';
 
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
@@ -86,6 +87,7 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildSeccionResultado(CapacitacionController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -110,6 +112,7 @@ class CapacitacionPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSeccionConsultaPrimeraFila(CapacitacionController controller) {
     return Row(
       children: <Widget>[
@@ -227,13 +230,22 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildDropdownGuardia(CapacitacionController controller) {
     return Obx(() {
-      if (controller.guardiaOpciones.isEmpty) {
-        return const SizedBox(
+      if (controller.isLoadingGuardia.value) {
+        return const Center(
+          child: SizedBox(
             height: 50,
             width: 50,
-            child: LinearProgressIndicator(
-              backgroundColor: Colors.white,
-            ));
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      if (controller.guardiaOpciones.isEmpty) {
+        return const Center(
+          child: Text(
+            'No se encontraron guardias',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
       }
       List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(
@@ -260,18 +272,31 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildDropdownNombreCapacitacion(CapacitacionController controller) {
     return Obx(() {
-      // if (controller.guardiaOpciones.isEmpty) {
-      //   return const SizedBox(
-      //       height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
-      // }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
+      if (controller.isLoadingCapacitacion.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      if (controller.capacitacionOpciones.isEmpty) {
+        return const Center(
+          child: Text(
+            'No se encontraron capacitaciones',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
+      }
+      List<MaestroDetalle> options = controller.capacitacionOpciones;
       return CustomDropdown(
         hintText: 'Nombre de capacitacion',
         options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
+        selectedValue: controller.selectedCapacitacionKey.value != null
             ? options
                 .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
+                    option.key == controller.selectedCapacitacionKey.value)
                 .valor
             : null,
         isSearchable: false,
@@ -280,8 +305,8 @@ class CapacitacionPage extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          controller.selectedCapacitacionKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedCapacitacionKey.value}, Valor: $value');
         },
       );
     });
@@ -289,18 +314,32 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildDropdownCategoria(CapacitacionController controller) {
     return Obx(() {
-      // if (controller.guardiaOpciones.isEmpty) {
-      //   return const SizedBox(
-      //       height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
-      // }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
+      if (controller.isLoadingCategoria.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      if (controller.categoriaOpciones.isEmpty) {
+        return const Center(
+          child: Text(
+            'No se encontraron categorias',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
+      }
+      List<MaestroDetalle> options = controller.categoriaOpciones;
       return CustomDropdown(
         hintText: 'Categoria',
         options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
+        selectedValue: controller.selectedCategoriaKey.value != null
             ? options
                 .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
+                    option.key == controller.selectedCategoriaKey.value)
                 .valor
             : null,
         isSearchable: false,
@@ -309,8 +348,8 @@ class CapacitacionPage extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          controller.selectedCategoriaKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedCategoriaKey.value}, Valor: $value');
         },
       );
     });
@@ -318,18 +357,33 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildDropdownEmpresaCapacitacion(CapacitacionController controller) {
     return Obx(() {
-      // if (controller.guardiaOpciones.isEmpty) {
-      //   return const SizedBox(
-      //       height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
-      // }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
+      if (controller.isLoadingEmpresaCapacitacion.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      if (controller.empresaCapacitacionOpciones.isEmpty) {
+        return const Center(
+          child: Text(
+            'No se encontraron empresa capacitacion',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
+      }
+      List<MaestroDetalle> options = controller.empresaCapacitacionOpciones;
       return CustomDropdown(
         hintText: 'Empresa de capacitacion',
         options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
+        selectedValue: controller.selectedEmpresaCapacitacionKey.value != null
             ? options
                 .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
+                    option.key ==
+                    controller.selectedEmpresaCapacitacionKey.value)
                 .valor
             : null,
         isSearchable: false,
@@ -338,8 +392,8 @@ class CapacitacionPage extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          controller.selectedEmpresaCapacitacionKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedEmpresaCapacitacionKey.value}, Valor: $value');
         },
       );
     });
@@ -347,32 +401,47 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildDropdownEntrenador(CapacitacionController controller) {
     return Obx(() {
-      // if (controller.guardiaOpciones.isEmpty) {
-      //   return const SizedBox(
-      //       height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
-      // }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
+      if (controller.isLoadingEntrenador.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      if (controller.entrenadorOpciones.isEmpty) {
+        return const Center(
+          child: Text(
+            'No se encontraron entrenadores',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
+      }
+      List<Personal> options = controller.entrenadorOpciones;
       return CustomDropdown(
         hintText: 'Entrenador responsable',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
+        options: options.map((option) => option.nombreCompleto).toList(),
+        selectedValue: controller.selectedEntrenadorKey.value != null
             ? options
                 .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
-                .valor
+                    option.inPersonalOrigen == controller.selectedEntrenadorKey.value)
+                .nombreCompleto
             : null,
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
           final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
+            (option) => option.nombreCompleto == value,
           );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          controller.selectedEntrenadorKey.value = selectedOption.inPersonalOrigen;
+          log('Entrenador seleccionada - Key del Maestro: ${controller.selectedEntrenadorKey.value}, Valor: $value');
         },
       );
     });
   }
+
   Widget _buildBotonesAccion(CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -429,6 +498,7 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+
   Future<void> _selectDateRange(
       BuildContext context, CapacitacionController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(
@@ -452,7 +522,9 @@ class CapacitacionPage extends StatelessWidget {
       controller.fechaTermino = picked.end;
     }
   }
-  Widget _buildSeccionResultadoBarraSuperior(CapacitacionController controller) {
+
+  Widget _buildSeccionResultadoBarraSuperior(
+      CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -492,8 +564,8 @@ class CapacitacionPage extends StatelessWidget {
           onPressed: () async {
             //await controller.downloadExcel();
           },
-          icon:
-          const Icon(Icons.download, size: 18, color: AppTheme.primaryColor),
+          icon: const Icon(Icons.download,
+              size: 18, color: AppTheme.primaryColor),
           label: const Text(
             "Descargar Excel",
             style: TextStyle(fontSize: 16, color: AppTheme.primaryColor),
@@ -512,8 +584,8 @@ class CapacitacionPage extends StatelessWidget {
           onPressed: () {
             //controller.showNewPersonal();
           },
-          icon:
-          const Icon(Icons.add, size: 18, color: AppTheme.primaryBackground),
+          icon: const Icon(Icons.add,
+              size: 18, color: AppTheme.primaryBackground),
           label: const Text(
             "Nueva capacitacion",
             style: TextStyle(fontSize: 16, color: AppTheme.primaryBackground),
@@ -527,16 +599,25 @@ class CapacitacionPage extends StatelessWidget {
             ),
           ),
         ),
-
       ],
     );
   }
+
   Widget _buildSeccionResultadoTabla(CapacitacionController controller) {
     return Obx(
-          () {
-        // if (controller.entrenamientoResultados.isEmpty) {
-        //   return const Center(child: Text("No se encontraron resultados"));
-        // }
+      () {
+        if (controller.isLoadingCapacitacionResultados.value) {
+          return const Center(
+            child: SizedBox(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (controller.capacitacionResultados.isEmpty) {
+          return const Center(child: Text("No se encontraron resultados"));
+        }
 
         var rowsToShow = controller.capacitacionResultados
             .take(controller.rowsPerPage.value)
@@ -561,41 +642,41 @@ class CapacitacionPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          Expanded(child: Text(entrenamiento.codigoMcp)),
-                          Expanded(child: Text(entrenamiento.nombreCompleto)),
+                          Expanded(child: Text(entrenamiento.codigoMcp!)),
+                          Expanded(child: Text(entrenamiento.nombreCompleto!)),
                           Expanded(child: Text(entrenamiento.guardia.nombre!)),
                           Expanded(
                               child: Text(
-                                  entrenamiento.estadoEntrenamiento.nombre!)),
-                          Expanded(child: Text(entrenamiento.modulo.nombre!)),
-                          Expanded(child: Text(entrenamiento.condicion.nombre!)),
-                          Expanded(child: Text(entrenamiento.equipo.nombre!)),
+                                  entrenamiento.guardia.nombre!)),
+                          Expanded(child: Text(entrenamiento.entrenador.nombre!)),
+                          Expanded(
+                              child: Text(entrenamiento.categoria.nombre!)),
+                          Expanded(child: Text(entrenamiento.empresaCapacitadora.nombre!)),
                           Expanded(
                             child: Text(DateFormat('dd/MM/yyyy')
                                 .format(entrenamiento.fechaInicio!)),
                           ),
                           Expanded(
-                              child: Text(entrenamiento.entrenador.nombre!)),
+                            child: Text(DateFormat('dd/MM/yyyy')
+                                .format(entrenamiento.fechaTermino!)),
+                          ),
+                          Expanded(
+                              child: Text(entrenamiento.inTotalHoras.toString())),
                           Expanded(
                               child: Text(
-                                entrenamiento.notaTeorica.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.inNotaTeorica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                           Expanded(
                               child: Text(
-                                entrenamiento.notaPractica.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.inNotaPractica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                           Expanded(
                               child: Text(
-                                entrenamiento.horasAcumuladas.toString(),
-                                textAlign: TextAlign.center,
-                              )),
-                          Expanded(
-                              child: Text(
-                                entrenamiento.horasAcumuladas.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            'Acciones',
+                            textAlign: TextAlign.center,
+                          )),
                         ],
                       ),
                     );
@@ -608,6 +689,7 @@ class CapacitacionPage extends StatelessWidget {
       },
     );
   }
+
   Widget _buildSeccionResultadoTablaCabezera() {
     return const Row(
       children: [
@@ -705,30 +787,32 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
-  Widget _buildSeccionResultadoTablaPaginado(CapacitacionController controller) {
+
+  Widget _buildSeccionResultadoTablaPaginado(
+      CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Obx(() => Text(
-          'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
+              'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
               '${controller.currentPage.value * controller.rowsPerPage.value > controller.totalRecords.value ? controller.totalRecords.value : controller.currentPage.value * controller.rowsPerPage.value} '
               'de ${controller.totalRecords.value} registros',
-          style: const TextStyle(fontSize: 14),
-        )),
+              style: const TextStyle(fontSize: 14),
+            )),
         Obx(
-              () => Row(
+          () => Row(
             children: [
               const Text("Items por página: "),
               DropdownButton<int>(
                 value: controller.rowsPerPage.value > 0 &&
-                    controller.rowsPerPage.value <= 50
+                        controller.rowsPerPage.value <= 50
                     ? controller.rowsPerPage.value
                     : null,
                 items: [10, 20, 50]
                     .map((value) => DropdownMenuItem<int>(
-                  value: value,
-                  child: Text(value.toString()),
-                ))
+                          value: value,
+                          child: Text(value.toString()),
+                        ))
                     .toList(),
                 onChanged: (value) {
                   // if (value != null) {
@@ -744,11 +828,11 @@ class CapacitacionPage extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                  // controller.currentPage.value--;
-                  // controller.searchPersonal(
-                  //     pageNumber: controller.currentPage.value,
-                  //     pageSize: controller.rowsPerPage.value);
-                }
+                        // controller.currentPage.value--;
+                        // controller.searchPersonal(
+                        //     pageNumber: controller.currentPage.value,
+                        //     pageSize: controller.rowsPerPage.value);
+                      }
                     : null,
               ),
               Text(
@@ -756,14 +840,14 @@ class CapacitacionPage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_forward),
                 onPressed:
-                controller.currentPage.value < controller.totalPages.value
-                    ? () {
-                  // controller.currentPage.value++;
-                  // controller.searchPersonal(
-                  //     pageNumber: controller.currentPage.value,
-                  //     pageSize: controller.rowsPerPage.value);
-                }
-                    : null,
+                    controller.currentPage.value < controller.totalPages.value
+                        ? () {
+                            // controller.currentPage.value++;
+                            // controller.searchPersonal(
+                            //     pageNumber: controller.currentPage.value,
+                            //     pageSize: controller.rowsPerPage.value);
+                          }
+                        : null,
               ),
             ],
           ),
@@ -771,6 +855,7 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(

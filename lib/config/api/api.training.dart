@@ -28,7 +28,7 @@ class TrainingService {
 
   Future<ResponseHandler<bool>> registerTraining(
       EntrenamientoModulo entrenamiento) async {
-    final url = '$baseUrl/Entrenamiento/RegistrarEntrenamiento';
+    const url = '${ConfigFile.apiUrl}/Entrenamiento/RegistrarEntrenamiento';
     try {
       final response = await dio.post(
         url,

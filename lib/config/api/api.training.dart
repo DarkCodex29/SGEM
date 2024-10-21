@@ -29,6 +29,8 @@ class TrainingService {
   Future<ResponseHandler<bool>> registerTraining(
       EntrenamientoModulo entrenamiento) async {
     const url = '${ConfigFile.apiUrl}/Entrenamiento/RegistrarEntrenamiento';
+    log('Registrando entrenamiento API: ${jsonEncode(entrenamiento.toJson())}');
+
     try {
       final response = await dio.post(
         url,

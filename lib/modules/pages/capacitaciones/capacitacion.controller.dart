@@ -44,7 +44,8 @@ class CapacitacionController extends GetxController {
   final maestroDetalleService = MaestroDetalleService();
   final personalService = PersonalService();
   final capacitacionService = CapacitacionService();
-  RxList<CapacitacionConsulta> capacitacionResultados =<CapacitacionConsulta> [].obs;
+  RxList<CapacitacionConsulta> capacitacionResultados =
+      <CapacitacionConsulta>[].obs;
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
@@ -223,5 +224,19 @@ class CapacitacionController extends GetxController {
     }
   }
 
-  void clearFields() {}
+  void clearFields() {
+    codigoMcpController.clear();
+    numeroDocumentoController.clear();
+    selectedGuardiaKey.value = null;
+    nombresController.clear();
+    apellidoPaternoController.clear();
+    apellidoMaternoController.clear();
+    selectedCapacitacionKey.value = null;
+    selectedCategoriaKey.value = null;
+    selectedEmpresaCapacitacionKey.value = null;
+    selectedEntrenadorKey.value = null;
+    rangoFechaController.clear();
+    fechaInicio = null;
+    fechaTermino = null;
+  }
 }

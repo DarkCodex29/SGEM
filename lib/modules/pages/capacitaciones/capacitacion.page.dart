@@ -4,16 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
-<<<<<<< HEAD
-import 'package:sgem/modules/pages/capacitaciones/nueva%20capacitaci%C3%B3n/nueva.capacitacion.page.dart';
-=======
-import 'package:sgem/shared/modules/personal.dart';
->>>>>>> cc5b33cf747732a98f83b9cc4c955183d302df57
+
 
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
+import '../../../shared/modules/personal.dart';
 import '../../../shared/widgets/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
+import 'nueva capacitación/nueva.capacitacion.page.dart';
 
 class CapacitacionPage extends StatelessWidget {
   CapacitacionPage({super.key, required this.onCancel});
@@ -611,11 +609,6 @@ class CapacitacionPage extends StatelessWidget {
   Widget _buildSeccionResultadoTabla(CapacitacionController controller) {
     return Obx(
       () {
-<<<<<<< HEAD
-        // if (controller.entrenamientoResultados.isEmpty) {
-        //   return const Center(child: Text("No se encontraron resultados"));
-        // }
-=======
         if (controller.isLoadingCapacitacionResultados.value) {
           return const Center(
             child: SizedBox(
@@ -628,7 +621,6 @@ class CapacitacionPage extends StatelessWidget {
         if (controller.capacitacionResultados.isEmpty) {
           return const Center(child: Text("No se encontraron resultados"));
         }
->>>>>>> cc5b33cf747732a98f83b9cc4c955183d302df57
 
         var rowsToShow = controller.capacitacionResultados
             .take(controller.rowsPerPage.value)
@@ -653,56 +645,39 @@ class CapacitacionPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          Expanded(child: Text(entrenamiento.codigoMcp!)),
-                          Expanded(child: Text(entrenamiento.nombreCompleto!)),
-                          Expanded(child: Text(entrenamiento.guardia.nombre!)),
-                          Expanded(
+                          Expanded(flex: 1 ,child: Text(entrenamiento.codigoMcp!)),
+                          Expanded(flex: 1 ,child: Text(entrenamiento.numeroDocumento!)),
+                          Expanded(flex: 1 ,child: Text(entrenamiento.nombreCompleto!)),
+                          Expanded(flex: 1 ,child: Text(entrenamiento.guardia.nombre!,textAlign: TextAlign.center,)),
+                          Expanded(flex: 1 ,
                               child: Text(
-                                  entrenamiento.estadoEntrenamiento.nombre!)),
-                          Expanded(child: Text(entrenamiento.modulo.nombre!)),
-                          Expanded(
-                              child: Text(entrenamiento.condicion.nombre!)),
-                          Expanded(child: Text(entrenamiento.equipo.nombre!)),
-                          Expanded(
+                                  entrenamiento.entrenador.nombre!)),
+                          Expanded(flex: 1 ,child: Text(entrenamiento.categoria.nombre!)),
+                          Expanded(flex: 1 ,
+                              child: Text(entrenamiento.empresaCapacitadora.nombre!)),
+                          Expanded(flex: 1 ,
                             child: Text(DateFormat('dd/MM/yyyy')
                                 .format(entrenamiento.fechaInicio!)),
                           ),
-                          Expanded(
+                          Expanded(flex: 1 ,
                             child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaTermino!)),
+                                .format(entrenamiento.fechaTermino!) ,textAlign: TextAlign.center,),
                           ),
-                          Expanded(
-                              child: Text(entrenamiento.inTotalHoras.toString())),
-                          Expanded(
+                          Expanded(flex: 1 ,
+                              child: Text(entrenamiento.inTotalHoras.toString(), textAlign: TextAlign.center,)),
+                          Expanded(flex: 1 ,
                               child: Text(
-<<<<<<< HEAD
-                            entrenamiento.notaTeorica.toString(),
-=======
                             entrenamiento.inNotaTeorica.toString(),
->>>>>>> cc5b33cf747732a98f83b9cc4c955183d302df57
                             textAlign: TextAlign.center,
                           )),
-                          Expanded(
+                          Expanded(flex: 1 ,
                               child: Text(
-<<<<<<< HEAD
-                            entrenamiento.notaPractica.toString(),
-=======
                             entrenamiento.inNotaPractica.toString(),
->>>>>>> cc5b33cf747732a98f83b9cc4c955183d302df57
                             textAlign: TextAlign.center,
                           )),
-                          Expanded(
+                          const Expanded(flex: 1 ,
                               child: Text(
-<<<<<<< HEAD
-                            entrenamiento.horasAcumuladas.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.horasAcumuladas.toString(),
-=======
                             'Acciones',
->>>>>>> cc5b33cf747732a98f83b9cc4c955183d302df57
                             textAlign: TextAlign.center,
                           )),
                         ],

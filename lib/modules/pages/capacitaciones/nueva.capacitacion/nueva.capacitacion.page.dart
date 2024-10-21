@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/modules/pages/capacitaciones/nueva%20capacitaci%C3%B3n/nueva.capacitacion.controller.dart';
+
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
+
+import 'nueva.capacitacion.controller.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
   const NuevaCapacitacionPage({super.key});
@@ -19,6 +21,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            _buildSeccionBusqueda(controller),
+            const SizedBox(height: 20),
             _buildHeader(controller),
             const SizedBox(height: 20),
             _buildDatosDelPersonal(controller),
@@ -31,6 +35,32 @@ class NuevaCapacitacionPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+  Widget _buildSeccionBusqueda(NuevaCapacitacionController controller) {
+    return Row(
+      children: [
+        Expanded(
+          child: Obx(() {
+            return CustomDropdown(
+              hintText: 'Selecciona Tipo',
+              options: const ['Personal Interno', 'Persona Externa'],
+              selectedValue: controller.tipoSeleccionado.value,
+              onChanged: (value) {
+                controller.tipoSeleccionado.value = value!;
+              },
+            );
+          }),
+        ), const SizedBox(width: 20),
+        Expanded(
+          child: CustomTextField(
+            label: "Código MCP",
+            controller: controller.codigoMcpController,
+          ),
+        ),
+        const SizedBox(width: 20),
+
+      ],
     );
   }
 

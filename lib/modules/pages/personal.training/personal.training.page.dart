@@ -147,9 +147,10 @@ class PersonalSearchPage extends StatelessWidget {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         initiallyExpanded: controller.isExpanded.value,
-        onExpansionChanged: (value) {
-          controller.isExpanded.value = value;
-        },
+        // onExpansionChanged: (value) {
+        //   controller.isExpanded.value = value;
+        //         },
+        controller: controller.expansionController,
         children: [
           Container(
             padding: const EdgeInsets.all(16.0),
@@ -338,7 +339,7 @@ class PersonalSearchPage extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () async {
                         await controller.searchPersonal();
-                        controller.isExpanded.value = false;
+                        controller.expansionController.collapse();
                       },
                       icon: const Icon(
                         Icons.search,

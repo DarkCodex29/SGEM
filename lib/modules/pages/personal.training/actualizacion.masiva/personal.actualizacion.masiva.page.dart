@@ -180,8 +180,8 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       children: [
         ElevatedButton.icon(
           onPressed: () async {
-            //controller.clearFields();
-            //await controller.buscarEntrenamientos();
+            controller.clearFields();
+            await controller.buscarActualizacionMasiva();
             controller.isExpanded.value = false;
           },
           icon: const Icon(
@@ -206,8 +206,8 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () async {
-            //await controller.buscarEntrenamientos();
-            controller.isExpanded.value = true;
+            await controller.buscarActualizacionMasiva();
+            controller.isExpanded.value = false;
           },
           icon: const Icon(
             Icons.search,
@@ -233,9 +233,23 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
 
   Widget _buildDropdownGuardia(ActualizacionMasivaController controller) {
     return Obx(() {
+      if (controller.isLoadingGuardia.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
       if (controller.guardiaOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
+        return const Center(
+          child: Text(
+            'No se encontraron guardias',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
       }
       List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(
@@ -259,7 +273,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
   Widget _buildDropdownEquipo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.equipoOpciones.isEmpty) {
@@ -288,7 +301,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
   Widget _buildDropdownModulo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.moduloOpciones.isEmpty) {
@@ -317,7 +329,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(
@@ -333,7 +344,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildSeccionResultado(ActualizacionMasivaController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -358,7 +368,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildSeccionResultadoBarraSuperior(
       ActualizacionMasivaController controller) {
     return const Row(
@@ -457,10 +466,12 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                                 .format(entrenamiento.fechaTermino!)),
                           ),
                           //Todo: Botones de accion
-                          const Expanded(
-                              child: Text(
-                            "Editar",
-                          )),
+                           Expanded(
+                              child:   _buildIconButton(
+                                  Icons.edit, AppTheme.primaryColor,
+                                      () {
+                                    //controller.showEditPersonal(personal);
+                                  }),),
                         ],
                       ),
                     );
@@ -498,6 +509,16 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
             flex: 1, child: Text('Fecha de término', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Acciones', style: boldTextStyle)),
       ],
+    );
+  }
+  Widget _buildIconButton(IconData icon, Color color, VoidCallback onPressed) {
+    return IconButton(
+      icon: Icon(
+        icon,
+        color: color,
+        size: 24,
+      ),
+      onPressed: onPressed,
     );
   }
 }

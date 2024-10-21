@@ -36,6 +36,7 @@ class ActualizacionMasivaController extends GetxController {
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
 
+  RxBool isLoadingGuardia = false.obs;
   final entrenamientoService = TrainingService();
 
   @override
@@ -49,6 +50,7 @@ class ActualizacionMasivaController extends GetxController {
   }
 
   Future<void> cargarModulo() async {
+    isLoadingGuardia.value = true;
     try {
       var response = await moduloMaestroService.listarMaestros();
 
@@ -61,6 +63,8 @@ class ActualizacionMasivaController extends GetxController {
       }
     } catch (e) {
       log('Error cargando la data de Modulos maestro: $e');
+    } finally {
+      isLoadingGuardia.value = false;
     }
   }
 
@@ -112,6 +116,7 @@ class ActualizacionMasivaController extends GetxController {
     log('llamando al servicio de actualizaicon masiva antes del try');
     try {
       log('llamando al servicio de actualizaicon masiva');
+      log('Equipo seleccionado: ${selectedEquipoKey}');
       var response = await entrenamientoService.ActualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
@@ -150,5 +155,15 @@ class ActualizacionMasivaController extends GetxController {
     } catch (e) {
       log('Error en la actualizacion masiva búsqueda 2: $e');
     }
+  }
+
+  void clearFields() {
+    codigoMcpController.clear();
+    numeroDocumentoController.clear();
+    selectedGuardiaKey.value = null;
+    nombresController.clear();
+    apellidosController.clear();
+    selectedEquipoKey.value = null;
+    selectedModuloKey.value = null;
   }
 }

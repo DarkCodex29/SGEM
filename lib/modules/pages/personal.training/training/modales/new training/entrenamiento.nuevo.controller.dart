@@ -16,8 +16,10 @@ import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
 class EntrenamientoNuevoController extends GetxController {
-  TextEditingController fechaInicioEntrenamiento = TextEditingController();
-  TextEditingController fechaTerminoEntrenamiento = TextEditingController();
+  TextEditingController fechaInicioController = TextEditingController();
+  TextEditingController fechaTerminoController = TextEditingController();
+  DateTime? fechaInicio;
+  DateTime? fechaTermino;
   TextEditingController observacionesEntrenamiento = TextEditingController();
 
   TrainingPersonalController controllerPersonal =

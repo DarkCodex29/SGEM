@@ -330,6 +330,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               label: 'Total horas módulo',
               controller: controller.totalHorasModuloController,
               keyboardType: TextInputType.number,
+              isReadOnly: true,
             ),
             CustomTextField(
               label: 'Horas acumuladas',

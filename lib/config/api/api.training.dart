@@ -29,8 +29,6 @@ class TrainingService {
   Future<ResponseHandler<bool>> registerTraining(
       EntrenamientoModulo entrenamiento) async {
     const url = '${ConfigFile.apiUrl}/Entrenamiento/RegistrarEntrenamiento';
-    log('Registrando entrenamiento API: ${jsonEncode(entrenamiento.toJson())}');
-
     try {
       final response = await dio.post(
         url,
@@ -40,15 +38,11 @@ class TrainingService {
         ),
       );
 
-      log('Respuesta del servidor al registrar entrenamiento: ${response.data}');
-
       if (response.statusCode == 200 && response.data != null) {
         if (response.data is bool) {
           if (response.data) {
-            log('Operación booleana exitosa');
             return ResponseHandler.handleSuccess<bool>(true);
           } else {
-            log('Operación fallida, el servidor devolvió false');
             return ResponseHandler(
               success: false,
               message:

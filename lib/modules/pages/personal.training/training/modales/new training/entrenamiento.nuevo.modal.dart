@@ -38,11 +38,11 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           .firstWhere((element) => element.key == training!.inEstado,
               orElse: () => controller.estadoDetalle.first);
 
-      controller.fechaInicioEntrenamiento.text = DateFormat('dd-MM-yyyy')
+      controller.fechaInicioController.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaInicio.toString()));
-      controller.fechaTerminoEntrenamiento.text = DateFormat('dd-MM-yyyy')
+      controller.fechaTerminoController.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaTermino.toString()));
-      controller.observacionesEntrenamiento.text = training?.comentarios ?? ' ' ;
+      controller.observacionesEntrenamiento.text = training?.comentarios ?? ' ';
       controller.obtenerArchivosRegistrados(training!.key);
     }
   }
@@ -85,12 +85,16 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         ),
         const SizedBox(width: 20),
         Expanded(
-          child: customTextFieldDate(
-            "Fecha de inicio: dd/MM/yyyy",
-            controller.fechaInicioEntrenamiento,
-            true,
-            false,
-            Get.context!,
+          child: CustomTextField(
+            label: 'Fecha de inicio:',
+            controller: controller.fechaInicioController,
+            isRequired: true,
+            icon: const Icon(Icons.calendar_month),
+            onIconPressed: () async {
+              controller.fechaInicio = await _selectDate(Get.context!);
+              controller.fechaInicioController.text =
+                  DateFormat('dd/MM/yyyy').format(controller.fechaInicio!);
+            },
           ),
         ),
       ],
@@ -111,12 +115,16 @@ class EntrenamientoNuevoModal extends StatelessWidget {
         ),
         const SizedBox(width: 20),
         Expanded(
-          child: customTextFieldDate(
-            "Fecha de término: dd/MM/yyyy",
-            controller.fechaTerminoEntrenamiento,
-            true,
-            false,
-            Get.context!,
+          child: CustomTextField(
+            label: 'Fecha de termino:',
+            controller: controller.fechaTerminoController,
+            isRequired: true,
+            icon: const Icon(Icons.calendar_month),
+            onIconPressed: () async {
+              controller.fechaTermino = await _selectDate(Get.context!);
+              controller.fechaTerminoController.text =
+                  DateFormat('dd/MM/yyyy').format(controller.fechaTermino!);
+            },
           ),
         ),
       ],
@@ -250,17 +258,16 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       inActividadEntrenamiento: 0,
       inCategoria: 0,
       inEquipo: controller.equipoSelected.value!.key,
-      equipo: OptionValue(key: controller.equipoSelected.value!.key, nombre: ''),
+      equipo:
+          OptionValue(key: controller.equipoSelected.value!.key, nombre: ''),
       inEntrenador: 0,
       entrenador: OptionValue(key: 0, nombre: ''),
       inEmpresaCapacitadora: 0,
       inCondicion: controller.condicionSelected.value!.key,
       condicion:
           OptionValue(key: controller.condicionSelected.value!.key, nombre: ''),
-      fechaInicio:
-          controller.transformDate(controller.fechaInicioEntrenamiento.text),
-      fechaTermino:
-          controller.transformDate(controller.fechaTerminoEntrenamiento.text),
+      fechaInicio: controller.fechaInicio,
+      fechaTermino: controller.fechaTermino,
       fechaExamen: null,
       fechaRealMonitoreo: null,
       fechaProximoMonitoreo: null,
@@ -386,6 +393,7 @@ Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
   });
 }
 
+/*
 Widget customTextFieldDate(
     String label,
     TextEditingController fechaIngresoMinaController,
@@ -405,16 +413,13 @@ Widget customTextFieldDate(
     },
   );
 }
-
-Future<void> _selectDate(
-    BuildContext context, TextEditingController controller) async {
+*/
+Future<DateTime?> _selectDate(BuildContext context) async {
   DateTime? picked = await showDatePicker(
     context: context,
     initialDate: DateTime.now(),
     firstDate: DateTime(2000),
     lastDate: DateTime(2100),
   );
-  if (picked != null) {
-    controller.text = DateFormat('dd-MM-yyyy').format(picked);
-  }
+  return picked;
 }

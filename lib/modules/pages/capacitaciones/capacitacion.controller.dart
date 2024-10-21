@@ -1,7 +1,11 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
+import 'package:excel/excel.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
@@ -222,6 +226,105 @@ class CapacitacionController extends GetxController {
     } catch (e) {
       log('Error en la búsqueda 2: $e');
     }
+  }
+
+  Future<void> downloadExcel() async {
+    var excel = Excel.createExcel();
+    excel.rename('Sheet1', 'Capacitacion');
+
+    CellStyle headerStyle = CellStyle(
+      backgroundColorHex: ExcelColor.blue,
+      fontColorHex: ExcelColor.white,
+      bold: true,
+      horizontalAlign: HorizontalAlign.Center,
+      verticalAlign: VerticalAlign.Center,
+    );
+    List<String> headers = [
+      'CODIGO_MCP',
+      'NOMBRES_APELLIDOS',
+      'GUARDIA',
+      'ENTRENADOR_RESPONSABLE',
+      'NOMBRE_CAPACITACION',
+      'CATEGORIA',
+      'EMPRESA_CAPACITACION',
+      'FECHA_INICIO',
+      'FECHA_TERMINO',
+      'HORAS',
+      'NOTA_TEÓRICA',
+      'NOTA_PRÁCTICA'
+    ];
+
+    for (int i = 0; i < headers.length; i++) {
+      var cell = excel.sheets['Capacitacion']!
+          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
+      cell.value = TextCellValue(headers[i]);
+      cell.cellStyle = headerStyle;
+
+      excel.sheets['Capacitacion']!
+          .setColumnWidth(i, headers[i].length.toDouble() + 5);
+    }
+
+    final dateFormat = DateFormat('dd/MM/yyyy');
+
+    for (int rowIndex = 0;
+        rowIndex < capacitacionResultados.length;
+        rowIndex++) {
+      var entrenamiento = capacitacionResultados[rowIndex];
+      List<CellValue> row = [
+        TextCellValue(entrenamiento.codigoMcp!),
+        TextCellValue(entrenamiento.nombreCompleto!),
+        TextCellValue(entrenamiento.guardia.nombre!),
+        TextCellValue(entrenamiento.entrenador.nombre!),
+        TextCellValue(' '), //Nombre capacitacion
+        TextCellValue(entrenamiento.categoria.nombre!),
+        TextCellValue(entrenamiento.empresaCapacitadora.nombre!),
+        entrenamiento.fechaInicio != null
+            ? TextCellValue(dateFormat.format(entrenamiento.fechaInicio!))
+            : TextCellValue(''),
+        entrenamiento.fechaTermino != null
+            ? TextCellValue(dateFormat.format(entrenamiento.fechaTermino!))
+            : TextCellValue(''),
+        TextCellValue(entrenamiento.inTotalHoras.toString()),
+        TextCellValue(entrenamiento.inNotaTeorica.toString()),
+        TextCellValue(entrenamiento.inNotaPractica.toString()),
+      ];
+
+      for (int colIndex = 0; colIndex < row.length; colIndex++) {
+        var cell = excel.sheets['Capacitacion']!.cell(
+            CellIndex.indexByColumnRow(
+                columnIndex: colIndex, rowIndex: rowIndex + 1));
+        cell.value = row[colIndex];
+
+        double contentWidth = row[colIndex].toString().length.toDouble();
+        if (contentWidth >
+            excel.sheets['Capacitacion']!.getColumnWidth(colIndex)) {
+          excel.sheets['Capacitacion']!
+              .setColumnWidth(colIndex, contentWidth + 5);
+        }
+      }
+    }
+
+    var excelBytes = excel.encode();
+    Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
+
+    String fileName = generateExcelFileName();
+    await FileSaver.instance.saveFile(
+        name: fileName,
+        bytes: uint8ListBytes,
+        ext: "xlsx",
+        mimeType: MimeType.microsoftExcel);
+  }
+
+  String generateExcelFileName() {
+    final now = DateTime.now();
+    final day = now.day.toString().padLeft(2, '0');
+    final month = now.month.toString().padLeft(2, '0');
+    final year = now.year.toString().substring(2);
+    final hour = now.hour.toString().padLeft(2, '0');
+    final minute = now.minute.toString().padLeft(2, '0');
+    final second = now.second.toString().padLeft(2, '0');
+
+    return 'CAPACITACIONES_MINA_$day$month$year$hour$minute$second.xlsx';
   }
 
   void clearFields() {

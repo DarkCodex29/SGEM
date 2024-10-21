@@ -523,6 +523,8 @@ class CapacitacionPage extends StatelessWidget {
           '${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
       controller.fechaInicio = picked.start;
       controller.fechaTermino = picked.end;
+      log('Capacitacion Fecha Inicio: ${controller.fechaInicio}');
+      log('Capacitacion Fecha Termino: ${controller.fechaTermino}');
     }
   }
 
@@ -565,7 +567,7 @@ class CapacitacionPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () async {
-            //await controller.downloadExcel();
+            await controller.downloadExcel();
           },
           icon: const Icon(Icons.download,
               size: 18, color: AppTheme.primaryColor),

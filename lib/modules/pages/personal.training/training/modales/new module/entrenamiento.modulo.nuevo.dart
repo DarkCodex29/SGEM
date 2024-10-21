@@ -67,25 +67,25 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   }
 
   Widget _buildModalTitulo() {
-    return Obx(() {
-      return Container(
-        width: double.infinity,
-        height: 80,
-        decoration: const BoxDecoration(
-          color: Color(0xFF051367),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(8),
-            topRight: Radius.circular(8),
-          ),
+    return Container(
+      width: double.infinity,
+      height: 80,
+      decoration: const BoxDecoration(
+        color: Color(0xFF051367),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(8),
+          topRight: Radius.circular(8),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Align(
-                alignment: const AlignmentDirectional(-1, 0),
-                child: controller.isLoadingModulo.value
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Align(
+              alignment: const AlignmentDirectional(-1, 0),
+              child: Obx(() {
+                return controller.isLoadingModulo.value
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
                         controller.tituloModal,
@@ -94,17 +94,17 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                         ),
-                      ),
-              ),
-              InkWell(
-                onTap: onCancel,
-                child: const Icon(Icons.close, size: 24, color: Colors.white),
-              ),
-            ],
-          ),
+                      );
+              }),
+            ),
+            InkWell(
+              onTap: onCancel,
+              child: const Icon(Icons.close, size: 24, color: Colors.white),
+            ),
+          ],
         ),
-      );
-    });
+      ),
+    );
   }
 
   Future<DateTime?> _selectDate(BuildContext context) async {

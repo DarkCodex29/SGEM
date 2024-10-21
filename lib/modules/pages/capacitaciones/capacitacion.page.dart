@@ -451,7 +451,7 @@ class CapacitacionPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () async {
             controller.clearFields();
-            //await controller.buscarEntrenamientos();
+           await controller.buscarCapacitaciones();
             controller.isExpanded.value = false;
           },
           icon: const Icon(
@@ -476,7 +476,7 @@ class CapacitacionPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () async {
-            //await controller.buscarEntrenamientos();
+            await controller.buscarCapacitaciones();
             controller.isExpanded.value = true;
           },
           icon: const Icon(

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
@@ -80,20 +81,24 @@ class ResponseHandler<T> {
   }
 
   static ResponseHandler<T> handleFailure<T>(dynamic error) {
-    if (error?.response?.data != null &&
-        error.response?.data['Message'] != null) {
-      var errorMessage = error.response.data['Message'];
-      log('Error: $errorMessage');
-      return ResponseHandler<T>(
-        success: false,
-        message: errorMessage,
-      );
-    } else {
-      return ResponseHandler<T>(
-        success: false,
-        message: error?.message ?? 'Error desconocido',
-      );
+    String errorMessage = 'Error desconocido';
+
+    if (error?.response?.data != null) {
+      if (error.response.data is Map<String, dynamic> &&
+          error.response.data.containsKey('Message')) {
+        errorMessage = error.response.data['Message'];
+      } else {
+        errorMessage = jsonEncode(error.response.data);
+      }
+    } else if (error?.message != null) {
+      errorMessage = error.message;
     }
+
+    log('Error: $errorMessage');
+    return ResponseHandler<T>(
+      success: false,
+      message: errorMessage,
+    );
   }
 }
 

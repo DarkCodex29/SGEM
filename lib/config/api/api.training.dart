@@ -37,19 +37,40 @@ class TrainingService {
           followRedirects: false,
         ),
       );
+
+      log('Respuesta del servidor al registrar entrenamiento: ${response.data}');
+
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data) {
-          return ResponseHandler.handleSuccess<bool>(true);
-        } else {
+        if (response.data is bool) {
+          if (response.data) {
+            log('Operación booleana exitosa');
+            return ResponseHandler.handleSuccess<bool>(true);
+          } else {
+            log('Operación fallida, el servidor devolvió false');
+            return ResponseHandler(
+              success: false,
+              message:
+                  'La operación no fue exitosa. El servidor devolvió false.',
+            );
+          }
+        } else if (response.data is Map<String, dynamic> &&
+            response.data.containsKey('Message')) {
           return ResponseHandler(
             success: false,
             message: response.data['Message'] ?? 'Error desconocido',
+          );
+        } else {
+          return ResponseHandler(
+            success: false,
+            message:
+                'Formato de respuesta inesperado al registrar el entrenamiento',
           );
         }
       } else {
         return ResponseHandler(
           success: false,
-          message: 'Error al registrar entrenamiento',
+          message:
+              'Error al registrar entrenamiento: Código de estado ${response.statusCode}',
         );
       }
     } on DioException catch (e) {
@@ -121,7 +142,6 @@ class TrainingService {
         options: Options(followRedirects: false),
       );
       log('RESPONSE PUT: $response');
-
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<bool>(true);
       } else {

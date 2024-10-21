@@ -425,10 +425,32 @@ class TrainingPersonalPage extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
-                onPressed: () {
-                  Get.snackbar(
-                      'Editar módulo', 'Módulo actualizado correctamente',
-                      colorText: Colors.white, backgroundColor: Colors.green);
+                onPressed: () async {
+                  final bool? success = await showModalBottomSheet(
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    enableDrag: false,
+                    context: Get.context!,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: EntrenamientoModuloNuevo(
+                            entrenamiento: modulo,
+                            isEdit: true,
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                  if (success != null && success) {
+                    controller.fetchTrainings(
+                        controllerPersonal.selectedPersonal.value!.key);
+                  }
                 },
               ),
               IconButton(

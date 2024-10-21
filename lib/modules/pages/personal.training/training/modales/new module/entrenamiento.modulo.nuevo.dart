@@ -66,11 +66,17 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 
-  Widget _buildModalTitulo() {
-    String titulo = isEdit
-        ? 'Editar Módulo - Módulo ${entrenamiento.inModulo}'
-        : 'Nuevo Módulo - Módulo ${controller.siguienteModulo ?? 'I'}';
+  String get titulo {
+    String numeroModulo = isEdit
+        ? controller.convertirARomano(entrenamiento.inModulo!)
+        : controller.convertirARomano(controller.siguienteModulo ?? 1);
 
+    return isEdit
+        ? 'Editar Módulo - Módulo $numeroModulo'
+        : 'Nuevo Módulo - Módulo $numeroModulo';
+  }
+
+  Widget _buildModalTitulo() {
     return Container(
       width: double.infinity,
       height: 80,
@@ -356,7 +362,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         children: [
           TextButton(
             onPressed: () {
-              controller.resetControllers();
               onCancel();
             },
             style: TextButton.styleFrom(

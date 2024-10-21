@@ -116,7 +116,7 @@ class ActualizacionMasivaController extends GetxController {
     log('llamando al servicio de actualizaicon masiva antes del try');
     try {
       log('llamando al servicio de actualizaicon masiva');
-      log('Equipo seleccionado: ${selectedEquipoKey}');
+      log('Equipo seleccionado: $selectedEquipoKey');
       var response = await entrenamientoService.ActualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,

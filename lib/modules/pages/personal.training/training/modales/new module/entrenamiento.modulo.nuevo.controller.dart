@@ -183,7 +183,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
     try {
       final modulos = await trainingService
           .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key);
-      log('Modulos: ${modulos.data}');
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo!;
         if (ultimosModulos >= 4) {
@@ -199,6 +198,16 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Error obteniendo el siguiente módulo: $e');
       return 1;
     }
+  }
+
+  String convertirARomano(int numero) {
+    const Map<int, String> romanos = {
+      1: 'I',
+      2: 'II',
+      3: 'III',
+      4: 'IV',
+    };
+    return romanos[numero] ?? '$numero';
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
@@ -235,7 +244,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
       inModulo: moduloNumero,
-      modulo: OptionValue(key: moduloNumero, nombre: 'Módulo $moduloNumero'),
+      modulo: OptionValue(
+          key: moduloNumero,
+          nombre: 'Módulo ${convertirARomano(moduloNumero)}'),
       eliminado: 'N',
       motivoEliminado: '',
       inTipoPersona: entrenamiento.inTipoPersona,
@@ -257,7 +268,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-        log('${isEdit ? "Actualizar" : "Registrar"} módulo exitoso: ${response.message}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -282,7 +292,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return false;
       }
     } catch (e) {
-      log('CATCH: Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

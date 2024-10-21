@@ -5,7 +5,7 @@ import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
-  const NuevaCapacitacionPage({Key? key}) : super(key: key);
+  const NuevaCapacitacionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
           child: Obx(() {
             return CustomDropdown(
               hintText: 'Selecciona Tipo',
-              options: ['Personal Interno', 'Persona Externa'],
+              options: const ['Personal Interno', 'Persona Externa'],
               selectedValue: controller.tipoSeleccionado.value,
               onChanged: (value) {
                 controller.tipoSeleccionado.value = value!;

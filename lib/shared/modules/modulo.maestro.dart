@@ -8,26 +8,26 @@ String moduloMaestroToJson(List<ModuloMaestro> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ModuloMaestro {
-  int key;
-  String modulo;
-  int inHoras;
-  int inNotaMinima;
-  int inNotaMaxima;
-  int inEstado;
-  String usuarioModificacion;
-  DateTime fechaModificacion;
-  int orden;
+  int? key;
+  String? modulo;
+  int? inHoras;
+  int? inNotaMinima;
+  int? inNotaMaxima;
+  int? inEstado;
+  String? usuarioModificacion;
+  DateTime? fechaModificacion;
+  int? orden;
 
   ModuloMaestro({
-    required this.key,
-    required this.modulo,
-    required this.inHoras,
-    required this.inNotaMinima,
-    required this.inNotaMaxima,
-    required this.inEstado,
-    required this.usuarioModificacion,
-    required this.fechaModificacion,
-    required this.orden,
+    this.key,
+    this.modulo,
+    this.inHoras,
+    this.inNotaMinima,
+    this.inNotaMaxima,
+    this.inEstado,
+    this.usuarioModificacion,
+    this.fechaModificacion,
+    this.orden,
   });
 
   factory ModuloMaestro.fromJson(Map<String, dynamic> json) => ModuloMaestro(
@@ -38,7 +38,9 @@ class ModuloMaestro {
         inNotaMaxima: json["InNotaMaxima"],
         inEstado: json["InEstado"],
         usuarioModificacion: json["UsuarioModificacion"],
-        fechaModificacion: _fromDotNetDate(json["FechaModificacion"]),
+        fechaModificacion: json["FechaModificacion"] != null
+            ? _fromDotNetDate(json["FechaModificacion"])
+            : null,
         orden: json["Orden"],
       );
 
@@ -50,7 +52,9 @@ class ModuloMaestro {
         "InNotaMaxima": inNotaMaxima,
         "InEstado": inEstado,
         "UsuarioModificacion": usuarioModificacion,
-        "FechaModificacion": _toDotNetDate(fechaModificacion),
+        "FechaModificacion": fechaModificacion != null
+            ? _toDotNetDate(fechaModificacion!)
+            : null,
         "Orden": orden,
       };
 

@@ -27,10 +27,6 @@ class NuevaCapacitacionController extends GetxController {
 
   final ArchivoService archivoService = ArchivoService();
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   Future<void> adjuntarDocumento() async {
     try {

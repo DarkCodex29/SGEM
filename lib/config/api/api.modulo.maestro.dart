@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
@@ -20,33 +19,6 @@ class ModuloMaestroService {
         return handler.next(response);
       },
     ));
-  }
-
-  Future<ResponseHandler<List<ModuloMaestro>>> listarMaestros() async {
-    const url = '${ConfigFile.apiUrl}/modulo/ListarModuloMaestro';
-
-    try {
-      final response = await dio.get(
-        url,
-        options: Options(
-          followRedirects: false,
-        ),
-      );
-
-      if (response.statusCode == 200 && response.data != null) {
-        List<ModuloMaestro> maestros = List<ModuloMaestro>.from(
-          response.data.map((json) => ModuloMaestro.fromJson(json)),
-        );
-        return ResponseHandler.handleSuccess<List<ModuloMaestro>>(maestros);
-      } else {
-        return ResponseHandler(
-          success: false,
-          message: 'Error al listar modulos',
-        );
-      }
-    } on DioException catch (e) {
-      return ResponseHandler.handleFailure<List<ModuloMaestro>>(e);
-    }
   }
 
   Future<ResponseHandler<List<EntrenamientoModulo>>>
@@ -77,36 +49,82 @@ class ModuloMaestroService {
     }
   }
 
-/*
-  Future<ResponseHandler<bool>> eliminarModulo(
-      EntrenamientoModulo modulo) async {
-    const url = '${ConfigFile.apiUrl}/modulo/EliminarModulo';
+  Future<ResponseHandler<List<ModuloMaestro>>> listarMaestros() async {
+    const url = '${ConfigFile.apiUrl}/modulo/ListarModuloMaestro';
 
     try {
-      final response = await dio.delete(
+      final response = await dio.get(
         url,
-        data: modulo.toJson(),
         options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
+          followRedirects: false,
         ),
       );
 
-      if (response.statusCode == 200) {
-        return ResponseHandler.handleSuccess<bool>(true);
+      if (response.statusCode == 200 && response.data != null) {
+        List<ModuloMaestro> maestros = List<ModuloMaestro>.from(
+          response.data.map((json) => ModuloMaestro.fromJson(json)),
+        );
+        return ResponseHandler.handleSuccess<List<ModuloMaestro>>(maestros);
       } else {
         return ResponseHandler(
           success: false,
-          message: 'Error al eliminar el módulo',
+          message: 'Error al listar modulos',
         );
       }
     } on DioException catch (e) {
-      return ResponseHandler.handleFailure<bool>(e);
+      return ResponseHandler.handleFailure<List<ModuloMaestro>>(e);
     }
   }
-*/
+
+  Future<ResponseHandler<EntrenamientoModulo>> obtenerModuloPorId(
+      int moduloId) async {
+    final url = '${ConfigFile.apiUrl}/modulo/ObtenerModuloPorId/$moduloId';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        EntrenamientoModulo modulo =
+            EntrenamientoModulo.fromJson(response.data);
+        return ResponseHandler.handleSuccess<EntrenamientoModulo>(modulo);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener el módulo por ID',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
+    }
+  }
+
+  Future<ResponseHandler<ModuloMaestro>> obtenerModuloMaestroPorId(
+      int maestroId) async {
+    log('Obteniendo módulo maestro por ID: $maestroId');
+    final url =
+        '${ConfigFile.apiUrl}/modulo/ObtenerModuloMaestroPorId/$maestroId';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
+      log('Response: ${response.data}');
+      if (response.statusCode == 200 && response.data != null) {
+        return ResponseHandler.handleSuccess<ModuloMaestro>(response.data);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener el módulo maestro por ID',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<ModuloMaestro>(e);
+    }
+  }
 
   Future<ResponseHandler<bool>> _manageModulo(
       String url, String method, EntrenamientoModulo modulo) async {

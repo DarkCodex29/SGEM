@@ -338,7 +338,8 @@ class TrainingsPage extends StatelessWidget {
                               child: Text(
                                   entrenamiento.estadoEntrenamiento.nombre!)),
                           Expanded(child: Text(entrenamiento.modulo.nombre!)),
-                          Expanded(child: Text(entrenamiento.condicion.nombre!)),
+                          Expanded(
+                              child: Text(entrenamiento.condicion.nombre!)),
                           Expanded(child: Text(entrenamiento.equipo.nombre!)),
                           Expanded(
                             child: Text(DateFormat('dd/MM/yyyy')
@@ -660,6 +661,7 @@ class TrainingsPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildDropdownModulo(TrainingsController controller) {
     return Obx(() {
       if (controller.moduloOpciones.isEmpty) {
@@ -669,18 +671,18 @@ class TrainingsPage extends StatelessWidget {
       List<ModuloMaestro> options = controller.moduloOpciones;
       return CustomDropdown(
         hintText: 'Selecciona estado de avance ',
-        options: options.map((option) => option.modulo).toList(),
+        options: options.map((option) => option.modulo!).toList(),
         selectedValue: controller.selectedModuloKey.value != null
             ? options
-            .firstWhere((option) =>
-        option.key == controller.selectedModuloKey.value)
-            .modulo
+                .firstWhere((option) =>
+                    option.key == controller.selectedModuloKey.value)
+                .modulo
             : null,
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
           final selectedOption = options.firstWhere(
-                (option) => option.modulo == value,
+            (option) => option.modulo == value,
           );
           controller.selectedModuloKey.value = selectedOption.key;
           log('Condicion seleccionada - Key del Maestro: ${controller.selectedModuloKey.value}, Valor: $value');

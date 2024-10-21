@@ -257,12 +257,12 @@ class NewPersonalController extends GetxController {
   //Validaciones
   bool validate(BuildContext context) {
     log('Validando la fecha de ingreso a mina');
-    log('Fecha de ingreso mina: ${fechaIngresoMina}');
+    log('Fecha de ingreso mina: $fechaIngresoMina');
     if (fechaIngresoMina == null) {
       errores.add('Debe seleccionar una fecha de ingreso a la mina.');
     } else {
       if (fechaIngresoMina!.isBefore(DateTime.now())) {
-        log('Fecha de ingreso mina: ${fechaIngresoMina}');
+        log('Fecha de ingreso mina: $fechaIngresoMina');
         errores.add(
             'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
       }

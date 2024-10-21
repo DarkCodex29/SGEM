@@ -273,11 +273,16 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildDropdownEquipo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.equipoOpciones.isEmpty) {
         return const SizedBox(
-            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
+            height: 50,
+            width: 50,
+            child: LinearProgressIndicator(
+              backgroundColor: Colors.white,
+            ));
       }
       List<MaestroDetalle> options = controller.equipoOpciones;
       return CustomDropdown(
@@ -301,16 +306,21 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildDropdownModulo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.moduloOpciones.isEmpty) {
         return const SizedBox(
-            height: 50, width: 50, child: LinearProgressIndicator(backgroundColor: Colors.white,));
+            height: 50,
+            width: 50,
+            child: LinearProgressIndicator(
+              backgroundColor: Colors.white,
+            ));
       }
       List<ModuloMaestro> options = controller.moduloOpciones;
       return CustomDropdown(
         hintText: 'Selecciona estado de avance ',
-        options: options.map((option) => option.modulo).toList(),
+        options: options.map((option) => option.modulo!).toList(),
         selectedValue: controller.selectedModuloKey.value != null
             ? options
                 .firstWhere((option) =>
@@ -329,6 +339,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(
@@ -344,6 +355,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSeccionResultado(ActualizacionMasivaController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -368,6 +380,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSeccionResultadoBarraSuperior(
       ActualizacionMasivaController controller) {
     return const Row(
@@ -466,12 +479,12 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                                 .format(entrenamiento.fechaTermino!)),
                           ),
                           //Todo: Botones de accion
-                           Expanded(
-                              child:   _buildIconButton(
-                                  Icons.edit, AppTheme.primaryColor,
-                                      () {
-                                    //controller.showEditPersonal(personal);
-                                  }),),
+                          Expanded(
+                            child: _buildIconButton(
+                                Icons.edit, AppTheme.primaryColor, () {
+                              //controller.showEditPersonal(personal);
+                            }),
+                          ),
                         ],
                       ),
                     );
@@ -511,6 +524,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildIconButton(IconData icon, Color color, VoidCallback onPressed) {
     return IconButton(
       icon: Icon(

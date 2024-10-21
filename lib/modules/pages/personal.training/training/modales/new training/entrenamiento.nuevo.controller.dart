@@ -5,7 +5,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.training.dart';
@@ -16,8 +15,10 @@ import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
 class EntrenamientoNuevoController extends GetxController {
-  TextEditingController fechaInicioEntrenamiento = TextEditingController();
-  TextEditingController fechaTerminoEntrenamiento = TextEditingController();
+  TextEditingController fechaInicioController = TextEditingController();
+  TextEditingController fechaTerminoController = TextEditingController();
+  DateTime? fechaInicio;
+  DateTime? fechaTermino;
   TextEditingController observacionesEntrenamiento = TextEditingController();
 
   TrainingPersonalController controllerPersonal =
@@ -133,11 +134,6 @@ class EntrenamientoNuevoController extends GetxController {
     } catch (e) {
       log('Error al adjuntar documentos: $e');
     }
-  }
-
-  DateTime transformDate(String date) {
-    DateTime dateTime = DateFormat("yyyy-MM-dd").parse(date);
-    return dateTime;
   }
 
   Future<void> registrarArchivos(int inOrigenKey) async {

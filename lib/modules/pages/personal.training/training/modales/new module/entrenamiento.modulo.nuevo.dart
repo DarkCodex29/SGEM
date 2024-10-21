@@ -67,10 +67,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   }
 
   Widget _buildModalTitulo() {
-    String titulo = isEdit
-        ? 'Editar Módulo - Módulo ${entrenamiento.inModulo}'
-        : 'Nuevo Módulo - Módulo ${controller.siguienteModulo ?? 'I'}';
-
     return Container(
       width: double.infinity,
       height: 80,
@@ -88,14 +84,18 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           children: [
             Align(
               alignment: const AlignmentDirectional(-1, 0),
-              child: Text(
-                titulo,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
+              child: Obx(() {
+                return controller.isLoadingModulo.value
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                        controller.tituloModal,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      );
+              }),
             ),
             InkWell(
               onTap: onCancel,
@@ -326,11 +326,14 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            CustomTextField(
-              label: 'Total horas módulo',
-              controller: controller.totalHorasModuloController,
-              keyboardType: TextInputType.number,
-            ),
+            Obx(() {
+              return CustomTextField(
+                label: 'Total horas módulo',
+                controller: controller.totalHorasModuloController.value,
+                keyboardType: TextInputType.number,
+                isReadOnly: true,
+              );
+            }),
             CustomTextField(
               label: 'Horas acumuladas',
               controller: controller.horasAcumuladasController,
@@ -355,7 +358,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         children: [
           TextButton(
             onPressed: () {
-              controller.resetControllers();
               onCancel();
             },
             style: TextButton.styleFrom(

@@ -4,7 +4,6 @@ import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';

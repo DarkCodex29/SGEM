@@ -38,6 +38,7 @@ class EntrenamientoModulo {
   String comentarios;
   String eliminado;
   String motivoEliminado;
+  String observaciones;
 
   EntrenamientoModulo({
     required this.key,
@@ -71,6 +72,7 @@ class EntrenamientoModulo {
     required this.comentarios,
     required this.eliminado,
     required this.motivoEliminado,
+    required this.observaciones,
   });
 
   void actualizarConUltimoModulo(EntrenamientoModulo ultimoModulo) {
@@ -131,6 +133,7 @@ class EntrenamientoModulo {
         comentarios: json["Comentarios"] ?? '',
         eliminado: json["Eliminado"] ?? '',
         motivoEliminado: json["MotivoEliminado"] ?? '',
+        observaciones: json["ObservacionesEntrenamiento"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {
@@ -165,6 +168,7 @@ class EntrenamientoModulo {
         "Comentarios": comentarios,
         "Eliminado": eliminado,
         "MotivoEliminado": motivoEliminado,
+        "ObservacionesEntrenamiento": observaciones,
       };
 
   static DateTime _fromDotNetDate(String dotNetDate) {
@@ -174,7 +178,7 @@ class EntrenamientoModulo {
 
   static String _toDotNetDate(DateTime? date) {
     if (date == null) return '';
-    return '/Date(${date.millisecondsSinceEpoch})/';
+    return date.toIso8601String();
   }
 }
 

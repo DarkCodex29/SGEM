@@ -230,6 +230,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       estadoEntrenamiento: Entidad(key: 0, nombre: 'Pendiente'),
       comentarios: '',
       inCapacitacion: 0,
+      observaciones: entrenamiento.observaciones,
     );
 
     try {

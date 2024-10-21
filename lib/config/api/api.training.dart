@@ -94,11 +94,8 @@ class TrainingService {
       int id) async {
     final url = '$baseUrl/Entrenamiento/ListarEntrenamientoPorPersona?id=$id';
     try {
-      log('Listando entrenamientos para la persona con ID: $id');
       final response =
           await dio.get(url, options: Options(followRedirects: false));
-      log('RESPONSE: $response');
-
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<List<dynamic>>(response.data);
       } else {
@@ -236,12 +233,12 @@ class TrainingService {
     String? apellidos,
     int? inEquipo,
     int? inModulo,
-
     int? pageSize,
     int? pageNumber,
   }) async {
     log('Llamando al endpoint actuaalizacion masiva');
-    const url = '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoActualizacionMasivaPaginado';
+    const url =
+        '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoActualizacionMasivaPaginado';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.numeroDocumento': numeroDocumento,
@@ -250,7 +247,6 @@ class TrainingService {
       'parametros.apellidos': apellidos,
       'parametros.inEquipo': inEquipo,
       'parametros.inModulo': inModulo,
-
       'parametros.pageSize': pageSize,
       'parametros.pageNumber': pageNumber,
     };
@@ -272,7 +268,7 @@ class TrainingService {
       final items = result['Items'] as List;
       final entrenamientoList = items
           .map((entrenamientoJson) =>
-          EntrenamientoActualizacionMasiva.fromJson(entrenamientoJson))
+              EntrenamientoActualizacionMasiva.fromJson(entrenamientoJson))
           .toList();
 
       final responseData = {

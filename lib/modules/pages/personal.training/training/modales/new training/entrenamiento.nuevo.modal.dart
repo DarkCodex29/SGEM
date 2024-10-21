@@ -219,63 +219,80 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   }
 
   void registerTraining() {
-    if (controller.equipoSelected.value != null &&
-        controller.condicionSelected.value != null) {
-      EntrenamientoModulo newTraining = EntrenamientoModulo(
-        key: isEdit ? training!.key : 0, // Usar la key existente si es edición
-        inTipoActividad: 1,
-        inCapacitacion: 0,
-        inModulo: 0,
-        modulo: Entidad(key: 0, nombre: ''),
-        inTipoPersona: 1,
-        inPersona: data.key,
-        inActividadEntrenamiento: 0,
-        inCategoria: 0,
-        inEquipo: controller.equipoSelected.value!.key,
-        equipo: Entidad(key: controller.equipoSelected.value!.key, nombre: ''),
-        inEntrenador: 0,
-        entrenador: Entidad(key: 0, nombre: ''),
-        inEmpresaCapacitadora: 0,
-        inCondicion: controller.condicionSelected.value!.key,
-        condicion:
-            Entidad(key: controller.condicionSelected.value!.key, nombre: ''),
-        fechaInicio:
-            controller.transformDate(controller.fechaInicioEntrenamiento.text),
-        fechaTermino:
-            controller.transformDate(controller.fechaTerminoEntrenamiento.text),
-        fechaExamen: null,
-        fechaRealMonitoreo: null,
-        fechaProximoMonitoreo: null,
-        inNotaTeorica: 0,
-        inNotaPractica: 0,
-        inTotalHoras: 0,
-        inHorasAcumuladas: 0,
-        inHorasMinestar: 0,
-        inEstado: 1,
-        estadoEntrenamiento: Entidad(key: 1, nombre: 'Pendiente'),
-        comentarios: '',
-        eliminado: '',
-        motivoEliminado: '',
+    if (controller.equipoSelected.value == null ||
+        controller.condicionSelected.value == null) {
+      Get.snackbar(
+        'Error',
+        'Por favor, selecciona todos los campos obligatorios.',
+        snackPosition: SnackPosition.BOTTOM,
       );
+      return;
+    }
 
-      final TrainingPersonalController trainingPersonalController = Get.find();
-      if (isEdit) {
-        trainingPersonalController
-            .actualizarEntrenamiento(newTraining)
-            .then((isSuccess) {
-          if (isSuccess) {
-            trainingPersonalController.fetchTrainings(data.key);
-            close();
-          }
-        });
-      } else {
-        controller.registertraining(newTraining, (isSuccess) {
-          if (isSuccess) {
-            trainingPersonalController.fetchTrainings(data.key);
-            close();
-          }
-        });
-      }
+    int estadoEntrenamientoKey =
+        isEdit && controller.estadoEntrenamientoSelected.value != null
+            ? controller.estadoEntrenamientoSelected.value!.key
+            : 0;
+
+    String observaciones = controller.observacionesEntrenamiento.text.isNotEmpty
+        ? controller.observacionesEntrenamiento.text
+        : '';
+
+    EntrenamientoModulo newTraining = EntrenamientoModulo(
+      key: isEdit ? training!.key : 0, // Usar la key existente si es edición
+      inTipoActividad: 1,
+      inCapacitacion: 0,
+      inModulo: 0,
+      modulo: Entidad(key: 0, nombre: ''),
+      inTipoPersona: 1,
+      inPersona: data.key,
+      inActividadEntrenamiento: 0,
+      inCategoria: 0,
+      inEquipo: controller.equipoSelected.value!.key,
+      equipo: Entidad(key: controller.equipoSelected.value!.key, nombre: ''),
+      inEntrenador: 0,
+      entrenador: Entidad(key: 0, nombre: ''),
+      inEmpresaCapacitadora: 0,
+      inCondicion: controller.condicionSelected.value!.key,
+      condicion:
+          Entidad(key: controller.condicionSelected.value!.key, nombre: ''),
+      fechaInicio:
+          controller.transformDate(controller.fechaInicioEntrenamiento.text),
+      fechaTermino:
+          controller.transformDate(controller.fechaTerminoEntrenamiento.text),
+      fechaExamen: null,
+      fechaRealMonitoreo: null,
+      fechaProximoMonitoreo: null,
+      inNotaTeorica: 0,
+      inNotaPractica: 0,
+      inTotalHoras: 0,
+      inHorasAcumuladas: 0,
+      inHorasMinestar: 0,
+      inEstado: estadoEntrenamientoKey,
+      estadoEntrenamiento: Entidad(key: estadoEntrenamientoKey, nombre: ''),
+      comentarios: '',
+      eliminado: '',
+      motivoEliminado: '',
+      observaciones: observaciones,
+    );
+
+    final TrainingPersonalController trainingPersonalController = Get.find();
+    if (isEdit) {
+      trainingPersonalController
+          .actualizarEntrenamiento(newTraining)
+          .then((isSuccess) {
+        if (isSuccess) {
+          trainingPersonalController.fetchTrainings(data.key);
+          close();
+        }
+      });
+    } else {
+      controller.registertraining(newTraining, (isSuccess) {
+        if (isSuccess) {
+          trainingPersonalController.fetchTrainings(data.key);
+          close();
+        }
+      });
     }
   }
 

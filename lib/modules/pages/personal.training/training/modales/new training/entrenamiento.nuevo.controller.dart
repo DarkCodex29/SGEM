@@ -75,7 +75,7 @@ class EntrenamientoNuevoController extends GetxController {
       final equiposFuture = repository
           .listarMaestroDetallePorMaestro(MaestroDetalleTypes.equipo.rawValue);
       final condicionesFuture = repository.listarMaestroDetallePorMaestro(
-          MaestroDetalleTypes.condition.rawValue);
+          MaestroDetalleTypes.condicionEntrenamiento.rawValue);
       final estadosEntrenamientoFuture =
           repository.listarMaestroDetallePorMaestro(
               MaestroDetalleTypes.estadoEntrenamiento.rawValue);
@@ -222,6 +222,7 @@ class EntrenamientoNuevoController extends GetxController {
 
   void registertraining(
       EntrenamientoModulo register, Function(bool) callback) async {
+    log('Registrando entrenamiento: ${register.toJson()}');
     try {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);

@@ -1,7 +1,7 @@
 enum MaestroDetalleTypes {
   tipoActividad,
-  condition,
   guardia,
+  condicionEntrenamiento,
   estadoEntrenamiento,
   equipo,
   condicionMonitoreo,
@@ -15,9 +15,9 @@ extension MaestroDetalleTypesExtension on MaestroDetalleTypes {
     switch (this) {
       case MaestroDetalleTypes.tipoActividad:
         return 1;
-      case MaestroDetalleTypes.condition:
-        return 2;
       case MaestroDetalleTypes.guardia:
+        return 2;
+      case MaestroDetalleTypes.condicionEntrenamiento:
         return 3;
       case MaestroDetalleTypes.estadoEntrenamiento:
         return 4;

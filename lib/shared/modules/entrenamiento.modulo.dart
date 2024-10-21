@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:sgem/shared/modules/option.value.dart';
+
 EntrenamientoModulo entrenamientoModuloFromJson(String str) =>
     EntrenamientoModulo.fromJson(json.decode(str));
 
@@ -11,18 +13,18 @@ class EntrenamientoModulo {
   int inTipoActividad;
   int inCapacitacion;
   int inModulo;
-  Entidad modulo;
+  OptionValue modulo;
   int inTipoPersona;
   int inPersona;
   int inActividadEntrenamiento;
   int inCategoria;
   int inEquipo;
-  Entidad equipo;
+  OptionValue equipo;
   int inEntrenador;
-  Entidad entrenador;
+  OptionValue entrenador;
   int inEmpresaCapacitadora;
   int inCondicion;
-  Entidad condicion;
+  OptionValue condicion;
   DateTime? fechaInicio;
   DateTime? fechaTermino;
   DateTime? fechaExamen;
@@ -34,7 +36,7 @@ class EntrenamientoModulo {
   int inHorasAcumuladas;
   int inHorasMinestar;
   int inEstado;
-  Entidad estadoEntrenamiento;
+  OptionValue estadoEntrenamiento;
   String comentarios;
   String eliminado;
   String motivoEliminado;
@@ -76,10 +78,10 @@ class EntrenamientoModulo {
   });
 
   void actualizarConUltimoModulo(EntrenamientoModulo ultimoModulo) {
-    if (ultimoModulo.entrenador.nombre.isNotEmpty) {
+    if (ultimoModulo.entrenador.nombre!.isNotEmpty) {
       entrenador = ultimoModulo.entrenador;
     }
-    if (ultimoModulo.estadoEntrenamiento.nombre.isNotEmpty) {
+    if (ultimoModulo.estadoEntrenamiento.nombre!.isNotEmpty) {
       estadoEntrenamiento = ultimoModulo.estadoEntrenamiento;
     }
     inNotaTeorica = ultimoModulo.inNotaTeorica;
@@ -95,18 +97,18 @@ class EntrenamientoModulo {
         inTipoActividad: json["InTipoActividad"] ?? 0,
         inCapacitacion: json["InCapacitacion"] ?? 0,
         inModulo: json["InModulo"] ?? 0,
-        modulo: Entidad.fromJson(json["Modulo"] ?? {}),
+        modulo: OptionValue.fromJson(json["Modulo"] ?? {}),
         inTipoPersona: json["InTipoPersona"] ?? 0,
         inPersona: json["InPersona"] ?? 0,
         inActividadEntrenamiento: json["InActividadEntrenamiento"] ?? 0,
         inCategoria: json["InCategoria"] ?? 0,
         inEquipo: json["InEquipo"] ?? 0,
-        equipo: Entidad.fromJson(json["Equipo"] ?? {}),
+        equipo: OptionValue.fromJson(json["Equipo"] ?? {}),
         inEntrenador: json["InEntrenador"] ?? 0,
-        entrenador: Entidad.fromJson(json["Entrenador"] ?? {}),
+        entrenador: OptionValue.fromJson(json["Entrenador"] ?? {}),
         inEmpresaCapacitadora: json["InEmpresaCapacitadora"] ?? 0,
         inCondicion: json["InCondicion"] ?? 0,
-        condicion: Entidad.fromJson(json["Condicion"] ?? {}),
+        condicion: OptionValue.fromJson(json["Condicion"] ?? {}),
         fechaInicio: json["FechaInicio"] != null
             ? _fromDotNetDate(json["FechaInicio"])
             : null,
@@ -129,7 +131,7 @@ class EntrenamientoModulo {
         inHorasMinestar: json["InHorasMinestar"] ?? 0,
         inEstado: json["InEstado"] ?? 0,
         estadoEntrenamiento:
-            Entidad.fromJson(json["EstadoEntrenamiento"] ?? {}),
+        OptionValue.fromJson(json["EstadoEntrenamiento"] ?? {}),
         comentarios: json["Comentarios"] ?? '',
         eliminado: json["Eliminado"] ?? '',
         motivoEliminado: json["MotivoEliminado"] ?? '',
@@ -180,24 +182,4 @@ class EntrenamientoModulo {
     if (date == null) return '';
     return "/Date(${date.millisecondsSinceEpoch})/";
   }
-}
-
-class Entidad {
-  int key;
-  String nombre;
-
-  Entidad({
-    required this.key,
-    required this.nombre,
-  });
-
-  factory Entidad.fromJson(Map<String, dynamic> json) => Entidad(
-        key: json["Key"] ?? 0,
-        nombre: json["Nombre"] ?? '',
-      );
-
-  Map<String, dynamic> toJson() => {
-        "Key": key,
-        "Nombre": nombre,
-      };
 }

@@ -6,6 +6,7 @@ import 'package:sgem/modules/pages/personal.training/training/modales/new%20trai
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
@@ -243,19 +244,19 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       inTipoActividad: 1,
       inCapacitacion: 0,
       inModulo: 0,
-      modulo: Entidad(key: 0, nombre: ''),
+      modulo: OptionValue(key: 0, nombre: ''),
       inTipoPersona: 1,
       inPersona: data.key,
       inActividadEntrenamiento: 0,
       inCategoria: 0,
       inEquipo: controller.equipoSelected.value!.key,
-      equipo: Entidad(key: controller.equipoSelected.value!.key, nombre: ''),
+      equipo: OptionValue(key: controller.equipoSelected.value!.key, nombre: ''),
       inEntrenador: 0,
-      entrenador: Entidad(key: 0, nombre: ''),
+      entrenador: OptionValue(key: 0, nombre: ''),
       inEmpresaCapacitadora: 0,
       inCondicion: controller.condicionSelected.value!.key,
       condicion:
-          Entidad(key: controller.condicionSelected.value!.key, nombre: ''),
+          OptionValue(key: controller.condicionSelected.value!.key, nombre: ''),
       fechaInicio:
           controller.transformDate(controller.fechaInicioEntrenamiento.text),
       fechaTermino:
@@ -269,7 +270,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       inHorasAcumuladas: 0,
       inHorasMinestar: 0,
       inEstado: estadoEntrenamientoKey,
-      estadoEntrenamiento: Entidad(key: estadoEntrenamientoKey, nombre: ''),
+      estadoEntrenamiento: OptionValue(key: estadoEntrenamientoKey, nombre: ''),
       comentarios: '',
       eliminado: '',
       motivoEliminado: '',

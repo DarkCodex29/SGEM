@@ -78,7 +78,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
     responsableController.text = responsable.nombreCompleto;
   }
 
-  void setDatosEntrenamiento(
+  Future<void> setDatosEntrenamiento(
       EntrenamientoModulo entrenamiento, bool isEdit) async {
     this.entrenamiento = entrenamiento;
     this.isEdit = isEdit;
@@ -97,6 +97,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
     if (!isEdit) {
       await obtenerSiguienteModulo();
+
+      if (siguienteModulo == null) {
+        return;
+      }
+
       int moduloNumero = siguienteModulo ?? 1;
       tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
       await obtenerDatosModuloMaestro(moduloNumero);
@@ -116,10 +121,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo!;
 
-        if (entrenamiento.condicion.nombre == "Experiencia") {
-          siguienteModulo = ultimosModulos >= 1 ? 4 : ultimosModulos + 1;
+        int maxModulosPermitidos =
+            entrenamiento.condicion.nombre == "Experiencia" ? 2 : 4;
+
+        if (ultimosModulos >= maxModulosPermitidos) {
+          siguienteModulo = null;
         } else {
-          siguienteModulo = ultimosModulos >= 4 ? 4 : ultimosModulos + 1;
+          siguienteModulo = ultimosModulos + 1;
         }
       } else {
         siguienteModulo = 1;
@@ -152,16 +160,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
   Future<bool> registrarModulo(BuildContext context) async {
     if (!validar(context)) {
       _mostrarErroresValidacion(context, errores);
-      return false;
-    }
-
-    if (siguienteModulo! > 4) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("No se pueden registrar más de cuatro módulos."),
-          backgroundColor: Colors.red,
-        ),
-      );
       return false;
     }
 
@@ -215,7 +213,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ),
         );
 
-        // Actualizar la lista de módulos del entrenamiento
         TrainingPersonalController controller =
             Get.find<TrainingPersonalController>();
         controller.fetchModulosPorEntrenamiento(entrenamiento.key);

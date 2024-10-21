@@ -9,8 +9,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final CapacitacionController controller = Get.put(CapacitacionController());
-
+    NuevaCapacitacionController controller =
+        Get.put(NuevaCapacitacionController());
     return Scaffold(
       appBar: AppBar(
         title: const Text("Nueva Capacitación"),
@@ -34,7 +34,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(CapacitacionController controller) {
+  Widget _buildHeader(NuevaCapacitacionController controller) {
     return Row(
       children: [
         Expanded(
@@ -60,7 +60,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDatosDelPersonal(CapacitacionController controller) {
+  Widget _buildDatosDelPersonal(NuevaCapacitacionController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -106,7 +106,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFormularioCapacitacion(CapacitacionController controller) {
+  Widget _buildFormularioCapacitacion(NuevaCapacitacionController controller) {
     return ExpansionTile(
       title: const Text(
         "Datos de la Capacitación",
@@ -198,7 +198,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildArchivosAdjuntos(CapacitacionController controller) {
+  Widget _buildArchivosAdjuntos(NuevaCapacitacionController controller) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

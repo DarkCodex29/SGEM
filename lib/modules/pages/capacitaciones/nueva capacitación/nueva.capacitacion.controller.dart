@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 
-class CapacitacionController extends GetxController {
+class NuevaCapacitacionController extends GetxController {
   final TextEditingController codigoMcpController = TextEditingController();
   final TextEditingController horasController = TextEditingController();
   final TextEditingController entrenadorController = TextEditingController();

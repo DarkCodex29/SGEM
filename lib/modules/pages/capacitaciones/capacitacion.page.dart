@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
+import 'package:sgem/modules/pages/capacitaciones/nueva%20capacitaci%C3%B3n/nueva.capacitacion.page.dart';
 
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
@@ -86,6 +87,7 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildSeccionResultado(CapacitacionController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -110,6 +112,7 @@ class CapacitacionPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSeccionConsultaPrimeraFila(CapacitacionController controller) {
     return Row(
       children: <Widget>[
@@ -373,6 +376,7 @@ class CapacitacionPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildBotonesAccion(CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -429,6 +433,7 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+
   Future<void> _selectDateRange(
       BuildContext context, CapacitacionController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(
@@ -452,7 +457,9 @@ class CapacitacionPage extends StatelessWidget {
       controller.fechaTermino = picked.end;
     }
   }
-  Widget _buildSeccionResultadoBarraSuperior(CapacitacionController controller) {
+
+  Widget _buildSeccionResultadoBarraSuperior(
+      CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -492,8 +499,8 @@ class CapacitacionPage extends StatelessWidget {
           onPressed: () async {
             //await controller.downloadExcel();
           },
-          icon:
-          const Icon(Icons.download, size: 18, color: AppTheme.primaryColor),
+          icon: const Icon(Icons.download,
+              size: 18, color: AppTheme.primaryColor),
           label: const Text(
             "Descargar Excel",
             style: TextStyle(fontSize: 16, color: AppTheme.primaryColor),
@@ -511,9 +518,10 @@ class CapacitacionPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             //controller.showNewPersonal();
+            Get.to(() => const NuevaCapacitacionPage());
           },
-          icon:
-          const Icon(Icons.add, size: 18, color: AppTheme.primaryBackground),
+          icon: const Icon(Icons.add,
+              size: 18, color: AppTheme.primaryBackground),
           label: const Text(
             "Nueva capacitacion",
             style: TextStyle(fontSize: 16, color: AppTheme.primaryBackground),
@@ -527,13 +535,13 @@ class CapacitacionPage extends StatelessWidget {
             ),
           ),
         ),
-
       ],
     );
   }
+
   Widget _buildSeccionResultadoTabla(CapacitacionController controller) {
     return Obx(
-          () {
+      () {
         // if (controller.entrenamientoResultados.isEmpty) {
         //   return const Center(child: Text("No se encontraron resultados"));
         // }
@@ -568,7 +576,8 @@ class CapacitacionPage extends StatelessWidget {
                               child: Text(
                                   entrenamiento.estadoEntrenamiento.nombre!)),
                           Expanded(child: Text(entrenamiento.modulo.nombre!)),
-                          Expanded(child: Text(entrenamiento.condicion.nombre!)),
+                          Expanded(
+                              child: Text(entrenamiento.condicion.nombre!)),
                           Expanded(child: Text(entrenamiento.equipo.nombre!)),
                           Expanded(
                             child: Text(DateFormat('dd/MM/yyyy')
@@ -578,24 +587,24 @@ class CapacitacionPage extends StatelessWidget {
                               child: Text(entrenamiento.entrenador.nombre!)),
                           Expanded(
                               child: Text(
-                                entrenamiento.notaTeorica.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.notaTeorica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                           Expanded(
                               child: Text(
-                                entrenamiento.notaPractica.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.notaPractica.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                           Expanded(
                               child: Text(
-                                entrenamiento.horasAcumuladas.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.horasAcumuladas.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                           Expanded(
                               child: Text(
-                                entrenamiento.horasAcumuladas.toString(),
-                                textAlign: TextAlign.center,
-                              )),
+                            entrenamiento.horasAcumuladas.toString(),
+                            textAlign: TextAlign.center,
+                          )),
                         ],
                       ),
                     );
@@ -608,6 +617,7 @@ class CapacitacionPage extends StatelessWidget {
       },
     );
   }
+
   Widget _buildSeccionResultadoTablaCabezera() {
     return const Row(
       children: [
@@ -705,30 +715,32 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
-  Widget _buildSeccionResultadoTablaPaginado(CapacitacionController controller) {
+
+  Widget _buildSeccionResultadoTablaPaginado(
+      CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Obx(() => Text(
-          'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
+              'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
               '${controller.currentPage.value * controller.rowsPerPage.value > controller.totalRecords.value ? controller.totalRecords.value : controller.currentPage.value * controller.rowsPerPage.value} '
               'de ${controller.totalRecords.value} registros',
-          style: const TextStyle(fontSize: 14),
-        )),
+              style: const TextStyle(fontSize: 14),
+            )),
         Obx(
-              () => Row(
+          () => Row(
             children: [
               const Text("Items por página: "),
               DropdownButton<int>(
                 value: controller.rowsPerPage.value > 0 &&
-                    controller.rowsPerPage.value <= 50
+                        controller.rowsPerPage.value <= 50
                     ? controller.rowsPerPage.value
                     : null,
                 items: [10, 20, 50]
                     .map((value) => DropdownMenuItem<int>(
-                  value: value,
-                  child: Text(value.toString()),
-                ))
+                          value: value,
+                          child: Text(value.toString()),
+                        ))
                     .toList(),
                 onChanged: (value) {
                   // if (value != null) {
@@ -744,11 +756,11 @@ class CapacitacionPage extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                  // controller.currentPage.value--;
-                  // controller.searchPersonal(
-                  //     pageNumber: controller.currentPage.value,
-                  //     pageSize: controller.rowsPerPage.value);
-                }
+                        // controller.currentPage.value--;
+                        // controller.searchPersonal(
+                        //     pageNumber: controller.currentPage.value,
+                        //     pageSize: controller.rowsPerPage.value);
+                      }
                     : null,
               ),
               Text(
@@ -756,14 +768,14 @@ class CapacitacionPage extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.arrow_forward),
                 onPressed:
-                controller.currentPage.value < controller.totalPages.value
-                    ? () {
-                  // controller.currentPage.value++;
-                  // controller.searchPersonal(
-                  //     pageNumber: controller.currentPage.value,
-                  //     pageSize: controller.rowsPerPage.value);
-                }
-                    : null,
+                    controller.currentPage.value < controller.totalPages.value
+                        ? () {
+                            // controller.currentPage.value++;
+                            // controller.searchPersonal(
+                            //     pageNumber: controller.currentPage.value,
+                            //     pageSize: controller.rowsPerPage.value);
+                          }
+                        : null,
               ),
             ],
           ),
@@ -771,6 +783,7 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(

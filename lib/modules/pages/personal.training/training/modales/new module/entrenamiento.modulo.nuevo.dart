@@ -66,10 +66,20 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 
+  String convertirARomano(int numero) {
+    const Map<int, String> romanos = {
+      1: 'I',
+      2: 'II',
+      3: 'III',
+      4: 'IV',
+    };
+    return romanos[numero] ?? '$numero';
+  }
+
   String get titulo {
     String numeroModulo = isEdit
-        ? controller.convertirARomano(entrenamiento.inModulo!)
-        : controller.convertirARomano(controller.siguienteModulo ?? 1);
+        ? convertirARomano(entrenamiento.inModulo!)
+        : convertirARomano(controller.siguienteModulo ?? 1);
 
     return isEdit
         ? 'Editar Módulo - Módulo $numeroModulo'

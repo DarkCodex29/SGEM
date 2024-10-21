@@ -200,16 +200,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-  String convertirARomano(int numero) {
-    const Map<int, String> romanos = {
-      1: 'I',
-      2: 'II',
-      3: 'III',
-      4: 'IV',
-    };
-    return romanos[numero] ?? '$numero';
-  }
-
   Future<bool> registrarModulo(BuildContext context) async {
     if (!validar(context)) {
       _mostrarErroresValidacion(context, errores);
@@ -244,9 +234,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
       inModulo: moduloNumero,
-      modulo: OptionValue(
-          key: moduloNumero,
-          nombre: 'Módulo ${convertirARomano(moduloNumero)}'),
+      modulo: OptionValue(key: moduloNumero, nombre: 'Módulo $moduloNumero'),
       eliminado: 'N',
       motivoEliminado: '',
       inTipoPersona: entrenamiento.inTipoPersona,

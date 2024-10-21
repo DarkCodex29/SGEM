@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
@@ -74,6 +73,56 @@ class ModuloMaestroService {
       }
     } on DioException catch (e) {
       return ResponseHandler.handleFailure<List<ModuloMaestro>>(e);
+    }
+  }
+
+  Future<ResponseHandler<EntrenamientoModulo>> obtenerModuloPorId(
+      int moduloId) async {
+    final url = '${ConfigFile.apiUrl}/modulo/ObtenerModuloPorId/$moduloId';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        EntrenamientoModulo modulo =
+            EntrenamientoModulo.fromJson(response.data);
+        return ResponseHandler.handleSuccess<EntrenamientoModulo>(modulo);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener el módulo por ID',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
+    }
+  }
+
+  Future<ResponseHandler<ModuloMaestro>> obtenerModuloMaestroPorId(
+      int maestroId) async {
+    final url =
+        '${ConfigFile.apiUrl}/modulo/ObtenerModuloMaestroPorId/$maestroId';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        ModuloMaestro moduloMaestro = ModuloMaestro.fromJson(response.data);
+        return ResponseHandler.handleSuccess<ModuloMaestro>(moduloMaestro);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener el módulo maestro por ID',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<ModuloMaestro>(e);
     }
   }
 

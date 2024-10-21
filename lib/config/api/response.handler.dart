@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
@@ -70,6 +71,19 @@ class ResponseHandler<T> {
           );
         }
       }
+      if (T == ModuloMaestro) {
+        try {
+          final moduloMaestro = ModuloMaestro.fromJson(response);
+          return ResponseHandler<T>(success: true, data: moduloMaestro as T);
+        } catch (e) {
+          log('Error al mapear la respuesta a ModuloMaestro: $e');
+          return ResponseHandler<T>(
+            success: false,
+            message: 'Error al mapear la respuesta a ModuloMaestro.',
+          );
+        }
+      }
+
       return ResponseHandler<T>(success: true, data: response as T);
     }
 

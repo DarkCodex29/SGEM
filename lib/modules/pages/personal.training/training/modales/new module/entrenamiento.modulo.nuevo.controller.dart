@@ -7,6 +7,7 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../shared/widgets/alert/widget.alert.dart';
@@ -20,8 +21,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController notaPracticaController =
       TextEditingController(text: '0');
   TextEditingController fechaExamenController = TextEditingController();
-  TextEditingController totalHorasModuloController =
-      TextEditingController(text: '0');
+
+  // Cambiado a Rx
+  Rx<TextEditingController> totalHorasModuloController =
+      TextEditingController(text: '0').obs;
+
   TextEditingController horasAcumuladasController =
       TextEditingController(text: '0');
   TextEditingController horasMinestarController =
@@ -95,9 +99,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
       await obtenerSiguienteModulo();
       int moduloNumero = siguienteModulo ?? 1;
       tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
+      await obtenerDatosModuloMaestro(moduloNumero);
     } else {
       int moduloNumero = entrenamiento.inModulo ?? 1;
       tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
+      await obtenerDatosModuloMaestro(moduloNumero);
     }
     update();
   }
@@ -124,6 +130,22 @@ class EntrenamientoModuloNuevoController extends GetxController {
     } finally {
       isLoadingModulo.value = false;
       update();
+    }
+  }
+
+  Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
+    try {
+      final response =
+          await moduloMaestroService.obtenerModuloMaestroPorId(moduloNumero);
+      if (response.success && response.data != null) {
+        ModuloMaestro moduloMaestro = response.data!;
+        totalHorasModuloController.value.text =
+            moduloMaestro.inHoras.toString();
+      } else {
+        log('Error al obtener los datos del módulo maestro: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener el módulo maestro: $e');
     }
   }
 
@@ -157,7 +179,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       fechaExamen: fechaExamen,
       inNotaTeorica: int.parse(notaTeoricaController.text),
       inNotaPractica: int.parse(notaPracticaController.text),
-      inTotalHoras: int.parse(totalHorasModuloController.text),
+      inTotalHoras: int.parse(totalHorasModuloController.value.text),
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
       inModulo: moduloNumero,

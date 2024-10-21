@@ -326,12 +326,14 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            CustomTextField(
-              label: 'Total horas módulo',
-              controller: controller.totalHorasModuloController,
-              keyboardType: TextInputType.number,
-              isReadOnly: true,
-            ),
+            Obx(() {
+              return CustomTextField(
+                label: 'Total horas módulo',
+                controller: controller.totalHorasModuloController.value,
+                keyboardType: TextInputType.number,
+                isReadOnly: true,
+              );
+            }),
             CustomTextField(
               label: 'Horas acumuladas',
               controller: controller.horasAcumuladasController,

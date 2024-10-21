@@ -103,6 +103,7 @@ class ModuloMaestroService {
 
   Future<ResponseHandler<ModuloMaestro>> obtenerModuloMaestroPorId(
       int maestroId) async {
+    log('Obteniendo módulo maestro por ID: $maestroId');
     final url =
         '${ConfigFile.apiUrl}/modulo/ObtenerModuloMaestroPorId/$maestroId';
 
@@ -111,10 +112,9 @@ class ModuloMaestroService {
         url,
         options: Options(followRedirects: false),
       );
-
+      log('Response: ${response.data}');
       if (response.statusCode == 200 && response.data != null) {
-        ModuloMaestro moduloMaestro = ModuloMaestro.fromJson(response.data);
-        return ResponseHandler.handleSuccess<ModuloMaestro>(moduloMaestro);
+        return ResponseHandler.handleSuccess<ModuloMaestro>(response.data);
       } else {
         return ResponseHandler(
           success: false,

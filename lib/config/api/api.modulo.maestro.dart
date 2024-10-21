@@ -77,6 +77,7 @@ class ModuloMaestroService {
     }
   }
 
+/*
   Future<ResponseHandler<bool>> eliminarModulo(
       EntrenamientoModulo modulo) async {
     const url = '${ConfigFile.apiUrl}/modulo/EliminarModulo';
@@ -105,40 +106,70 @@ class ModuloMaestroService {
       return ResponseHandler.handleFailure<bool>(e);
     }
   }
+*/
 
-  Future<ResponseHandler<bool>> registrarModulo(
-      EntrenamientoModulo entrenamientoModulo) async {
-    log('Registrando nuevo modulo: ${jsonEncode(entrenamientoModulo.toJson())}');
-    const url = '${ConfigFile.apiUrl}/modulo/RegistrarModulo';
+  Future<ResponseHandler<bool>> _manageModulo(
+      String url, String method, EntrenamientoModulo modulo) async {
+    log('$method modulo: ${jsonEncode(modulo.toJson())}');
+
     try {
-      log('Registrando nuevo modulo: ${jsonEncode(entrenamientoModulo.toJson())}');
-      final response = await dio.post(
-        url,
-        data: jsonEncode(entrenamientoModulo.toJson()),
-        options: Options(
-          followRedirects: false,
-        ),
-      );
-      log("RESPONSE: $response");
+      Response response;
+
+      if (method == 'POST') {
+        response = await dio.post(url, data: jsonEncode(modulo.toJson()));
+      } else if (method == 'PUT') {
+        response = await dio.put(url, data: jsonEncode(modulo.toJson()));
+      } else if (method == 'DELETE') {
+        response = await dio.delete(url, data: jsonEncode(modulo.toJson()));
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Método HTTP no soportado',
+        );
+      }
+
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data) {
+        if (response.data is bool && response.data) {
           return ResponseHandler.handleSuccess<bool>(true);
-        } else {
+        } else if (response.data is Map<String, dynamic> &&
+            response.data.containsKey('Message')) {
           return ResponseHandler(
             success: false,
             message: response.data['Message'] ?? 'Error desconocido',
+          );
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: 'Formato de respuesta inesperado al manejar el módulo',
           );
         }
       } else {
         return ResponseHandler(
           success: false,
-          message: 'Error al registrar modulo',
+          message: 'Error al manejar el módulo',
         );
       }
     } on DioException catch (e) {
-      log('Error al registrar modulo. Datos: ${jsonEncode(entrenamientoModulo.toJson())}, Error: ${e.response?.data}');
-      return ResponseHandler.handleFailure(e);
+      log('Error al manejar el módulo. Datos: ${jsonEncode(modulo.toJson())}, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure<bool>(e);
     }
   }
 
+  Future<ResponseHandler<bool>> registrarModulo(
+      EntrenamientoModulo modulo) async {
+    const url = '${ConfigFile.apiUrl}/modulo/RegistrarModulo';
+    return _manageModulo(url, 'POST', modulo);
+  }
+
+  Future<ResponseHandler<bool>> actualizarModulo(
+      EntrenamientoModulo modulo) async {
+    const url = '${ConfigFile.apiUrl}/modulo/ActualizarModulo';
+    return _manageModulo(url, 'PUT', modulo);
+  }
+
+  Future<ResponseHandler<bool>> eliminarModulo(
+      EntrenamientoModulo modulo) async {
+    const url = '${ConfigFile.apiUrl}/modulo/EliminarModulo';
+    return _manageModulo(url, 'DELETE', modulo);
+  }
 }

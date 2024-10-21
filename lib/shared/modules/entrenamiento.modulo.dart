@@ -178,7 +178,7 @@ class EntrenamientoModulo {
 
   static String _toDotNetDate(DateTime? date) {
     if (date == null) return '';
-    return date.toIso8601String();
+    return "/Date(${date.millisecondsSinceEpoch})/";
   }
 }
 

@@ -12,13 +12,18 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
       EntrenamientoModuloNuevoController();
   final VoidCallback onCancel;
   final EntrenamientoModulo entrenamiento;
+  final bool isEdit;
 
-  EntrenamientoModuloNuevo(
-      {super.key, required this.onCancel, required this.entrenamiento});
+  EntrenamientoModuloNuevo({
+    super.key,
+    required this.onCancel,
+    required this.entrenamiento,
+    this.isEdit = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    controller.setDatosEntrenamiento(entrenamiento);
+    controller.setDatosEntrenamiento(entrenamiento, isEdit);
     return Align(
       alignment: const AlignmentDirectional(0, 0),
       child: Padding(
@@ -61,21 +66,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 
-  Future<DateTime?> _selectDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null) {
-      return picked;
-    } else {
-      return null;
-    }
-  }
-
   Widget _buildModalTitulo() {
+    String titulo = isEdit
+        ? 'Editar Módulo - Módulo ${entrenamiento.inModulo}'
+        : 'Nuevo Módulo - Módulo ${controller.siguienteModulo ?? 'I'}';
+
     return Container(
       width: double.infinity,
       height: 80,
@@ -91,11 +86,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Align(
-              alignment: AlignmentDirectional(-1, 0),
+            Align(
+              alignment: const AlignmentDirectional(-1, 0),
               child: Text(
-                'Nuevo Modulo', //$entityType
-                style: TextStyle(
+                titulo,
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -110,6 +105,16 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<DateTime?> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    return picked;
   }
 
   Widget _buildPrimeraFila() {
@@ -223,7 +228,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: 'Fecha de termino:',
-            controller: controller.fechaTerminoController, //cambiar controller
+            controller: controller.fechaTerminoController,
             icon: const Icon(Icons.calendar_month),
             onIconPressed: () async {
               controller.fechaTermino = await _selectDate(context);
@@ -285,7 +290,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             ),
             CustomTextField(
               label: 'Fecha de examen:',
-              controller: controller.fechaExamenController, //cambiar controller
+              controller: controller.fechaExamenController,
               icon: const Icon(Icons.calendar_month),
               onIconPressed: () async {
                 controller.fechaExamen = await _selectDate(context);

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.training.dart';
@@ -41,6 +42,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   Personal? responsableSeleccionado;
 
   late EntrenamientoModulo entrenamiento;
+  int? siguienteModulo;
+  bool isEdit = false;
 
   void buscarEntrenadores(String query) async {
     if (query.isEmpty) {
@@ -68,17 +71,24 @@ class EntrenamientoModuloNuevoController extends GetxController {
     responsableController.text = responsable.nombreCompleto;
   }
 
-  void setDatosEntrenamiento(EntrenamientoModulo entrenamiento) {
+  void setDatosEntrenamiento(EntrenamientoModulo entrenamiento, bool isEdit) {
     this.entrenamiento = entrenamiento;
+    this.isEdit = isEdit;
 
     if (entrenamiento.fechaInicio != null) {
       fechaInicio = entrenamiento.fechaInicio;
-      fechaInicioController.text = entrenamiento.fechaInicio.toString();
+      fechaInicioController.text =
+          DateFormat('dd/MM/yyyy').format(entrenamiento.fechaInicio!);
     }
 
     if (entrenamiento.fechaTermino != null) {
       fechaTermino = entrenamiento.fechaTermino;
-      fechaTerminoController.text = entrenamiento.fechaTermino.toString();
+      fechaTerminoController.text =
+          DateFormat('dd/MM/yyyy').format(entrenamiento.fechaTermino!);
+    }
+
+    if (!isEdit) {
+      obtenerSiguienteModulo().then((value) => siguienteModulo = value);
     }
   }
 
@@ -103,13 +113,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
     bool respuesta = true;
     errores.clear();
 
-    // Validación del entrenador
     if (responsableController.text.isEmpty) {
       respuesta = false;
       errores.add("Debe seleccionar un entrenador responsable.");
     }
 
-    // Validación de la fecha de inicio del Módulo I
     if (entrenamiento.inModulo == 1) {
       if (fechaInicio == null ||
           fechaInicio!.isBefore(entrenamiento.fechaInicio!)) {
@@ -119,7 +127,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    // Validación de la fecha de inicio del módulo que no sea I
     if (entrenamiento.inModulo > 1) {
       if (fechaInicio == null ||
           fechaInicio!.isBefore(entrenamiento.fechaTermino!)) {
@@ -129,14 +136,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    // Validación de la fecha de término
     if (fechaTermino == null || fechaTermino!.isBefore(fechaInicio!)) {
       respuesta = false;
       errores.add(
           "La fecha de término no puede ser anterior a la fecha de inicio.");
     }
 
-    // Validación de la nota teórica
     if (notaTeoricaController.text.isEmpty) {
       respuesta = false;
       errores.add("Debe ingresar una nota teórica.");
@@ -148,7 +153,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    // Validación de la nota práctica
     if (notaPracticaController.text.isEmpty) {
       respuesta = false;
       errores.add("Debe ingresar una nota práctica.");
@@ -160,7 +164,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    // Validación de la fecha de examen
     if (fechaExamenController.text.isEmpty) {
       respuesta = false;
       errores.add("Debe seleccionar una fecha de examen.");
@@ -182,6 +185,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Modulos: ${modulos.data}');
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo;
+        if (ultimosModulos >= 4) {
+          log('El módulo máximo es IV, no se pueden registrar más módulos.');
+          return 4;
+        }
         return ultimosModulos + 1;
       } else {
         log('Error obteniendo el siguiente módulo: ${modulos.message}');
@@ -198,10 +205,21 @@ class EntrenamientoModuloNuevoController extends GetxController {
       _mostrarErroresValidacion(context, errores);
       return false;
     }
-    int siguienteModulo = await obtenerSiguienteModulo();
+
+    if (siguienteModulo! > 4) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("No se pueden registrar más de cuatro módulos."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+
+    int moduloNumero = isEdit ? entrenamiento.inModulo : siguienteModulo!;
 
     EntrenamientoModulo modulo = EntrenamientoModulo(
-      key: 0,
+      key: isEdit ? entrenamiento.key : 0,
       inTipoActividad: entrenamiento.inTipoActividad,
       inActividadEntrenamiento: entrenamiento.key,
       inPersona: entrenamiento.inPersona,
@@ -215,8 +233,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inTotalHoras: int.parse(totalHorasModuloController.text),
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
-      inModulo: siguienteModulo,
-      modulo: Entidad(key: siguienteModulo, nombre: 'Módulo $siguienteModulo'),
+      inModulo: moduloNumero,
+      modulo: Entidad(key: moduloNumero, nombre: 'Módulo $moduloNumero'),
       eliminado: 'N',
       motivoEliminado: '',
       inTipoPersona: entrenamiento.inTipoPersona,
@@ -234,12 +252,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
     );
 
     try {
-      final response = await moduloMaestroService.registrarModulo(modulo);
+      final response = isEdit
+          ? await moduloMaestroService.actualizarModulo(modulo)
+          : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-        log('Registrar módulo exitoso: ${response.message}');
+        log('${isEdit ? "Actualizar" : "Registrar"} módulo exitoso: ${response.message}');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Módulo registrado con éxito."),
+          SnackBar(
+            content: Text(
+                "Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
             backgroundColor: Colors.green,
           ),
         );
@@ -249,20 +270,22 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
         return true;
       } else {
-        log('Error al registrar módulo: ${response.message}');
+        log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Error al registrar módulo: ${response.message}"),
+            content: Text(
+                "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
             backgroundColor: Colors.red,
           ),
         );
         return false;
       }
     } catch (e) {
-      log('CATCH: Error al registrar módulo: $e');
+      log('CATCH: Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Error al registrar módulo: $e"),
+          content: Text(
+              "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
           backgroundColor: Colors.red,
         ),
       );

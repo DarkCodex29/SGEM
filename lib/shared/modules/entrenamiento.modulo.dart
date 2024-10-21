@@ -10,71 +10,71 @@ String entrenamientoModuloToJson(EntrenamientoModulo data) =>
 
 class EntrenamientoModulo {
   int key;
-  int inTipoActividad;
-  int inCapacitacion;
-  int inModulo;
+  int? inTipoActividad;
+  int? inCapacitacion;
+  int? inModulo;
   OptionValue modulo;
-  int inTipoPersona;
-  int inPersona;
-  int inActividadEntrenamiento;
-  int inCategoria;
-  int inEquipo;
+  int? inTipoPersona;
+  int? inPersona;
+  int? inActividadEntrenamiento;
+  int? inCategoria;
+  int? inEquipo;
   OptionValue equipo;
-  int inEntrenador;
+  int? inEntrenador;
   OptionValue entrenador;
-  int inEmpresaCapacitadora;
-  int inCondicion;
+  int? inEmpresaCapacitadora;
+  int? inCondicion;
   OptionValue condicion;
   DateTime? fechaInicio;
   DateTime? fechaTermino;
   DateTime? fechaExamen;
   DateTime? fechaRealMonitoreo;
   DateTime? fechaProximoMonitoreo;
-  int inNotaTeorica;
-  int inNotaPractica;
-  int inTotalHoras;
-  int inHorasAcumuladas;
-  int inHorasMinestar;
-  int inEstado;
+  int? inNotaTeorica;
+  int? inNotaPractica;
+  int? inTotalHoras;
+  int? inHorasAcumuladas;
+  int? inHorasMinestar;
+  int? inEstado;
   OptionValue estadoEntrenamiento;
-  String comentarios;
-  String eliminado;
-  String motivoEliminado;
-  String observaciones;
+  String? comentarios;
+  String? eliminado;
+  String? motivoEliminado;
+  String? observaciones;
 
   EntrenamientoModulo({
     required this.key,
-    required this.inTipoActividad,
-    required this.inCapacitacion,
-    required this.inModulo,
-    required this.modulo,
-    required this.inTipoPersona,
-    required this.inPersona,
-    required this.inActividadEntrenamiento,
-    required this.inCategoria,
-    required this.inEquipo,
+     this.inTipoActividad,
+     this.inCapacitacion,
+     this.inModulo,
+     required this.modulo,
+     this.inTipoPersona,
+     this.inPersona,
+     this.inActividadEntrenamiento,
+     this.inCategoria,
+     this.inEquipo,
     required this.equipo,
-    required this.inEntrenador,
-    required this.entrenador,
-    required this.inEmpresaCapacitadora,
-    required this.inCondicion,
+     this.inEntrenador,
+     required this.entrenador,
+     this.inEmpresaCapacitadora,
+     this.inCondicion,
     required this.condicion,
     this.fechaInicio,
     this.fechaTermino,
     this.fechaExamen,
     this.fechaRealMonitoreo,
     this.fechaProximoMonitoreo,
-    required this.inNotaTeorica,
-    required this.inNotaPractica,
-    required this.inTotalHoras,
-    required this.inHorasAcumuladas,
-    required this.inHorasMinestar,
-    required this.inEstado,
-    required this.estadoEntrenamiento,
-    required this.comentarios,
-    required this.eliminado,
-    required this.motivoEliminado,
-    required this.observaciones,
+     this.inNotaTeorica,
+     this.inNotaPractica,
+     this.inTotalHoras,
+     this.inHorasAcumuladas,
+     this.inHorasMinestar,
+     this.inEstado,
+     required this.estadoEntrenamiento,
+     this.comentarios,
+     this.eliminado,
+     this.motivoEliminado,
+     this.observaciones,
   });
 
   void actualizarConUltimoModulo(EntrenamientoModulo ultimoModulo) {

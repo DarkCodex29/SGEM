@@ -279,8 +279,8 @@ class TrainingPersonalPage extends StatelessWidget {
                           'Estado de avance actual',
                           _getEstadoAvanceActual(
                               training.estadoEntrenamiento.nombre!,
-                              training.inHorasAcumuladas,
-                              training.inTotalHoras),
+                              training.inHorasAcumuladas!,
+                              training.inTotalHoras!),
                         ),
                       ],
                     ),

@@ -128,7 +128,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 
-    if (entrenamiento.inModulo > 1) {
+    if (entrenamiento.inModulo! > 1) {
       if (fechaInicio == null ||
           fechaInicio!.isBefore(entrenamiento.fechaTermino!)) {
         respuesta = false;
@@ -185,7 +185,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
           .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key);
       log('Modulos: ${modulos.data}');
       if (modulos.success && modulos.data != null) {
-        int ultimosModulos = modulos.data!.inModulo;
+        int ultimosModulos = modulos.data!.inModulo!;
         if (ultimosModulos >= 4) {
           log('El módulo máximo es IV, no se pueden registrar más módulos.');
           return 4;
@@ -217,7 +217,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       return false;
     }
 
-    int moduloNumero = isEdit ? entrenamiento.inModulo : siguienteModulo!;
+    int moduloNumero = isEdit ? entrenamiento.inModulo! : siguienteModulo!;
 
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: isEdit ? entrenamiento.key : 0,

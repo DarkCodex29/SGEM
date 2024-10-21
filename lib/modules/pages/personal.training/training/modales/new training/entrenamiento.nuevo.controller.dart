@@ -227,7 +227,7 @@ class EntrenamientoNuevoController extends GetxController {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);
       if (response.success && response.data != null) {
-        controllerPersonal.fetchTrainings(register.inPersona);
+        controllerPersonal.fetchTrainings(register.inPersona!);
         callback(true);
       } else {
         log('Error al registrar entrenamiento: ${response.message}');

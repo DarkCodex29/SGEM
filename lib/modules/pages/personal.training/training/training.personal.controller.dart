@@ -149,7 +149,7 @@ class TrainingPersonalController extends GetxController {
     try {
       final response = await moduloMaestroService.eliminarModulo(modulo);
       if (response.success) {
-        await fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento);
+        await fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento!);
         return true;
       } else {
         Get.snackbar(

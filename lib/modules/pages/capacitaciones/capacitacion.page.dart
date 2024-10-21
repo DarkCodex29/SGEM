@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 
-
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/modules/personal.dart';
@@ -428,7 +427,8 @@ class CapacitacionPage extends StatelessWidget {
         selectedValue: controller.selectedEntrenadorKey.value != null
             ? options
                 .firstWhere((option) =>
-                    option.inPersonalOrigen == controller.selectedEntrenadorKey.value)
+                    option.inPersonalOrigen ==
+                    controller.selectedEntrenadorKey.value)
                 .nombreCompleto
             : null,
         isSearchable: false,
@@ -437,7 +437,8 @@ class CapacitacionPage extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.nombreCompleto == value,
           );
-          controller.selectedEntrenadorKey.value = selectedOption.inPersonalOrigen;
+          controller.selectedEntrenadorKey.value =
+              selectedOption.inPersonalOrigen;
           log('Entrenador seleccionada - Key del Maestro: ${controller.selectedEntrenadorKey.value}, Valor: $value');
         },
       );
@@ -451,7 +452,7 @@ class CapacitacionPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () async {
             controller.clearFields();
-           await controller.buscarCapacitaciones();
+            await controller.buscarCapacitaciones();
             controller.isExpanded.value = false;
           },
           icon: const Icon(
@@ -645,41 +646,71 @@ class CapacitacionPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          Expanded(flex: 1 ,child: Text(entrenamiento.codigoMcp!)),
-                          Expanded(flex: 1 ,child: Text(entrenamiento.numeroDocumento!)),
-                          Expanded(flex: 1 ,child: Text(entrenamiento.nombreCompleto!)),
-                          Expanded(flex: 1 ,child: Text(entrenamiento.guardia.nombre!,textAlign: TextAlign.center,)),
-                          Expanded(flex: 1 ,
+                          Expanded(
+                              flex: 1, child: Text(entrenamiento.codigoMcp!)),
+                          Expanded(
+                              flex: 1,
+                              child: Text(entrenamiento.numeroDocumento!)),
+                          Expanded(
+                              flex: 1,
+                              child: Text(entrenamiento.nombreCompleto!)),
+                          Expanded(
+                              flex: 1,
                               child: Text(
-                                  entrenamiento.entrenador.nombre!)),
-                          Expanded(flex: 1 ,child: Text(entrenamiento.categoria.nombre!)),
-                          Expanded(flex: 1 ,
-                              child: Text(entrenamiento.empresaCapacitadora.nombre!)),
-                          Expanded(flex: 1 ,
+                                entrenamiento.guardia.nombre!,
+                                textAlign: TextAlign.center,
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Text(entrenamiento.entrenador.nombre!)),
+                          Expanded(
+                              flex: 1,
+                              child: Text(entrenamiento.categoria.nombre!)),
+                          Expanded(
+                              flex: 1,
+                              child: Text(
+                                  entrenamiento.empresaCapacitadora.nombre!)),
+                          Expanded(
+                            flex: 1,
                             child: Text(DateFormat('dd/MM/yyyy')
                                 .format(entrenamiento.fechaInicio!)),
                           ),
-                          Expanded(flex: 1 ,
-                            child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaTermino!) ,textAlign: TextAlign.center,),
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              DateFormat('dd/MM/yyyy')
+                                  .format(entrenamiento.fechaTermino!),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          Expanded(flex: 1 ,
-                              child: Text(entrenamiento.inTotalHoras.toString(), textAlign: TextAlign.center,)),
-                          Expanded(flex: 1 ,
+                          Expanded(
+                              flex: 1,
                               child: Text(
-                            entrenamiento.inNotaTeorica.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(flex: 1 ,
+                                entrenamiento.inTotalHoras.toString(),
+                                textAlign: TextAlign.center,
+                              )),
+                          Expanded(
+                              flex: 1,
                               child: Text(
-                            entrenamiento.inNotaPractica.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          const Expanded(flex: 1 ,
+                                entrenamiento.inNotaTeorica.toString(),
+                                textAlign: TextAlign.center,
+                              )),
+                          Expanded(
+                              flex: 1,
                               child: Text(
-                            'Acciones',
-                            textAlign: TextAlign.center,
-                          )),
+                                entrenamiento.inNotaPractica.toString(),
+                                textAlign: TextAlign.center,
+                              )),
+                          Expanded(
+                              flex: 1,
+                              child: Row(
+                                children: [
+                                  _buildIconButton(
+                                      Icons.edit, AppTheme.primaryColor, () {}),
+                                  _buildIconButton(
+                                      Icons.delete, AppTheme.errorColor, () {})
+                                ],
+                              )),
                         ],
                       ),
                     );
@@ -721,7 +752,7 @@ class CapacitacionPage extends StatelessWidget {
           flex: 1,
           child: Text(
             'Guardia',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold,),textAlign: TextAlign.center,
           ),
         ),
         Expanded(
@@ -856,6 +887,17 @@ class CapacitacionPage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, Color color, VoidCallback onPressed) {
+    return IconButton(
+      icon: Icon(
+        icon,
+        color: color,
+        size: 24,
+      ),
+      onPressed: onPressed,
     );
   }
 

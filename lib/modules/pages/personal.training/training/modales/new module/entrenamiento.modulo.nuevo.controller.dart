@@ -7,6 +7,7 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../shared/widgets/alert/widget.alert.dart';
 
@@ -234,7 +235,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
       inModulo: moduloNumero,
-      modulo: Entidad(key: moduloNumero, nombre: 'Módulo $moduloNumero'),
+      modulo: OptionValue(key: moduloNumero, nombre: 'Módulo $moduloNumero'),
       eliminado: 'N',
       motivoEliminado: '',
       inTipoPersona: entrenamiento.inTipoPersona,
@@ -245,7 +246,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inCondicion: entrenamiento.inCondicion,
       condicion: entrenamiento.condicion,
       inEstado: 0,
-      estadoEntrenamiento: Entidad(key: 0, nombre: 'Pendiente'),
+      estadoEntrenamiento: OptionValue(key: 0, nombre: 'Pendiente'),
       comentarios: '',
       inCapacitacion: 0,
       observaciones: entrenamiento.observaciones,

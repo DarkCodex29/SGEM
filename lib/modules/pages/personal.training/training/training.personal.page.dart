@@ -237,7 +237,7 @@ class TrainingPersonalPage extends StatelessWidget {
                     ),
                     _buildCustomTextField(
                       'Estado de avance actual',
-                      training.modulo.nombre,
+                      training.modulo.nombre!,
                     ),
                   ],
                 ),
@@ -246,11 +246,11 @@ class TrainingPersonalPage extends StatelessWidget {
                   children: [
                     _buildCustomTextField(
                       'Equipo',
-                      training.equipo.nombre,
+                      training.equipo.nombre!,
                     ),
                     _buildCustomTextField(
                       'Entrenador',
-                      training.entrenador.nombre,
+                      training.entrenador.nombre!,
                     ),
                   ],
                 ),
@@ -262,12 +262,12 @@ class TrainingPersonalPage extends StatelessWidget {
                         Icon(
                           Icons.radio_button_checked,
                           color: _getColorByEstado(
-                              training.estadoEntrenamiento.key),
+                              training.estadoEntrenamiento.key!),
                         ),
                         const SizedBox(width: 4),
                         _buildCustomTextField(
                           'Estado entrenamiento',
-                          training.estadoEntrenamiento.nombre,
+                          training.estadoEntrenamiento.nombre!,
                         ),
                       ],
                     ),
@@ -278,7 +278,7 @@ class TrainingPersonalPage extends StatelessWidget {
                         _buildCustomTextField(
                           'Estado de avance actual',
                           _getEstadoAvanceActual(
-                              training.estadoEntrenamiento.nombre,
+                              training.estadoEntrenamiento.nombre!,
                               training.inHorasAcumuladas,
                               training.inTotalHoras),
                         ),
@@ -301,7 +301,7 @@ class TrainingPersonalPage extends StatelessWidget {
                 ),
                 _buildCustomTextField(
                   'Condición',
-                  training.condicion.nombre,
+                  training.condicion.nombre!,
                 ),
                 _buildActionButtons(context, training),
               ],
@@ -347,7 +347,7 @@ class TrainingPersonalPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  modulo.modulo.nombre,
+                  modulo.modulo.nombre!,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

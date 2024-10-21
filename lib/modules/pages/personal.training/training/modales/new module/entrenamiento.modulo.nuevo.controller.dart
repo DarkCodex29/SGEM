@@ -45,6 +45,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   late EntrenamientoModulo entrenamiento;
   int? siguienteModulo;
   bool isEdit = false;
+  String tituloModal = '';
+  RxBool isLoadingModulo = false.obs;
 
   void buscarEntrenadores(String query) async {
     if (query.isEmpty) {
@@ -72,7 +74,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
     responsableController.text = responsable.nombreCompleto;
   }
 
-  void setDatosEntrenamiento(EntrenamientoModulo entrenamiento, bool isEdit) {
+  void setDatosEntrenamiento(
+      EntrenamientoModulo entrenamiento, bool isEdit) async {
     this.entrenamiento = entrenamiento;
     this.isEdit = isEdit;
 
@@ -89,8 +92,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
 
     if (!isEdit) {
-      obtenerSiguienteModulo().then((value) => siguienteModulo = value);
+      await obtenerSiguienteModulo();
+      int moduloNumero = siguienteModulo ?? 1;
+      tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
+    } else {
+      int moduloNumero = entrenamiento.inModulo ?? 1;
+      tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
     }
+    update();
   }
 
   void resetControllers() {
@@ -179,25 +188,34 @@ class EntrenamientoModuloNuevoController extends GetxController {
     return respuesta;
   }
 
-  Future<int> obtenerSiguienteModulo() async {
+  Future<void> obtenerSiguienteModulo() async {
+    isLoadingModulo.value = true;
     try {
       final modulos = await trainingService
           .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key);
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo!;
-        if (ultimosModulos >= 4) {
-          log('El módulo máximo es IV, no se pueden registrar más módulos.');
-          return 4;
-        }
-        return ultimosModulos + 1;
+        siguienteModulo = ultimosModulos >= 4 ? 4 : ultimosModulos + 1;
       } else {
-        log('Error obteniendo el siguiente módulo: ${modulos.message}');
-        return 1;
+        siguienteModulo = 1;
       }
     } catch (e) {
+      siguienteModulo = 1;
       log('Error obteniendo el siguiente módulo: $e');
-      return 1;
+    } finally {
+      isLoadingModulo.value = false;
+      update();
     }
+  }
+
+  String convertirARomano(int numero) {
+    const Map<int, String> romanos = {
+      1: 'I',
+      2: 'II',
+      3: 'III',
+      4: 'IV',
+    };
+    return romanos[numero] ?? '$numero';
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
@@ -234,7 +252,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
       inModulo: moduloNumero,
-      modulo: OptionValue(key: moduloNumero, nombre: 'Módulo $moduloNumero'),
+      modulo: OptionValue(
+          key: moduloNumero,
+          nombre: 'Módulo ${convertirARomano(moduloNumero)}'),
       eliminado: 'N',
       motivoEliminado: '',
       inTipoPersona: entrenamiento.inTipoPersona,

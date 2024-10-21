@@ -66,61 +66,45 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 
-  String convertirARomano(int numero) {
-    const Map<int, String> romanos = {
-      1: 'I',
-      2: 'II',
-      3: 'III',
-      4: 'IV',
-    };
-    return romanos[numero] ?? '$numero';
-  }
-
-  String get titulo {
-    String numeroModulo = isEdit
-        ? convertirARomano(entrenamiento.inModulo!)
-        : convertirARomano(controller.siguienteModulo ?? 1);
-
-    return isEdit
-        ? 'Editar Módulo - Módulo $numeroModulo'
-        : 'Nuevo Módulo - Módulo $numeroModulo';
-  }
-
   Widget _buildModalTitulo() {
-    return Container(
-      width: double.infinity,
-      height: 80,
-      decoration: const BoxDecoration(
-        color: Color(0xFF051367),
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(8),
-          topRight: Radius.circular(8),
+    return Obx(() {
+      return Container(
+        width: double.infinity,
+        height: 80,
+        decoration: const BoxDecoration(
+          color: Color(0xFF051367),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(8),
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Align(
-              alignment: const AlignmentDirectional(-1, 0),
-              child: Text(
-                titulo,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Align(
+                alignment: const AlignmentDirectional(-1, 0),
+                child: controller.isLoadingModulo.value
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(
+                        controller.tituloModal,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
-            ),
-            InkWell(
-              onTap: onCancel,
-              child: const Icon(Icons.close, size: 24, color: Colors.white),
-            ),
-          ],
+              InkWell(
+                onTap: onCancel,
+                child: const Icon(Icons.close, size: 24, color: Colors.white),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Future<DateTime?> _selectDate(BuildContext context) async {

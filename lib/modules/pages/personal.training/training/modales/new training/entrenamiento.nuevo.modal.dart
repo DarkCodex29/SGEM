@@ -7,7 +7,6 @@ import 'package:sgem/modules/pages/personal.training/training/training.personal.
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
@@ -34,103 +33,188 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       controller.condicionSelected.value = controller.condicionDetalle
           .firstWhere((element) => element.key == training!.inCondicion,
               orElse: () => controller.condicionDetalle.first);
+      controller.estadoEntrenamientoSelected.value = controller.estadoDetalle
+          .firstWhere((element) => element.key == training!.inEstado,
+              orElse: () => controller.estadoDetalle.first);
 
       controller.fechaInicioEntrenamiento.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaInicio.toString()));
       controller.fechaTerminoEntrenamiento.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaTermino.toString()));
+      controller.observacionesEntrenamiento.text = training!.comentarios;
       controller.obtenerArchivosRegistrados(training!.key);
     }
   }
 
   Widget content(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-                child: CustomGenericDropdown<MaestroDetalle>(
-              hintText: "Equipo",
-              options: controller.equipoDetalle,
-              selectedValue: controller.equipoSelectedBinding,
-              isSearchable: false,
-              isRequired: true,
-            )),
-            SizedBox(width: paddingVertical),
-            Expanded(
-              child: customTextFieldDate("Fecha de inicio dd/MM/yyyy",
-                  controller.fechaInicioEntrenamiento, true, false, context),
-            )
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildEquipoAndDateRow(),
+          const SizedBox(height: 10),
+          _buildConditionAndDateRow(),
+          if (isEdit) ...[
+            const SizedBox(height: 10),
+            _buildStateAndObservationsRow(),
+            const SizedBox(height: 10),
+            adjuntarArchivoText(),
+            adjuntarDocumentoPDF(controller),
           ],
-        ).padding(
-          EdgeInsets.only(
-            left: paddingVertical,
-            right: paddingVertical,
+          const SizedBox(height: 20),
+          customButtonsCancelAndAcept(() => close(), () => registerTraining()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEquipoAndDateRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: CustomGenericDropdown<MaestroDetalle>(
+            hintText: "Equipo",
+            options: controller.equipoDetalle,
+            selectedValue: controller.equipoSelectedBinding,
+            isSearchable: false,
+            isRequired: true,
           ),
         ),
-        Row(
-          children: [
-            Expanded(
-                child: CustomGenericDropdown<MaestroDetalle>(
-              hintText: "Condicion",
-              options: controller.condicionDetalle,
-              selectedValue: controller.condicionSelectedBinding,
-              isSearchable: false,
-              isRequired: true,
-            )),
-            SizedBox(width: paddingVertical),
-            Expanded(
-                child: customTextFieldDate("Fecha de termino dd/MM/yyyy",
-                    controller.fechaTerminoEntrenamiento, true, false, context))
-          ],
-        ).padding(
-            EdgeInsets.only(left: paddingVertical, right: paddingVertical)),
-        if (isEdit)
-          adjuntarArchivoText().padding(const EdgeInsets.only(bottom: 10)),
-        isEdit ? adjuntarDocumentoPDF(controller) : Container(),
-        customButtonsCancelAndAcept(() => close(), () => registerTraining())
+        const SizedBox(width: 20),
+        Expanded(
+          child: customTextFieldDate(
+            "Fecha de inicio: dd/MM/yyyy",
+            controller.fechaInicioEntrenamiento,
+            true,
+            false,
+            Get.context!,
+          ),
+        ),
       ],
-    ).padding(const EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10));
+    );
+  }
+
+  Widget _buildConditionAndDateRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: CustomGenericDropdown<MaestroDetalle>(
+            hintText: "Condición",
+            options: controller.condicionDetalle,
+            selectedValue: controller.condicionSelectedBinding,
+            isSearchable: false,
+            isRequired: true,
+          ),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: customTextFieldDate(
+            "Fecha de término: dd/MM/yyyy",
+            controller.fechaTerminoEntrenamiento,
+            true,
+            false,
+            Get.context!,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStateAndObservationsRow() {
+    return Row(
+      children: [
+        Expanded(
+          child: CustomGenericDropdown<MaestroDetalle>(
+            hintText: "Estado Entrenamiento",
+            options: controller.estadoDetalle,
+            selectedValue: controller.estadoEntrenamientoSelectedBinding,
+            isSearchable: false,
+            isRequired: true,
+          ),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          child: CustomTextField(
+            label: "Observaciones",
+            controller: controller.observacionesEntrenamiento,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return Scaffold(
-              appBar: AppBar(
-                toolbarHeight: 80,
-                leadingWidth: 0,
-                title: isEdit
-                    ? const Text(
-                        "Editar Entrenamiento",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text("Nuevo Entrenamiento"),
-                backgroundColor: AppTheme.backgroundBlue,
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 32,
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        insetPadding: const EdgeInsets.all(20),
+        backgroundColor: Colors.white,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600,
+            minWidth: 300,
+            minHeight: 200,
+            maxHeight: MediaQuery.of(context).size.height * 0.5,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  color: AppTheme.backgroundBlue,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      isEdit ? "Editar Entrenamiento" : "Nuevo Entrenamiento",
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
                     ),
-                  )
-                ],
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              body: (controller.isLoading.value)
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : content(context))
-          .size(400, 800);
+              // Cuerpo del modal
+              Expanded(
+                child: (controller.isLoading.value)
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: content(context),
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ),
+      );
     });
   }
 
@@ -215,7 +299,9 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       VoidCallback onCancel, VoidCallback onSave) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       OutlinedButton(
-        onPressed: onCancel,
+        onPressed: () {
+          onCancel();
+        },
         style: OutlinedButton.styleFrom(
           side: const BorderSide(color: Colors.grey),
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

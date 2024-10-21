@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -17,11 +18,13 @@ import 'package:sgem/shared/widgets/custom.dropdown.dart';
 class EntrenamientoNuevoController extends GetxController {
   TextEditingController fechaInicioEntrenamiento = TextEditingController();
   TextEditingController fechaTerminoEntrenamiento = TextEditingController();
+  TextEditingController observacionesEntrenamiento = TextEditingController();
 
   TrainingPersonalController controllerPersonal =
       Get.put(TrainingPersonalController());
   RxList<MaestroDetalle> equipoDetalle = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> condicionDetalle = <MaestroDetalle>[].obs;
+  RxList<MaestroDetalle> estadoDetalle = <MaestroDetalle>[].obs;
 
   var equipoSelected = Rxn<MaestroDetalle?>();
   late final equipoSelectedBinding = Binding(get: () {
@@ -36,6 +39,14 @@ class EntrenamientoNuevoController extends GetxController {
     return condicionSelected.value;
   }, set: (DropdownElement? newValue) {
     condicionSelected.value = newValue as MaestroDetalle;
+    return;
+  });
+
+  var estadoEntrenamientoSelected = Rxn<MaestroDetalle?>();
+  late final estadoEntrenamientoSelectedBinding = Binding(get: () {
+    return estadoEntrenamientoSelected.value;
+  }, set: (DropdownElement? newValue) {
+    estadoEntrenamientoSelected.value = newValue as MaestroDetalle;
     return;
   });
 
@@ -59,48 +70,31 @@ class EntrenamientoNuevoController extends GetxController {
   }
 
   Future<void> getEquiposAndConditions() async {
+    isLoading.value = true;
     try {
-      isLoading.value = true;
+      final equiposFuture = repository
+          .listarMaestroDetallePorMaestro(MaestroDetalleTypes.equipo.rawValue);
+      final condicionesFuture = repository.listarMaestroDetallePorMaestro(
+          MaestroDetalleTypes.condition.rawValue);
+      final estadosEntrenamientoFuture =
+          repository.listarMaestroDetallePorMaestro(
+              MaestroDetalleTypes.estadoEntrenamiento.rawValue);
 
-      await Future.wait([getEquipos(), getCondiciones()]);
-      log('Datos de equipos y condiciones cargados correctamente');
+      final results = await Future.wait(
+          [equiposFuture, condicionesFuture, estadosEntrenamientoFuture]);
+      final equipos = results[0];
+      final condiciones = results[1];
+      final estados = results[2];
+
+      if (equipos != null) equipoDetalle.assignAll(equipos);
+      if (condiciones != null) condicionDetalle.assignAll(condiciones);
+      if (estados != null) estadoDetalle.assignAll(estados);
+
+      log("Datos de equipos y condiciones cargados correctamente");
     } catch (e) {
-      log('Error al cargar equipos o condiciones: $e');
+      log("Error al cargar equipos o condiciones: $e");
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  Future<void> getEquipos() async {
-    try {
-      final List<MaestroDetalle>? equipos = await repository
-          .listarMaestroDetallePorMaestro(MaestroDetalleTypes.equipo.rawValue);
-
-      if (equipos != null) {
-        log("Equipos cargados: ${equipos.toString()}");
-        equipoDetalle.assignAll(equipos);
-      } else {
-        log("No se cargaron equipos");
-      }
-    } catch (e) {
-      log('Error al cargar equipos: $e');
-    }
-  }
-
-  Future<void> getCondiciones() async {
-    try {
-      final List<MaestroDetalle>? condiciones =
-          await repository.listarMaestroDetallePorMaestro(
-              MaestroDetalleTypes.condition.rawValue);
-
-      if (condiciones != null) {
-        log("Condiciones cargadas: ${condiciones.toString()}");
-        condicionDetalle.assignAll(condiciones);
-      } else {
-        log("No se cargaron condiciones");
-      }
-    } catch (e) {
-      log('Error al cargar condiciones: $e');
     }
   }
 
@@ -166,7 +160,6 @@ class EntrenamientoNuevoController extends GetxController {
             inOrigen: 2, // TABLA Entrenamiento
             inOrigenKey: inOrigenKey,
           );
-          log('Response..................: ${response.data}');
           if (response.success) {
             archivo['nuevo'] = false;
           }

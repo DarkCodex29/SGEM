@@ -50,7 +50,7 @@ class PersonalSearchController extends GetxController {
   final documentoIdentidadController = TextEditingController();
   final nombresController = TextEditingController();
   final apellidosController = TextEditingController();
-final expansionController = ExpansionTileController();
+  final expansionController = ExpansionTileController();
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();

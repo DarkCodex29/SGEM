@@ -514,12 +514,6 @@ class NuevoPersonalPage extends StatelessWidget {
     );
   }
 
-  IconData? _getSearchIcon() {
-    if (!isEditing && !isViewing) {
-      return null;
-    }
-    return Icons.search;
-  }
 
   void _searchPersonalByDNI() async {
     if (!isEditing && !isViewing) {

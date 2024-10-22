@@ -9,10 +9,7 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import '../../shared/modules/entrenamiento.consulta.dart';
 
 class TrainingService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
-
-  final Dio dio = Dio();
+   final Dio dio = Dio();
 
   TrainingService() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -77,7 +74,7 @@ class TrainingService {
   Future<ResponseHandler<EntrenamientoModulo>>
       obtenerUltimoModuloPorEntrenamiento(int entrenamientoId) async {
     final url =
-        '$baseUrl/Entrenamiento/ObtenerUltimoModuloPorEntrenamiento?inEntrenamiento=$entrenamientoId';
+        '${ConfigFile.apiUrl}/Entrenamiento/ObtenerUltimoModuloPorEntrenamiento?inEntrenamiento=$entrenamientoId';
     try {
       final response =
           await dio.get(url, options: Options(followRedirects: false));
@@ -109,7 +106,7 @@ class TrainingService {
 
   Future<ResponseHandler<List<dynamic>>> listarEntrenamientoPorPersona(
       int id) async {
-    final url = '$baseUrl/Entrenamiento/ListarEntrenamientoPorPersona?id=$id';
+    final url = '${ConfigFile.apiUrl}/Entrenamiento/ListarEntrenamientoPorPersona?id=$id';
     try {
       final response =
           await dio.get(url, options: Options(followRedirects: false));
@@ -129,7 +126,7 @@ class TrainingService {
 
   Future<ResponseHandler<bool>> actualizarEntrenamiento(
       EntrenamientoModulo training) async {
-    final url = '$baseUrl/Entrenamiento/ActualizarEntrenamiento';
+    const url = '${ConfigFile.apiUrl}/Entrenamiento/ActualizarEntrenamiento';
     try {
       log('Actualizando entrenamiento: ${jsonEncode(training.toJson())}');
       final response = await dio.put(
@@ -154,7 +151,7 @@ class TrainingService {
 
   Future<ResponseHandler<bool>> eliminarEntrenamiento(
       EntrenamientoModulo training) async {
-    final url = '$baseUrl/Entrenamiento/EliminarEntrenamiento';
+    const url = '${ConfigFile.apiUrl}/Entrenamiento/EliminarEntrenamiento';
     try {
       log('Eliminando entrenamiento');
       final response = await dio.delete(
@@ -191,7 +188,7 @@ class TrainingService {
     int? pageSize,
     int? pageNumber,
   }) async {
-    final url = '$baseUrl/Entrenamiento/EntrenamientoConsultarPaginado';
+    final url = '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoConsultarPaginado';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.inEquipo': inEquipo,

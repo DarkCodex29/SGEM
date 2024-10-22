@@ -2,12 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/maestro.dart';
 
 class MaestroService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
-
   final Dio dio = Dio();
 
   MaestroService() {
@@ -23,7 +21,7 @@ class MaestroService {
   }
 
   Future<ResponseHandler<List<MaestroCompleto>>> listarMaestros() async {
-    final url = '$baseUrl/Maestro/ListarMaestros';
+    const url = '${ConfigFile.apiUrl}/Maestro/ListarMaestros';
 
     try {
       final response = await dio.get(
@@ -51,7 +49,7 @@ class MaestroService {
 
   Future<ResponseHandler<bool>> registrarMaestro(
       MaestroCompleto maestro) async {
-    final url = '$baseUrl/Maestro/RegistrarMaestro';
+    const url = '${ConfigFile.apiUrl}/Maestro/RegistrarMaestro';
 
     try {
       final response = await dio.post(
@@ -84,7 +82,7 @@ class MaestroService {
 
   Future<ResponseHandler<bool>> actualizarMaestro(
       MaestroCompleto maestro) async {
-    final url = '$baseUrl/Maestro/ActualizarMaestro';
+    const url = '${ConfigFile.apiUrl}/Maestro/ActualizarMaestro';
 
     try {
       final response = await dio.put(

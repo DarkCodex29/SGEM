@@ -1,15 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
+import 'package:aad_oauth/model/config.dart';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class PersonalService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
-
-  final Dio dio = Dio();
+    final Dio dio = Dio();
 
   PersonalService() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -25,7 +24,7 @@ class PersonalService {
 
   Future<ResponseHandler<Personal>> buscarPersonalPorDni(String dni) async {
     final url =
-        '$baseUrl/Personal/ObtenerPersonalPorDocumento?numeroDocumento=$dni';
+        '${ConfigFile.apiUrl}/Personal/ObtenerPersonalPorDocumento?numeroDocumento=$dni';
 
     try {
       log('Buscando personal por DNI: $dni');
@@ -45,7 +44,7 @@ class PersonalService {
   }
 
   Future<Map<String, dynamic>> buscarPersonalPorId(String id) async {
-    final url = '$baseUrl/Personal/ObtenerPersonalPorId?id=$id';
+    final url = '${ConfigFile.apiUrl}/Personal/ObtenerPersonalPorId?id=$id';
 
     try {
       final response = await dio.get(
@@ -69,7 +68,7 @@ class PersonalService {
 
   Future<ResponseHandler<bool>> registrarPersona(Personal personal) async {
     log('Registrando nueva persona: ${jsonEncode(personal.toJson())}');
-    final url = '$baseUrl/Personal/RegistrarPersona';
+    const url = '${ConfigFile.apiUrl}/Personal/RegistrarPersona';
     try {
       log('Registrando nueva persona: ${jsonEncode(personal.toJson())}');
       final response = await dio.post(
@@ -102,7 +101,7 @@ class PersonalService {
   }
 
   Future<ResponseHandler<bool>> actualizarPersona(Personal personal) async {
-    final url = '$baseUrl/Personal/ActualizarPersona';
+    const url = '${ConfigFile.apiUrl}/Personal/ActualizarPersona';
     log('Actualizando persona: ${jsonEncode(personal.toJson().toString())}');
     try {
       log('Actualizando persona: ${jsonEncode(personal.toJson())}');
@@ -137,7 +136,7 @@ class PersonalService {
   }
 
   Future<ResponseHandler<bool>> eliminarPersona(Personal personal) async {
-    final url = '$baseUrl/Personal/EliminarPersona';
+    const url = '${ConfigFile.apiUrl}/Personal/EliminarPersona';
 
     try {
       log('Eliminando persona: ${jsonEncode(personal.toJson())}');
@@ -178,7 +177,7 @@ class PersonalService {
     int? inGuardia,
     int? inEstado,
   }) async {
-    final url = '$baseUrl/Personal/ListarPersonalEntrenamiento';
+    const url = '${ConfigFile.apiUrl}/Personal/ListarPersonalEntrenamiento';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.numeroDOcumento': numeroDocumento,
@@ -220,7 +219,7 @@ class PersonalService {
     int? pageSize,
     int? pageNumber,
   }) async {
-    final url = '$baseUrl/Personal/ListarPersonalEntrenamientoPaginado';
+    const url = '${ConfigFile.apiUrl}/Personal/ListarPersonalEntrenamientoPaginado';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.numeroDocumento': numeroDocumento,
@@ -268,7 +267,7 @@ class PersonalService {
   Future<ResponseHandler<Uint8List>> obtenerFotoPorCodigoOrigen(
       int idOrigen) async {
     final url =
-        '$baseUrl/Personal/ObtenerPersonalFotoPorCodigoOrigen?idOrigen=$idOrigen';
+        '${ConfigFile.apiUrl}/Personal/ObtenerPersonalFotoPorCodigoOrigen?idOrigen=$idOrigen';
     try {
       final response = await dio.get(
         url,
@@ -303,7 +302,7 @@ class PersonalService {
   }
 
   Future<ResponseHandler<List<Personal>>> listarEntrenadores() async {
-    final url = '$baseUrl/Personal/ListarEntrenadores';
+    const url = '${ConfigFile.apiUrl}/Personal/ListarEntrenadores';
 
     try {
       log('Solicitando lista de entrenadores...');

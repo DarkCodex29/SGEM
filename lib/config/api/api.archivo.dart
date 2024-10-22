@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 
 class ArchivoService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
+
   final Dio dio = Dio();
 
   ArchivoService() {
@@ -30,7 +30,7 @@ class ArchivoService {
     required int inOrigen,
     required int inOrigenKey,
   }) async {
-    final url = '$baseUrl/Archivo/RegistrarArchivo';
+    final url = '${ConfigFile.apiUrl}/Archivo/RegistrarArchivo';
 
     Map<String, dynamic> requestBody = {
       "Key": key,
@@ -71,7 +71,7 @@ class ArchivoService {
     required int idOrigen,
     required int idOrigenKey,
   }) async {
-    final url = '$baseUrl/Archivo/ObtenerArchivosPorOrigen';
+    const url = '${ConfigFile.apiUrl}/Archivo/ObtenerArchivosPorOrigen';
 
     try {
       final response = await dio.get(

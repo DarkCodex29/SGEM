@@ -2,11 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 
 class MaestroDetalleService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
 
   final Dio dio = Dio();
 
@@ -26,7 +25,7 @@ class MaestroDetalleService {
     String? nombre,
     String? descripcion,
   }) async {
-    final url = '$baseUrl/MaestroDetalle/ListarMaestrosDetalle';
+    const url = '${ConfigFile.apiUrl}/MaestroDetalle/ListarMaestrosDetalle';
     Map<String, dynamic> queryParams = {
       'parametros.nombre': nombre,
       'parametros.descripcion': descripcion,
@@ -61,7 +60,7 @@ class MaestroDetalleService {
 
   Future<ResponseHandler<bool>> registrarMaestroDetalle(
       MaestroDetalle data) async {
-    final url = '$baseUrl/MaestroDetalle/RegistrarMaestroDetalle';
+    const url = '${ConfigFile.apiUrl}/MaestroDetalle/RegistrarMaestroDetalle';
 
     try {
       final response = await dio.post(
@@ -95,7 +94,7 @@ class MaestroDetalleService {
 
   Future<ResponseHandler<bool>> actualizarMaestroDetalle(
       MaestroDetalle data) async {
-    final url = '$baseUrl/MaestroDetalle/ActualizarMaestroDetalle';
+    const url = '${ConfigFile.apiUrl}/MaestroDetalle/ActualizarMaestroDetalle';
 
     try {
       final response = await dio.put(
@@ -138,7 +137,7 @@ class MaestroDetalleService {
 
   Future<ResponseHandler<MaestroDetalle>> obtenerMaestroDetallePorId(
       String id) async {
-    final url = '$baseUrl/MaestroDetalle/obtenerMaestroDetallePorId?id=$id';
+    final url = '${ConfigFile.apiUrl}/MaestroDetalle/obtenerMaestroDetallePorId?id=$id';
 
     try {
       final response = await dio.get(
@@ -164,7 +163,7 @@ class MaestroDetalleService {
 
   Future<ResponseHandler<List<MaestroDetalle>>> listarMaestroDetallePorMaestro(int maestroKey) async {
     final url =
-        '$baseUrl/MaestroDetalle/ListarMaestroDetallePorMaestro?id=$maestroKey';
+        '${ConfigFile.apiUrl}/MaestroDetalle/ListarMaestroDetallePorMaestro?id=$maestroKey';
 
     try {
       final response = await dio.get(

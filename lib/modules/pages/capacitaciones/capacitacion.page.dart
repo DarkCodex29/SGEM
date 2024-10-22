@@ -10,7 +10,7 @@ import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/modules/personal.dart';
 import '../../../shared/widgets/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
-import 'nueva capacitación/nueva.capacitacion.page.dart';
+import 'nueva.capacitacion/nueva.capacitacion.page.dart';
 
 class CapacitacionPage extends StatelessWidget {
   CapacitacionPage({super.key, required this.onCancel});

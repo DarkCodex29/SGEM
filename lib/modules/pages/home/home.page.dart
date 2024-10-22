@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/administration/administracion.page.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.page.dart';
 import 'package:sgem/modules/pages/trainings/trainings.page.dart';
@@ -55,7 +56,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
 
       } ,),
        TrainingsPage(),
-      const Center(child: Text("Administración")),
+      AdministracionPage(),
     ];
 
     return Scaffold(

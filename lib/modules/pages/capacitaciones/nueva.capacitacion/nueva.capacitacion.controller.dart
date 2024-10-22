@@ -24,9 +24,9 @@ class NuevaCapacitacionController extends GetxController {
   final TextEditingController notaTeoriaController = TextEditingController();
   final TextEditingController notaPracticaController = TextEditingController();
   final TextEditingController guardiaController = TextEditingController();
-  
+
   // Variables de selección
-  RxBool isInternoSelected = true.obs; 
+  RxBool isInternoSelected = true.obs;
   RxnString categoriaSeleccionada = RxnString();
   RxnString empresaSeleccionada = RxnString();
   RxnString entrenadorSeleccionado = RxnString();

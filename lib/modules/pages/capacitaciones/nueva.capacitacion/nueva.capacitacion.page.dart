@@ -1,17 +1,9 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-<<<<<<< HEAD:lib/modules/pages/capacitaciones/nueva capacitación/nueva.capacitacion.page.dart
-import 'package:sgem/modules/pages/capacitaciones/nueva capacitación/nueva.capacitacion.controller.dart';
-=======
-
-import 'package:sgem/shared/widgets/custom.textfield.dart';
->>>>>>> dfe5ee2fb3b108e54908170d81d45f1fa4b5d741:lib/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.page.dart
+import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
-
-import 'nueva.capacitacion.controller.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
   final NuevaCapacitacionController controller =
@@ -27,13 +19,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-<<<<<<< HEAD:lib/modules/pages/capacitaciones/nueva capacitación/nueva.capacitacion.page.dart
             _buildSelectorDeTipo(),
-=======
-            _buildSeccionBusqueda(controller),
-            const SizedBox(height: 20),
-            _buildHeader(controller),
->>>>>>> dfe5ee2fb3b108e54908170d81d45f1fa4b5d741:lib/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.page.dart
             const SizedBox(height: 20),
             Obx(() => controller.isInternoSelected.value
                 ? _buildFormularioInterno()
@@ -47,32 +33,6 @@ class NuevaCapacitacionPage extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-  Widget _buildSeccionBusqueda(NuevaCapacitacionController controller) {
-    return Row(
-      children: [
-        Expanded(
-          child: Obx(() {
-            return CustomDropdown(
-              hintText: 'Selecciona Tipo',
-              options: const ['Personal Interno', 'Persona Externa'],
-              selectedValue: controller.tipoSeleccionado.value,
-              onChanged: (value) {
-                controller.tipoSeleccionado.value = value!;
-              },
-            );
-          }),
-        ), const SizedBox(width: 20),
-        Expanded(
-          child: CustomTextField(
-            label: "Código MCP",
-            controller: controller.codigoMcpController,
-          ),
-        ),
-        const SizedBox(width: 20),
-
-      ],
     );
   }
 

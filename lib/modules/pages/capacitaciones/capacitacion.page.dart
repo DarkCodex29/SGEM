@@ -588,7 +588,7 @@ class CapacitacionPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             //controller.showNewPersonal();
-            Get.to(() => const NuevaCapacitacionPage());
+            Get.to(() => NuevaCapacitacionPage());
           },
           icon: const Icon(Icons.add,
               size: 18, color: AppTheme.primaryBackground),
@@ -754,7 +754,10 @@ class CapacitacionPage extends StatelessWidget {
           flex: 1,
           child: Text(
             'Guardia',
-            style: TextStyle(fontWeight: FontWeight.bold,),textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
           ),
         ),
         Expanded(

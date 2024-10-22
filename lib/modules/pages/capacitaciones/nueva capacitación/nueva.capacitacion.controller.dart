@@ -164,8 +164,6 @@ class NuevaCapacitacionController extends GetxController {
     log('Archivo $nombreArchivo eliminado');
   }
 
-
-
   @override
   void onClose() {
     codigoMcpController.dispose();

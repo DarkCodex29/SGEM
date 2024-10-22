@@ -179,32 +179,40 @@ class NuevaCapacitacionPage extends StatelessWidget {
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Datos del Personal',
+          const Text('Datos de la persona externa',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          SizedBox(
-            width: 200,
-            child: CustomTextField(
-              label: "Código MCP",
-              controller: controller.dniController,
-              icon: const Icon(Icons.search),
-              onIconPressed: () {},
-            ),
+          CustomTextField(
+            label: "DNI",
+            controller: controller.dniController,
+            icon: const Icon(Icons.search),
+            onIconPressed: () {},
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              CustomTextField(
-                  label: "Nombres", controller: controller.nombresController),
-              const SizedBox(height: 12),
-              CustomTextField(
+              Flexible(
+                child: CustomTextField(
+                  label: "Nombres",
+                  controller: controller.nombresController,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Flexible(
+                child: CustomTextField(
                   label: "Apellido Paterno",
-                  controller: controller.apellidoPaternoController),
-              const SizedBox(height: 12),
-              CustomTextField(
+                  controller: controller.apellidoPaternoController,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Flexible(
+                child: CustomTextField(
                   label: "Apellido Materno",
-                  controller: controller.apellidoMaternoController),
+                  controller: controller.apellidoMaternoController,
+                ),
+              ),
             ],
           )
         ],

@@ -1,36 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sgem/modules/pages/administracion/administracion.enum.dart';
 
 import '../../../config/theme/app_theme.dart';
+import 'administracion.controller.dart';
+import 'maestro/maestro.page.dart';
 
 class AdministracionPage extends StatelessWidget {
   const AdministracionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    AdministracionController controller = Get.put(AdministracionController());
     return Scaffold(
-      body: _buildAdministracion(context),
       appBar: AppBar(
-        title: const Text(
-          'Administración',
-          style: TextStyle(
-            color: AppTheme.backgroundBlue,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Obx(
+          () {
+            return Text(
+              controller.screenPage.value.descripcion(),
+              style: const TextStyle(
+                color: AppTheme.backgroundBlue,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
         ),
         backgroundColor: AppTheme.primaryBackground,
       ),
+      body: Obx(() {
+        //Cambia la pantalla segun la seleccion 
+        switch (controller.screenPage.value) {
+          case AdministracionScreen.none:
+            return _buildAdministracion(context, controller);
+          case AdministracionScreen.maestro:
+            return MaestroPage();
+        }
+      }),
     );
   }
 
-  Widget _buildAdministracion(BuildContext context) {
+  Widget _buildAdministracion(
+      BuildContext context, AdministracionController controller) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              _buildSeccionMantenimientos(context),
+              _buildSeccionMantenimientos(context, controller),
               const SizedBox(
                 height: 20,
               ),
@@ -47,8 +65,7 @@ class AdministracionPage extends StatelessWidget {
   }
 
   Widget _buildSeccionMantenimientos(
-    BuildContext context,
-  ) {
+      BuildContext context, AdministracionController controller) {
     return ExpansionTile(
       initiallyExpanded: true,
       shape: RoundedRectangleBorder(
@@ -73,7 +90,7 @@ class AdministracionPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              _buildSeccionMantenimientoPrimeraFila(),
+              _buildSeccionMantenimientoPrimeraFila(controller),
               const SizedBox(
                 height: 20,
               ),
@@ -86,11 +103,12 @@ class AdministracionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionMantenimientoPrimeraFila() {
+  Widget _buildSeccionMantenimientoPrimeraFila(
+      AdministracionController controller) {
     return Row(
       children: [
         Expanded(
-          child: _buildMantenimientoBotonMaestro(),
+          child: _buildMantenimientoBotonMaestro(controller),
         ),
         const SizedBox(
           width: 20,
@@ -108,9 +126,10 @@ class AdministracionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMantenimientoBotonMaestro() {
+  Widget _buildMantenimientoBotonMaestro(AdministracionController controller) {
     return ElevatedButton.icon(
       onPressed: () async {
+        controller.showMantenimientoMaestro();
         // controller.clearFields();
         // await controller.buscarActualizacionMasiva();
         // controller.isExpanded.value = false;
@@ -241,8 +260,8 @@ class AdministracionPage extends StatelessWidget {
   }
 
   Widget _buildSeccionSeguridad(
-      BuildContext context,
-      ) {
+    BuildContext context,
+  ) {
     return ExpansionTile(
       initiallyExpanded: true,
       shape: RoundedRectangleBorder(
@@ -268,11 +287,6 @@ class AdministracionPage extends StatelessWidget {
           child: Column(
             children: [
               _buildSeccionSeguridadPrimeraFila(),
-              const SizedBox(
-                height: 20,
-              ),
-              //_buildSeccionMantenimientoSegundaFila(),
-              // _buildBotonesAccion(controller)
             ],
           ),
         ),
@@ -328,6 +342,7 @@ class AdministracionPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSeguridadBotonUsuarios() {
     return ElevatedButton.icon(
       onPressed: () async {
@@ -354,6 +369,7 @@ class AdministracionPage extends StatelessWidget {
       ),
     );
   }
+
   Widget _buildSeguridadBotonHistorialModificaciones() {
     return ElevatedButton.icon(
       onPressed: () async {

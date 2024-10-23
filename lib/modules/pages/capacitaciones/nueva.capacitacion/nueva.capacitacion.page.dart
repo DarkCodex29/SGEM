@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
@@ -232,12 +233,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CustomDropdown(
-                    hintText: "Categoría",
-                    options: controller.categoriaOpciones,
-                    onChanged: (value) {
-                      controller.categoriaSeleccionada.value = value;
-                    }),
+                child: _buildDropdownCategoria(controller),
               ),
               const SizedBox(width: 20),
               Expanded(
@@ -304,6 +300,49 @@ class NuevaCapacitacionPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildDropdownCategoria(NuevaCapacitacionController controller) {
+    return Obx(() {
+      if (controller.isLoadingCategoria.value) {
+        return const Center(
+          child: SizedBox(
+            height: 50,
+            width: 50,
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+
+      if (controller.categoriaOpciones.isEmpty) {
+        return const Center(
+          child: Text(
+            'No se encontraron categorias',
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+        );
+      }
+      List<MaestroDetalle> options = controller.categoriaOpciones;
+      return CustomDropdown(
+        hintText: 'Categoria',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedCategoriaKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedCategoriaKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedCategoriaKey.value = selectedOption.key;
+          log('Guardia seleccionada - Key del Maestro: ${controller.selectedCategoriaKey.value}, Valor: $value');
+        },
+      );
+    });
   }
 
   Widget _buildArchivosAdjuntos() {

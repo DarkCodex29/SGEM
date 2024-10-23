@@ -1,7 +1,8 @@
 class ConfigFile {
   //static const String apiUrl =  'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
-  static const String apiUrl =  'http://localhost:80/api';
-  //static const String apiUrl =  'http://localhost:88/api';
+  //static const String apiUrl =  'http://localhost:80/api';
+  static const String apiUrl = 'http://localhost:88/api';
+
   static const String apiUsername = "perucopper.local\\svcsyd01";
   static const String apiPassword = "Syst3md3v3l@p";
   static const String ambienteDesarrollo = "dev - ";

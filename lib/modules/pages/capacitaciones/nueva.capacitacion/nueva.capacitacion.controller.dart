@@ -7,8 +7,10 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
+import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class NuevaCapacitacionController extends GetxController {
@@ -48,7 +50,6 @@ class NuevaCapacitacionController extends GetxController {
   final CapacitacionService capacitacionService = CapacitacionService();
 
   // Listas de opciones
-  var categoriaOpciones = ['Seguridad', 'Salud', 'Tecnología'].obs;
   var empresaOpciones = ['Empresa A', 'Empresa B', 'Empresa C'].obs;
   var entrenadorOpciones = ['Entrenador 1', 'Entrenador 2', 'Entrenador 3'].obs;
   var nombreCapacitacion = ['Nombre 1', 'Nombre 2', 'Nombre 3'].obs;
@@ -56,6 +57,41 @@ class NuevaCapacitacionController extends GetxController {
   // Función para alternar entre Personal Interno y Externo
   void seleccionarInterno() => isInternoSelected.value = true;
   void seleccionarExterno() => isInternoSelected.value = false;
+
+
+  final maestroDetalleService = MaestroDetalleService();
+
+  RxBool isLoadingCategoria = false.obs;
+
+  var selectedCategoriaKey = RxnInt();
+
+  RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
+  
+  @override
+  void onInit() {
+    cargarCategoria();
+    super.onInit();
+  }
+
+  Future<void> cargarCategoria() async {
+    isLoadingCategoria.value = true;
+    try {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(9);
+
+      if (response.success && response.data != null) {
+        categoriaOpciones.assignAll(response.data!);
+
+        log('Capacitacion opciones cargadas correctamente: $categoriaOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de capacitaciones maestro: $e');
+    } finally {
+      isLoadingCategoria.value = false;
+    }
+  }
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {

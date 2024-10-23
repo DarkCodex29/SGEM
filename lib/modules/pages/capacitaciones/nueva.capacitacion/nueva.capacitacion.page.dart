@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
@@ -13,9 +14,6 @@ class NuevaCapacitacionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Nueva Capacitación"),
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -48,11 +46,15 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   color: controller.isInternoSelected.value
-                      ? Colors.blue
+                      ? AppTheme.backgroundBlue
                       : Colors.grey[200],
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Center(child: Text("Personal Interno")),
+                child: const Center(
+                    child: Text(
+                  "Personal Interno",
+                  style: TextStyle(color: Colors.white),
+                )),
               )),
         ),
         const SizedBox(width: 12),
@@ -64,10 +66,12 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: controller.isInternoSelected.value
                       ? Colors.grey[200]
-                      : Colors.blue,
+                      : AppTheme.backgroundBlue,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Center(child: Text("Persona Externa")),
+                child: const Center(
+                    child: Text("Persona Externa",
+                        style: TextStyle(color: Colors.white))),
               )),
         ),
       ],

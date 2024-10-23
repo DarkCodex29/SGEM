@@ -138,7 +138,7 @@ class MaestroPage extends StatelessWidget {
             ? 'No se encontraron maestros'
             : 'Maestro',
         // options: options.map((option) => option.valor!).toList(),
-        options: [],
+        options: const [],
         selectedValue: controller.selectedMaestroKey.value != null
             ? options
                 .firstWhere((option) =>
@@ -187,7 +187,7 @@ class MaestroPage extends StatelessWidget {
             ? 'No se encontraron estados'
             : 'Estado',
         //options: options.map((option) => option.valor!).toList(),
-        options: [],
+        options: const [],
         selectedValue: controller.selectedEstadoKey.value != null
             ? options
                 .firstWhere((option) =>

@@ -6,9 +6,9 @@ import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
+  NuevaCapacitacionPage({super.key});
   final NuevaCapacitacionController controller =
       Get.put(NuevaCapacitacionController());
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

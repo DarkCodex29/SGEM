@@ -6,7 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sgem/config/api/api.archivo.dart';
+import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class NuevaCapacitacionController extends GetxController {
@@ -42,6 +44,9 @@ class NuevaCapacitacionController extends GetxController {
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
   final ArchivoService archivoService = ArchivoService();
 
+  // capacitacion service
+  final CapacitacionService capacitacionService = CapacitacionService();
+
   // Listas de opciones
   var categoriaOpciones = ['Seguridad', 'Salud', 'Tecnología'].obs;
   var empresaOpciones = ['Empresa A', 'Empresa B', 'Empresa C'].obs;
@@ -64,6 +69,45 @@ class NuevaCapacitacionController extends GetxController {
       }
     } catch (e) {
       log('Error al cargar la foto del personal: $e');
+    }
+  }
+
+  Future<void> registrarCapacitacion(EntrenamientoModulo capacitacion) async {
+    try {
+      final response = await capacitacionService.registrarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación registrada con éxito');
+      } else {
+        log('Error al registrar la capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al registrar la capacitación: $e');
+    }
+  }
+
+  Future<void> actualizarCapacitacion(EntrenamientoModulo capacitacion) async {
+    try {
+      final response = await capacitacionService.actualizarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación actualizada con éxito');
+      } else {
+        log('Error al actualizar la capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al actualizar la capacitación: $e');
+    }
+  }
+
+  Future<void> eliminarCapacitacion(EntrenamientoModulo capacitacion) async {
+    try {
+      final response = await capacitacionService.eliminarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación eliminada con éxito');
+      } else {
+        log('Error al eliminar la capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al eliminar la capacitación: $e');
     }
   }
 

@@ -6,7 +6,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:sgem/config/api/api.archivo.dart';
+import 'package:sgem/config/api/api.capacitacion.dart';
+import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class NuevaCapacitacionController extends GetxController {
@@ -42,8 +46,10 @@ class NuevaCapacitacionController extends GetxController {
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
   final ArchivoService archivoService = ArchivoService();
 
+  // capacitacion service
+  final CapacitacionService capacitacionService = CapacitacionService();
+
   // Listas de opciones
-  var categoriaOpciones = ['Seguridad', 'Salud', 'Tecnología'].obs;
   var empresaOpciones = ['Empresa A', 'Empresa B', 'Empresa C'].obs;
   var entrenadorOpciones = ['Entrenador 1', 'Entrenador 2', 'Entrenador 3'].obs;
   var nombreCapacitacion = ['Nombre 1', 'Nombre 2', 'Nombre 3'].obs;
@@ -51,6 +57,41 @@ class NuevaCapacitacionController extends GetxController {
   // Función para alternar entre Personal Interno y Externo
   void seleccionarInterno() => isInternoSelected.value = true;
   void seleccionarExterno() => isInternoSelected.value = false;
+
+
+  final maestroDetalleService = MaestroDetalleService();
+
+  RxBool isLoadingCategoria = false.obs;
+
+  var selectedCategoriaKey = RxnInt();
+
+  RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
+  
+  @override
+  void onInit() {
+    cargarCategoria();
+    super.onInit();
+  }
+
+  Future<void> cargarCategoria() async {
+    isLoadingCategoria.value = true;
+    try {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(9);
+
+      if (response.success && response.data != null) {
+        categoriaOpciones.assignAll(response.data!);
+
+        log('Capacitacion opciones cargadas correctamente: $categoriaOpciones');
+      } else {
+        log('Error: ${response.message}');
+      }
+    } catch (e) {
+      log('Error cargando la data de capacitaciones maestro: $e');
+    } finally {
+      isLoadingCategoria.value = false;
+    }
+  }
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
@@ -64,6 +105,45 @@ class NuevaCapacitacionController extends GetxController {
       }
     } catch (e) {
       log('Error al cargar la foto del personal: $e');
+    }
+  }
+
+  Future<void> registrarCapacitacion(EntrenamientoModulo capacitacion) async {
+    try {
+      final response = await capacitacionService.registrarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación registrada con éxito');
+      } else {
+        log('Error al registrar la capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al registrar la capacitación: $e');
+    }
+  }
+
+  Future<void> actualizarCapacitacion(EntrenamientoModulo capacitacion) async {
+    try {
+      final response = await capacitacionService.actualizarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación actualizada con éxito');
+      } else {
+        log('Error al actualizar la capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al actualizar la capacitación: $e');
+    }
+  }
+
+  Future<void> eliminarCapacitacion(EntrenamientoModulo capacitacion) async {
+    try {
+      final response = await capacitacionService.eliminarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación eliminada con éxito');
+      } else {
+        log('Error al eliminar la capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al eliminar la capacitación: $e');
     }
   }
 

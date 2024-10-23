@@ -188,7 +188,7 @@ class TrainingService {
     int? pageSize,
     int? pageNumber,
   }) async {
-    final url = '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoConsultarPaginado';
+    const url = '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoConsultarPaginado';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.inEquipo': inEquipo,

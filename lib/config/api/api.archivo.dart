@@ -30,7 +30,7 @@ class ArchivoService {
     required int inOrigen,
     required int inOrigenKey,
   }) async {
-    final url = '${ConfigFile.apiUrl}/Archivo/RegistrarArchivo';
+    const url = '${ConfigFile.apiUrl}/Archivo/RegistrarArchivo';
 
     Map<String, dynamic> requestBody = {
       "Key": key,

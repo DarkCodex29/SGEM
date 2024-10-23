@@ -55,7 +55,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       const Center(child: Text("Búsqueda de Monitoreos")),
       CapacitacionPage(onCancel: () {}),
       TrainingsPage(),
-      AdministracionPage(),
+      const AdministracionPage(),
     ];
 
     return Scaffold(

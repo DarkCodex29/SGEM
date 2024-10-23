@@ -380,7 +380,6 @@ class CapacitacionController extends GetxController {
   void showNuevaCapacitacion() {
     screenPage.value = CapacitacionScreen.nuevaCapacitacion;
   }
-
   void clearFields() {
     codigoMcpController.clear();
     numeroDocumentoController.clear();

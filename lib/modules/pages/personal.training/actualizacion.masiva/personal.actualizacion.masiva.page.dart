@@ -158,16 +158,14 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
           width: 20,
         ),
         const Expanded(
-          flex:
-              1, // El espacio estará vacío para que ocupe el espacio disponible
+          flex: 1,
           child: SizedBox.shrink(),
         ),
         const SizedBox(
           width: 20,
         ),
         const Expanded(
-          flex:
-              1, // El espacio estará vacío para que ocupe el espacio disponible
+          flex: 1,
           child: SizedBox.shrink(),
         ),
       ],
@@ -390,27 +388,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
           "Entrenamientos",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        /*
-        ElevatedButton.icon(
-          onPressed: () async {
-           // await controller.downloadExcel();
-          },
-          icon: const Icon(Icons.download,
-              size: 18, color: AppTheme.primaryColor),
-          label: const Text(
-            "Descargar Excel",
-            style: TextStyle(fontSize: 16, color: AppTheme.primaryColor),
-          ),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: const BorderSide(color: AppTheme.primaryColor),
-            ),
-          ),
-        ),
-         */
       ],
     );
   }

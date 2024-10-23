@@ -13,4 +13,10 @@ class MaestroController extends GetxController {
 
   var maestroOpciones = [].obs;
   var estadoOpciones = [].obs;
+  var maestroResultado = [].obs;
+
+  var rowsPerPage = 10.obs;
+  var currentPage = 1.obs;
+  var totalPages = 1.obs;
+  var totalRecords = 0.obs;
 }

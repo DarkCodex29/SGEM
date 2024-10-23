@@ -36,7 +36,7 @@ class MaestroPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              //_buildSeccionResultado(controller),
+              _buildSeccionResultado(controller),
               const SizedBox(
                 height: 20,
               ),
@@ -77,7 +77,7 @@ class MaestroPage extends StatelessWidget {
               _buildSeccionConsultaPrimeraFila(controller),
               //_buildSeccionConsultaSegundaFila(controller),
               //_buildSeccionConsultaTerceraFila(context, controller),
-               _buildBotonesAccion(controller)
+              _buildBotonesAccion(controller)
             ],
           ),
         ),
@@ -206,6 +206,7 @@ class MaestroPage extends StatelessWidget {
       );
     });
   }
+
   Widget _buildBotonesAccion(MaestroController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -213,8 +214,8 @@ class MaestroPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () async {
             //controller.clearFields();
-           // await controller.buscarActualizacionMasiva();
-           // controller.isExpanded.value = false;
+            // await controller.buscarActualizacionMasiva();
+            // controller.isExpanded.value = false;
           },
           icon: const Icon(
             Icons.cleaning_services,
@@ -239,7 +240,7 @@ class MaestroPage extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () async {
             //await controller.buscarActualizacionMasiva();
-           // controller.isExpanded.value = false;
+            // controller.isExpanded.value = false;
           },
           icon: const Icon(
             Icons.search,
@@ -263,6 +264,163 @@ class MaestroPage extends StatelessWidget {
     );
   }
 
+  Widget _buildSeccionResultado(MaestroController controller) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildSeccionResultadoBarraSuperior(controller),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildSeccionResultadoTabla(controller),
+          const SizedBox(
+            height: 20,
+          ),
+          //_buildSeccionResultadoTablaPaginado(controller),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeccionResultadoBarraSuperior(MaestroController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Maestros",
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            //controller.showNewPersonal();
+          },
+          icon: const Icon(Icons.add,
+              size: 18, color: AppTheme.primaryBackground),
+          label: const Text(
+            "Nuevo elemento",
+            style: TextStyle(fontSize: 16, color: AppTheme.primaryBackground),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.primaryColor,
+            padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: const BorderSide(color: AppTheme.primaryColor),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  Widget _buildSeccionResultadoTabla(MaestroController controller) {
+    return Obx(
+          () {
+        // if (controller.maestroResultado.isEmpty) {
+        //   return const Center(child: Text("No se encontraron resultados"));
+        // }
+
+        var rowsToShow = controller.maestroResultado
+            .take(controller.rowsPerPage.value)
+            .toList();
+
+        return Column(
+          children: [
+            Container(
+              color: Colors.grey[200],
+              padding: const EdgeInsets.symmetric(
+                vertical: 10.0,
+                horizontal: 16.0,
+              ),
+              child: _buildSeccionResultadoTablaCabezera(),
+            ),
+            SizedBox(
+              height: 500,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: rowsToShow.map((entrenamiento) {
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child:_buildSeccionResultadoTablaData(entrenamiento)
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Widget _buildSeccionResultadoTablaCabezera() {
+    const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
+
+    return const Row(
+      children: [
+        Expanded(flex: 1, child: Text('Código', style: boldTextStyle)),
+        Expanded(
+            flex: 1, child: Text('Maestro', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Valor', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Usuario registro', style: boldTextStyle)),
+        Expanded(
+            flex: 1, child: Text('Fecha registro', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Estado', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Acción', style: boldTextStyle)),
+      ],
+    );
+  }
+  Widget _buildSeccionResultadoTablaData(dynamic data){
+    return  Row(
+      children: [
+        // Expanded(child: Text(data.codigoMcp!)),
+        // Expanded(child: Text(data.nombreCompleto!)),
+        // Expanded(child: Text(data.guardia!.nombre!)),
+        // Expanded(child: Text(data.equipo!.nombre!)),
+        // Expanded(child: Text(data.modulo!.nombre!)),
+        // Expanded(
+        //     child: Text(
+        //       data.inNotaPractica.toString(),
+        //       textAlign: TextAlign.center,
+        //     )),
+        // Expanded(
+        //     child: Text(
+        //       data.inNotaTeorica.toString(),
+        //       textAlign: TextAlign.center,
+        //     )),
+        // //Todo: Cambiar por fecha de examen
+        // Expanded(
+        //   child: Text(DateFormat('dd/MM/yyyy')
+        //       .format(entrenamiento.fechaExamen as DateTime)),
+        // ),
+        // Expanded(
+        //     child: Text(
+        //       entrenamiento.inHorasAcumuladas.toString(),
+        //       textAlign: TextAlign.center,
+        //     )),
+        // Expanded(
+        //   child: Text(DateFormat('dd/MM/yyyy')
+        //       .format(entrenamiento.fechaInicio!)),
+        // ),
+        // Expanded(
+        //   child: Text(DateFormat('dd/MM/yyyy')
+        //       .format(entrenamiento.fechaTermino!)),
+        // ),
+        // //Todo: Botones de accion
+        // Expanded(
+        //   child: _buildIconButton(
+        //       Icons.edit, AppTheme.primaryColor, () {
+        //     //controller.showEditPersonal(personal);
+        //   }),
+        // ),
+      ],
+    );
+  }
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(

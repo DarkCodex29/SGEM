@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
+import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
@@ -20,10 +21,38 @@ class CapacitacionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     CapacitacionController controller = Get.put(CapacitacionController());
     return Scaffold(
-      body: _buildCapacitacionPage(
-        controller,
-        context,
+      appBar: AppBar(
+        title: Obx(
+          () {
+            return Text(
+              controller.screenPage.value.descripcion(),
+              style: const TextStyle(
+                color: AppTheme.backgroundBlue,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
+        ),
+        backgroundColor: AppTheme.primaryBackground,
       ),
+      body: Obx(() {
+        switch (controller.screenPage.value) {
+          case CapacitacionScreen.none:
+            return _buildCapacitacionPage(
+              controller,
+              context,
+            );
+          case CapacitacionScreen.nuevaCapacitacion:
+            return NuevaCapacitacionPage();
+          case CapacitacionScreen.editarCapacitacion:
+            return const Placeholder();
+          case CapacitacionScreen.visualizarCapacitacion:
+            return const Placeholder();
+          case CapacitacionScreen.cargaMasivaCapacitacion:
+            return const Placeholder();
+        }
+      }),
     );
   }
 
@@ -587,13 +616,12 @@ class CapacitacionPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () {
-            //controller.showNewPersonal();
-            Get.to(() => NuevaCapacitacionPage());
+            controller.showNuevaCapacitacion();
           },
           icon: const Icon(Icons.add,
               size: 18, color: AppTheme.primaryBackground),
           label: const Text(
-            "Nueva capacitacion",
+            "Nueva Capacitación",
             style: TextStyle(fontSize: 16, color: AppTheme.primaryBackground),
           ),
           style: ElevatedButton.styleFrom(

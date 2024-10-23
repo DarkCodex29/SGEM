@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
@@ -50,6 +51,8 @@ class CapacitacionController extends GetxController {
   final capacitacionService = CapacitacionService();
   RxList<CapacitacionConsulta> capacitacionResultados =
       <CapacitacionConsulta>[].obs;
+
+  var screenPage = CapacitacionScreen.none.obs;
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
@@ -326,7 +329,9 @@ class CapacitacionController extends GetxController {
 
     return 'CAPACITACIONES_MINA_$day$month$year$hour$minute$second.xlsx';
   }
-
+  void showNuevaCapacitacion() {
+    screenPage.value = CapacitacionScreen.nuevaCapacitacion;
+  }
   void clearFields() {
     codigoMcpController.clear();
     numeroDocumentoController.clear();

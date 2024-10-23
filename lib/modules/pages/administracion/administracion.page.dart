@@ -29,12 +29,16 @@ class AdministracionPage extends StatelessWidget {
         backgroundColor: AppTheme.primaryBackground,
       ),
       body: Obx(() {
-        //Cambia la pantalla segun la seleccion 
+        //Cambia la pantalla segun la seleccion
         switch (controller.screenPage.value) {
           case AdministracionScreen.none:
             return _buildAdministracion(context, controller);
           case AdministracionScreen.maestro:
-            return MaestroPage();
+            return MaestroPage(
+              onCancel: () {
+                controller.showAdministracion();
+              },
+            );
         }
       }),
     );

@@ -9,4 +9,7 @@ class AdministracionController extends GetxController{
   void showMantenimientoMaestro() {
     screenPage.value = AdministracionScreen.maestro;
   }
+  void showAdministracion() {
+    screenPage.value = AdministracionScreen.none;
+  }
 }

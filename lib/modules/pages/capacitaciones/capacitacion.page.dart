@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.page.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 
@@ -50,7 +51,9 @@ class CapacitacionPage extends StatelessWidget {
           case CapacitacionScreen.visualizarCapacitacion:
             return const Placeholder();
           case CapacitacionScreen.cargaMasivaCapacitacion:
-            return const Placeholder();
+            return CapacitacionCargaMasivaPage(onCancel: (){
+              controller.showCapacitacionPage();
+            });
         }
       }),
     );
@@ -573,7 +576,7 @@ class CapacitacionPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () {
-            // controller.showActualizacionMasiva();
+            controller.showCargaMasivaCapacitacion();
           },
           icon: const Icon(
             Icons.refresh,

@@ -12,6 +12,7 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 class NuevaCapacitacionController extends GetxController {
   // Controladores de campos de texto
@@ -58,7 +59,6 @@ class NuevaCapacitacionController extends GetxController {
   void seleccionarInterno() => isInternoSelected.value = true;
   void seleccionarExterno() => isInternoSelected.value = false;
 
-
   final maestroDetalleService = MaestroDetalleService();
 
   RxBool isLoadingCategoria = false.obs;
@@ -66,13 +66,60 @@ class NuevaCapacitacionController extends GetxController {
   var selectedCategoriaKey = RxnInt();
 
   RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
-  
+
+  final GenericDropdownController<MaestroDetalle> dropdownController =
+      Get.put(GenericDropdownController<MaestroDetalle>());
+  final GenericDropdownController<Personal> personalDropdownController =
+      Get.put(GenericDropdownController<Personal>());
   @override
   void onInit() {
-    cargarCategoria();
+    //cargarCategoria();
+    cargarDropdowns();
     super.onInit();
   }
 
+  void cargarDropdowns() {
+    dropdownController.loadOptions('guardia', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('categoria', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(9);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('empresaCapacitacion', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(8);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('capacitacion', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(7);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+    
+    personalDropdownController.loadOptions('entrenador', () async {
+      var response = await personalService.listarEntrenadores();
+      return response.success && response.data != null
+          ? response.data!
+          : <Personal>[];
+    });
+  }
+
+/*
   Future<void> cargarCategoria() async {
     isLoadingCategoria.value = true;
     try {
@@ -92,7 +139,7 @@ class NuevaCapacitacionController extends GetxController {
       isLoadingCategoria.value = false;
     }
   }
-
+*/
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
       final photoResponse =

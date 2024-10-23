@@ -8,7 +8,7 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class EntrenamientoNuevoModal extends StatelessWidget {

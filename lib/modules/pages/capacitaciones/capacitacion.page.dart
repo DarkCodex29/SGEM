@@ -1,15 +1,11 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
-
 import '../../../config/theme/app_theme.dart';
-import '../../../shared/modules/maestro.detail.dart';
-import '../../../shared/modules/personal.dart';
-import '../../../shared/widgets/custom.dropdown.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
 
@@ -165,8 +161,12 @@ class CapacitacionPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownGuardia(controller),
-        ),
+            child: CustomDropdown(
+          dropdownKey: 'guardia',
+          hintText: 'Selecciona guardia',
+          noDataHintText: 'No se encontraron guardias',
+          controller: controller.dropdownController,
+        )),
       ],
     );
   }
@@ -207,19 +207,34 @@ class CapacitacionPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: _buildDropdownNombreCapacitacion(controller),
+          child: CustomDropdown(
+            dropdownKey: 'capacitacion',
+            hintText: 'Selecciona capacitación',
+            noDataHintText: 'No se encontraron capacitaciones',
+            controller: controller.dropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownCategoria(controller),
+          child: CustomDropdown(
+            dropdownKey: 'categoria',
+            hintText: 'Selecciona categoría',
+            noDataHintText: 'No se encontraron categorías',
+            controller: controller.dropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownEmpresaCapacitacion(controller),
+          child: CustomDropdown(
+            dropdownKey: 'empresaCapacitacion',
+            hintText: 'Selecciona empresa de capacitación',
+            noDataHintText: 'No se encontraron empresas',
+            controller: controller.dropdownController,
+          ),
         ),
       ],
     );
@@ -231,7 +246,12 @@ class CapacitacionPage extends StatelessWidget {
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: _buildDropdownEntrenador(controller),
+          child: CustomDropdown(
+            dropdownKey: 'entrenador',
+            hintText: 'Selecciona entrenador',
+            noDataHintText: 'No se encontraron entrenadores',
+            controller: controller.personalDropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
@@ -258,31 +278,18 @@ class CapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDropdownGuardia(CapacitacionController controller) {
+/*
+  Widget _buildDropdownGuardia(PersonalSearch Controller controller) {
     return Obx(() {
-      if (controller.isLoadingGuardia.value) {
-        return const Center(
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-      if (controller.guardiaOpciones.isEmpty) {
-        return const Center(
-          child: Text(
-            'No se encontraron guardias',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        );
-      }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(
+        isLoading: controller.isLoadingGuardia.value,
         hintText: 'Selecciona Guardia',
-        options: options.map((option) => option.valor!).toList(),
+        noDataHintText: 'No se encontraron guardias',
+        options: controller.guardiaOptions.isEmpty
+            ? []
+            : controller.guardiaOptions.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
-            ? options
+            ? controller.guardiaOptions
                 .firstWhere((option) =>
                     option.key == controller.selectedGuardiaKey.value)
                 .valor
@@ -290,11 +297,13 @@ class CapacitacionPage extends StatelessWidget {
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          if (value != null) {
+            final selectedOption = controller.guardiaOptions.firstWhere(
+              (option) => option.valor == value,
+            );
+            controller.selectedGuardiaKey.value = selectedOption.key;
+            log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          }
         },
       );
     });
@@ -473,7 +482,7 @@ class CapacitacionPage extends StatelessWidget {
       );
     });
   }
-
+*/
   Widget _buildBotonesAccion(CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,

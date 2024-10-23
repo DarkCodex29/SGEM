@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:sgem/modules/pages/administracion/maestro/maestro.controller.dart';
 
 import '../../../../config/theme/app_theme.dart';
-import '../../../../shared/widgets/custom.dropdown.dart';
+import '../../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
 
 class MaestroPage extends StatelessWidget {
@@ -121,7 +121,6 @@ class MaestroPage extends StatelessWidget {
           ),
         );
       }
-
       // if (controller.maestroOpciones.isEmpty) {
       //   return const Center(
       //     child: Text(
@@ -133,18 +132,22 @@ class MaestroPage extends StatelessWidget {
       //List<MaestroDetalle> options = controller.guardiaOpciones;
       List options = controller.maestroOpciones;
       return CustomDropdown(
+        dropdownKey: 'maestro',
+        noDataHintText: 'No se encontraron maestros',
         isReadOnly: controller.maestroOpciones.isEmpty ? true : false,
         hintText: controller.maestroOpciones.isEmpty
             ? 'No se encontraron maestros'
             : 'Maestro',
         // options: options.map((option) => option.valor!).toList(),
-        options: const [],
+        staticOptions: const [],
+        /*
         selectedValue: controller.selectedMaestroKey.value != null
             ? options
                 .firstWhere((option) =>
                     option.key == controller.selectedMaestroKey.value)
                 .valor
             : null,
+            */
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
@@ -182,18 +185,22 @@ class MaestroPage extends StatelessWidget {
 
       List options = [];
       return CustomDropdown(
+        dropdownKey: 'estado',
+        noDataHintText: 'No se encontraron estados',
         isReadOnly: controller.estadoOpciones.isEmpty ? true : false,
         hintText: controller.estadoOpciones.isEmpty
             ? 'No se encontraron estados'
             : 'Estado',
         //options: options.map((option) => option.valor!).toList(),
-        options: const [],
+        staticOptions: const [],
+        /*
         selectedValue: controller.selectedEstadoKey.value != null
             ? options
                 .firstWhere((option) =>
                     option.key == controller.selectedEstadoKey.value)
                 .valor
             : null,
+            */
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
@@ -295,7 +302,10 @@ class MaestroPage extends StatelessWidget {
       children: [
         const Text(
           "Maestros",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         ElevatedButton.icon(
           onPressed: () {
@@ -319,9 +329,10 @@ class MaestroPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildSeccionResultadoTabla(MaestroController controller) {
     return Obx(
-          () {
+      () {
         // if (controller.maestroResultado.isEmpty) {
         //   return const Center(child: Text("No se encontraron resultados"));
         // }
@@ -346,9 +357,8 @@ class MaestroPage extends StatelessWidget {
                 child: Column(
                   children: rowsToShow.map((entrenamiento) {
                     return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child:_buildSeccionResultadoTablaData(entrenamiento)
-                    );
+                        padding: const EdgeInsets.all(16.0),
+                        child: _buildSeccionResultadoTablaData(entrenamiento));
                   }).toList(),
                 ),
               ),
@@ -358,25 +368,26 @@ class MaestroPage extends StatelessWidget {
       },
     );
   }
+
   Widget _buildSeccionResultadoTablaCabezera() {
     const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
 
     return const Row(
       children: [
         Expanded(flex: 1, child: Text('Código', style: boldTextStyle)),
-        Expanded(
-            flex: 1, child: Text('Maestro', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Maestro', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Valor', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Usuario registro', style: boldTextStyle)),
         Expanded(
-            flex: 1, child: Text('Fecha registro', style: boldTextStyle)),
+            flex: 1, child: Text('Usuario registro', style: boldTextStyle)),
+        Expanded(flex: 1, child: Text('Fecha registro', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Estado', style: boldTextStyle)),
         Expanded(flex: 1, child: Text('Acción', style: boldTextStyle)),
       ],
     );
   }
-  Widget _buildSeccionResultadoTablaData(dynamic data){
-    return  Row(
+
+  Widget _buildSeccionResultadoTablaData(dynamic data) {
+    return Row(
       children: [
         // Expanded(child: Text(data.codigoMcp!)),
         // Expanded(child: Text(data.nombreCompleto!)),
@@ -421,6 +432,7 @@ class MaestroPage extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(

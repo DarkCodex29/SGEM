@@ -1,13 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../../../config/theme/app_theme.dart';
-import '../../../../shared/modules/maestro.detail.dart';
-import '../../../../shared/modules/modulo.maestro.dart';
-import '../../../../shared/widgets/custom.dropdown.dart';
+import '../../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
 import 'personal.actualizacion.masiva.controller.dart';
 
@@ -112,7 +107,12 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownGuardia(controller),
+          child: CustomDropdown(
+            dropdownKey: 'guardia',
+            hintText: 'Selecciona guardia',
+            noDataHintText: 'No se encontraron guardias',
+            controller: controller.dropdownController,
+          ),
         ),
       ],
     );
@@ -141,7 +141,12 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownEquipo(controller),
+          child: CustomDropdown(
+            dropdownKey: 'equipo',
+            hintText: 'Selecciona equipo',
+            noDataHintText: 'No se encontraron equipos',
+            controller: controller.dropdownController,
+          ),
         ),
       ],
     );
@@ -152,7 +157,12 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: _buildDropdownModulo(controller),
+          child: CustomDropdown(
+            dropdownKey: 'modulo',
+            hintText: 'Selecciona estado de avance',
+            noDataHintText: 'No se encontraron estados de avance',
+            controller: controller.moduloDropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
@@ -229,6 +239,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     );
   }
 
+/*
   Widget _buildDropdownGuardia(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.isLoadingGuardia.value) {
@@ -305,7 +316,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     });
   }
 
-  Widget _buildDropdownModulo(ActualizacionMasivaController controller) {
+  Widget _buildDropdownMohdulo(ActualizacionMasivaController controller) {
     return Obx(() {
       if (controller.moduloOpciones.isEmpty) {
         return const SizedBox(
@@ -337,7 +348,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       );
     });
   }
-
+*/
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(

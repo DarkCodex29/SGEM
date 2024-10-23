@@ -12,7 +12,7 @@ import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 
 class EntrenamientoNuevoController extends GetxController {
   TextEditingController fechaInicioController = TextEditingController();

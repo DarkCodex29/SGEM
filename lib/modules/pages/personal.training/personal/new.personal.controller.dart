@@ -4,12 +4,15 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
+import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
 class NewPersonalController extends GetxController {
@@ -57,6 +60,25 @@ class NewPersonalController extends GetxController {
   RxBool isLoadingDni = false.obs;
   RxBool isSaving = false.obs;
   List<String> errores = [];
+  final GenericDropdownController<MaestroDetalle> dropdownController =
+      Get.put(GenericDropdownController<MaestroDetalle>());
+  final maestroDetalleService = MaestroDetalleService();
+
+  @override
+  void onInit() {
+    super.onInit();
+    cargarDropdowns();
+  }
+
+  void cargarDropdowns() {
+    dropdownController.loadOptions('guardia', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+  }
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {

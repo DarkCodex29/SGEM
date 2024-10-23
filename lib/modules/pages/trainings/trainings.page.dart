@@ -1,14 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/trainings/trainings.controller.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
-
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
-import '../../../shared/widgets/custom.dropdown.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 
 class TrainingsPage extends StatelessWidget {
@@ -97,13 +94,23 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownEquipo(controller),
+          child: CustomDropdown<MaestroDetalle>(
+            dropdownKey: 'equipo',
+            hintText: 'Selecciona equipo',
+            noDataHintText: 'No se encontraron capacitaciones',
+            controller: controller.dropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownModulo(controller),
+          child: CustomDropdown<ModuloMaestro>(
+            dropdownKey: 'modulo',
+            hintText: 'Selecciona modulo',
+            noDataHintText: 'No se encontraron capacitaciones',
+            controller: controller.moduloDropdownController,
+          ),
         ),
       ],
     );
@@ -113,19 +120,34 @@ class TrainingsPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: _buildDropdownGuardia(controller),
+          child: CustomDropdown<MaestroDetalle>(
+            dropdownKey: 'guardia',
+            hintText: 'Selecciona guardia',
+            noDataHintText: 'No se encontraron capacitaciones',
+            controller: controller.dropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownEstadoEntrenamiento(controller),
+          child: CustomDropdown<MaestroDetalle>(
+            dropdownKey: 'estadoEntrenamiento',
+            hintText: 'Selecciona estado de entrenamiento',
+            noDataHintText: 'No se encontraron capacitaciones',
+            controller: controller.dropdownController,
+          ),
         ),
         const SizedBox(
           width: 20,
         ),
         Expanded(
-          child: _buildDropdownCondicion(controller),
+          child: CustomDropdown<MaestroDetalle>(
+            dropdownKey: 'condicion',
+            hintText: 'Selecciona condicion',
+            noDataHintText: 'No se encontraron capacitaciones',
+            controller: controller.dropdownController,
+          ),
         ),
       ],
     );
@@ -158,8 +180,7 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         const Expanded(
-          flex:
-              1, // El espacio estará vacío para que ocupe el espacio disponible
+          flex: 1,
           child: SizedBox.shrink(),
         ),
       ],
@@ -544,7 +565,7 @@ class TrainingsPage extends StatelessWidget {
       ],
     );
   }
-
+/*
   Widget _buildDropdownEquipo(TrainingsController controller) {
     return Obx(() {
       if (controller.equipoOpciones.isEmpty) {
@@ -688,6 +709,7 @@ class TrainingsPage extends StatelessWidget {
           log('Condicion seleccionada - Key del Maestro: ${controller.selectedModuloKey.value}, Valor: $value');
         },
       );
-    });
+    }); 
   }
+  */
 }

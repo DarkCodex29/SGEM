@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
@@ -41,38 +40,52 @@ class NuevaCapacitacionPage extends StatelessWidget {
       children: [
         InkWell(
           onTap: () => controller.seleccionarInterno(),
-          child: Obx(() => Container(
-                width: 150,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: controller.isInternoSelected.value
-                      ? AppTheme.backgroundBlue
-                      : Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Center(
-                    child: Text(
+          child: Obx(
+            () => Container(
+              width: 150,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: controller.isInternoSelected.value
+                    ? AppTheme.backgroundBlue
+                    : Colors.grey[200],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
                   "Personal Interno",
-                  style: TextStyle(color: Colors.white),
-                )),
-              )),
+                  style: TextStyle(
+                      color: controller.isInternoSelected.value
+                          ? Colors.white
+                          : Colors.black54),
+                ),
+              ),
+            ),
+          ),
         ),
         const SizedBox(width: 12),
         InkWell(
           onTap: () => controller.seleccionarExterno(),
-          child: Obx(() => Container(
-                width: 150,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                decoration: BoxDecoration(
-                  color: controller.isInternoSelected.value
-                      ? Colors.grey[200]
-                      : AppTheme.backgroundBlue,
-                  borderRadius: BorderRadius.circular(8),
+          child: Obx(
+            () => Container(
+              width: 150,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              decoration: BoxDecoration(
+                color: controller.isInternoSelected.value
+                    ? Colors.grey[200]
+                    : AppTheme.backgroundBlue,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Text(
+                  "Persona Externa",
+                  style: TextStyle(
+                      color: controller.isInternoSelected.value
+                          ? Colors.black54
+                          : Colors.white),
                 ),
-                child: const Center(
-                    child: Text("Persona Externa",
-                        style: TextStyle(color: Colors.white))),
-              )),
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -89,31 +102,35 @@ class NuevaCapacitacionPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Obx(() {
-            if (controller.personalPhoto.value != null &&
-                controller.personalPhoto.value!.isNotEmpty) {
-              try {
-                return CircleAvatar(
-                  backgroundImage: MemoryImage(controller.personalPhoto.value!),
-                  radius: 60,
-                  backgroundColor: Colors.grey,
-                );
-              } catch (e) {
-                log('Error al cargar la imagen: $e');
+          Obx(
+            () {
+              if (controller.personalPhoto.value != null &&
+                  controller.personalPhoto.value!.isNotEmpty) {
+                try {
+                  return CircleAvatar(
+                    backgroundImage:
+                        MemoryImage(controller.personalPhoto.value!),
+                    radius: 60,
+                    backgroundColor: Colors.grey,
+                  );
+                } catch (e) {
+                  log('Error al cargar la imagen: $e');
+                  return const CircleAvatar(
+                    backgroundImage:
+                        AssetImage('assets/images/user_avatar.png'),
+                    radius: 60,
+                    backgroundColor: Colors.grey,
+                  );
+                }
+              } else {
                 return const CircleAvatar(
                   backgroundImage: AssetImage('assets/images/user_avatar.png'),
                   radius: 60,
                   backgroundColor: Colors.grey,
                 );
               }
-            } else {
-              return const CircleAvatar(
-                backgroundImage: AssetImage('assets/images/user_avatar.png'),
-                radius: 60,
-                backgroundColor: Colors.grey,
-              );
-            }
-          }),
+            },
+          ),
           const SizedBox(width: 24),
           Expanded(
             child: Column(
@@ -237,26 +254,31 @@ class NuevaCapacitacionPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildDropdownCategoria(controller),
+                child: CustomDropdown(
+                  dropdownKey: 'categoria',
+                  hintText: 'Selecciona categoría',
+                  noDataHintText: 'No se encontraron categorías',
+                  controller: controller.dropdownController,
+                ),
               ),
               const SizedBox(width: 20),
               Expanded(
-                  child: CustomDropdown(
-                hintText: "Empresa de capacitación",
-                options: controller.empresaOpciones,
-                onChanged: (p0) {
-                  controller.empresaSeleccionada.value = p0;
-                },
-              )),
+                child: CustomDropdown(
+                  dropdownKey: 'empresaCapacitacion',
+                  hintText: 'Selecciona empresa de capacitación',
+                  noDataHintText: 'No se encontraron empresas',
+                  controller: controller.dropdownController,
+                ),
+              ),
               const SizedBox(width: 20),
               Expanded(
-                  child: CustomDropdown(
-                hintText: "Entrenador responsable",
-                options: controller.entrenadorOpciones,
-                onChanged: (value) {
-                  controller.entrenadorSeleccionado.value = value;
-                },
-              )),
+                child: CustomDropdown(
+                  dropdownKey: 'entrenador',
+                  hintText: 'Selecciona entrenador',
+                  noDataHintText: 'No se encontraron entrenadores',
+                  controller: controller.personalDropdownController,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -281,6 +303,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
           const SizedBox(height: 12),
           Row(
             children: [
+              //TODO: Implementar dropdown de nombre de capacitación
+              /* 
               Expanded(
                 child: CustomDropdown(
                     hintText: "Nombre de capacitación",
@@ -288,7 +312,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                     onChanged: (value) {
                       controller.nombreCapacitacionSeleccionada.value = value;
                     }),
-              ),
+              ),*/
               const SizedBox(width: 20),
               Expanded(
                   child: CustomTextField(
@@ -304,49 +328,6 @@ class NuevaCapacitacionPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Widget _buildDropdownCategoria(NuevaCapacitacionController controller) {
-    return Obx(() {
-      if (controller.isLoadingCategoria.value) {
-        return const Center(
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-
-      if (controller.categoriaOpciones.isEmpty) {
-        return const Center(
-          child: Text(
-            'No se encontraron categorias',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        );
-      }
-      List<MaestroDetalle> options = controller.categoriaOpciones;
-      return CustomDropdown(
-        hintText: 'Categoria',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedCategoriaKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedCategoriaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedCategoriaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedCategoriaKey.value}, Valor: $value');
-        },
-      );
-    });
   }
 
   Widget _buildArchivosAdjuntos() {

@@ -7,12 +7,11 @@ import 'package:sgem/modules/pages/personal.training/personal/new.personal.contr
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.page.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/pdf.view.certificado.dart';
 import 'package:sgem/shared/utils/pdf.view.diploma.dart';
 import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
@@ -174,7 +173,12 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.documentoIdentidadController,
                           ),
                           const SizedBox(height: 10),
-                          _buildDropdownGuardia(controller),
+                          CustomDropdown(
+                            dropdownKey: 'guardia',
+                            hintText: 'Selecciona guardia',
+                            noDataHintText: 'No se encontraron guardias',
+                            controller: controller.dropdownController,
+                          ),
                           const SizedBox(height: 10),
                           CustomTextField(
                             label: "Nombres personal",
@@ -186,36 +190,58 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          Obx(() {
-                            String? selectedValue;
-                            if (controller.selectedEstadoKey.value == null) {
-                              selectedValue = null;
-                            } else if (controller.selectedEstadoKey.value ==
-                                95) {
-                              selectedValue = "Activo";
-                            } else if (controller.selectedEstadoKey.value ==
-                                96) {
-                              selectedValue = "Cesado";
-                            } else {
-                              selectedValue = "Todos";
-                            }
+                          CustomDropdown<String>(
+                            dropdownKey: 'estadoDropdown',
+                            hintText: "Estado",
+                            noDataHintText: "No hay datos de estado",
+                            staticOptions: const ["Activo", "Cesado", "Todos"],
+                            isSearchable: false,
+                            isRequired: false,
+                            onChanged: (value) {
+                              if (value == "Activo") {
+                                controller.searchPersonalEstado(95);
+                              } else if (value == "Cesado") {
+                                controller.searchPersonalEstado(96);
+                              } else {
+                                controller.searchPersonalEstado(null);
+                              }
+                            },
+                            controller: null,
+                          ),
+                          /*
+                          Obx(
+                            () {
+                              String? selectedValue;
+                              if (controller.selectedEstadoKey.value == null) {
+                                selectedValue = null;
+                              } else if (controller.selectedEstadoKey.value ==
+                                  95) {
+                                selectedValue = "Activo";
+                              } else if (controller.selectedEstadoKey.value ==
+                                  96) {
+                                selectedValue = "Cesado";
+                              } else {
+                                selectedValue = "Todos";
+                              }
 
-                            return CustomDropdown(
-                              hintText: "Estado",
-                              options: const ["Activo", "Cesado", "Todos"],
-                              selectedValue: selectedValue,
-                              isSearchable: false,
-                              onChanged: (value) {
-                                if (value == "Activo") {
-                                  controller.searchPersonalEstado(95);
-                                } else if (value == "Cesado") {
-                                  controller.searchPersonalEstado(96);
-                                } else {
-                                  controller.searchPersonalEstado(null);
-                                }
-                              },
-                            );
-                          })
+                              return CustomDropdown(
+                                hintText: "Estado",
+                                noDataHintText: 'No hay datos de estado',
+                                options: const ["Activo", "Cesado", "Todos"],
+                                selectedValue: selectedValue,
+                                isSearchable: false,
+                                onChanged: (value) {
+                                  if (value == "Activo") {
+                                    controller.searchPersonalEstado(95);
+                                  } else if (value == "Cesado") {
+                                    controller.searchPersonalEstado(96);
+                                  } else {
+                                    controller.searchPersonalEstado(null);
+                                  }
+                                },
+                              );
+                            },
+                          )*/
                         ],
                       )
                     : Row(
@@ -236,8 +262,12 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: _buildDropdownGuardia(controller),
-                          ),
+                              child: CustomDropdown(
+                            dropdownKey: 'guardia',
+                            hintText: 'Selecciona guardia',
+                            noDataHintText: 'No se encontraron guardias',
+                            controller: controller.dropdownController,
+                          )),
                         ],
                       ),
                 const SizedBox(height: 10),
@@ -254,10 +284,13 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown(
+                          CustomDropdown<String>(
+                            dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
-                            options: const ["Activo", "Cesado", "Todos"],
+                            noDataHintText: "No hay datos de estado",
+                            staticOptions: const ["Activo", "Cesado", "Todos"],
                             isSearchable: false,
+                            isRequired: false,
                             onChanged: (value) {
                               if (value == "Activo") {
                                 controller.searchPersonalEstado(95);
@@ -267,6 +300,8 @@ class PersonalSearchPage extends StatelessWidget {
                                 controller.searchPersonalEstado(null);
                               }
                             },
+                            controller:
+                                null, // No es necesario un controlador ya que usamos opciones estáticas
                           ),
                         ],
                       )
@@ -287,10 +322,17 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: CustomDropdown(
+                            child: CustomDropdown<String>(
+                              dropdownKey: 'estadoDropdown',
                               hintText: "Estado",
-                              options: const ["Activo", "Cesado", "Todos"],
+                              noDataHintText: "No hay datos de estado",
+                              staticOptions: const [
+                                "Activo",
+                                "Cesado",
+                                "Todos"
+                              ],
                               isSearchable: false,
+                              isRequired: false,
                               onChanged: (value) {
                                 if (value == "Activo") {
                                   controller.searchPersonalEstado(95);
@@ -300,6 +342,7 @@ class PersonalSearchPage extends StatelessWidget {
                                   controller.searchPersonalEstado(null);
                                 }
                               },
+                              controller: null,
                             ),
                           ),
                         ],
@@ -369,20 +412,18 @@ class PersonalSearchPage extends StatelessWidget {
       );
     });
   }
-
+/*
   Widget _buildDropdownGuardia(PersonalSearchController controller) {
     return Obx(() {
-      if (controller.guardiaOptions.isEmpty) {
-        return const LinearProgressIndicator(
-          backgroundColor: Colors.white,
-        );
-      }
-      List<MaestroDetalle> options = controller.guardiaOptions;
       return CustomDropdown(
+        isLoading: controller.isLoadingGuardia.value,
         hintText: 'Selecciona Guardia',
-        options: options.map((option) => option.valor!).toList(),
+        noDataHintText: 'No se encontraron guardias',
+        options: controller.guardiaOptions.isEmpty
+            ? []
+            : controller.guardiaOptions.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
-            ? options
+            ? controller.guardiaOptions
                 .firstWhere((option) =>
                     option.key == controller.selectedGuardiaKey.value)
                 .valor
@@ -390,15 +431,18 @@ class PersonalSearchPage extends StatelessWidget {
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          if (value != null) {
+            final selectedOption = controller.guardiaOptions.firstWhere(
+              (option) => option.valor == value,
+            );
+            controller.selectedGuardiaKey.value = selectedOption.key;
+            log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+          }
         },
       );
     });
   }
+  */
 
   Widget _buildResultsSection(PersonalSearchController controller,
       bool isSmallScreen, BuildContext context) {

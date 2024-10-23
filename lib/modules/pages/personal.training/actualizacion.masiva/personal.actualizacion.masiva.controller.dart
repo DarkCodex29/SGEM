@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
+import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 import '../../../../config/api/api.maestro.detail.dart';
 import '../../../../config/api/api.modulo.maestro.dart';
@@ -38,17 +39,48 @@ class ActualizacionMasivaController extends GetxController {
 
   RxBool isLoadingGuardia = false.obs;
   final entrenamientoService = TrainingService();
-
+  final GenericDropdownController<MaestroDetalle> dropdownController =
+      Get.put(GenericDropdownController<MaestroDetalle>());
+  final GenericDropdownController<ModuloMaestro> moduloDropdownController =
+      Get.put(GenericDropdownController<ModuloMaestro>());
   @override
   void onInit() {
-    cargarModulo();
-    cargarEquipo();
-    cargarGuardia();
+    cargarDropdowns();
+
+    //cargarModulo();
+    //cargarEquipo();
+    //cargarGuardia();
     buscarActualizacionMasiva(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
 
+  void cargarDropdowns() {
+    dropdownController.loadOptions('guardia', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('equipo', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(5);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    moduloDropdownController.loadOptions('modulo', () async {
+      var response = await moduloMaestroService.listarMaestros();
+      return response.success && response.data != null
+          ? response.data!
+          : <ModuloMaestro>[];
+    });
+  }
+
+/*
   Future<void> cargarModulo() async {
     isLoadingGuardia.value = true;
     try {
@@ -101,7 +133,7 @@ class ActualizacionMasivaController extends GetxController {
       log('Error cargando la data de guardia maestro: $e');
     }
   }
-
+*/
   Future<void> buscarActualizacionMasiva(
       {int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =

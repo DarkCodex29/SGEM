@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'new.personal.controller.dart';
 import 'package:intl/intl.dart';
@@ -336,7 +335,12 @@ class NuevoPersonalPage extends StatelessWidget {
             children: [
               const SizedBox(width: 10),
               Expanded(
-                child: _buildDropdownGuardia(),
+                child: CustomDropdown(
+                  dropdownKey: 'guardia',
+                  hintText: 'Selecciona guardia',
+                  noDataHintText: 'No se encontraron guardias',
+                  controller: controller.dropdownController,
+                ),
               ),
               const SizedBox(width: 10),
               const Expanded(
@@ -514,45 +518,50 @@ class NuevoPersonalPage extends StatelessWidget {
     );
   }
 
-
   void _searchPersonalByDNI() async {
     if (!isEditing && !isViewing) {
       await controller.buscarPersonalPorDni(controller.dniController.text);
     }
   }
 
+/*
   Widget _buildDropdownGuardia() {
     if (!isEditing) {
       controllerPersonalSearch.clearFields();
     }
 
-    return Obx(() {
-      if (controllerPersonalSearch.guardiaOptions.isEmpty) {
-        return const CircularProgressIndicator();
-      }
-      List<MaestroDetalle> options = controllerPersonalSearch.guardiaOptions;
-      return CustomDropdown(
-        hintText: 'Selecciona Guardia',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
-        },
-      );
-    });
+      return Obx(() {
+        return CustomDropdown(
+          isLoading: controller.isLoadingGuardia.value,
+          hintText: 'Selecciona Guardia',
+          noDataHintText: 'No se encontraron guardias',
+          options: controller.guardiaOptions.isEmpty
+              ? []
+              : controller.guardiaOptions
+                  .map((option) => option.valor!)
+                  .toList(),
+          selectedValue: controller.selectedGuardiaKey.value != null
+              ? controller.guardiaOptions
+                  .firstWhere((option) =>
+                      option.key == controller.selectedGuardiaKey.value)
+                  .valor
+              : null,
+          isSearchable: false,
+          isRequired: false,
+          onChanged: (value) {
+            if (value != null) {
+              final selectedOption = controller.guardiaOptions.firstWhere(
+                (option) => option.valor == value,
+              );
+              controller.selectedGuardiaKey.value = selectedOption.key;
+              log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
+            }
+          },
+        );
+      });
+    }
   }
-
+*/
   Future<DateTime?> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,

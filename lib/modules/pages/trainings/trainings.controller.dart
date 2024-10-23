@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:typed_data';
-
 import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +11,7 @@ import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
+import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 import '../../../config/api/api.maestro.detail.dart';
 
@@ -46,16 +46,64 @@ class TrainingsController extends GetxController {
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
 
+  final GenericDropdownController<MaestroDetalle> dropdownController =
+      Get.put(GenericDropdownController<MaestroDetalle>());
+  final GenericDropdownController<ModuloMaestro> moduloDropdownController =
+      Get.put(GenericDropdownController<ModuloMaestro>());
+
   @override
   void onInit() {
+    /*
     cargarModulo();
     cargarEquipo();
     cargarGuardia();
     cargarEstadoEntrenamiento();
     cargarCondicion();
+    */
     buscarEntrenamientos(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
+  }
+
+  void cargarDropdowns() {
+    dropdownController.loadOptions('equipo', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(5);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('guardia', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('estadoEntrenamiento', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(4);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('condicion', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(3);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    moduloDropdownController.loadOptions('modulo', () async {
+      var response = await moduloService.listarMaestros();
+      return response.success && response.data != null
+          ? response.data!
+          : <ModuloMaestro>[];
+    });
   }
 
   Future<void> buscarEntrenamientos(

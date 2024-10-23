@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:typed_data';
-
 import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
 import 'package:sgem/shared/modules/personal.dart';
-
+import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import '../../../config/api/api.maestro.detail.dart';
 import '../../../shared/modules/maestro.detail.dart';
 
@@ -27,7 +26,7 @@ class CapacitacionController extends GetxController {
   DateTime? fechaTermino;
 
   RxBool isExpanded = true.obs;
-  RxBool isLoadingGuardia = false.obs;
+
   RxBool isLoadingCapacitacion = false.obs;
   RxBool isLoadingCategoria = false.obs;
   RxBool isLoadingEmpresaCapacitacion = false.obs;
@@ -58,19 +57,67 @@ class CapacitacionController extends GetxController {
   var currentPage = 1.obs;
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
-
+  final GenericDropdownController<MaestroDetalle> dropdownController =
+      Get.put(GenericDropdownController<MaestroDetalle>());
+  final GenericDropdownController<Personal> personalDropdownController =
+      Get.put(GenericDropdownController<Personal>());
   @override
   void onInit() {
+    cargarDropdowns();
+    /*
     cargarGuardia();
     cargarCapacitacion();
     cargarCategoria();
-    cargarEmpresaCapacitacion();
+    cargarEmpresaCapacitacion();         
     cargarEntrenador();
+*/
     buscarCapacitaciones(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
 
+  void cargarDropdowns() {
+    dropdownController.loadOptions('guardia', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('categoria', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(9);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('empresaCapacitacion', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(8);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    dropdownController.loadOptions('capacitacion', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(7);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+
+    personalDropdownController.loadOptions('entrenador', () async {
+      var response = await personalService.listarEntrenadores();
+      return response.success && response.data != null
+          ? response.data!
+          : <Personal>[];
+    });
+  }
+
+/*
   Future<void> cargarGuardia() async {
     isLoadingGuardia.value = true;
     try {
@@ -169,7 +216,7 @@ class CapacitacionController extends GetxController {
       isLoadingEntrenador.value = false;
     }
   }
-
+*/
   Future<void> buscarCapacitaciones(
       {int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =
@@ -327,11 +374,13 @@ class CapacitacionController extends GetxController {
     final minute = now.minute.toString().padLeft(2, '0');
     final second = now.second.toString().padLeft(2, '0');
 
-    return 'CAPACITACIONES_MINA_$day$month$year$hour$minute$second.xlsx';
+    return 'CAPACITACIONES_MINA_$day$month$year$hour$minute$second';
   }
+
   void showNuevaCapacitacion() {
     screenPage.value = CapacitacionScreen.nuevaCapacitacion;
   }
+
   void clearFields() {
     codigoMcpController.clear();
     numeroDocumentoController.clear();

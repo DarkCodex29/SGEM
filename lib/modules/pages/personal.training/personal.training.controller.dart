@@ -9,6 +9,7 @@ import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 enum PersonalSearchScreen {
   none,
@@ -69,9 +70,13 @@ class PersonalSearchController extends GetxController {
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
 
+  var isLoadingGuardia = false.obs;
+  final GenericDropdownController<MaestroDetalle> dropdownController =
+      Get.put(GenericDropdownController<MaestroDetalle>());
+
   @override
   void onInit() {
-    cargarGuardiaOptions();
+    //cargarGuardiaOptions();
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
@@ -90,7 +95,18 @@ class PersonalSearchController extends GetxController {
     }
   }
 
+  void cargarDropdowns() {
+    dropdownController.loadOptions('guardia', () async {
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
+      return response.success && response.data != null
+          ? response.data!
+          : <MaestroDetalle>[];
+    });
+  }
+/*
   Future<void> cargarGuardiaOptions() async {
+    isLoadingGuardia.value = true;
     try {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
@@ -103,8 +119,11 @@ class PersonalSearchController extends GetxController {
       }
     } catch (e) {
       log('Error cargando la data de guardia maestro: $e');
+    } finally {
+      isLoadingGuardia.value = false;
     }
   }
+  */
 
   void searchPersonalEstado(int? estadoKey) {
     selectedEstadoKey.value = estadoKey;

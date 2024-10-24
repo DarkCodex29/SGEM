@@ -60,6 +60,7 @@ class TrainingsController extends GetxController {
     cargarEstadoEntrenamiento();
     cargarCondicion();
     */
+    cargarDropdowns();
     buscarEntrenamientos(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
@@ -253,13 +254,14 @@ class TrainingsController extends GetxController {
     final minute = now.minute.toString().padLeft(2, '0');
     final second = now.second.toString().padLeft(2, '0');
 
-    return 'ENTRENAMIENTOS_MINA_$day$month$year$hour$minute$second.xlsx';
+    return 'ENTRENAMIENTOS_MINA_$day$month$year$hour$minute$second';
   }
 
+/*
   Future<void> cargarEquipo() async {
     try {
-      var response = await maestroDetalleService
-          .listarMaestroDetallePorMaestro(5); //Maestro de Equipos
+      var response =
+          await maestroDetalleService.listarMaestroDetallePorMaestro(5);
 
       if (response.success && response.data != null) {
         equipoOpciones.assignAll(response.data!);
@@ -339,7 +341,7 @@ class TrainingsController extends GetxController {
       log('Error cargando la data de Modulos maestro: $e');
     }
   }
-
+*/
   void clearFields() {
     codigoMcpController.clear();
     selectedEquipoKey.value = null;

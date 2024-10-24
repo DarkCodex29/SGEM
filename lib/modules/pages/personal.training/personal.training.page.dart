@@ -7,6 +7,7 @@ import 'package:sgem/modules/pages/personal.training/personal/new.personal.contr
 import 'package:sgem/modules/pages/personal.training/personal/new.personal.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.page.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/pdf.view.certificado.dart';
 import 'package:sgem/shared/utils/pdf.view.diploma.dart';
@@ -170,7 +171,7 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.documentoIdentidadController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown(
+                          CustomDropdown<MaestroDetalle>(
                             dropdownKey: 'guardia',
                             hintText: 'Selecciona guardia',
                             noDataHintText: 'No se encontraron guardias',
@@ -297,8 +298,7 @@ class PersonalSearchPage extends StatelessWidget {
                                 controller.searchPersonalEstado(null);
                               }
                             },
-                            controller:
-                                null, // No es necesario un controlador ya que usamos opciones estáticas
+                            controller: null,
                           ),
                         ],
                       )

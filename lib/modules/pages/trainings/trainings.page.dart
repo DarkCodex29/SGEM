@@ -97,7 +97,7 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown<MaestroDetalle>(
+          child: CustomDropdown(
             dropdownKey: 'equipo',
             hintText: 'Selecciona equipo',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -108,7 +108,7 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown<ModuloMaestro>(
+          child: CustomDropdown(
             dropdownKey: 'modulo',
             hintText: 'Selecciona modulo',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -123,7 +123,7 @@ class TrainingsPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: CustomDropdown<MaestroDetalle>(
+          child: CustomDropdown(
             dropdownKey: 'guardia',
             hintText: 'Selecciona guardia',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -134,7 +134,7 @@ class TrainingsPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown<MaestroDetalle>(
+          child: CustomDropdown(
             dropdownKey: 'estadoEntrenamiento',
             hintText: 'Selecciona estado de entrenamiento',
             noDataHintText: 'No se encontraron capacitaciones',

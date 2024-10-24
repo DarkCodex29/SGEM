@@ -11,7 +11,6 @@ class MaestroDetalle implements DropdownElement {
   DateTime? fechaModifica;
   String? activo;
 
-   
   @override
   String get value => valor ?? "none";
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
@@ -404,6 +405,21 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
   }
 
   Widget _buildSeccionResultadoTabla(ActualizacionMasivaController controller) {
+    List<String> cabecera = [
+      'Código MCP',
+      'Nombres y Apellidos',
+      'Guardia',
+      'Equipo',
+      'Estado de avance',
+      'Nota práctica',
+      'Nota teórica',
+      'Fecha de examen',
+      'Horas de entrenamiento acumuladas',
+      'Fecha de inicio',
+      'Fecha de término',
+      'Acciones'
+    ];
+
     return Obx(
       () {
         if (controller.entrenamientoResultados.isEmpty) {
@@ -416,100 +432,72 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
 
         return Column(
           children: [
-            Container(
-              color: Colors.grey[200],
-              padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 16.0,
-              ),
-              child: _buildSeccionResultadoTablaCabezera(),
-            ),
-            SizedBox(
-              height: 500,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: rowsToShow.map((entrenamiento) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(entrenamiento.codigoMcp!)),
-                          Expanded(child: Text(entrenamiento.nombreCompleto!)),
-                          Expanded(child: Text(entrenamiento.guardia!.nombre!)),
-                          Expanded(child: Text(entrenamiento.equipo!.nombre!)),
-                          Expanded(child: Text(entrenamiento.modulo!.nombre!)),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.inNotaPractica.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.inNotaTeorica.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          //Todo: Cambiar por fecha de examen
-                          Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaExamen as DateTime)),
-                          ),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.inHorasAcumuladas.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaInicio!)),
-                          ),
-                          Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaTermino!)),
-                          ),
-                          //Todo: Botones de accion
-                          Expanded(
-                            child: _buildIconButton(
-                                Icons.edit, AppTheme.primaryColor, () {
-                              //controller.showEditPersonal(personal);
-                            }),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
+            DynamicTableCabecera(cabecera: cabecera),
+            _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
       },
     );
   }
 
-  Widget _buildSeccionResultadoTablaCabezera() {
+  Widget _buildSeccionResultadoTablaData(List<dynamic> data, ActualizacionMasivaController controller) {
     const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
 
-    return const Row(
-      children: [
-        Expanded(flex: 1, child: Text('Código MCP', style: boldTextStyle)),
-        Expanded(
-            flex: 1, child: Text('Nombres y Apellidos', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Guardia', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Equipo', style: boldTextStyle)),
-        Expanded(
-            flex: 1, child: Text('Estado de avance', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Nota práctica', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Nota teórica', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Fecha de examen', style: boldTextStyle)),
-        Expanded(
-            flex: 1,
-            child: Text('Horas de entrenamiento acumuladas',
-                style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Fecha de inicio', style: boldTextStyle)),
-        Expanded(
-            flex: 1, child: Text('Fecha de término', style: boldTextStyle)),
-        Expanded(flex: 1, child: Text('Acciones', style: boldTextStyle)),
-      ],
+    return SizedBox(
+      height: 500,
+      child: SingleChildScrollView(
+        child: Column(
+          children: data.map((fila) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(child: Text(fila.codigoMcp!)),
+                  Expanded(child: Text(fila.nombreCompleto!)),
+                  Expanded(child: Text(fila.guardia!.nombre!)),
+                  Expanded(child: Text(fila.equipo!.nombre!)),
+                  Expanded(child: Text(fila.modulo!.nombre!)),
+                  Expanded(
+                      child: Text(
+                        fila.inNotaPractica.toString(),
+                        textAlign: TextAlign.center,
+                      )),
+                  Expanded(
+                      child: Text(
+                        fila.inNotaTeorica.toString(),
+                        textAlign: TextAlign.center,
+                      )),
+                  //Todo: Cambiar por fecha de examen
+                  Expanded(
+                    child: Text(DateFormat('dd/MM/yyyy')
+                        .format(fila.fechaExamen as DateTime)),
+                  ),
+                  Expanded(
+                      child: Text(
+                        fila.inHorasAcumuladas.toString(),
+                        textAlign: TextAlign.center,
+                      )),
+                  Expanded(
+                    child: Text(DateFormat('dd/MM/yyyy')
+                        .format(fila.fechaInicio!)),
+                  ),
+                  Expanded(
+                    child: Text(DateFormat('dd/MM/yyyy')
+                        .format(fila.fechaTermino!)),
+                  ),
+                  //Todo: Botones de accion
+                  Expanded(
+                    child: _buildIconButton(
+                        Icons.edit, AppTheme.primaryColor, () {
+                      //controller.showEditPersonal(personal);
+                    }),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 

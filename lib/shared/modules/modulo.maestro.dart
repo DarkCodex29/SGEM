@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+
 List<ModuloMaestro> moduloMaestroFromJson(String str) =>
     List<ModuloMaestro>.from(
         json.decode(str).map((x) => ModuloMaestro.fromJson(x)));
@@ -7,8 +9,8 @@ List<ModuloMaestro> moduloMaestroFromJson(String str) =>
 String moduloMaestroToJson(List<ModuloMaestro> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class ModuloMaestro {
-  int? key;
+class ModuloMaestro implements DropdownElement {
+  int key;
   String? modulo;
   int? inHoras;
   int? inNotaMinima;
@@ -18,8 +20,14 @@ class ModuloMaestro {
   DateTime? fechaModificacion;
   int? orden;
 
+  @override
+  String get value => modulo ?? "none";
+
+  @override
+  int get id => key;
+
   ModuloMaestro({
-    this.key,
+    required this.key,
     this.modulo,
     this.inHoras,
     this.inNotaMinima,

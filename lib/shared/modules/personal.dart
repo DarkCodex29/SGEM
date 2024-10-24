@@ -1,4 +1,6 @@
-class Personal {
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+
+class Personal implements DropdownElement {
   int key;
   String tipoPersona;
   int inPersonalOrigen;
@@ -27,6 +29,11 @@ class Personal {
   DateTime? licenciaVencimiento;
   String gerencia;
   String area;
+
+  @override
+  String get value => nombreCompleto;
+  @override
+  int get id => key;
 
   Personal({
     required this.key,

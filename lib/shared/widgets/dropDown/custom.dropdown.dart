@@ -37,10 +37,8 @@ class CustomDropdown<T> extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Verificar si el controlador no es nulo y usar Obx para observar los cambios
                 if (controller != null)
                   Obx(() {
-                    // Obtener opciones y el estado de carga desde el controlador
                     var options =
                         staticOptions ?? controller!.getOptions(dropdownKey);
                     var isLoading = controller!.isLoading(dropdownKey);
@@ -54,8 +52,6 @@ class CustomDropdown<T> extends StatelessWidget {
                         ),
                       );
                     }
-
-                    // Mostrar el DropdownButtonFormField con las opciones
                     return SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<T>(
@@ -98,9 +94,12 @@ class CustomDropdown<T> extends StatelessWidget {
                                 }
                               },
                         items: options.map((T option) {
+                          String displayText = option is DropdownElement
+                              ? option.value
+                              : option.toString();
                           return DropdownMenuItem<T>(
                             value: option,
-                            child: Text(option.toString()),
+                            child: Text(displayText),
                           );
                         }).toList(),
                         disabledHint: Text(
@@ -114,7 +113,6 @@ class CustomDropdown<T> extends StatelessWidget {
                     );
                   })
                 else
-                  // Mostrar un DropdownButtonFormField sin observar cambios si el controlador es nulo
                   SizedBox(
                     height: 50,
                     child: DropdownButtonFormField<T>(

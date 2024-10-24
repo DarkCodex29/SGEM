@@ -409,37 +409,6 @@ class PersonalSearchPage extends StatelessWidget {
       );
     });
   }
-/*
-  Widget _buildDropdownGuardia(PersonalSearchController controller) {
-    return Obx(() {
-      return CustomDropdown(
-        isLoading: controller.isLoadingGuardia.value,
-        hintText: 'Selecciona Guardia',
-        noDataHintText: 'No se encontraron guardias',
-        options: controller.guardiaOptions.isEmpty
-            ? []
-            : controller.guardiaOptions.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
-            ? controller.guardiaOptions
-                .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          if (value != null) {
-            final selectedOption = controller.guardiaOptions.firstWhere(
-              (option) => option.valor == value,
-            );
-            controller.selectedGuardiaKey.value = selectedOption.key;
-            log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
-          }
-        },
-      );
-    });
-  }
-  */
 
   Widget _buildResultsSection(PersonalSearchController controller,
       bool isSmallScreen, BuildContext context) {

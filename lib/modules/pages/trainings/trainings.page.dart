@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/trainings/trainings.controller.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
+import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
+import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.dart';
@@ -323,179 +326,77 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Widget _buildSeccionResultadoTabla(TrainingsController controller) {
+    List<String> cabecera = [
+      'Código MCP',
+      'Nombres y Apellidos',
+      'Guardia',
+      'Estado de entrenamiento',
+      'Estado de avance',
+      'Condicion',
+      'Equipo',
+      'Fecha de inicio',
+      'Entrenador responsable',
+      'Nota teorica',
+      'Nota practica',
+      'Horas acumuladas',
+      'Horas operativas acumuladas'
+    ];
+    // if (controller.entrenamientoResultados.isEmpty) {
+    //   return const Center(child: Text("No se encontraron resultados"));
+    // }
+
     return Obx(
       () {
-        if (controller.entrenamientoResultados.isEmpty) {
-          return const Center(child: Text("No se encontraron resultados"));
-        }
-
         var rowsToShow = controller.entrenamientoResultados
             .take(controller.rowsPerPage.value)
             .toList();
 
         return Column(
           children: [
-            Container(
-              color: Colors.grey[200],
-              padding: const EdgeInsets.symmetric(
-                vertical: 10.0,
-                horizontal: 16.0,
-              ),
-              child: _buildSeccionResultadoTablaCabezera(),
-            ),
-            SizedBox(
-              height: 500,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: rowsToShow.map((entrenamiento) {
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          Expanded(child: Text(entrenamiento.codigoMcp)),
-                          Expanded(child: Text(entrenamiento.nombreCompleto)),
-                          Expanded(child: Text(entrenamiento.guardia.nombre!)),
-                          Expanded(
-                              child: Text(
-                                  entrenamiento.estadoEntrenamiento.nombre!)),
-                          Expanded(child: Text(entrenamiento.modulo.nombre!)),
-                          Expanded(
-                              child: Text(entrenamiento.condicion.nombre!)),
-                          Expanded(child: Text(entrenamiento.equipo.nombre!)),
-                          Expanded(
-                            child: Text(DateFormat('dd/MM/yyyy')
-                                .format(entrenamiento.fechaInicio!)),
-                          ),
-                          Expanded(
-                              child: Text(entrenamiento.entrenador.nombre!)),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.notaTeorica.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.notaPractica.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.horasAcumuladas.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                          Expanded(
-                              child: Text(
-                            entrenamiento.horasAcumuladas.toString(),
-                            textAlign: TextAlign.center,
-                          )),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
+            DynamicTableCabecera(cabecera: cabecera),
+            _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
       },
     );
   }
 
-  Widget _buildSeccionResultadoTablaCabezera() {
-    return const Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Código MCP',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+  Widget _buildSeccionResultadoTablaData(
+      List<dynamic> data, TrainingsController controller) {
+    return SizedBox(
+      height: 500,
+      child: SingleChildScrollView(
+        child: Column(
+          children: data.map((fila) {
+            List<Widget> celdas = [
+              Text(fila.codigoMcp),
+              Text(fila.nombreCompleto),
+              Text(fila.guardia.nombre!),
+              Text(fila.estadoEntrenamiento.nombre!),
+              Text(fila.modulo.nombre!),
+              Text(fila.condicion.nombre!),
+              Text(fila.equipo.nombre!),
+              Text(DateFormat('dd/MM/yyyy').format(fila.fechaInicio!)),
+              Text(fila.entrenador.nombre!),
+              Text(fila.notaTeorica.toString()),
+              Text(fila.notaPractica.toString()),
+              Text(fila.horasAcumuladas.toString()),
+              Text(fila.horasAcumuladas.toString()),
+            ];
+            return _buildFila(celdas);
+          }).toList(),
         ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Nombres y Apellidos',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Guardia',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Estado de entrenamiento',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Estado de avance',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Condicion',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Equipo',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Fecha de inicio',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Entrenador responsable',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Nota teorica',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Nota practica',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Horas acumuladas',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Text(
-            'Horas operativas acumuladas',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildFila(List<Widget> celdas) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+          children: celdas.map((celda) {
+        return Expanded(flex: 1, child: celda);
+      }).toList()),
     );
   }
 
@@ -525,23 +426,23 @@ class TrainingsPage extends StatelessWidget {
                         ))
                     .toList(),
                 onChanged: (value) {
-                  // if (value != null) {
-                  //   controller.rowsPerPage.value = value;
-                  //   controller.currentPage.value = 1;
-                  //   controller.searchPersonal(
-                  //       pageNumber: controller.currentPage.value,
-                  //       pageSize: value);
-                  // }
+                  if (value != null) {
+                    controller.rowsPerPage.value = value;
+                    controller.currentPage.value = 1;
+                    controller.buscarEntrenamientos(
+                        pageNumber: controller.currentPage.value,
+                        pageSize: value);
+                  }
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                        // controller.currentPage.value--;
-                        // controller.searchPersonal(
-                        //     pageNumber: controller.currentPage.value,
-                        //     pageSize: controller.rowsPerPage.value);
+                        controller.currentPage.value--;
+                        controller.buscarEntrenamientos(
+                            pageNumber: controller.currentPage.value,
+                            pageSize: controller.rowsPerPage.value);
                       }
                     : null,
               ),
@@ -552,10 +453,10 @@ class TrainingsPage extends StatelessWidget {
                 onPressed:
                     controller.currentPage.value < controller.totalPages.value
                         ? () {
-                            // controller.currentPage.value++;
-                            // controller.searchPersonal(
-                            //     pageNumber: controller.currentPage.value,
-                            //     pageSize: controller.rowsPerPage.value);
+                            controller.currentPage.value++;
+                            controller.buscarEntrenamientos(
+                                pageNumber: controller.currentPage.value,
+                                pageSize: controller.rowsPerPage.value);
                           }
                         : null,
               ),
@@ -565,151 +466,4 @@ class TrainingsPage extends StatelessWidget {
       ],
     );
   }
-/*
-  Widget _buildDropdownEquipo(TrainingsController controller) {
-    return Obx(() {
-      if (controller.equipoOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
-      }
-      List<MaestroDetalle> options = controller.equipoOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona Equipo',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedEquipoKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedEquipoKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedEquipoKey.value = selectedOption.key;
-          log('Equipo seleccionado - Key del Maestro: ${controller.selectedEquipoKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownGuardia(TrainingsController controller) {
-    return Obx(() {
-      if (controller.guardiaOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
-      }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona Guardia',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownEstadoEntrenamiento(TrainingsController controller) {
-    return Obx(() {
-      if (controller.estadoEntrenamientoOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
-      }
-      List<MaestroDetalle> options = controller.estadoEntrenamientoOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona Estado Entrenamiento',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedEstadoEntrenamientoKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key ==
-                    controller.selectedEstadoEntrenamientoKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedEstadoEntrenamientoKey.value = selectedOption.key;
-          log('Estado entrenamiento seleccionado - Key del Maestro: ${controller.selectedEstadoEntrenamientoKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownCondicion(TrainingsController controller) {
-    return Obx(() {
-      if (controller.condicionOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
-      }
-      List<MaestroDetalle> options = controller.condicionOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona condicion',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedCondicionKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedCondicionKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedCondicionKey.value = selectedOption.key;
-          log('Condicion seleccionada - Key del Maestro: ${controller.selectedCondicionKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownModulo(TrainingsController controller) {
-    return Obx(() {
-      if (controller.moduloOpciones.isEmpty) {
-        return const SizedBox(
-            height: 50, width: 50, child: CircularProgressIndicator());
-      }
-      List<ModuloMaestro> options = controller.moduloOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona estado de avance ',
-        options: options.map((option) => option.modulo!).toList(),
-        selectedValue: controller.selectedModuloKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedModuloKey.value)
-                .modulo
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.modulo == value,
-          );
-          controller.selectedModuloKey.value = selectedOption.key;
-          log('Condicion seleccionada - Key del Maestro: ${controller.selectedModuloKey.value}, Valor: $value');
-        },
-      );
-    }); 
-  }
-  */
 }

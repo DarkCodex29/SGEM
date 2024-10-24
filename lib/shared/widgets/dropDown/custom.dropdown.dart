@@ -37,27 +37,93 @@ class CustomDropdown<T> extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Obx(() {
-                  var options = staticOptions ??
-                      controller?.getOptions(dropdownKey) ??
-                      [];
-                  if (controller != null &&
-                      controller!.isLoading(dropdownKey)) {
-                    return const Center(
-                      child: SizedBox(
-                        height: 50,
-                        width: 50,
-                        child: CircularProgressIndicator(),
+                // Verificar si el controlador no es nulo y usar Obx para observar los cambios
+                if (controller != null)
+                  Obx(() {
+                    // Obtener opciones y el estado de carga desde el controlador
+                    var options =
+                        staticOptions ?? controller!.getOptions(dropdownKey);
+                    var isLoading = controller!.isLoading(dropdownKey);
+
+                    if (isLoading) {
+                      return const Center(
+                        child: SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
+                    // Mostrar el DropdownButtonFormField con las opciones
+                    return SizedBox(
+                      height: 50,
+                      child: DropdownButtonFormField<T>(
+                        value: controller!.getSelectedValue(dropdownKey),
+                        isExpanded: true,
+                        hint: Text(
+                          options.isEmpty ? noDataHintText : hintText,
+                          style: const TextStyle(
+                            color: AppTheme.primaryText,
+                            fontSize: 16,
+                          ),
+                        ),
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: AppTheme.alternateColor,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: AppTheme.alternateColor,
+                              width: 2.0,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 14.0,
+                            horizontal: 12.0,
+                          ),
+                        ),
+                        onChanged: isReadOnly || options.isEmpty
+                            ? null
+                            : (value) {
+                                if (controller != null) {
+                                  controller!.selectValue(dropdownKey, value);
+                                }
+                                if (onChanged != null) {
+                                  onChanged!(value);
+                                }
+                              },
+                        items: options.map((T option) {
+                          return DropdownMenuItem<T>(
+                            value: option,
+                            child: Text(option.toString()),
+                          );
+                        }).toList(),
+                        disabledHint: Text(
+                          controller!
+                                  .getSelectedValue(dropdownKey)
+                                  ?.toString() ??
+                              hintText,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
                       ),
                     );
-                  }
-                  return SizedBox(
+                  })
+                else
+                  // Mostrar un DropdownButtonFormField sin observar cambios si el controlador es nulo
+                  SizedBox(
                     height: 50,
                     child: DropdownButtonFormField<T>(
-                      value: controller?.getSelectedValue(dropdownKey),
+                      value: staticOptions?.first,
                       isExpanded: true,
                       hint: Text(
-                        options.isEmpty ? noDataHintText : hintText,
+                        staticOptions?.isEmpty ?? true
+                            ? noDataHintText
+                            : hintText,
                         style: const TextStyle(
                           color: AppTheme.primaryText,
                           fontSize: 16,
@@ -82,30 +148,25 @@ class CustomDropdown<T> extends StatelessWidget {
                           horizontal: 12.0,
                         ),
                       ),
-                      onChanged: isReadOnly || options.isEmpty
+                      onChanged: isReadOnly || staticOptions?.isEmpty == true
                           ? null
                           : (value) {
-                              if (controller != null) {
-                                controller!.selectValue(dropdownKey, value);
-                              }
                               if (onChanged != null) {
                                 onChanged!(value);
                               }
                             },
-                      items: options.map((T option) {
+                      items: staticOptions?.map((T option) {
                         return DropdownMenuItem<T>(
                           value: option,
                           child: Text(option.toString()),
                         );
                       }).toList(),
                       disabledHint: Text(
-                        controller?.getSelectedValue(dropdownKey)?.toString() ??
-                            hintText,
+                        hintText,
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ),
-                  );
-                }),
+                  ),
                 if (isSearchable && !isReadOnly) _buildSearchBar(),
               ],
             ),

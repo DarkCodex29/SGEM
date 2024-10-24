@@ -146,9 +146,6 @@ class PersonalSearchPage extends StatelessWidget {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         initiallyExpanded: controller.isExpanded.value,
-        // onExpansionChanged: (value) {
-        //   controller.isExpanded.value = value;
-        //         },
         controller: controller.expansionController,
         children: [
           Container(

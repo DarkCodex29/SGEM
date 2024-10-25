@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
 import 'package:sgem/shared/utils/Extensions/widgetExtensions.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
+
+import '../../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 Widget futureViewPdf(BuildContext context, Future<List<PdfPageImage?>>? futurePdf, double angleRotation, PersonalSearchController controller) {
   final screenHeigth = MediaQuery.of(context).size.height;

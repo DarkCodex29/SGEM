@@ -2,10 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/actualizacion.masiva/personal.actualizacion.masiva.page.dart';
-import 'package:sgem/modules/pages/personal.training/personal/nuevo.personal.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal/nuevo.personal.page.dart';
-import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/pdf.view.certificado.dart';
@@ -17,7 +13,11 @@ import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 
+import 'actualizacion.masiva/personal.actualizacion.masiva.page.dart';
+import 'consulta.personal.controller.dart';
 import 'entrenamiento/entrenamiento.personal.page.dart';
+import 'personal/nuevo.personal.controller.dart';
+import 'personal/nuevo.personal.page.dart';
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});

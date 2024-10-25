@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import '../consulta.personal.controller.dart';
 import 'nuevo.personal.controller.dart';
 import 'package:intl/intl.dart';
 

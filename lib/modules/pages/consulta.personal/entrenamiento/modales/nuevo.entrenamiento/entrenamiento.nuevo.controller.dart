@@ -9,10 +9,11 @@ import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.archivo.dart';
-import 'package:sgem/modules/pages/personal.training/entrenamiento/entrenamiento.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+
+import '../../entrenamiento.personal.controller.dart';
 
 class EntrenamientoNuevoController extends GetxController {
   TextEditingController fechaInicioController = TextEditingController();

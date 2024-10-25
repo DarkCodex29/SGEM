@@ -2,12 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.autorizacion.operar.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.personal.carnet.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
+
+import '../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 class PdfToImageScreen extends StatefulWidget {
   final Personal? data;

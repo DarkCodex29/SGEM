@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
-import 'package:sgem/config/api/api.training.dart';
+import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
@@ -15,7 +15,7 @@ import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 import '../../../config/api/api.maestro.detail.dart';
 
-class TrainingsController extends GetxController {
+class ConsultaEntrenamientoController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
   TextEditingController rangoFechaController = TextEditingController();
   TextEditingController nombresController = TextEditingController();
@@ -23,7 +23,7 @@ class TrainingsController extends GetxController {
   DateTime? fechaInicio;
   DateTime? fechaTermino;
 
-  final entrenamientoService = TrainingService();
+  final entrenamientoService = EntrenamientoService();
   final maestroDetalleService = MaestroDetalleService();
   final moduloService = ModuloMaestroService();
   RxBool isExpanded = true.obs;

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
-import 'package:sgem/config/api/api.training.dart';
+import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
@@ -37,7 +37,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   ModuloMaestroService moduloMaestroService = ModuloMaestroService();
   PersonalService personalService = PersonalService();
-  TrainingService trainingService = TrainingService();
+  EntrenamientoService trainingService = EntrenamientoService();
 
   List<String> errores = [];
 

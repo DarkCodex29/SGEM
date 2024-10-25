@@ -8,10 +8,10 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
 import '../../shared/modules/entrenamiento.consulta.dart';
 
-class TrainingService {
+class EntrenamientoService {
    final Dio dio = Dio();
 
-  TrainingService() {
+  EntrenamientoService() {
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         options.headers['Content-Type'] = 'application/json';

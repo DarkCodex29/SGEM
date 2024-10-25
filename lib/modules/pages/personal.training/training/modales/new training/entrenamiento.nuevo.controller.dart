@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
-import 'package:sgem/config/api/api.training.dart';
+import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
@@ -51,7 +51,7 @@ class EntrenamientoNuevoController extends GetxController {
     return;
   });
 
-  final trainingService = TrainingService();
+  final trainingService = EntrenamientoService();
 
   final archivoService = ArchivoService();
 

@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.page.dart';
 import 'package:sgem/modules/pages/personal.training/personal.training.page.dart';
-import 'package:sgem/modules/pages/trainings/trainings.page.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
 
 import '../administracion/administracion.page.dart';
+import '../consulta.entrenamiento/consulta.entrenamiento.page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -54,7 +54,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
       const PersonalSearchPage(),
       const Center(child: Text("Búsqueda de Monitoreos")),
       CapacitacionPage(onCancel: () {}),
-      TrainingsPage(),
+      ConsultaEntrenamientoPage(),
       const AdministracionPage(),
     ];
 

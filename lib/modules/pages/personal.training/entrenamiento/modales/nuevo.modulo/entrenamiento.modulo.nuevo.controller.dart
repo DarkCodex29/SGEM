@@ -5,12 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../shared/widgets/alert/widget.alert.dart';
+import '../../entrenamiento.personal.controller.dart';
 
 class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController fechaInicioController = TextEditingController();
@@ -213,8 +213,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ),
         );
 
-        TrainingPersonalController controller =
-            Get.find<TrainingPersonalController>();
+        EntrenamientoPersonalController controller =
+            Get.find<EntrenamientoPersonalController>();
         controller.fetchModulosPorEntrenamiento(entrenamiento.key);
 
         return true;

@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20training/entrenamiento.nuevo.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
+import 'package:sgem/modules/pages/personal.training/entrenamiento/entrenamiento.personal.controller.dart';
+import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal/nuevo.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20module/entrenamiento.modulo.nuevo.dart';
-import 'modales/new training/entrenamiento.nuevo.modal.dart';
+import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.controller.dart';
+import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.modal.dart';
+import 'modales/nuevo.modulo/entrenamiento.modulo.nuevo.dart';
 
-class TrainingPersonalPage extends StatelessWidget {
+class EntrenamientoPersonalPage extends StatelessWidget {
   final PersonalSearchController controllerPersonal;
-  final NewPersonalController controllerNewPersonal =
-      Get.put(NewPersonalController());
-  final TrainingPersonalController controller =
-      Get.put(TrainingPersonalController());
+  final NuevoPersonalController controllerNewPersonal =
+      Get.put(NuevoPersonalController());
+  final EntrenamientoPersonalController controller =
+      Get.put(EntrenamientoPersonalController());
   final VoidCallback onCancel;
 
-  TrainingPersonalPage({
+  EntrenamientoPersonalPage({
     required this.controllerPersonal,
     required this.onCancel,
     super.key,

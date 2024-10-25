@@ -15,7 +15,7 @@ import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
-class NewPersonalController extends GetxController {
+class NuevoPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
   final TextEditingController nombresController = TextEditingController();
   final TextEditingController puestoTrabajoController = TextEditingController();

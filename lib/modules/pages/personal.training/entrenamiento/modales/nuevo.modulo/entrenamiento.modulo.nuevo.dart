@@ -3,9 +3,9 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20module/entrenamiento.modulo.nuevo.controller.dart';
 import '../../../../../../config/theme/app_theme.dart';
 import '../../../../../../shared/widgets/custom.textfield.dart';
+import 'entrenamiento.modulo.nuevo.controller.dart';
 
 class EntrenamientoModuloNuevo extends StatelessWidget {
   final EntrenamientoModuloNuevoController controller =

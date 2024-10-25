@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20training/entrenamiento.nuevo.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
-class TrainingPersonalController extends GetxController {
+import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.controller.dart';
+
+class EntrenamientoPersonalController extends GetxController {
   var trainingList = <EntrenamientoModulo>[].obs;
   final EntrenamientoService trainingService = EntrenamientoService();
   final ModuloMaestroService moduloMaestroService = ModuloMaestroService();

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/personal.training/actualizacion.masiva/personal.actualizacion.masiva.page.dart';
-import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal/new.personal.page.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.page.dart';
+import 'package:sgem/modules/pages/personal.training/personal/nuevo.personal.controller.dart';
+import 'package:sgem/modules/pages/personal.training/personal/nuevo.personal.page.dart';
+import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/pdf.view.certificado.dart';
@@ -17,6 +16,8 @@ import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
+
+import 'entrenamiento/entrenamiento.personal.page.dart';
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -55,7 +56,7 @@ class PersonalSearchPage extends StatelessWidget {
               },
             );
           case PersonalSearchScreen.trainingForm:
-            return TrainingPersonalPage(
+            return EntrenamientoPersonalPage(
               controllerPersonal: controller,
               onCancel: () {
                 controller.hideForms();
@@ -768,8 +769,8 @@ class PersonalSearchPage extends StatelessWidget {
                                         if (!confirmarEliminar) {
                                           return;
                                         }
-                                        NewPersonalController controllerNew =
-                                            Get.put(NewPersonalController());
+                                        NuevoPersonalController controllerNew =
+                                            Get.put(NuevoPersonalController());
                                         controllerNew.personalData =
                                             controller.selectedPersonal.value;
                                         try {

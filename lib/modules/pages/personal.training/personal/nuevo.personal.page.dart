@@ -2,15 +2,15 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
+import 'package:sgem/modules/pages/personal.training/consulta.personal.controller.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
-import 'new.personal.controller.dart';
+import 'nuevo.personal.controller.dart';
 import 'package:intl/intl.dart';
 
 class NuevoPersonalPage extends StatelessWidget {
-  final NewPersonalController controller = NewPersonalController();
+  final NuevoPersonalController controller = NuevoPersonalController();
   final PersonalSearchController controllerPersonalSearch = Get.find();
   final bool isEditing;
   final bool isViewing;

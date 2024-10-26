@@ -1,23 +1,25 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/utils/pdf.view.certificado.dart';
-import 'package:sgem/shared/utils/pdf.view.diploma.dart';
-import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
-import 'package:sgem/shared/widgets/custom.textfield.dart';
-import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
-import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
-import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 
+import '../../../config/theme/app_theme.dart';
+import '../../../shared/modules/maestro.detail.dart';
+import '../../../shared/modules/personal.dart';
+import '../../../shared/utils/pdf.view.certificado.dart';
+import '../../../shared/utils/pdf.view.diploma.dart';
+import '../../../shared/utils/pdf.viewer.carnet.dart';
+import '../../../shared/widgets/custom.textfield.dart';
+import '../../../shared/widgets/delete/widget.delete.motivo.dart';
+import '../../../shared/widgets/delete/widget.delete.personal.confirmation.dart';
+import '../../../shared/widgets/delete/widget.delete.personal.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import 'actualizacion.masiva/personal.actualizacion.masiva.page.dart';
 import 'consulta.personal.controller.dart';
 import 'entrenamiento/entrenamiento.personal.page.dart';
 import 'personal/nuevo.personal.controller.dart';
 import 'personal/nuevo.personal.page.dart';
+
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -31,7 +33,7 @@ class PersonalSearchPage extends StatelessWidget {
       appBar: AppBar(
         title: Obx(() {
           return Text(
-            controller.screen.value.description(),
+            controller.screen.value.descripcion(),
             style: const TextStyle(
               color: AppTheme.backgroundBlue,
               fontSize: 24,
@@ -147,8 +149,8 @@ class PersonalSearchPage extends StatelessWidget {
           "Filtro de búsqueda",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        initiallyExpanded: true,
-        //controller: controller.expansionController,
+        initiallyExpanded: controller.isExpanded.value,
+        controller: controller.expansionController,
         children: [
              Container(
               padding: const EdgeInsets.all(16.0),

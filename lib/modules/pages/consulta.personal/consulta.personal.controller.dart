@@ -1,15 +1,17 @@
 import 'dart:developer';
 import 'dart:typed_data';
+
 import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sgem/config/api/api.maestro.detail.dart';
-import 'package:sgem/config/api/api.personal.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
+
+import '../../../config/api/api.maestro.detail.dart';
+import '../../../config/api/api.personal.dart';
+import '../../../shared/modules/maestro.detail.dart';
+import '../../../shared/modules/personal.dart';
+import '../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 enum PersonalSearchScreen {
   none,
@@ -24,7 +26,7 @@ enum PersonalSearchScreen {
 }
 
 extension PersonalSearchScreenExtension on PersonalSearchScreen {
-  String description() {
+  String descripcion() {
     switch (this) {
       case PersonalSearchScreen.none:
         return "Búsqueda de entrenamiento de personal";
@@ -35,7 +37,7 @@ extension PersonalSearchScreenExtension on PersonalSearchScreen {
       case PersonalSearchScreen.trainingForm:
         return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.viewPersonal:
-        return "Visualizar";
+        return "Visualizar personal";
       case PersonalSearchScreen.carnetPersonal:
         return "Carnet del personal";
       case PersonalSearchScreen.actualizacionMasiva:
@@ -51,7 +53,7 @@ class PersonalSearchController extends GetxController {
   final documentoIdentidadController = TextEditingController();
   final nombresController = TextEditingController();
   final apellidosController = TextEditingController();
-  //final expansionController = ExpansionTileController();
+  final expansionController = ExpansionTileController();
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();

@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 class CapacitacionCargaMasivaController extends GetxController{
 TextEditingController archivoController = TextEditingController();
 
-var actualizacionMasivaResultados= [].obs;
+var cargaMasivaResultados= [].obs;
 var rowsPerPage = 10.obs;
 var currentPage = 1.obs;
 var totalPages = 1.obs;

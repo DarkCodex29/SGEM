@@ -91,11 +91,13 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           children: [
             Align(
               alignment: const AlignmentDirectional(-1, 0),
-              child: Obx(() {
+              child:
+
+              Obx(() {
                 return controller.isLoadingModulo.value
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
-                        controller.tituloModal,
+                        controller.tituloModal.value,
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w600,
@@ -103,6 +105,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                         ),
                       );
               }),
+
             ),
             InkWell(
               onTap: onCancel,

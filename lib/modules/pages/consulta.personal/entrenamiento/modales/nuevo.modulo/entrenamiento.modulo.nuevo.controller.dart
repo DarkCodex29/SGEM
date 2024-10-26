@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
@@ -49,7 +50,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   late EntrenamientoModulo entrenamiento;
   int? siguienteModulo;
   bool isEdit = false;
-  String tituloModal = '';
+  RxString tituloModal = ''.obs;
+
   RxBool isLoadingModulo = false.obs;
 
   EntrenamientoModulo? entrenamientoModulo;
@@ -110,12 +112,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
 
       int moduloNumero = siguienteModulo ?? 1;
-      tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
-      await obtenerDatosModuloMaestro(moduloNumero);
+      //tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
+      //tituloModal = 'Nuevo Módulo - ${}';
+     // await obtenerDatosModuloMaestro(moduloNumero);
     } else {
       int moduloNumero = entrenamiento.inModulo ?? 1;
-      tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
-      await obtenerDatosModuloMaestro(moduloNumero);
+      //tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
+     // await obtenerDatosModuloMaestro(moduloNumero);
     }
     update();
   }
@@ -370,5 +373,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         entrenamientoModulo!.inHorasAcumuladas.toString();
     horasMinestarController.text =
         entrenamientoModulo!.inHorasMinestar.toString();
+    tituloModal.value= entrenamientoModulo!.modulo.nombre!;
   }
 }

@@ -17,7 +17,7 @@ import 'modales/nuevo.modulo/entrenamiento.modulo.nuevo.dart';
 
 class EntrenamientoPersonalPage extends StatelessWidget {
   final PersonalSearchController controllerPersonal;
-  final NuevoPersonalController controllerNewPersonal =
+  final NuevoPersonalController controllerNuevoPersonal =
       Get.put(NuevoPersonalController());
   final EntrenamientoPersonalController controller =
       Get.put(EntrenamientoPersonalController());
@@ -29,7 +29,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
     super.key,
   }) {
     controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
-    controllerNewPersonal.loadPersonalPhoto(
+    controllerNuevoPersonal.loadPersonalPhoto(
         controllerPersonal.selectedPersonal.value!.inPersonalOrigen);
   }
 
@@ -65,12 +65,12 @@ class EntrenamientoPersonalPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Obx(() {
-            if (controllerNewPersonal.personalPhoto.value != null &&
-                controllerNewPersonal.personalPhoto.value!.isNotEmpty) {
+            if (controllerNuevoPersonal.personalPhoto.value != null &&
+                controllerNuevoPersonal.personalPhoto.value!.isNotEmpty) {
               try {
                 return CircleAvatar(
                   backgroundImage:
-                      MemoryImage(controllerNewPersonal.personalPhoto.value!),
+                      MemoryImage(controllerNuevoPersonal.personalPhoto.value!),
                   radius: 60,
                   backgroundColor: Colors.grey,
                 );
@@ -424,7 +424,11 @@ class EntrenamientoPersonalPage extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
+                tooltip: 'Editar modulo',
+                icon: const Icon(
+                  Icons.edit,
+                  color: AppTheme.primaryColor,
+                ),
                 onPressed: () async {
                   final bool? success = await showModalBottomSheet(
                     isScrollControlled: true,
@@ -541,6 +545,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
         Row(
           children: [
             IconButton(
+              tooltip: 'Editar entrenamiento',
               icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
               onPressed: () async {
                 EntrenamientoNuevoController controllerModal =
@@ -581,6 +586,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               },
             ),
             IconButton(
+              tooltip: 'Eliminar entrenamiento',
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () async {
                 String motivoEliminacion = '';
@@ -666,6 +672,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle_outline,
                   color: AppTheme.primaryColor),
+              tooltip: 'Nuevo modulo',
               onPressed: () async {
                 final bool? success = await showModalBottomSheet(
                   isScrollControlled: true,

@@ -52,6 +52,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
   String tituloModal = '';
   RxBool isLoadingModulo = false.obs;
 
+  EntrenamientoModulo? entrenamientoModulo;
+
+  @override
+  void onInit() {
+    super.onInit();
+  }
+
   void buscarEntrenadores(String query) async {
     if (query.isEmpty) {
       responsables.clear();
@@ -327,5 +334,38 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return MensajeValidacionWidget(errores: errores);
       },
     );
+  }
+
+  Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {
+    try {
+      log('Obteniendo modulo por id: $inEntrenamientoModulo');
+      final response =
+          await moduloMaestroService.obtenerModuloPorId(inEntrenamientoModulo);
+      log('Obteniendo modulo por id: ${response.success}');
+      if (response.success) {
+        log('Modulo obtenido: ${response.data}');
+        entrenamientoModulo = response.data!;
+        llenarDatos();
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar el módulo');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Ocurrió un problema al cargar el módulo');
+    }
+  }
+
+  void llenarDatos() {
+    fechaInicio = entrenamientoModulo!.fechaInicio;
+    fechaTermino = entrenamientoModulo!.fechaTermino;
+    notaTeoricaController.text = entrenamientoModulo!.inNotaTeorica.toString();
+    notaPracticaController.text =
+        entrenamientoModulo!.inNotaPractica.toString();
+    fechaExamen = entrenamientoModulo!.fechaTermino;
+    totalHorasModuloController.value.text =
+        entrenamientoModulo!.inTotalHoras.toString();
+    horasAcumuladasController.text =
+        entrenamientoModulo!.inHorasAcumuladas.toString();
+    horasMinestarController.text =
+        entrenamientoModulo!.inHorasMinestar.toString();
   }
 }

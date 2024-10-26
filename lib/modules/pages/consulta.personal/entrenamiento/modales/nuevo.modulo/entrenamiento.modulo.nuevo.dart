@@ -11,19 +11,26 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   final EntrenamientoModuloNuevoController controller =
       EntrenamientoModuloNuevoController();
   final VoidCallback onCancel;
-  final EntrenamientoModulo entrenamiento;
+  final EntrenamientoModulo? entrenamiento;
   final bool isEdit;
+  final int? inEntrenamientoModulo;
 
   EntrenamientoModuloNuevo({
     super.key,
     required this.onCancel,
-    required this.entrenamiento,
+    this.entrenamiento,
     this.isEdit = false,
+    this.inEntrenamientoModulo,
   });
 
   @override
   Widget build(BuildContext context) {
-    controller.setDatosEntrenamiento(entrenamiento, isEdit);
+    //controller.setDatosEntrenamiento(entrenamiento!, isEdit);
+
+    if (inEntrenamientoModulo!=null){
+       controller.obtenerModuloPorId(inEntrenamientoModulo!);
+    }
+
     return Align(
       alignment: const AlignmentDirectional(0, 0),
       child: Padding(

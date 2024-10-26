@@ -356,11 +356,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   void llenarDatos() {
     fechaInicio = entrenamientoModulo!.fechaInicio;
+    fechaInicioController.text=DateFormat('dd/MM/yyyy').format(fechaInicio!);
     fechaTermino = entrenamientoModulo!.fechaTermino;
+    fechaTerminoController.text=DateFormat('dd/MM/yyyy').format(fechaTermino!);
     notaTeoricaController.text = entrenamientoModulo!.inNotaTeorica.toString();
     notaPracticaController.text =
         entrenamientoModulo!.inNotaPractica.toString();
-    fechaExamen = entrenamientoModulo!.fechaTermino;
+    fechaExamen = entrenamientoModulo!.fechaExamen;
+    fechaExamenController.text= DateFormat('dd/MM/yyyy').format(fechaExamen!);
     totalHorasModuloController.value.text =
         entrenamientoModulo!.inTotalHoras.toString();
     horasAcumuladasController.text =

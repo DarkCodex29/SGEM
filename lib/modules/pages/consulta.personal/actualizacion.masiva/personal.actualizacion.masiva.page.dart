@@ -505,8 +505,8 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                                 padding: MediaQuery.of(context).viewInsets,
                                 child: EntrenamientoModuloNuevo(
                                   isEdit: true,
-                                  //inEntrenamientoModulo: fila.key,
-                                  inEntrenamientoModulo: 20,
+                                  inEntrenamientoModulo: fila.key,
+                                  //inEntrenamientoModulo: 20,
                                   onCancel: () {
                                     Navigator.pop(context);
                                   },

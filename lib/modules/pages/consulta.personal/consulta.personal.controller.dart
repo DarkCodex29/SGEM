@@ -27,19 +27,19 @@ extension PersonalSearchScreenExtension on PersonalSearchScreen {
   String description() {
     switch (this) {
       case PersonalSearchScreen.none:
-        return "";
+        return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.newPersonal:
-        return "Nuevo personal a Entrenar";
+        return "Nuevo personal a entrenar";
       case PersonalSearchScreen.editPersonal:
-        return "Editar Personal";
+        return "Editar personal";
       case PersonalSearchScreen.trainingForm:
         return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.viewPersonal:
         return "Visualizar";
       case PersonalSearchScreen.carnetPersonal:
-        return "Carnet del Personal";
+        return "Carnet del personal";
       case PersonalSearchScreen.actualizacionMasiva:
-        return "Actualizacion Masiva";
+        return "Actualización masiva";
       default:
         return "Entrenamientos";
     }
@@ -51,7 +51,7 @@ class PersonalSearchController extends GetxController {
   final documentoIdentidadController = TextEditingController();
   final nombresController = TextEditingController();
   final apellidosController = TextEditingController();
-  final expansionController = ExpansionTileController();
+  //final expansionController = ExpansionTileController();
 
   final personalService = PersonalService();
   final maestroDetalleService = MaestroDetalleService();
@@ -76,7 +76,7 @@ class PersonalSearchController extends GetxController {
 
   @override
   void onInit() {
-    //cargarGuardiaOptions();
+        //cargarGuardiaOptions();
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }

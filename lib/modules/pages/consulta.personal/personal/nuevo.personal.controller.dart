@@ -70,7 +70,7 @@ class NuevoPersonalController extends GetxController {
     cargarDropdowns();
   }
 
-  void cargarDropdowns() {
+  Future<void> cargarDropdowns() async {
     dropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);

@@ -162,9 +162,8 @@ class MaestroDetalleService {
   }
 
   Future<ResponseHandler<List<MaestroDetalle>>> listarMaestroDetallePorMaestro(int maestroKey) async {
-    final url =
+    var url =
         '${ConfigFile.apiUrl}/MaestroDetalle/ListarMaestroDetallePorMaestro?id=$maestroKey';
-
     try {
       final response = await dio.get(
         url,

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/modules/pages/monitoring/monitoring.page.controller.dart';
+import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
+import 'package:sgem/modules/pages/monitoring/view/create.monitoring.dart';
+import 'package:sgem/modules/pages/monitoring/widget/detail.table.monitoring.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
-import '../../../config/theme/app_theme.dart';
-import '../../../shared/widgets/custom.textfield.dart';
+import '../../../../config/theme/app_theme.dart';
+import '../../../../shared/widgets/custom.textfield.dart';
 
 class MonitoringPage extends StatelessWidget {
   const MonitoringPage({super.key});
@@ -19,6 +21,7 @@ class MonitoringPage extends StatelessWidget {
           case MonitoringSearchScreen.none:
             return _buildSearchPage(controller, context);
           case MonitoringSearchScreen.newMonitoring:
+            return CreateMonioringView(controller: controller);
           case MonitoringSearchScreen.viewMonitoring:
           case MonitoringSearchScreen.editMonitoring:
             return Container();
@@ -48,7 +51,8 @@ class MonitoringPage extends StatelessWidget {
             children: [
               _buildFormSection(controller, isSmallScreen),
               const SizedBox(height: 20),
-              _buildResultsSection(controller, isSmallScreen, context),
+              DetailTableMonitoring(
+                  controller: controller, isSmallScreen: isSmallScreen)
             ],
           ),
         );
@@ -329,87 +333,5 @@ class MonitoringPage extends StatelessWidget {
       onChanged: (value) {},
     );
     // });
-  }
-
-  Widget _buildResultsSection(MonitoringSearchController controller,
-      bool isSmallScreen, BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(5.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          SizedBox(
-            width: double.infinity,
-            height: 60,
-            child: Row(
-              children: [
-                if (!isSmallScreen)
-                  const Spacer(
-                    flex: 2,
-                  ),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      controller.isExpanded.value = false;
-                    },
-                    icon: const Icon(
-                      Icons.download,
-                      size: 18,
-                      color: Colors.black,
-                    ),
-                    label: const Text(
-                      "Descargar",
-                      style: TextStyle(fontSize: 13, color: Colors.black),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 49, vertical: 18),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(color: AppTheme.alternateColor),
-                      ),
-                      elevation: 0,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      controller.isExpanded.value = false;
-                    },
-                    icon: const Icon(
-                      Icons.add,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      "Nuevo monitoreo",
-                      style: TextStyle(fontSize: 13, color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 49, vertical: 18),
-                      backgroundColor: AppTheme.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      elevation: 2,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

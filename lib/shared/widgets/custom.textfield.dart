@@ -12,20 +12,20 @@ class CustomTextField extends StatelessWidget {
   final bool isReadOnly;
   final Function(String)? onChanged;
   final FocusNode? focusNode;
-
-  const CustomTextField({
-    super.key,
-    required this.label,
-    required this.controller,
-    this.isPassword = false,
-    this.keyboardType = TextInputType.text,
-    this.icon,
-    this.isRequired = false,
-    this.onIconPressed,
-    this.isReadOnly = false,
-    this.onChanged,
-    this.focusNode,
-  });
+  final bool? enabled;
+  const CustomTextField(
+      {super.key,
+      required this.label,
+      required this.controller,
+      this.isPassword = false,
+      this.keyboardType = TextInputType.text,
+      this.icon,
+      this.isRequired = false,
+      this.onIconPressed,
+      this.isReadOnly = false,
+      this.onChanged,
+      this.focusNode,
+      this.enabled = true});
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +41,7 @@ class CustomTextField extends StatelessWidget {
               readOnly: isReadOnly,
               onChanged: onChanged,
               focusNode: focusNode,
+              enabled: enabled,
               decoration: InputDecoration(
                 labelText: label,
                 labelStyle: const TextStyle(
@@ -56,14 +57,14 @@ class CustomTextField extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
                     color: AppTheme.alternateColor,
-                    width: 2.0,
+                    width: 1.0,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: const BorderSide(
-                    color: AppTheme.primaryColor,
-                    width: 2.0,
+                    color: AppTheme.backgroundBlue,
+                    width: 1.0,
                   ),
                 ),
                 contentPadding:

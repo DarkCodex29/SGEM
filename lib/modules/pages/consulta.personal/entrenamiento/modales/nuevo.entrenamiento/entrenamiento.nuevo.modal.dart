@@ -239,7 +239,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       return;
     }
 
-    int estadoEntrenamientoKey =
+    int? estadoEntrenamientoKey =
         isEdit && controller.estadoEntrenamientoSelected.value != null
             ? controller.estadoEntrenamientoSelected.value!.key
             : 0;

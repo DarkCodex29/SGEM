@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../config/theme/app_theme.dart';
 import '../../../../../../shared/widgets/custom.textfield.dart';
+import '../../../../../../shared/widgets/dropDown/custom.dropdown.dart';
 import 'entrenamiento.modulo.nuevo.controller.dart';
 
 class EntrenamientoModuloNuevo extends StatelessWidget {
@@ -14,6 +14,8 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   final EntrenamientoModulo? entrenamiento;
   final bool isEdit;
   final int? inEntrenamientoModulo;
+  final int? inEntrenamiento;
+  final int? inPersona;
 
   EntrenamientoModuloNuevo({
     super.key,
@@ -21,14 +23,16 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     this.entrenamiento,
     this.isEdit = false,
     this.inEntrenamientoModulo,
+    this.inEntrenamiento,
+    this.inPersona,
   });
 
   @override
   Widget build(BuildContext context) {
     //controller.setDatosEntrenamiento(entrenamiento!, isEdit);
 
-    if (inEntrenamientoModulo!=null){
-       controller.obtenerModuloPorId(inEntrenamientoModulo!);
+    if (inEntrenamientoModulo != null) {
+      controller.obtenerModuloPorId(inEntrenamientoModulo!);
     }
 
     return Align(
@@ -91,9 +95,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           children: [
             Align(
               alignment: const AlignmentDirectional(-1, 0),
-              child:
-
-              Obx(() {
+              child: Obx(() {
                 return controller.isLoadingModulo.value
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(
@@ -105,7 +107,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                         ),
                       );
               }),
-
             ),
             InkWell(
               onTap: onCancel,
@@ -130,81 +131,92 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   Widget _buildPrimeraFila() {
     return Row(
       children: [
+        // Expanded(
+        //   flex: 1,
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       const Text('Responsable',
+        //           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        //       Autocomplete<Personal>(
+        //         optionsBuilder: (TextEditingValue textEditingValue) {
+        //           if (textEditingValue.text.isEmpty) {
+        //             return const Iterable<Personal>.empty();
+        //           }
+        //           controller.buscarEntrenadores(textEditingValue.text);
+        //           return controller.responsables;
+        //         },
+        //         displayStringForOption: (Personal entrenador) =>
+        //             entrenador.nombreCompleto,
+        //         onSelected: (Personal entrenador) {
+        //           controller.seleccionarEntrenador(entrenador);
+        //         },
+        //         optionsViewBuilder: (context, onSelected, options) {
+        //           return Align(
+        //             alignment: Alignment.topLeft,
+        //             child: Material(
+        //               elevation: 4.0,
+        //               child: ConstrainedBox(
+        //                 constraints: const BoxConstraints(
+        //                   maxHeight: 200,
+        //                   maxWidth: 350,
+        //                 ),
+        //                 child: ListView.builder(
+        //                   padding: EdgeInsets.zero,
+        //                   itemCount: options.length,
+        //                   itemBuilder: (BuildContext context, int index) {
+        //                     final Personal entrenador =
+        //                         options.elementAt(index);
+        //                     return InkWell(
+        //                       onTap: () {
+        //                         onSelected(entrenador);
+        //                       },
+        //                       child: Container(
+        //                         padding: const EdgeInsets.symmetric(
+        //                             vertical: 10, horizontal: 15),
+        //                         child: Text(
+        //                           entrenador.nombreCompleto,
+        //                           style: const TextStyle(
+        //                               fontSize: 16,
+        //                               fontWeight: FontWeight.w500),
+        //                         ),
+        //                       ),
+        //                     );
+        //                   },
+        //                 ),
+        //               ),
+        //             ),
+        //           );
+        //         },
+        //         fieldViewBuilder:
+        //             (context, controllerField, focusNode, onFieldSubmitted) {
+        //           return Obx(() {
+        //             return CustomTextField(
+        //               controller: controller.responsableController,
+        //               icon: controller.isLoadingResponsable.value
+        //                   ? const CircularProgressIndicator()
+        //                   : const Icon(Icons.search),
+        //               //focusNode: focusNode,
+        //               onChanged: (value) {
+        //                 controllerField.text = value;
+        //               },
+        //               label: '',
+        //             );
+        //           });
+        //         },
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        // const SizedBox(width: 20),
         Expanded(
-          flex: 1,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Responsable',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-              Autocomplete<Personal>(
-                optionsBuilder: (TextEditingValue textEditingValue) {
-                  if (textEditingValue.text.isEmpty) {
-                    return const Iterable<Personal>.empty();
-                  }
-                  controller.buscarEntrenadores(textEditingValue.text);
-                  return controller.responsables;
-                },
-                displayStringForOption: (Personal entrenador) =>
-                    entrenador.nombreCompleto,
-                onSelected: (Personal entrenador) {
-                  controller.seleccionarEntrenador(entrenador);
-                },
-                optionsViewBuilder: (context, onSelected, options) {
-                  return Align(
-                    alignment: Alignment.topLeft,
-                    child: Material(
-                      elevation: 4.0,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          maxHeight: 200,
-                          maxWidth: 350,
-                        ),
-                        child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: options.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            final Personal entrenador =
-                                options.elementAt(index);
-                            return InkWell(
-                              onTap: () {
-                                onSelected(entrenador);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                child: Text(
-                                  entrenador.nombreCompleto,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                fieldViewBuilder:
-                    (context, controllerField, focusNode, onFieldSubmitted) {
-                  return Obx(() {
-                    return CustomTextField(
-                      controller: controller.responsableController,
-                      icon: controller.isLoadingResponsable.value
-                          ? const CircularProgressIndicator()
-                          : const Icon(Icons.search),
-                      focusNode: focusNode,
-                      onChanged: (value) {
-                        controllerField.text = value;
-                      },
-                      label: '',
-                    );
-                  });
-                },
-              ),
-            ],
+          child: CustomDropdown(
+            dropdownKey: 'entrenador',
+            hintText: "Responsable",
+            noDataHintText: 'No se encontraron entrenadores',
+            controller: controller.personalDropdownController,
+
+
           ),
         ),
         const SizedBox(width: 20),

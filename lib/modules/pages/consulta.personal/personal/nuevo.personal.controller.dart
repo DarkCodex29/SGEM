@@ -60,7 +60,7 @@ class NuevoPersonalController extends GetxController {
   RxBool isLoadingDni = false.obs;
   RxBool isSaving = false.obs;
   List<String> errores = [];
-  final GenericDropdownController<MaestroDetalle> dropdownController =
+  final GenericDropdownController<MaestroDetalle> guardiaDropdownController =
       Get.put(GenericDropdownController<MaestroDetalle>());
   final maestroDetalleService = MaestroDetalleService();
 
@@ -71,7 +71,7 @@ class NuevoPersonalController extends GetxController {
   }
 
   Future<void> cargarDropdowns() async {
-    dropdownController.loadOptions('guardia', () async {
+    guardiaDropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
       return response.success && response.data != null

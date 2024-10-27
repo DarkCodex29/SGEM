@@ -2,7 +2,7 @@ import 'package:sgem/shared/modules/maestro.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 
 class MaestroDetalle implements DropdownElement {
-  int key;
+  int? key;
   MaestroBasico maestro;
   String? valor;
   String? usuarioRegistro;
@@ -14,8 +14,8 @@ class MaestroDetalle implements DropdownElement {
   @override
   String get value => valor ?? "none";
 
-  @override
-  int get id => key ;
+   @override
+   int? get id => key ;
 
   
   MaestroDetalle({

@@ -116,11 +116,11 @@ class ConsultaEntrenamientoController extends GetxController {
     try {
       var response = await entrenamientoService.consultarEntrenamientoPaginado(
         codigoMcp: codigoMcp,
-        inEquipo: selectedEquipoKey.value,
-        inModulo: selectedModuloKey.value,
-        inGuardia: selectedGuardiaKey.value,
-        inEstadoEntrenamiento: selectedEstadoEntrenamientoKey.value,
-        inCondicion: selectedCondicionKey.value,
+        inEquipo: dropdownController.getSelectedValue('equipo')?.id,
+        inModulo: dropdownController.getSelectedValue('modulo')?.id,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.id,
+        inEstadoEntrenamiento: dropdownController.getSelectedValue('estadoEntrenamiento')?.id,
+        inCondicion: dropdownController.getSelectedValue('condicion')?.id,
         fechaInicio: fechaInicio,
         fechaTermino: fechaTermino,
         nombres: nombres,
@@ -344,11 +344,22 @@ class ConsultaEntrenamientoController extends GetxController {
 */
   void clearFields() {
     codigoMcpController.clear();
+
     selectedEquipoKey.value = null;
+    dropdownController.selectValue('equipo',null);
+
     selectedModuloKey.value = null;
+    dropdownController.selectValue('modulo',null);
+
     selectedGuardiaKey.value = null;
+    dropdownController.selectValue('guardia',null);
+
     selectedEstadoEntrenamientoKey.value = null;
+    dropdownController.selectValue('estadoEntrenamiento',null);
+
     selectedCondicionKey.value = null;
+    dropdownController.selectValue('condicion',null);
+
     rangoFechaController.clear();
     fechaInicio = null;
     fechaTermino = null;

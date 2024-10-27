@@ -442,6 +442,8 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                           padding: MediaQuery.of(context).viewInsets,
                           child: EntrenamientoModuloNuevo(
                             entrenamiento: modulo,
+                            inPersona: modulo.inPersona,
+                            inEntrenamientoModulo: modulo.key,
                             isEdit: true,
                             onCancel: () {
                               Navigator.pop(context);
@@ -458,6 +460,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 },
               ),
               IconButton(
+                tooltip:'Eliminar modulo',
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () async {
                   String motivoEliminacion = '';

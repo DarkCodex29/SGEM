@@ -538,7 +538,7 @@ class PersonalSearchPage extends StatelessWidget {
           style: TextStyle(fontSize: 16, color: AppTheme.infoColor),
         ),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           backgroundColor: AppTheme.primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -558,7 +558,7 @@ class PersonalSearchPage extends StatelessWidget {
           style: TextStyle(fontSize: 16, color: AppTheme.primaryColor),
         ),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -579,7 +579,7 @@ class PersonalSearchPage extends StatelessWidget {
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: const BorderSide(color: AppTheme.primaryColor),

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
@@ -11,6 +12,8 @@ import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../shared/widgets/alert/widget.alert.dart';
+import '../../../../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 import '../../entrenamiento.personal.controller.dart';
 
 class EntrenamientoModuloNuevoController extends GetxController {
@@ -53,12 +56,27 @@ class EntrenamientoModuloNuevoController extends GetxController {
   RxString tituloModal = ''.obs;
 
   RxBool isLoadingModulo = false.obs;
-
+  RxBool isLoading = false.obs;
   EntrenamientoModulo? entrenamientoModulo;
+
+  RxList<Personal> entrenadoresOpciones = <Personal>[].obs;
+
+  final GenericDropdownController<Personal> personalDropdownController =
+      Get.put(GenericDropdownController<Personal>());
 
   @override
   void onInit() {
+    cargarEntrenadores();
     super.onInit();
+  }
+
+  void cargarEntrenadores() async {
+    personalDropdownController.loadOptions('entrenador', () async {
+      var response = await personalService.listarEntrenadores();
+      return response.success && response.data != null
+          ? response.data!
+          : <Personal>[];
+    });
   }
 
   void buscarEntrenadores(String query) async {
@@ -70,13 +88,16 @@ class EntrenamientoModuloNuevoController extends GetxController {
     final result = await personalService.listarEntrenadores();
     if (result.success) {
       responsables.value = result.data!
-          .where((entrenador) =>
-              entrenador.nombreCompleto
+          .where((entrenador) => entrenador.nombreCompleto
                   .toLowerCase()
-                  .contains(query.toLowerCase()) ||
-              entrenador.apellidoPaterno
-                  .toLowerCase()
-                  .contains(query.toLowerCase()))
+                  .contains(query.toLowerCase())
+
+              //     ||
+              // entrenador.apellidoPaterno
+              //     .toLowerCase()
+              //     .contains(query.toLowerCase()
+              //    )
+              )
           .toList();
     }
     isLoadingResponsable.value = false;
@@ -114,11 +135,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
       int moduloNumero = siguienteModulo ?? 1;
       //tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
       //tituloModal = 'Nuevo Módulo - ${}';
-     // await obtenerDatosModuloMaestro(moduloNumero);
+      // await obtenerDatosModuloMaestro(moduloNumero);
     } else {
       int moduloNumero = entrenamiento.inModulo ?? 1;
       //tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
-     // await obtenerDatosModuloMaestro(moduloNumero);
+      // await obtenerDatosModuloMaestro(moduloNumero);
     }
     update();
   }
@@ -359,20 +380,24 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   void llenarDatos() {
     fechaInicio = entrenamientoModulo!.fechaInicio;
-    fechaInicioController.text=DateFormat('dd/MM/yyyy').format(fechaInicio!);
+    fechaInicioController.text = DateFormat('dd/MM/yyyy').format(fechaInicio!);
     fechaTermino = entrenamientoModulo!.fechaTermino;
-    fechaTerminoController.text=DateFormat('dd/MM/yyyy').format(fechaTermino!);
+    fechaTerminoController.text =
+        DateFormat('dd/MM/yyyy').format(fechaTermino!);
     notaTeoricaController.text = entrenamientoModulo!.inNotaTeorica.toString();
     notaPracticaController.text =
         entrenamientoModulo!.inNotaPractica.toString();
     fechaExamen = entrenamientoModulo!.fechaExamen;
-    fechaExamenController.text= DateFormat('dd/MM/yyyy').format(fechaExamen!);
+    fechaExamenController.text = DateFormat('dd/MM/yyyy').format(fechaExamen!);
     totalHorasModuloController.value.text =
         entrenamientoModulo!.inTotalHoras.toString();
     horasAcumuladasController.text =
         entrenamientoModulo!.inHorasAcumuladas.toString();
     horasMinestarController.text =
         entrenamientoModulo!.inHorasMinestar.toString();
-    tituloModal.value= entrenamientoModulo!.modulo.nombre!;
+    tituloModal.value =
+        'Editar Módulo - ${entrenamientoModulo!.modulo.nombre!}';
+
+    personalDropdownController.getSelectedValue(entrenamientoModulo!.inEntrenador.toString());
   }
 }

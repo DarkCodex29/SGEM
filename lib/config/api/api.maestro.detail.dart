@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 
 class MaestroDetalleService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
+    final String baseUrl = ConfigFile.apiUrl;
 
   final Dio dio = Dio();
 

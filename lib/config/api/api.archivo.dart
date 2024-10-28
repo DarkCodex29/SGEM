@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 
 class ArchivoService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
+  final String baseUrl = ConfigFile.apiUrl;
   final Dio dio = Dio();
 
   ArchivoService() {
@@ -84,7 +84,7 @@ class ArchivoService {
           followRedirects: false,
         ),
       );
-log(response.data.toString());
+      log(response.data.toString());
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<List<dynamic>>(response.data);
       } else {

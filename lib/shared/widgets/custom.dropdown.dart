@@ -45,7 +45,7 @@ class CustomDropdownState extends State<CustomDropdown> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 50,
+                  height: 65,
                   child: DropdownButtonFormField<String>(
                     value: widget.selectedValue,
                     isExpanded: true,
@@ -90,8 +90,15 @@ class CustomDropdownState extends State<CustomDropdown> {
                       widget.selectedValue ?? widget.hintText,
                       style: const TextStyle(color: Colors.grey),
                     ),
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Campo requerido';
+                      }
+                      return null;
+                    },
                   ),
                 ),
+                
                 if (widget.isSearchable && !widget.isReadOnly)
                   _buildSearchBar(),
               ],
@@ -134,7 +141,6 @@ class CustomDropdownState extends State<CustomDropdown> {
   }
 }
 
-
 abstract class DropdownElement {
   // Definición de una interfaz implícita
   String get value;
@@ -145,21 +151,17 @@ abstract class DropdownElement {
     // TODO: implement toString
     return value;
   }
-  
 }
 
 class Binding<T> {
   final void Function(T?) set;
   final T? Function() get;
 
-  const Binding({
-    required this.set,
-    required this.get
-  });
-
+  const Binding({required this.set, required this.get});
 }
 
-class CustomGenericDropdown<Element extends DropdownElement> extends StatefulWidget {
+class CustomGenericDropdown<Element extends DropdownElement>
+    extends StatefulWidget {
   final String hintText;
   final List<Element> options;
   final bool isSearchable;
@@ -181,7 +183,8 @@ class CustomGenericDropdown<Element extends DropdownElement> extends StatefulWid
   CustomGenericDropdownState createState() => CustomGenericDropdownState();
 }
 
-class CustomGenericDropdownState<Element extends DropdownElement> extends State<CustomGenericDropdown<Element>> {
+class CustomGenericDropdownState<Element extends DropdownElement>
+    extends State<CustomGenericDropdown<Element>> {
   List<Element> filteredOptions = [];
 
   @override
@@ -231,9 +234,7 @@ class CustomGenericDropdownState<Element extends DropdownElement> extends State<
                         horizontal: 12.0,
                       ),
                     ),
-                    onChanged: (option) => {
-                      widget.selectedValue.set(option)
-                    },
+                    onChanged: (option) => {widget.selectedValue.set(option)},
                     items: filteredOptions.map((Element option) {
                       return DropdownMenuItem<Element>(
                         value: option,
@@ -266,7 +267,7 @@ class CustomGenericDropdownState<Element extends DropdownElement> extends State<
       ),
     );
   }
-  
+
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.only(top: 10),

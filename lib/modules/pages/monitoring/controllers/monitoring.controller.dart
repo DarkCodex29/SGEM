@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:sgem/config/api/api.monitoring.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/shared/modules/monitoring.save.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
@@ -22,6 +23,16 @@ class CreateMonitoringController extends GetxController {
   final fechaProximoMonitoreoController = TextEditingController();
   final fechaRealMonitoreoController = TextEditingController();
   final horasController = TextEditingController();
+  final modelMonitoring = MonitoingSave(
+      inTipoActividad: 0,
+      inTipoPersona: 0,
+      //inPersona: selectedPersonKey.value,
+      inPersona: 0,
+      inEquipo: 0,
+      inEntrenador: 0,
+      inCondicion: 0,
+      inTotalHoras: 0,
+      estadoEntrenamiento: OptionValue());
 
   RxBool isLoadingCodeMcp = false.obs;
   RxBool isSaving = false.obs;
@@ -36,13 +47,42 @@ class CreateMonitoringController extends GetxController {
   var selectedCondicionKey = RxnInt();
   var selectedPersonKey = RxnInt();
 
-  Future<void> saveMonitoring(BuildContext context) async {
+  clearModel() {
+    modelMonitoring ==
+        MonitoingSave(
+          inTipoActividad: 0,
+          inTipoPersona: 0,
+          //inPersona: selectedPersonKey.value,
+          inPersona: 0,
+          inEquipo: 0,
+          inEntrenador: 0,
+          inCondicion: 0,
+          inTotalHoras: 0,
+          estadoEntrenamiento: OptionValue(),
+        );
+  }
+
+  Future<bool> saveMonitoring(BuildContext context) async {
+    bool state = false;
     try {
+      modelMonitoring.inPersona = 1;
+      modelMonitoring.inEquipo = selectedEquipoKey.value;
+      modelMonitoring.inEquipo = selectedEquipoKey.value;
+      modelMonitoring.inEntrenador = selectedEntrenadorKey.value;
+      modelMonitoring.inCondicion = selectedCondicionKey.value;
+      modelMonitoring.fechaProximoMonitoreo =
+          DateTime.parse(fechaProximoMonitoreoController.text);
+      modelMonitoring.fechaRealMonitoreo =
+          DateTime.parse(fechaRealMonitoreoController.text);
+      modelMonitoring.inTotalHoras = int.parse(horasController.text);
+
       final response =
-          await monitoringService.registerMonitoring(setModelMonitoring());
+          await monitoringService.registerMonitoring(modelMonitoring);
       if (response.success) {
         // ignore: use_build_context_synchronously
         _mostrarMensajeGuardado(context);
+        clearModel();
+        state = true;
       } else {
         _mostrarErroresValidacion(Get.context!, ['Error al guardar monitoreo']);
       }
@@ -51,21 +91,32 @@ class CreateMonitoringController extends GetxController {
     } finally {
       isLoandingSave.value = false;
     }
+    return state;
   }
 
-  MonitoingSave setModelMonitoring() {
-    return MonitoingSave(
-      inTipoActividad: 3,
-      inTipoPersona: 1,
-      inPersona: selectedPersonKey.value,
-      inEquipo: selectedEquipoKey.value,
-      inEntrenador: selectedEntrenadorKey.value,
-      inCondicion: selectedCondicionKey.value,
-      fechaProximoMonitoreo:
-          DateTime.parse(fechaProximoMonitoreoController.text),
-      fechaRealMonitoreo: DateTime.parse(fechaRealMonitoreoController.text),
-      inTotalHoras: int.parse(horasController.text),
-    );
+  Future<bool> deleteMonitoring(BuildContext context) async {
+    bool state = false;
+    try {
+      final response =
+          await monitoringService.deleteMonitoring(modelMonitoring);
+      if (response.success) {
+        _mostrarMensajeGuardado(
+          // ignore: use_build_context_synchronously
+          context,
+          title: "Monitoreo Eliminado",
+        );
+        state = true;
+        clearModel();
+      } else {
+        _mostrarErroresValidacion(
+            Get.context!, ['Error al Eliminar monitoreo']);
+      }
+    } catch (e) {
+      log('Error: $e');
+    } finally {
+      isLoandingSave.value = false;
+    }
+    return state;
   }
 
   Future<void> searchPersonByCodeMcp() async {
@@ -115,7 +166,7 @@ class CreateMonitoringController extends GetxController {
     guardController.text = person.guardia.nombre;
     stateTrainingController.text = "";
     moduleController.text = "";
-    selectedPersonKey.value=person.inPersonalOrigen;
+    selectedPersonKey.value = person.inPersonalOrigen;
   }
 
   resetInfoPerson() {
@@ -126,11 +177,14 @@ class CreateMonitoringController extends GetxController {
     moduleController.text = "";
   }
 
-  void _mostrarMensajeGuardado(BuildContext context) {
+  void _mostrarMensajeGuardado(BuildContext context,
+      {String title = "Los datos se guardaron \nsatisfactoriamente"}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const MensajeGuardadoWidget();
+        return MensajeGuardadoWidget(
+          title: title,
+        );
       },
     );
   }

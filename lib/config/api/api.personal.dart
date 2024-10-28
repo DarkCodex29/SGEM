@@ -3,11 +3,11 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class PersonalService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
+    final String baseUrl = ConfigFile.apiUrl;
 
   final Dio dio = Dio();
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/monitoring/controllers/monitoring.controller.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
-import 'package:sgem/modules/pages/monitoring/widget/monitoring.card.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/table/custom.table.text.dart';
 import 'package:sgem/shared/widgets/table/data.table.dart';
 
@@ -14,10 +15,12 @@ class DetailTableMonitoring extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final CreateMonitoringController createMonitoringController =
+        Get.put(CreateMonitoringController());
     return Obx(() {
       return Container(
         width: double.infinity,
-        height: 450,
+        height: 550,
         padding: const EdgeInsets.all(5.0),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -29,8 +32,9 @@ class DetailTableMonitoring extends StatelessWidget {
           children: [
             actionsWidgets(),
             Expanded(
-              child: MonitoringCardWidget(
-                child: DataTable3(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DataTable2(
                   showBottomBorder: true,
                   columnSpacing: 20.0,
                   minWidth: 2190.0,
@@ -180,7 +184,8 @@ class DetailTableMonitoring extends StatelessWidget {
                           title: "",
                         )),
                         DataCell(Padding(
-                          padding: const EdgeInsets.only(left: 10,right: 10,top: 3,bottom: 3),
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, top: 3, bottom: 3),
                           child: Row(
                             children: [
                               Expanded(
@@ -196,9 +201,7 @@ class DetailTableMonitoring extends StatelessWidget {
                                   child: IconButton(
                                     icon: const Icon(Icons.edit),
                                     color: AppTheme.backgroundBlue,
-                                    onPressed: () {
-                                      
-                                    },
+                                    onPressed: () {},
                                   ),
                                 ),
                               ),
@@ -216,8 +219,12 @@ class DetailTableMonitoring extends StatelessWidget {
                                   child: IconButton(
                                     icon: const Icon(Icons.delete),
                                     color: Colors.red,
-                                    onPressed: () {
-                                      
+                                    onPressed: () async {
+                                      onDelete(
+                                        context,
+                                        createMonitoringController,
+                                        controller.monitoringAll[index].key!,
+                                      );
                                     },
                                   ),
                                 ),
@@ -230,11 +237,43 @@ class DetailTableMonitoring extends StatelessWidget {
                   }),
                 ),
               ),
-            )
+            ),
+            _buildSeccionResultadoTablaPaginado()
           ],
         ),
       );
     });
+  }
+
+  void onDelete(BuildContext contextapp,
+      CreateMonitoringController createController, int key) async {
+    await showDialog(
+      context: contextapp,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Padding(
+            padding: MediaQuery.of(context).viewInsets,
+            child: DeleteReasonWidget(
+              entityType: 'módulo',
+              onCancel: () {
+                Navigator.pop(context);
+              },
+              onConfirm: (motivo) async {
+                // motivoEliminacion = motivo;
+                Navigator.pop(context);
+                createController.modelMonitoring.motivoEliminado = motivo;
+                createController.modelMonitoring.key = key;
+                final state = await createController.deleteMonitoring(contextapp);
+                if (state) {
+                  controller.searchMonitoring();
+                }
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   SizedBox actionsWidgets() {
@@ -301,6 +340,73 @@ class DetailTableMonitoring extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSeccionResultadoTablaPaginado() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Obx(() => Text(
+              'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
+              '${controller.currentPage.value * controller.rowsPerPage.value > controller.totalRecords.value ? controller.totalRecords.value : controller.currentPage.value * controller.rowsPerPage.value} '
+              'de ${controller.totalRecords.value} registros',
+              style: const TextStyle(fontSize: 14),
+            )),
+        Obx(
+          () => Row(
+            children: [
+              const Text("Items por página: "),
+              DropdownButton<int>(
+                value: controller.rowsPerPage.value > 0 &&
+                        controller.rowsPerPage.value <= 50
+                    ? controller.rowsPerPage.value
+                    : null,
+                items: [10, 20, 50]
+                    .map((value) => DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(value.toString()),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    controller.rowsPerPage.value = value;
+                    controller.currentPage.value = 1;
+                    controller.searchMonitoring(
+                        pageNumber: controller.currentPage.value,
+                        pageSize: value);
+                  }
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: controller.currentPage.value > 1
+                    ? () {
+                        controller.currentPage.value--;
+                        controller.searchMonitoring(
+                            pageNumber: controller.currentPage.value,
+                            pageSize: controller.rowsPerPage.value);
+                      }
+                    : null,
+              ),
+              Text(
+                  '${controller.currentPage.value} de ${controller.totalPages.value}'),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed:
+                    controller.currentPage.value < controller.totalPages.value
+                        ? () {
+                            controller.currentPage.value++;
+                            controller.searchMonitoring(
+                                pageNumber: controller.currentPage.value,
+                                pageSize: controller.rowsPerPage.value);
+                          }
+                        : null,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

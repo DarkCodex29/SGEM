@@ -7,9 +7,9 @@ import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.contro
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
-import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/custom.text.fromfield.dart';
 
-class FormMonitoringWidget extends StatelessWidget {
+class FormMonitoringWidget extends StatefulWidget {
   const FormMonitoringWidget(
       {super.key,
       required this.isSmallScreen,
@@ -22,248 +22,268 @@ class FormMonitoringWidget extends StatelessWidget {
   final bool isEditing;
 
   @override
+  State<FormMonitoringWidget> createState() => _FormMonitoringWidgetState();
+}
+
+class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(color: Colors.grey.shade300),
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(22.0),
+              child: Column(
+                children: [
+                  if (widget.isSmallScreen)
+                    Column(
+                      children: [
+                        _buildDropdownEstadoEntrenamiento(),
+                        const SizedBox(height: 10),
+                        _buildDropdownEquipo(),
+                        const SizedBox(height: 10),
+                        CustomTextFormField(
+                          label: "Horas",
+                          controller:
+                              widget.createMonitoringController.horasController,
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdownEntrenadorResponsable(),
+                        const SizedBox(height: 10),
+                        CustomTextFormField(
+                          label: "Fecha real de monitoreo",
+                          isReadOnly: true,
+                          controller: widget.createMonitoringController
+                              .fechaRealMonitoreoController,
+                          icon: const Icon(Icons.calendar_month),
+                          onIconPressed: () {
+                            _chooseDate(context);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextFormField(
+                          label: "Fecha Apróximada de monitoreo",
+                          isReadOnly: true,
+                          controller: widget.createMonitoringController
+                              .fechaProximoMonitoreoController,
+                          icon: const Icon(Icons.calendar_month),
+                          onIconPressed: () {
+                            _chooseDate(context);
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        _buildDropdownCondition(),
+                        const SizedBox(height: 10),
+                        CustomTextFormField(
+                          label: "Comentarios",
+                          controller: TextEditingController(text: ""),
+                        ),
+                      ],
+                    )
+                  else
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildDropdownEstadoEntrenamiento(),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _buildDropdownEquipo(),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextFormField(
+                                label: "Horas",
+                                controller: widget
+                                    .createMonitoringController.horasController,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildDropdownEntrenadorResponsable(),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextFormField(
+                                label: "Fecha real de monitoreo",
+                                isReadOnly: true,
+                                controller: widget.createMonitoringController
+                                    .fechaRealMonitoreoController,
+                                icon: const Icon(Icons.calendar_month),
+                                onIconPressed: () async {
+                                  final date = await _chooseDate(context);
+                                  widget
+                                      .createMonitoringController
+                                      .fechaRealMonitoreoController
+                                      .text = date.toString();
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextFormField(
+                                label: "Fecha Apróximada de monitoreo",
+                                isReadOnly: true,
+                                controller: widget.createMonitoringController
+                                    .fechaProximoMonitoreoController,
+                                icon: const Icon(Icons.calendar_month),
+                                onIconPressed: () async {
+                                  final date = await _chooseDate(context);
+                                  widget
+                                      .createMonitoringController
+                                      .fechaProximoMonitoreoController
+                                      .text = date.toString();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildDropdownCondition(),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextFormField(
+                                label: "Comentarios",
+                                controller: TextEditingController(text: ""),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Container(),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(22.0),
-            child: Column(
-              children: [
-                if (isSmallScreen)
-                  Column(
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.only(left: 7),
+            child: RichText(
+              text: const TextSpan(
+                text: "Adjuntar Archivos: ",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                children: [
+                  TextSpan(
+                    text: "Archivo adjunto peso max:4MB",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: AppTheme.backgroundBlue,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: widget.isSmallScreen
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildDropdownEstadoEntrenamiento(),
+                      const Text("Monitoreo de equipos pesados:"),
                       const SizedBox(height: 10),
-                      _buildDropdownEquipo(),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        label: "Horas",
-                        controller: TextEditingController(text: ""),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildDropdownEntrenadorResponsable(),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        label: "Fecha real de monitoreo",
+                      CustomTextFormField(
+                        label: "",
                         isReadOnly: true,
+                        isRequired: false,
                         controller: TextEditingController(text: ""),
-                        icon: const Icon(Icons.calendar_month),
-                        onIconPressed: () {
-                          _chooseDate(context);
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        label: "Fecha Apróximada de monitoreo",
-                        isReadOnly: true,
-                        controller: TextEditingController(text: ""),
-                        icon: const Icon(Icons.calendar_month),
-                        onIconPressed: () {
-                          _chooseDate(context);
-                        },
-                      ),
-                      const SizedBox(height: 10),
-                      _buildDropdownCondition(),
-                      const SizedBox(height: 10),
-                      CustomTextField(
-                        label: "Comentarios",
-                        controller: TextEditingController(text: ""),
+                        icon: const Icon(Icons.attach_file),
+                        onIconPressed: () {},
                       ),
                     ],
                   )
-                else
-                  Column(
+                : Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildDropdownEstadoEntrenamiento(),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: _buildDropdownEquipo(),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Horas",
-                              controller: TextEditingController(text: ""),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildDropdownEntrenadorResponsable(),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Fecha real de monitoreo",
-                              isReadOnly: true,
-                              controller: createMonitoringController
-                                  .fechaRealMonitoreoController,
-                              icon: const Icon(Icons.calendar_month),
-                              onIconPressed: () async {
-                                final date = await _chooseDate(context);
-                                createMonitoringController
-                                    .fechaRealMonitoreoController
-                                    .text = date.toString();
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Fecha Apróximada de monitoreo",
-                              isReadOnly: true,
-                              controller: createMonitoringController
-                                  .fechaProximoMonitoreoController,
-                              icon: const Icon(Icons.calendar_month),
-                              onIconPressed: () async {
-                                final date = await _chooseDate(context);
-                                createMonitoringController
-                                    .fechaProximoMonitoreoController
-                                    .text = date.toString();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildDropdownCondition(),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Comentarios",
-                              controller: TextEditingController(text: ""),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Container(),
-                          ),
-                        ],
+                      const Text("Monitoreo de equipos pesados:"),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 250,
+                        child: CustomTextFormField(
+                          label: "",
+                          isReadOnly: true,
+                          isRequired: false,
+                          controller: TextEditingController(text: ""),
+                          icon: const Icon(Icons.attach_file),
+                          onIconPressed: () {},
+                        ),
                       ),
                     ],
                   ),
-              ],
-            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        Padding(
-          padding: const EdgeInsets.only(left: 7),
-          child: RichText(
-            text: const TextSpan(
-              text: "Adjuntar Archivos: ",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-              children: [
-                TextSpan(
-                  text: "Archivo adjunto peso max:4MB",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: AppTheme.backgroundBlue,
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: widget.isSmallScreen
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Otros:"),
+                      const SizedBox(height: 10),
+                      CustomTextFormField(
+                        label: "",
+                        isReadOnly: true,
+                        controller: TextEditingController(text: ""),
+                        icon: const Icon(Icons.attach_file),
+                        onIconPressed: () {},
+                        isRequired: false,
+                      ),
+                    ],
+                  )
+                : Row(
+                    children: [
+                      const SizedBox(width: 200, child: Text("Otros:")),
+                      const SizedBox(width: 10),
+                      SizedBox(
+                        width: 250,
+                        child: CustomTextFormField(
+                          label: "",
+                          isReadOnly: true,
+                          controller: TextEditingController(text: ""),
+                          icon: const Icon(Icons.attach_file),
+                          isRequired: false,
+                          onIconPressed: () {},
+                        ),
+                      ),
+                    ],
                   ),
-                )
-              ],
-            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: isSmallScreen
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Monitoreo de equipos pesados:"),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      label: "",
-                      isReadOnly: true,
-                      controller: TextEditingController(text: ""),
-                      icon: const Icon(Icons.attach_file),
-                      onIconPressed: () {},
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    const Text("Monitoreo de equipos pesados:"),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 250,
-                      child: CustomTextField(
-                        label: "",
-                        isReadOnly: true,
-                        controller: TextEditingController(text: ""),
-                        icon: const Icon(Icons.attach_file),
-                        onIconPressed: () {},
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: isSmallScreen
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Otros:"),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      label: "",
-                      isReadOnly: true,
-                      controller: TextEditingController(text: ""),
-                      icon: const Icon(Icons.attach_file),
-                      onIconPressed: () {},
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    const SizedBox(width: 200, child: Text("Otros:")),
-                    const SizedBox(width: 10),
-                    SizedBox(
-                      width: 250,
-                      child: CustomTextField(
-                        label: "",
-                        isReadOnly: true,
-                        controller: TextEditingController(text: ""),
-                        icon: const Icon(Icons.attach_file),
-                        onIconPressed: () {},
-                      ),
-                    ),
-                  ],
-                ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
-          child: _buildButtons(context),
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
+            child: _buildButtons(context),
+          )
+        ],
+      ),
     );
   }
 
   Widget _buildDropdownEstadoEntrenamiento() {
     return Obx(() {
-      if (monitoringSearchController.estadoEntrenamientoOpciones.isEmpty) {
+      if (widget
+          .monitoringSearchController.estadoEntrenamientoOpciones.isEmpty) {
         return const CupertinoActivityIndicator(
           radius: 10,
           color: Colors.grey,
@@ -271,30 +291,31 @@ class FormMonitoringWidget extends StatelessWidget {
       }
       return CustomDropdown(
         hintText: 'Selecciona Estado de Entrenamiento',
-        options: monitoringSearchController.estadoEntrenamientoOpciones
+        options: widget.monitoringSearchController.estadoEntrenamientoOpciones
             .map((option) => option.valor ?? "")
             .toList(),
-        selectedValue:
-            monitoringSearchController.selectedEstadoEntrenamientoKey.value !=
-                    null
-                ? monitoringSearchController.estadoEntrenamientoOpciones
-                    .firstWhere((option) =>
-                        option.key ==
-                        monitoringSearchController
-                            .selectedEstadoEntrenamientoKey.value)
-                    .valor
-                : null,
+        selectedValue: widget.monitoringSearchController
+                    .selectedEstadoEntrenamientoKey.value !=
+                null
+            ? widget.monitoringSearchController.estadoEntrenamientoOpciones
+                .firstWhere((option) =>
+                    option.key ==
+                    widget.monitoringSearchController
+                        .selectedEstadoEntrenamientoKey.value)
+                .valor
+            : null,
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
-          final selectedOption =
-              monitoringSearchController.estadoEntrenamientoOpciones.firstWhere(
+          final selectedOption = widget
+              .monitoringSearchController.estadoEntrenamientoOpciones
+              .firstWhere(
             (option) => option.valor == value,
           );
-          monitoringSearchController.selectedEstadoEntrenamientoKey.value =
-              selectedOption.key;
-          createMonitoringController.selectedEstadoEntrenamientoKey.value =
-              selectedOption.key;
+          widget.monitoringSearchController.selectedEstadoEntrenamientoKey
+              .value = selectedOption.key;
+          widget.createMonitoringController.selectedEstadoEntrenamientoKey
+              .value = selectedOption.key;
         },
       );
     });
@@ -302,23 +323,24 @@ class FormMonitoringWidget extends StatelessWidget {
 
   Widget _buildDropdownCondition() {
     return Obx(() {
-      if (monitoringSearchController.condicionOpciones.isEmpty) {
+      if (widget.monitoringSearchController.condicionOpciones.isEmpty) {
         return const CupertinoActivityIndicator(
           radius: 10,
           color: Colors.grey,
         );
       }
       List<MaestroDetalle> options =
-          monitoringSearchController.condicionOpciones;
+          widget.monitoringSearchController.condicionOpciones;
       return CustomDropdown(
         hintText: 'Selecciona condicion',
         options: options.map((option) => option.valor!).toList(),
         selectedValue:
-            monitoringSearchController.selectedCondicionKey.value != null
+            widget.monitoringSearchController.selectedCondicionKey.value != null
                 ? options
                     .firstWhere((option) =>
                         option.key ==
-                        monitoringSearchController.selectedCondicionKey.value)
+                        widget.monitoringSearchController.selectedCondicionKey
+                            .value)
                     .valor
                 : null,
         isSearchable: false,
@@ -327,9 +349,9 @@ class FormMonitoringWidget extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          monitoringSearchController.selectedCondicionKey.value =
+          widget.monitoringSearchController.selectedCondicionKey.value =
               selectedOption.key;
-          createMonitoringController.selectedCondicionKey.value =
+          widget.createMonitoringController.selectedCondicionKey.value =
               selectedOption.key;
         },
       );
@@ -338,22 +360,24 @@ class FormMonitoringWidget extends StatelessWidget {
 
   Widget _buildDropdownEquipo() {
     return Obx(() {
-      if (monitoringSearchController.equipoOpciones.isEmpty) {
+      if (widget.monitoringSearchController.equipoOpciones.isEmpty) {
         return const CupertinoActivityIndicator(
           radius: 10,
           color: Colors.grey,
         );
       }
-      List<MaestroDetalle> options = monitoringSearchController.equipoOpciones;
+      List<MaestroDetalle> options =
+          widget.monitoringSearchController.equipoOpciones;
       return CustomDropdown(
         hintText: 'Selecciona Equipo',
         options: options.map((option) => option.valor!).toList(),
         selectedValue:
-            monitoringSearchController.selectedEquipoKey.value != null
+            widget.monitoringSearchController.selectedEquipoKey.value != null
                 ? options
                     .firstWhere((option) =>
                         option.key ==
-                        monitoringSearchController.selectedEquipoKey.value)
+                        widget
+                            .monitoringSearchController.selectedEquipoKey.value)
                     .valor
                 : null,
         isSearchable: false,
@@ -362,9 +386,9 @@ class FormMonitoringWidget extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          monitoringSearchController.selectedEquipoKey.value =
+          widget.monitoringSearchController.selectedEquipoKey.value =
               selectedOption.key;
-          createMonitoringController.selectedEquipoKey.value =
+          widget.createMonitoringController.selectedEquipoKey.value =
               selectedOption.key;
         },
       );
@@ -373,22 +397,24 @@ class FormMonitoringWidget extends StatelessWidget {
 
   Widget _buildDropdownEntrenadorResponsable() {
     return Obx(() {
-      if (monitoringSearchController.equipoOpciones.isEmpty) {
+      if (widget.monitoringSearchController.equipoOpciones.isEmpty) {
         return const CupertinoActivityIndicator(
           radius: 10,
           color: Colors.grey,
         );
       }
-      List<Personal> options = monitoringSearchController.entrenadores;
+      List<Personal> options = widget.monitoringSearchController.entrenadores;
       return CustomDropdown(
         hintText: 'Selecciona Entrenador',
         options: options.map((option) => option.nombreCompleto).toList(),
         selectedValue:
-            monitoringSearchController.selectedEntrenadorKey.value != null
+            widget.monitoringSearchController.selectedEntrenadorKey.value !=
+                    null
                 ? options
                     .firstWhere((option) =>
                         option.inPersonalOrigen ==
-                        monitoringSearchController.selectedEntrenadorKey.value)
+                        widget.monitoringSearchController.selectedEntrenadorKey
+                            .value)
                     .nombreCompleto
                     .toString()
                 : null,
@@ -398,10 +424,10 @@ class FormMonitoringWidget extends StatelessWidget {
           final selectedOption = options.firstWhere(
             (option) => option.nombreCompleto == value,
           );
-          monitoringSearchController.selectedEntrenadorKey.value =
+          widget.monitoringSearchController.selectedEntrenadorKey.value =
               selectedOption.inPersonalOrigen;
-          createMonitoringController.selectedEntrenadorKey.value =
-              selectedOption.key;
+          widget.createMonitoringController.selectedEntrenadorKey.value =
+              selectedOption.inPersonalOrigen;
         },
       );
     });
@@ -447,7 +473,7 @@ class FormMonitoringWidget extends StatelessWidget {
       children: [
         TextButton(
           onPressed: () {
-            monitoringSearchController.screen.value =
+            widget.monitoringSearchController.screen.value =
                 MonitoringSearchScreen.none;
           },
           style: TextButton.styleFrom(
@@ -458,9 +484,18 @@ class FormMonitoringWidget extends StatelessWidget {
           child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
         ),
         ElevatedButton(
-          onPressed: createMonitoringController.isSaving.value
+          onPressed: widget.createMonitoringController.isSaving.value
               ? null
               : () async {
+                  if (_formKey.currentState!.validate()) {
+                    final state = await widget.createMonitoringController
+                        .saveMonitoring(context);
+                    if (state) {
+                      widget.monitoringSearchController.screen.value =
+                          MonitoringSearchScreen.none;
+                      widget.monitoringSearchController.searchMonitoring();
+                    }
+                  }
                   // bool success = false;
                   // String accion = isEditing ? 'actualizar' : 'registrar';
 
@@ -477,7 +512,7 @@ class FormMonitoringWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
           ),
           child: Obx(() {
-            return createMonitoringController.isSaving.value
+            return widget.createMonitoringController.isSaving.value
                 ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )

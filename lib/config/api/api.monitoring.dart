@@ -3,12 +3,12 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/monitoring.dart';
 import 'package:sgem/shared/modules/monitoring.save.dart';
 
 class MonitoringService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
+  final String baseUrl = ConfigFile.apiUrl;
 
   final Dio dio = Dio();
 
@@ -75,9 +75,11 @@ class MonitoringService {
     }
   }
 
-  Future<ResponseHandler<bool>> registerMonitoring(MonitoingSave monitoring) async {
+  Future<ResponseHandler<bool>> registerMonitoring(
+      MonitoingSave monitoring) async {
     final url = '$baseUrl/monitoreo/RegistrarMonitoreo';
     try {
+      log(jsonEncode(monitoring.toJson()));
       final response = await dio.post(
         url,
         data: jsonEncode(monitoring.toJson()),
@@ -87,7 +89,41 @@ class MonitoringService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+        if (response.data == true) {
+          return ResponseHandler.handleSuccess<bool>(true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: response.data['Message'] ?? 'Error desconocido',
+          );
+        }
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al registrar monitoreo',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al registrar monitoreo. Datos: ${jsonEncode(monitoring.toJson())}, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<bool>> deleteMonitoring(
+      MonitoingSave monitoring) async {
+    final url = '$baseUrl/monitoreo/EliminarMonitoreo';
+    try {
+      log(jsonEncode(monitoring.toJson()));
+      final response = await dio.delete(
+        url,
+        data: jsonEncode(monitoring.toJson()),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data == true) {
           return ResponseHandler.handleSuccess<bool>(true);
         } else {
           return ResponseHandler(

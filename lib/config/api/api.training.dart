@@ -9,8 +9,7 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import '../../shared/modules/entrenamiento.consulta.dart';
 
 class TrainingService {
-  final String baseUrl =
-      'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
+    final String baseUrl = ConfigFile.apiUrl;
 
   final Dio dio = Dio();
 

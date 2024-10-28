@@ -10,6 +10,7 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import '../../../config/api/api.maestro.detail.dart';
@@ -294,15 +295,28 @@ class CapacitacionController extends GetxController {
     screenPage.value = CapacitacionScreen.none;
   }
 
-  Future<bool> eliminarCapacitacion(
-      EntrenamientoModulo capacitacion, String motivoEliminacion) async {
+  Future<bool> eliminarCapacitacion(String motivoEliminacion) async {
     try {
-      capacitacion.key = selectedCapacitacion.value!.key;
-      capacitacion.motivoEliminado = motivoEliminacion;
+      if (selectedCapacitacion.value == null) {
+        log('No hay ninguna capacitación seleccionada');
+        return false;
+      }
+      EntrenamientoModulo capacitacion = EntrenamientoModulo(
+        key: selectedCapacitacion.value!.key,
+        motivoEliminado: motivoEliminacion,
+        modulo: OptionValue(key: 0, nombre: ''),
+        equipo: OptionValue(key: 0, nombre: ''),
+        entrenador: OptionValue(key: 0, nombre: ''),
+        condicion: OptionValue(key: 0, nombre: ''),
+        estadoEntrenamiento: OptionValue(key: 0, nombre: ''),
+      );
 
       final response = await capacitacionService.eliminarModulo(capacitacion);
+      log('Respuesta recibida: ${response.data}');
       if (response.success) {
         log('Capacitación eliminada con éxito');
+        //buscarCapacitaciones(
+        //  pageNumber: currentPage.value, pageSize: rowsPerPage.value);
         return true;
       } else {
         log('Error al eliminar la capacitación: ${response.message}');

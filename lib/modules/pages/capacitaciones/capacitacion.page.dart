@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.page.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
-import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
@@ -656,16 +655,13 @@ class CapacitacionPage extends StatelessWidget {
                                       log('Error: No hay capacitación seleccionada');
                                       return;
                                     }
-
                                     if (!confirmarEliminar) {
                                       return;
                                     }
-
                                     try {
-                                      EntrenamientoModulo? capacitacion;
                                       bool success =
                                           await controller.eliminarCapacitacion(
-                                              capacitacion!, motivoEliminacion);
+                                              motivoEliminacion);
                                       if (success == true) {
                                         await showDialog(
                                           context: Get.context!,

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.page.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
@@ -659,10 +660,12 @@ class CapacitacionPage extends StatelessWidget {
                                     if (!confirmarEliminar) {
                                       return;
                                     }
+
                                     try {
-                                      //  await controller.eliminarCapacitacion(
-                                      //    motivoEliminacion);
-                                      bool success = true;
+                                      EntrenamientoModulo? capacitacion;
+                                      bool success =
+                                          await controller.eliminarCapacitacion(
+                                              capacitacion!, motivoEliminacion);
                                       if (success == true) {
                                         await showDialog(
                                           context: Get.context!,

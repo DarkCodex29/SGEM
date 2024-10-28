@@ -297,6 +297,7 @@ class CapacitacionController extends GetxController {
   Future<bool> eliminarCapacitacion(
       EntrenamientoModulo capacitacion, String motivoEliminacion) async {
     try {
+      capacitacion.key = selectedCapacitacion.value!.key;
       capacitacion.motivoEliminado = motivoEliminacion;
 
       final response = await capacitacionService.eliminarModulo(capacitacion);

@@ -13,6 +13,7 @@ class CustomDropdown extends StatelessWidget {
   final bool isReadOnly;
   final GenericDropdownController? controller;
   final List<OptionValue>? staticOptions;
+  final OptionValue? initialValue; // Nuevo parámetro
   final void Function(OptionValue?)? onChanged;
 
   const CustomDropdown({
@@ -21,6 +22,7 @@ class CustomDropdown extends StatelessWidget {
     required this.noDataHintText,
     this.controller,
     this.staticOptions,
+    this.initialValue, // Incluimos el valor inicial
     this.onChanged,
     this.isSearchable = false,
     this.isRequired = false,
@@ -82,9 +84,7 @@ class CustomDropdown extends StatelessWidget {
     return SizedBox(
       height: 50,
       child: DropdownButtonFormField<OptionValue>(
-        value: controller != null
-            ? controller!.getSelectedValue(dropdownKey)
-            : staticOptions?.first,
+        value: initialValue ?? controller?.getSelectedValue(dropdownKey),
         isExpanded: true,
         hint: Text(
           options.isEmpty ? noDataHintText : hintText,
@@ -129,9 +129,9 @@ class CustomDropdown extends StatelessWidget {
           );
         }).toList(),
         disabledHint: Text(
-          controller != null
-              ? controller!.getSelectedValue(dropdownKey)?.nombre ?? hintText
-              : hintText,
+          initialValue?.nombre ??
+              controller?.getSelectedValue(dropdownKey)?.nombre ??
+              hintText,
           style: const TextStyle(color: Colors.grey),
         ),
       ),

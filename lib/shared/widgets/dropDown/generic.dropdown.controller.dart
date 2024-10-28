@@ -20,30 +20,11 @@ class GenericDropdownController extends GetxController {
     }
   }
 
-  // Future<void> loadOptions(
-  //     String key, Future<List<OptionValue>> Function() getOptions) async {
-  //   initializeDropdown(key);
-  //   isLoadingMap[key]!.value = true;
-  //   try {
-  //     var loadedOptions = await getOptions();
-  //     optionsMap[key]!.assignAll(loadedOptions);
-  //   } catch (e) {
-  //     log('Error loading options for $key: $e');
-  //   } finally {
-  //     isLoadingMap[key]!.value = false;
-  //   }
-  // }
   Future<void> loadOptions(
       String key, Future<List<OptionValue>?> Function() getOptions) async {
     initializeDropdown(key);
 
-    // if (isLoadingMap[key] == null) {
-    //   log('Error: isLoadingMap[$key] no está inicializado');
-    //   return;
-    // }
-
-    // Previene cargas duplicadas
-    if (isLoadingMap[key]!.value) return;
+    if (isLoadingMap[key]!.value) return; // Previene cargas duplicadas
 
     isLoadingMap[key]!.value = true;
     try {
@@ -59,13 +40,17 @@ class GenericDropdownController extends GetxController {
   void selectValue(String key, OptionValue? value) {
     if (selectedValueMap.containsKey(key)) {
       selectedValueMap[key]!.value = value;
+      selectedValueKey?.value = value?.key ?? 0;
     }
   }
 
   void selectValueKey(String key, int? value) {
-    if (selectedValueMap.containsKey(key)) {
-      selectedValueKey?.value=value!;
-      selectedValueMap[key]!.value?.key = selectedValueKey?.value;
+    if (selectedValueMap.containsKey(key) && value != null) {
+      selectedValueKey?.value = value;
+      var matchingOption = optionsMap[key]?.firstWhere(
+          (option) => option.key == value,
+          orElse: () => OptionValue(key: value, nombre: "No encontrado"));
+      selectedValueMap[key]!.value = matchingOption;
     }
   }
 

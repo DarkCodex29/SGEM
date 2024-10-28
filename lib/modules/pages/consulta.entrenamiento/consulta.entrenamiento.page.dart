@@ -142,7 +142,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown<MaestroDetalle>(
+          child: CustomDropdown(
             dropdownKey: 'condicion',
             hintText: 'Selecciona condicion',
             noDataHintText: 'No se encontraron capacitaciones',

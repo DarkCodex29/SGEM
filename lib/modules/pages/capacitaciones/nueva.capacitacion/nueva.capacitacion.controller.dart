@@ -64,10 +64,10 @@ class NuevaCapacitacionController extends GetxController {
 
   RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
 
-  final GenericDropdownController<MaestroDetalle> dropdownController =
-      Get.put(GenericDropdownController<MaestroDetalle>());
-  final GenericDropdownController<Personal> personalDropdownController =
-      Get.put(GenericDropdownController<Personal>());
+  final GenericDropdownController dropdownController =
+      Get.put(GenericDropdownController());
+  // final GenericDropdownController<Personal> personalDropdownController =
+  //     Get.put(GenericDropdownController<Personal>());
 
   // MODELOS
   EntrenamientoModulo? entrenamientoModulo;

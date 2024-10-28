@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';
@@ -173,7 +174,7 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.documentoIdentidadController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown<MaestroDetalle>(
+                          CustomDropdown(
                             dropdownKey: 'guardia',
                             hintText: 'Selecciona guardia',
                             noDataHintText: 'No se encontraron guardias',
@@ -190,11 +191,15 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown<String>(
+                          CustomDropdown(
                             dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
                             noDataHintText: "No hay datos de estado",
-                            staticOptions: const ["Activo", "Cesado", "Todos"],
+                            staticOptions: [
+                              OptionValue(key: 95, nombre: "Activo"),
+                              OptionValue(key: 96, nombre: "Cesado"),
+                              OptionValue(key: null, nombre: "Todos")
+                            ],
                             isSearchable: false,
                             isRequired: false,
                             onChanged: (value) {
@@ -251,11 +256,15 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown<String>(
+                          CustomDropdown(
                             dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
                             noDataHintText: "No hay datos de estado",
-                            staticOptions: const ["Activo", "Cesado", "Todos"],
+                            staticOptions: [
+                              OptionValue(key: 95, nombre: "Activo"),
+                              OptionValue(key: 96, nombre: "Cesado"),
+                              OptionValue(key: null, nombre: "Todos")
+                            ],
                             isSearchable: false,
                             isRequired: false,
                             onChanged: (value) {
@@ -288,14 +297,14 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: CustomDropdown<String>(
+                            child: CustomDropdown(
                               dropdownKey: 'estadoDropdown',
                               hintText: "Estado",
                               noDataHintText: "No hay datos de estado",
-                              staticOptions: const [
-                                "Activo",
-                                "Cesado",
-                                "Todos"
+                              staticOptions: [
+                                OptionValue(key: 95, nombre: "Activo"),
+                                OptionValue(key: 96, nombre: "Cesado"),
+                                OptionValue(key: null, nombre: "Todos")
                               ],
                               isSearchable: false,
                               isRequired: false,

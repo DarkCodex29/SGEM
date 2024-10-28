@@ -94,7 +94,7 @@ class CapacitacionService {
 
   Future<ResponseHandler<bool>> _manageCapacitacion(
       String url, String method, EntrenamientoModulo capacitacion) async {
-    log('$method modulo: ${jsonEncode(capacitacion.toJson())}');
+    log('$method capacitación: ${jsonEncode(capacitacion.toJson())}');
 
     try {
       Response response;
@@ -142,19 +142,19 @@ class CapacitacionService {
 
   Future<ResponseHandler<bool>> registrarModulo(
       EntrenamientoModulo capacitacion) async {
-    const url = '${ConfigFile.apiUrl}/modulo/RegistrarModulo';
+    const url = '${ConfigFile.apiUrl}/Capacitacion/RegistrarCapacitacion';
     return _manageCapacitacion(url, 'POST', capacitacion);
   }
 
   Future<ResponseHandler<bool>> actualizarModulo(
       EntrenamientoModulo capacitacion) async {
-    const url = '${ConfigFile.apiUrl}/modulo/ActualizarModulo';
+    const url = '${ConfigFile.apiUrl}/Capacitacion/ActualizarCapacitacion';
     return _manageCapacitacion(url, 'PUT', capacitacion);
   }
 
   Future<ResponseHandler<bool>> eliminarModulo(
       EntrenamientoModulo capacitacion) async {
-    const url = '${ConfigFile.apiUrl}/modulo/EliminarModulo';
+    const url = '${ConfigFile.apiUrl}/Capacitacion/EliminarCapacitacion';
     return _manageCapacitacion(url, 'DELETE', capacitacion);
   }
 
@@ -162,7 +162,7 @@ class CapacitacionService {
       int idCapacitacion) async {
     const url = '${ConfigFile.apiUrl}/Capacitacion/ObtenerCapacitacionPorId';
     log('Obteniendo capacitación por ID: $idCapacitacion');
-    
+
     try {
       final response = await dio.get(
         url,

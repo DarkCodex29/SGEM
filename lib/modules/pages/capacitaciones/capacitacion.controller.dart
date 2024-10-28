@@ -315,8 +315,8 @@ class CapacitacionController extends GetxController {
       log('Respuesta recibida: ${response.data}');
       if (response.success) {
         log('Capacitación eliminada con éxito');
-        //buscarCapacitaciones(
-        //  pageNumber: currentPage.value, pageSize: rowsPerPage.value);
+        buscarCapacitaciones(
+            pageNumber: currentPage.value, pageSize: rowsPerPage.value);
         return true;
       } else {
         log('Error al eliminar la capacitación: ${response.message}');

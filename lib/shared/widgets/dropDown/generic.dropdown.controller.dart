@@ -37,10 +37,10 @@ class GenericDropdownController extends GetxController {
       String key, Future<List<OptionValue>?> Function() getOptions) async {
     initializeDropdown(key);
 
-    if (isLoadingMap[key] == null) {
-      log('Error: isLoadingMap[$key] no está inicializado');
-      return;
-    }
+    // if (isLoadingMap[key] == null) {
+    //   log('Error: isLoadingMap[$key] no está inicializado');
+    //   return;
+    // }
 
     // Previene cargas duplicadas
     if (isLoadingMap[key]!.value) return;

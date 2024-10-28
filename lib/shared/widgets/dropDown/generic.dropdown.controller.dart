@@ -6,6 +6,7 @@ class GenericDropdownController extends GetxController {
   final isLoadingMap = <String, RxBool>{};
   final optionsMap = <String, RxList<OptionValue>>{};
   final selectedValueMap = <String, Rxn<OptionValue>>{};
+  RxInt? selectedValueKey = 0.obs;
 
   void initializeDropdown(String key) {
     if (!isLoadingMap.containsKey(key)) {
@@ -18,6 +19,7 @@ class GenericDropdownController extends GetxController {
       selectedValueMap[key] = Rxn<OptionValue>();
     }
   }
+
   // Future<void> loadOptions(
   //     String key, Future<List<OptionValue>> Function() getOptions) async {
   //   initializeDropdown(key);
@@ -57,6 +59,13 @@ class GenericDropdownController extends GetxController {
   void selectValue(String key, OptionValue? value) {
     if (selectedValueMap.containsKey(key)) {
       selectedValueMap[key]!.value = value;
+    }
+  }
+
+  void selectValueKey(String key, int? value) {
+    if (selectedValueMap.containsKey(key)) {
+      selectedValueKey?.value=value!;
+      selectedValueMap[key]!.value?.key = selectedValueKey?.value;
     }
   }
 

@@ -10,6 +10,7 @@ import '../../../../config/api/api.modulo.maestro.dart';
 import '../../../../config/api/api.entrenamiento.dart';
 import '../../../../shared/modules/entrenamiento.actualizacion.masiva.dart';
 import '../../../../shared/modules/maestro.detail.dart';
+import '../../../../shared/modules/option.value.dart';
 
 class ActualizacionMasivaController extends GetxController {
   RxBool isExpanded = true.obs;
@@ -39,10 +40,10 @@ class ActualizacionMasivaController extends GetxController {
 
   RxBool isLoadingGuardia = false.obs;
   final entrenamientoService = EntrenamientoService();
-  final GenericDropdownController<MaestroDetalle> dropdownController =
-      Get.put(GenericDropdownController<MaestroDetalle>());
-  final GenericDropdownController<ModuloMaestro> moduloDropdownController =
-      Get.put(GenericDropdownController<ModuloMaestro>());
+  final GenericDropdownController dropdownController =
+      Get.put(GenericDropdownController());
+  // final GenericDropdownController<ModuloMaestro> moduloDropdownController =
+  //     Get.put(GenericDropdownController<ModuloMaestro>());
   @override
   void onInit() {
     cargarDropdowns();
@@ -59,24 +60,48 @@ class ActualizacionMasivaController extends GetxController {
     dropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('equipo', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(5);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
-    moduloDropdownController.loadOptions('modulo', () async {
+    dropdownController.loadOptions('modulo', () async {
       var response = await moduloMaestroService.listarMaestros();
-      return response.success && response.data != null
-          ? response.data!
-          : <ModuloMaestro>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.modulo,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
   }
 

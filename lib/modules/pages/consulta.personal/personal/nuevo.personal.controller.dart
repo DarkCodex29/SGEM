@@ -15,6 +15,8 @@ import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
+import '../../../../shared/modules/option.value.dart';
+
 class NuevoPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
   final TextEditingController nombresController = TextEditingController();
@@ -60,8 +62,8 @@ class NuevoPersonalController extends GetxController {
   RxBool isLoadingDni = false.obs;
   RxBool isSaving = false.obs;
   List<String> errores = [];
-  final GenericDropdownController<MaestroDetalle> guardiaDropdownController =
-      Get.put(GenericDropdownController<MaestroDetalle>());
+  final GenericDropdownController guardiaDropdownController =
+      Get.put(GenericDropdownController());
   final maestroDetalleService = MaestroDetalleService();
 
   @override
@@ -74,9 +76,17 @@ class NuevoPersonalController extends GetxController {
     guardiaDropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
   }
 

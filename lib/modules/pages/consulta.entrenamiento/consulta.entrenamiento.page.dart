@@ -109,7 +109,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
             dropdownKey: 'modulo',
             hintText: 'Selecciona modulo',
             noDataHintText: 'No se encontraron capacitaciones',
-            controller: controller.moduloDropdownController,
+            controller: controller.dropdownController,
           ),
         ),
       ],

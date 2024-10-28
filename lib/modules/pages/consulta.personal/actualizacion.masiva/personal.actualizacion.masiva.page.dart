@@ -163,7 +163,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
             dropdownKey: 'modulo',
             hintText: 'Selecciona estado de avance',
             noDataHintText: 'No se encontraron estados de avance',
-            controller: controller.moduloDropdownController,
+            controller: controller.dropdownController,
           ),
         ),
         const SizedBox(

@@ -60,10 +60,10 @@ class CapacitacionController extends GetxController {
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
 
-  final GenericDropdownController<MaestroDetalle> dropdownController =
-      Get.put(GenericDropdownController<MaestroDetalle>());
-  final GenericDropdownController<Personal> personalDropdownController =
-      Get.put(GenericDropdownController<Personal>());
+  final GenericDropdownController dropdownController =
+      Get.put(GenericDropdownController());
+  // final GenericDropdownController<Personal> personalDropdownController =
+  //     Get.put(GenericDropdownController<Personal>());
 
   Rxn<CapacitacionConsulta> selectedCapacitacion = Rxn<CapacitacionConsulta>();
 
@@ -79,40 +79,80 @@ class CapacitacionController extends GetxController {
     dropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('categoria', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(9);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('empresaCapacitacion', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(8);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('capacitacion', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(7);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
-    personalDropdownController.loadOptions('entrenador', () async {
+    dropdownController.loadOptions('entrenador', () async {
       var response = await personalService.listarEntrenadores();
-      return response.success && response.data != null
-          ? response.data!
-          : <Personal>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.nombreCompleto,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
   }
 
@@ -145,7 +185,7 @@ class CapacitacionController extends GetxController {
         inEmpresaCapacitacion:
             dropdownController.getSelectedValue('empresaCapacitacion')?.key,
         inEntrenador:
-            personalDropdownController.getSelectedValue('entrenador')?.key,
+            dropdownController.getSelectedValue('entrenador')?.key,
         fechaInicio: fechaInicio,
         fechaTermino: fechaTermino,
         pageSize: pageSize,
@@ -345,6 +385,6 @@ class CapacitacionController extends GetxController {
 
     //dropdownController.resetSelection('guardia');
     dropdownController.resetAllSelections();
-    personalDropdownController.resetAllSelections();
+    //dropdownController.resetAllSelections();
   }
 }

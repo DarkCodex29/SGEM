@@ -18,7 +18,19 @@ class GenericDropdownController extends GetxController {
       selectedValueMap[key] = Rxn<OptionValue>();
     }
   }
-
+  // Future<void> loadOptions(
+  //     String key, Future<List<OptionValue>> Function() getOptions) async {
+  //   initializeDropdown(key);
+  //   isLoadingMap[key]!.value = true;
+  //   try {
+  //     var loadedOptions = await getOptions();
+  //     optionsMap[key]!.assignAll(loadedOptions);
+  //   } catch (e) {
+  //     log('Error loading options for $key: $e');
+  //   } finally {
+  //     isLoadingMap[key]!.value = false;
+  //   }
+  // }
   Future<void> loadOptions(
       String key, Future<List<OptionValue>> Function() getOptions) async {
     initializeDropdown(key);

@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import '../../../config/api/api.maestro.detail.dart';
 import '../../../config/api/api.personal.dart';
 import '../../../shared/modules/maestro.detail.dart';
+import '../../../shared/modules/option.value.dart';
 import '../../../shared/modules/personal.dart';
 import '../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 
@@ -73,8 +74,8 @@ class PersonalSearchController extends GetxController {
   var totalRecords = 0.obs;
 
   var isLoadingGuardia = false.obs;
-  final GenericDropdownController<MaestroDetalle> dropdownController =
-      Get.put(GenericDropdownController<MaestroDetalle>());
+  final GenericDropdownController dropdownController =
+      Get.put(GenericDropdownController());
 
   @override
   void onInit() {
@@ -101,9 +102,17 @@ class PersonalSearchController extends GetxController {
     dropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
   }
 

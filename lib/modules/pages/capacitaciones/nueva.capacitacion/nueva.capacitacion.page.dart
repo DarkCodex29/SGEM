@@ -307,7 +307,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   dropdownKey: 'entrenador',
                   hintText: 'Selecciona entrenador',
                   noDataHintText: 'No se encontraron entrenadores',
-                  controller: controller.personalDropdownController,
+                  controller: controller.dropdownController,
                 ),
               ),
             ],

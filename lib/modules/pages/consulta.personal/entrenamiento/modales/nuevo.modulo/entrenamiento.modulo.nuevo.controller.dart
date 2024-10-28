@@ -58,8 +58,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   RxList<Personal> entrenadoresOpciones = <Personal>[].obs;
 
-  final GenericDropdownController<Personal> personalDropdownController =
-      Get.put(GenericDropdownController<Personal>());
+  final GenericDropdownController personalDropdownController =
+      Get.put(GenericDropdownController());
 
   @override
   void onInit() {
@@ -70,9 +70,17 @@ class EntrenamientoModuloNuevoController extends GetxController {
   void cargarEntrenadores() async {
     personalDropdownController.loadOptions('entrenador', () async {
       var response = await personalService.listarEntrenadores();
-      return response.success && response.data != null
-          ? response.data!
-          : <Personal>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.nombreCompleto,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
   }
 

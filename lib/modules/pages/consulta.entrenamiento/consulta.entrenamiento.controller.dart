@@ -14,6 +14,7 @@ import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 import '../../../config/api/api.maestro.detail.dart';
+import '../../../shared/modules/option.value.dart';
 
 class ConsultaEntrenamientoController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
@@ -46,10 +47,10 @@ class ConsultaEntrenamientoController extends GetxController {
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
 
-  final GenericDropdownController<MaestroDetalle> dropdownController =
-      Get.put(GenericDropdownController<MaestroDetalle>());
-  final GenericDropdownController<ModuloMaestro> moduloDropdownController =
-      Get.put(GenericDropdownController<ModuloMaestro>());
+  final GenericDropdownController dropdownController =
+      Get.put(GenericDropdownController());
+  // final GenericDropdownController<ModuloMaestro> moduloDropdownController =
+  //     Get.put(GenericDropdownController());
 
   @override
   void onInit() {
@@ -70,40 +71,80 @@ class ConsultaEntrenamientoController extends GetxController {
     dropdownController.loadOptions('equipo', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(5);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('estadoEntrenamiento', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(4);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
     dropdownController.loadOptions('condicion', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(3);
-      return response.success && response.data != null
-          ? response.data!
-          : <MaestroDetalle>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.valor,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
 
-    moduloDropdownController.loadOptions('modulo', () async {
+    dropdownController.loadOptions('modulo', () async {
       var response = await moduloService.listarMaestros();
-      return response.success && response.data != null
-          ? response.data!
-          : <ModuloMaestro>[];
+      if (response.success && response.data != null) {
+        return  response.data!.map<OptionValue>((item) {
+          return OptionValue(
+            key: item.key,
+            nombre: item.modulo,
+          );
+        }).toList();
+      }
+      else {
+        return <OptionValue>[];
+      }
     });
   }
 
@@ -116,11 +157,11 @@ class ConsultaEntrenamientoController extends GetxController {
     try {
       var response = await entrenamientoService.consultarEntrenamientoPaginado(
         codigoMcp: codigoMcp,
-        inEquipo: dropdownController.getSelectedValue('equipo')?.id,
-        inModulo: dropdownController.getSelectedValue('modulo')?.id,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.id,
-        inEstadoEntrenamiento: dropdownController.getSelectedValue('estadoEntrenamiento')?.id,
-        inCondicion: dropdownController.getSelectedValue('condicion')?.id,
+        inEquipo: dropdownController.getSelectedValue('equipo')?.key,
+        inModulo: dropdownController.getSelectedValue('modulo')?.key,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
+        inEstadoEntrenamiento: dropdownController.getSelectedValue('estadoEntrenamiento')?.key,
+        inCondicion: dropdownController.getSelectedValue('condicion')?.key,
         fechaInicio: fechaInicio,
         fechaTermino: fechaTermino,
         nombres: nombres,

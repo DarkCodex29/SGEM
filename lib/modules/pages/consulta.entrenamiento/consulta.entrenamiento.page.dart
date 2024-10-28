@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sgem/modules/pages/trainings/trainings.controller.dart';
+import 'package:sgem/modules/pages/consulta.entrenamiento/consulta.entrenamiento.controller.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/maestro.detail.dart';

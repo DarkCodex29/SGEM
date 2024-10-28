@@ -217,11 +217,14 @@ class NuevaCapacitacionPage extends StatelessWidget {
           const Text('Datos de la persona externa',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
-          CustomTextField(
-            label: "DNI",
-            controller: controller.dniController,
-            icon: const Icon(Icons.search),
-            onIconPressed: () {},
+          SizedBox(
+            width: 200,
+            child: CustomTextField(
+              label: "DNI",
+              controller: controller.dniController,
+              icon: const Icon(Icons.search),
+              onIconPressed: () {},
+            ),
           ),
           const SizedBox(height: 12),
           Row(

@@ -9,7 +9,11 @@ class GenericDropdownController<T> extends GetxController {
   void initializeDropdown(String key) {
     if (!isLoadingMap.containsKey(key)) {
       isLoadingMap[key] = false.obs;
+    }
+    if (!optionsMap.containsKey(key)) {
       optionsMap[key] = <T>[].obs;
+    }
+    if (!selectedValueMap.containsKey(key)) {
       selectedValueMap[key] = Rxn<T>();
     }
   }
@@ -30,6 +34,16 @@ class GenericDropdownController<T> extends GetxController {
 
   void selectValue(String key, T? value) {
     selectedValueMap[key]?.value = value;
+  }
+
+  void resetSelection(String key) {
+    selectedValueMap[key]?.value = null;
+  }
+
+  void resetAllSelections() {
+    selectedValueMap.forEach((key, value) {
+      value.value = null;
+    });
   }
 
   bool isLoading(String key) => isLoadingMap[key]?.value ?? false;

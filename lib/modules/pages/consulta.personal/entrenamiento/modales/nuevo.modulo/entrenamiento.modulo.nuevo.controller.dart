@@ -1,8 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
@@ -12,7 +10,6 @@ import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../shared/widgets/alert/widget.alert.dart';
-import '../../../../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 import '../../entrenamiento.personal.controller.dart';
 
@@ -148,12 +145,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
     isLoadingModulo.value = true;
     try {
       final modulos = await trainingService
-          .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key);
+          .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key!);
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo!;
 
         int maxModulosPermitidos =
-            entrenamiento.condicion.nombre == "Experiencia" ? 2 : 4;
+            entrenamiento.condicion!.nombre! == "Experiencia" ? 2 : 4;
 
         if (ultimosModulos >= maxModulosPermitidos) {
           siguienteModulo = null;
@@ -246,7 +243,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
         EntrenamientoPersonalController controller =
             Get.find<EntrenamientoPersonalController>();
-        controller.fetchModulosPorEntrenamiento(entrenamiento.key);
+        controller.fetchModulosPorEntrenamiento(entrenamiento.key!);
 
         return true;
       } else {
@@ -396,8 +393,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
     horasMinestarController.text =
         entrenamientoModulo!.inHorasMinestar.toString();
     tituloModal.value =
-        'Editar Módulo - ${entrenamientoModulo!.modulo.nombre!}';
+        'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
 
-    personalDropdownController.getSelectedValue(entrenamientoModulo!.inEntrenador.toString());
+    personalDropdownController
+        .getSelectedValue(entrenamientoModulo!.inEntrenador.toString());
   }
 }

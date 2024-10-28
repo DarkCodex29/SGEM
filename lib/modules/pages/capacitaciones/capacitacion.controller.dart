@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
-import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
@@ -284,10 +283,8 @@ class CapacitacionController extends GetxController {
     screenPage.value = CapacitacionScreen.cargaMasivaCapacitacion;
   }
 
-  void showEditarCapacitacion(EntrenamientoModulo capacitacion) {
+  void showEditarCapacitacion(int capacitacionKey) {
     screenPage.value = CapacitacionScreen.editarCapacitacion;
-    NuevaCapacitacionController nuevaCapacitacionController = Get.find();
-    nuevaCapacitacionController.cargarDatosCapacitacion(capacitacion);
   }
 
   void showCapacitacionPage() {

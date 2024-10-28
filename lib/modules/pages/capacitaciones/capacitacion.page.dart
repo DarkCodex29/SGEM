@@ -44,9 +44,11 @@ class CapacitacionPage extends StatelessWidget {
               context,
             );
           case CapacitacionScreen.nuevaCapacitacion:
-            return NuevaCapacitacionPage();
+            return NuevaCapacitacionPage(isEditMode: false);
           case CapacitacionScreen.editarCapacitacion:
-            return const Placeholder();
+            return NuevaCapacitacionPage(
+                isEditMode: true,
+                capacitacionKey: controller.selectedCapacitacion.value!.key);
           case CapacitacionScreen.visualizarCapacitacion:
             return const Placeholder();
           case CapacitacionScreen.cargaMasivaCapacitacion:
@@ -546,10 +548,15 @@ class CapacitacionPage extends StatelessWidget {
                             child: Row(
                               children: [
                                 _buildIconButton(
-                                    Icons.edit, AppTheme.primaryColor, () {
-                                  //controller
-                                  //  .showEditarCapacitacion(entrenamiento);
-                                }),
+                                  Icons.edit,
+                                  AppTheme.primaryColor,
+                                  () async {
+                                    if (entrenamiento.key != null) {
+                                      controller.showEditarCapacitacion(
+                                          entrenamiento.key!);
+                                    }
+                                  },
+                                ),
                                 _buildIconButton(
                                   Icons.delete,
                                   AppTheme.errorColor,

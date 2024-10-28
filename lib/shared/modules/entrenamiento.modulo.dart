@@ -9,22 +9,22 @@ String entrenamientoModuloToJson(EntrenamientoModulo data) =>
     json.encode(data.toJson());
 
 class EntrenamientoModulo {
-  int key;
+  int? key;
   int? inTipoActividad;
   int? inCapacitacion;
   int? inModulo;
-  OptionValue modulo;
+  OptionValue? modulo;
   int? inTipoPersona;
   int? inPersona;
   int? inActividadEntrenamiento;
   int? inCategoria;
   int? inEquipo;
-  OptionValue equipo;
+  OptionValue? equipo;
   int? inEntrenador;
-  OptionValue entrenador;
+  OptionValue? entrenador;
   int? inEmpresaCapacitadora;
   int? inCondicion;
-  OptionValue condicion;
+  OptionValue? condicion;
   DateTime? fechaInicio;
   DateTime? fechaTermino;
   DateTime? fechaExamen;
@@ -36,29 +36,29 @@ class EntrenamientoModulo {
   int? inHorasAcumuladas;
   int? inHorasMinestar;
   int? inEstado;
-  OptionValue estadoEntrenamiento;
+  OptionValue? estadoEntrenamiento;
   String? comentarios;
   String? eliminado;
   String? motivoEliminado;
   String? observaciones;
 
   EntrenamientoModulo({
-    required this.key,
+    this.key,
     this.inTipoActividad,
     this.inCapacitacion,
     this.inModulo,
-    required this.modulo,
+    this.modulo,
     this.inTipoPersona,
     this.inPersona,
     this.inActividadEntrenamiento,
     this.inCategoria,
     this.inEquipo,
-    required this.equipo,
+    this.equipo,
     this.inEntrenador,
-    required this.entrenador,
+    this.entrenador,
     this.inEmpresaCapacitadora,
     this.inCondicion,
-    required this.condicion,
+    this.condicion,
     this.fechaInicio,
     this.fechaTermino,
     this.fechaExamen,
@@ -70,7 +70,7 @@ class EntrenamientoModulo {
     this.inHorasAcumuladas,
     this.inHorasMinestar,
     this.inEstado,
-    required this.estadoEntrenamiento,
+    this.estadoEntrenamiento,
     this.comentarios,
     this.eliminado,
     this.motivoEliminado,
@@ -78,10 +78,10 @@ class EntrenamientoModulo {
   });
 
   void actualizarConUltimoModulo(EntrenamientoModulo ultimoModulo) {
-    if (ultimoModulo.entrenador.nombre!.isNotEmpty) {
+    if (ultimoModulo.entrenador!.nombre!.isNotEmpty) {
       entrenador = ultimoModulo.entrenador;
     }
-    if (ultimoModulo.estadoEntrenamiento.nombre!.isNotEmpty) {
+    if (ultimoModulo.estadoEntrenamiento!.nombre!.isNotEmpty) {
       estadoEntrenamiento = ultimoModulo.estadoEntrenamiento;
     }
     inNotaTeorica = ultimoModulo.inNotaTeorica;
@@ -143,18 +143,18 @@ class EntrenamientoModulo {
         "InTipoActividad": inTipoActividad,
         "InCapacitacion": inCapacitacion,
         "InModulo": inModulo,
-        "Modulo": modulo.toJson(),
+        "Modulo": modulo!.toJson(),
         "InTipoPersona": inTipoPersona,
         "InPersona": inPersona,
         "InActividadEntrenamiento": inActividadEntrenamiento,
         "InCategoria": inCategoria,
         "InEquipo": inEquipo,
-        "Equipo": equipo.toJson(),
+        "Equipo": equipo!.toJson(),
         "InEntrenador": inEntrenador,
-        "Entrenador": entrenador.toJson(),
+        "Entrenador": entrenador!.toJson(),
         "InEmpresaCapacitadora": inEmpresaCapacitadora,
         "InCondicion": inCondicion,
-        "Condicion": condicion.toJson(),
+        "Condicion": condicion!.toJson(),
         "FechaInicio": _toDotNetDate(fechaInicio),
         "FechaTermino": _toDotNetDate(fechaTermino),
         "FechaExamen": _toDotNetDate(fechaExamen),
@@ -166,7 +166,7 @@ class EntrenamientoModulo {
         "InHorasAcumuladas": inHorasAcumuladas,
         "InHorasMinestar": inHorasMinestar,
         "InEstado": inEstado,
-        "EstadoEntrenamiento": estadoEntrenamiento.toJson(),
+        "EstadoEntrenamiento": estadoEntrenamiento!.toJson(),
         "Comentarios": comentarios,
         "Eliminado": eliminado,
         "MotivoEliminado": motivoEliminado,

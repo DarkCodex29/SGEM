@@ -66,13 +66,29 @@ class NuevaCapacitacionController extends GetxController {
       Get.put(GenericDropdownController<MaestroDetalle>());
   final GenericDropdownController<Personal> personalDropdownController =
       Get.put(GenericDropdownController<Personal>());
+
+  var entrenamientoModulo = EntrenamientoModulo().obs;
+
   @override
   void onInit() {
     cargarDropdowns();
     super.onInit();
   }
 
-  void cargarDatosCapacitacion(EntrenamientoModulo capacitacion) {}
+  Future<EntrenamientoModulo?> loadCapacitacion(int capacitacionKey) async {
+    try {
+      final response =
+          await capacitacionService.obtenerCapacitacionPorId(capacitacionKey);
+      if (response.success && response.data != null) {
+        return response.data!;
+      } else {
+        log('Error al obtener datos de capacitación: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al cargar capacitación: $e');
+    }
+    return null;
+  }
 
   void cargarDropdowns() {
     dropdownController.loadOptions('guardia', () async {
@@ -130,9 +146,10 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
-  Future<void> registrarCapacitacion(EntrenamientoModulo capacitacion) async {
+  Future<void> registrarCapacitacion() async {
     try {
-      final response = await capacitacionService.registrarModulo(capacitacion);
+      final response =
+          await capacitacionService.registrarModulo(entrenamientoModulo.value);
       if (response.success) {
         log('Capacitación registrada con éxito');
       } else {
@@ -143,9 +160,10 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
-  Future<void> actualizarCapacitacion(EntrenamientoModulo capacitacion) async {
+  Future<void> actualizarCapacitacion() async {
     try {
-      final response = await capacitacionService.actualizarModulo(capacitacion);
+      final response =
+          await capacitacionService.actualizarModulo(entrenamientoModulo.value);
       if (response.success) {
         log('Capacitación actualizada con éxito');
       } else {

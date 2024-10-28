@@ -237,7 +237,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     ),
                     _buildCustomTextField(
                       'Estado de avance actual',
-                      training.modulo.nombre!,
+                      training.modulo!.nombre!,
                     ),
                   ],
                 ),
@@ -246,11 +246,11 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   children: [
                     _buildCustomTextField(
                       'Equipo',
-                      training.equipo.nombre!,
+                      training.equipo!.nombre!,
                     ),
                     _buildCustomTextField(
                       'Entrenador',
-                      training.entrenador.nombre!,
+                      training.entrenador!.nombre!,
                     ),
                   ],
                 ),
@@ -262,12 +262,12 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         Icon(
                           Icons.radio_button_checked,
                           color: _getColorByEstado(
-                              training.estadoEntrenamiento.key!),
+                              training.estadoEntrenamiento!.key!),
                         ),
                         const SizedBox(width: 4),
                         _buildCustomTextField(
                           'Estado entrenamiento',
-                          training.estadoEntrenamiento.nombre!,
+                          training.estadoEntrenamiento!.nombre!,
                         ),
                       ],
                     ),
@@ -278,7 +278,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         _buildCustomTextField(
                           'Estado de avance actual',
                           _getEstadoAvanceActual(
-                              training.estadoEntrenamiento.nombre!,
+                              training.estadoEntrenamiento!.nombre!,
                               training.inHorasAcumuladas!,
                               training.inTotalHoras!),
                         ),
@@ -301,14 +301,14 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 ),
                 _buildCustomTextField(
                   'Condición',
-                  training.condicion.nombre!,
+                  training.condicion!.nombre!,
                 ),
                 _buildActionButtons(context, training),
               ],
             ),
             Obx(() {
               final modulos =
-                  controller.obtenerModulosPorEntrenamiento(training.key);
+                  controller.obtenerModulosPorEntrenamiento(training.key!);
               return ExpansionTile(
                 backgroundColor: Colors.grey.shade100,
                 shape: RoundedRectangleBorder(
@@ -347,7 +347,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  modulo.modulo.nombre!,
+                  modulo.modulo!.nombre!,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -460,7 +460,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 },
               ),
               IconButton(
-                tooltip:'Eliminar modulo',
+                tooltip: 'Eliminar modulo',
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () async {
                   String motivoEliminacion = '';

@@ -3,17 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
-import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
-  NuevaCapacitacionPage({super.key});
+  final bool isEditMode;
+  final int? capacitacionKey;
   final NuevaCapacitacionController controller =
       Get.put(NuevaCapacitacionController());
+
+  NuevaCapacitacionPage({
+    super.key,
+    required this.isEditMode,
+    this.capacitacionKey,
+  }) {
+    if (isEditMode && capacitacionKey != null) {
+      controller.loadCapacitacion(capacitacionKey!);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool isEditMode = Get.arguments != null && Get.arguments['isEdit'] == true;
     return Scaffold(
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -29,7 +39,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildArchivosAdjuntos(),
             const SizedBox(height: 20),
-            _buildBotonesAccion(context, isEditMode, Get.arguments),
+            _buildBotonesAccion(context, isEditMode),
           ],
         ),
       ),
@@ -397,8 +407,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBotonesAccion(BuildContext context, bool isEditMode,
-      EntrenamientoModulo entrenamientoModulo) {
+  Widget _buildBotonesAccion(BuildContext context, bool isEditMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -412,9 +421,9 @@ class NuevaCapacitacionPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {
             if (isEditMode) {
-              controller.actualizarCapacitacion(entrenamientoModulo);
+              controller.actualizarCapacitacion();
             } else {
-              controller.registrarCapacitacion(entrenamientoModulo);
+              controller.registrarCapacitacion();
             }
           },
           child: Text(isEditMode ? "Actualizar" : "Guardar"),

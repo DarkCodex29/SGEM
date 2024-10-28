@@ -44,7 +44,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       controller.fechaTerminoController.text = DateFormat('dd-MM-yyyy')
           .format(DateTime.parse(training!.fechaTermino.toString()));
       controller.observacionesEntrenamiento.text = training?.comentarios ?? ' ';
-      controller.obtenerArchivosRegistrados(training!.key);
+      controller.obtenerArchivosRegistrados(training!.key!);
     }
   }
 

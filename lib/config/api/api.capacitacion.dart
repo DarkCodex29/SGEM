@@ -157,4 +157,32 @@ class CapacitacionService {
     const url = '${ConfigFile.apiUrl}/modulo/EliminarModulo';
     return _manageCapacitacion(url, 'DELETE', capacitacion);
   }
+
+  Future<ResponseHandler<EntrenamientoModulo>> obtenerCapacitacionPorId(
+      int idCapacitacion) async {
+    const url = '${ConfigFile.apiUrl}/Capacitacion/ObtenerCapacitacionPorId';
+    log('Obteniendo capacitación por ID: $idCapacitacion');
+    
+    try {
+      final response = await dio.get(
+        url,
+        queryParameters: {'idCapacitacion': idCapacitacion},
+      );
+
+      log('Respuesta recibida para ObtenerCapacitacionPorId: ${response.data}');
+
+      if (response.statusCode == 200 && response.data != null) {
+        final entrenamiento = EntrenamientoModulo.fromJson(response.data);
+        return ResponseHandler.handleSuccess(entrenamiento);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener la capacitación por ID',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al obtener la capacitación por ID: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
 }

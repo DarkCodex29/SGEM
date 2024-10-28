@@ -38,7 +38,7 @@ class EntrenamientoPersonalController extends GetxController {
       EntrenamientoModulo training) async {
     try {
       final response = await trainingService
-          .obtenerUltimoModuloPorEntrenamiento(training.key);
+          .obtenerUltimoModuloPorEntrenamiento(training.key!);
       if (response.success && response.data != null) {
         EntrenamientoModulo ultimoModulo = response.data!;
         training.actualizarConUltimoModulo(ultimoModulo);
@@ -56,10 +56,10 @@ class EntrenamientoPersonalController extends GetxController {
     for (var entrenamiento in trainingList) {
       try {
         final response = await moduloMaestroService
-            .listarModulosPorEntrenamiento(entrenamiento.key);
+            .listarModulosPorEntrenamiento(entrenamiento.key!);
         log('Modulos por entrenamiento: ${response.data}');
         if (response.success) {
-          modulosPorEntrenamiento[entrenamiento.key] =
+          modulosPorEntrenamiento[entrenamiento.key!] =
               RxList<EntrenamientoModulo>(response.data!);
         }
       } catch (e) {
@@ -84,7 +84,7 @@ class EntrenamientoPersonalController extends GetxController {
         }
         EntrenamientoNuevoController controller =
             Get.put(EntrenamientoNuevoController());
-        await controller.registrarArchivos(training.key);
+        await controller.registrarArchivos(training.key!);
         controller.archivosAdjuntos.clear();
         controller.documentoAdjuntoNombre.value = '';
         controller.documentoAdjuntoBytes.value = null;

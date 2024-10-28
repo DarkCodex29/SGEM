@@ -78,8 +78,8 @@ class PersonalSearchController extends GetxController {
 
   @override
   void onInit() {
-        //cargarGuardiaOptions();
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
+    cargarDropdowns();
     super.onInit();
   }
 
@@ -106,26 +106,6 @@ class PersonalSearchController extends GetxController {
           : <MaestroDetalle>[];
     });
   }
-/*
-  Future<void> cargarGuardiaOptions() async {
-    isLoadingGuardia.value = true;
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-
-      if (response.success && response.data != null) {
-        guardiaOptions.assignAll(response.data!);
-        log('Guardia opciones cargadas correctamente: $guardiaOptions');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
-    } finally {
-      isLoadingGuardia.value = false;
-    }
-  }
-  */
 
   void searchPersonalEstado(int? estadoKey) {
     selectedEstadoKey.value = estadoKey;

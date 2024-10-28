@@ -177,11 +177,11 @@ class ActualizacionMasivaController extends GetxController {
       var response = await entrenamientoService.ActualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: selectedGuardiaKey.value,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
         nombres: nombres,
         apellidos: apellidos,
-        inEquipo: selectedEquipoKey.value,
-        inModulo: selectedModuloKey.value,
+        inEquipo: dropdownController.getSelectedValue('equipo')?.key,
+        inModulo: dropdownController.getSelectedValue('modulo')?.key,
         pageSize: pageSize,
         pageNumber: pageNumber,
       );
@@ -222,5 +222,7 @@ class ActualizacionMasivaController extends GetxController {
     apellidosController.clear();
     selectedEquipoKey.value = null;
     selectedModuloKey.value = null;
+
+    dropdownController.resetAllSelections();
   }
 }

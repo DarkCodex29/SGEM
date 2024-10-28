@@ -137,8 +137,8 @@ class PersonalSearchController extends GetxController {
         numeroDocumento: numeroDocumento,
         nombres: nombres,
         apellidos: apellidos,
-        inGuardia: selectedGuardiaKey.value,
-        inEstado: selectedEstadoKey.value,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
+        inEstado: dropdownController.getSelectedValue('estado')?.key,
         pageSize: pageSize,
         pageNumber: pageNumber,
       );
@@ -276,8 +276,11 @@ class PersonalSearchController extends GetxController {
   void clearFields() {
     codigoMCPController.clear();
     documentoIdentidadController.clear();
+    dropdownController.resetAllSelections();
+
     nombresController.clear();
     apellidosController.clear();
+    
     selectedGuardiaKey.value = null;
     selectedEstadoKey.value = null;
   }

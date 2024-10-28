@@ -394,8 +394,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
         entrenamientoModulo!.inHorasMinestar.toString();
     tituloModal.value =
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
+    log('Entrenador Key: ${ personalDropdownController
+        .getSelectedValue('entrenador')?.key} del control: ${entrenamientoModulo!.inEntrenador}');
+    //personalDropdownController
 
-    personalDropdownController
-        .getSelectedValue(entrenamientoModulo!.inEntrenador.toString());
+    log('Entrenador Key: ${ personalDropdownController
+        .getSelectedValue('entrenador')?.key}');
   }
 }

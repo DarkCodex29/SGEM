@@ -1,57 +1,43 @@
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:sgem/shared/modules/option.value.dart';
-
+/*
 class GenericDropdownController<T> extends GetxController {
-  final isLoadingMap = <String, RxBool>{};
-  final optionsMap = <String, RxList<T>>{};
-  final selectedValueMap = <String, Rxn<T>>{};
+  var isLoadingMap = <String, RxBool>{}.obs;
+  var optionsMap = <String, RxList<T>>{}.obs;
+  var selectedValueMap = <String, Rxn<T>>{}.obs;
 
   void initializeDropdown(String key) {
     if (!isLoadingMap.containsKey(key)) {
       isLoadingMap[key] = false.obs;
     }
     if (!optionsMap.containsKey(key)) {
-      optionsMap[key] = <OptionValue>[].obs;
+      optionsMap[key] = <T>[].obs;
     }
     if (!selectedValueMap.containsKey(key)) {
-      selectedValueMap[key] = Rxn<OptionValue>();
+      selectedValueMap[key] = Rxn<T>();
     }
   }
 
   Future<void> loadOptions(
-      String key, Future<List<T>?> Function() getOptions) async {
+      String key, Future<List<T>> Function() getOptions) async {
     initializeDropdown(key);
-
-    if (isLoadingMap[key] == null) {
-      log('Error: isLoadingMap[$key] no está inicializado');
-      return;
-    }
-
-    // Previene cargas duplicadas
-    if (isLoadingMap[key]!.value) return;
-
     isLoadingMap[key]!.value = true;
     try {
-      var loadedOptions = await getOptions() ?? [];
-      optionsMap[key]?.assignAll(loadedOptions);
+      var loadedOptions = await getOptions();
+      optionsMap[key]!.assignAll(loadedOptions);
     } catch (e) {
       log('Error loading options for $key: $e');
     } finally {
-      isLoadingMap[key]?.value = false;
+      isLoadingMap[key]!.value = false;
     }
   }
 
   void selectValue(String key, T? value) {
-    if (selectedValueMap.containsKey(key)) {
-      selectedValueMap[key]!.value = value;
-    }
+    selectedValueMap[key]?.value = value;
   }
 
   void resetSelection(String key) {
-    if (selectedValueMap.containsKey(key)) {
-      selectedValueMap[key]!.value = null;
-    }
+    selectedValueMap[key]?.value = null;
   }
 
   void resetAllSelections() {
@@ -63,7 +49,7 @@ class GenericDropdownController<T> extends GetxController {
   bool isLoading(String key) => isLoadingMap[key]?.value ?? false;
   List<T> getOptions(String key) => optionsMap[key]?.toList() ?? [];
   T? getSelectedValue(String key) => selectedValueMap[key]?.value;
-  
+
 }
 
-
+*/

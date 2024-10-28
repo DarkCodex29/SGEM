@@ -13,7 +13,7 @@ class CustomDropdown extends StatelessWidget {
   final bool isReadOnly;
   final GenericDropdownController? controller;
   final List<OptionValue>? staticOptions;
-  final OptionValue? initialValue; // Nuevo parámetro
+  final OptionValue? initialValue;
   final void Function(OptionValue?)? onChanged;
 
   const CustomDropdown({
@@ -22,7 +22,7 @@ class CustomDropdown extends StatelessWidget {
     required this.noDataHintText,
     this.controller,
     this.staticOptions,
-    this.initialValue, // Incluimos el valor inicial
+    this.initialValue,
     this.onChanged,
     this.isSearchable = false,
     this.isRequired = false,

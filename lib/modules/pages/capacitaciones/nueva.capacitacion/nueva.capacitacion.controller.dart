@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
@@ -67,7 +68,10 @@ class NuevaCapacitacionController extends GetxController {
   final GenericDropdownController<Personal> personalDropdownController =
       Get.put(GenericDropdownController<Personal>());
 
-  var entrenamientoModulo = EntrenamientoModulo().obs;
+  // MODELOS
+  EntrenamientoModulo? entrenamientoModulo;
+  Personal? personalInterno;
+  Personal? personalExterno;
 
   @override
   void onInit() {
@@ -80,7 +84,9 @@ class NuevaCapacitacionController extends GetxController {
       final response =
           await capacitacionService.obtenerCapacitacionPorId(capacitacionKey);
       if (response.success && response.data != null) {
-        return response.data!;
+        entrenamientoModulo = response.data;
+        log('LLENADO DE CONTROLLERS LOAD CAPACITACION');
+        llenarControladores();
       } else {
         log('Error al obtener datos de capacitación: ${response.message}');
       }
@@ -91,11 +97,13 @@ class NuevaCapacitacionController extends GetxController {
   }
 
   Future<Personal?> loadPersonalInterno(String codigoMcp) async {
+    log('¿CÓDIGO MCP? $codigoMcp');
     try {
       final response = await personalService.listarPersonalEntrenamiento(
           codigoMcp: codigoMcp);
       if (response.success && response.data != null) {
-        return response.data!.first;
+        personalInterno = response.data!.first;
+        llenarControladores();
       } else {
         log('Error al obtener datos de personal: ${response.message}');
       }
@@ -110,7 +118,8 @@ class NuevaCapacitacionController extends GetxController {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
       if (response.success && response.data != null) {
-        return response.data!;
+        personalExterno = response.data;
+        llenarControladores();
       } else {
         log('Error al obtener datos de personal: ${response.message}');
       }
@@ -120,7 +129,38 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
-  
+  void llenarControladores() {
+    if (entrenamientoModulo != null) {
+      fechaInicioController.text = entrenamientoModulo!.fechaInicio != null
+          ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaInicio!)
+          : '';
+      fechaTerminoController.text = entrenamientoModulo!.fechaTermino != null
+          ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaTermino!)
+          : '';
+      horasController.text =
+          entrenamientoModulo!.inTotalHoras?.toString() ?? '';
+      notaTeoriaController.text =
+          entrenamientoModulo!.inNotaTeorica?.toString() ?? '';
+      notaPracticaController.text =
+          entrenamientoModulo!.inNotaPractica?.toString() ?? '';
+    }
+
+    if (personalInterno != null) {
+      codigoMcpController.text = personalInterno!.codigoMcp;
+      dniController.text = personalInterno!.numeroDocumento;
+      nombresController.text = personalInterno!.nombreCompleto;
+      apellidoPaternoController.text = personalInterno!.apellidoPaterno;
+      apellidoMaternoController.text = personalInterno!.apellidoMaterno;
+      guardiaController.text = personalInterno!.guardia.nombre;
+    }
+
+    if (personalExterno != null) {
+      dniController.text = personalExterno!.numeroDocumento;
+      nombresController.text = personalExterno!.nombreCompleto;
+      apellidoPaternoController.text = personalExterno!.apellidoPaterno;
+      apellidoMaternoController.text = personalExterno!.apellidoMaterno;
+    }
+  }
 
   void cargarDropdowns() {
     dropdownController.loadOptions('guardia', () async {
@@ -181,7 +221,7 @@ class NuevaCapacitacionController extends GetxController {
   Future<void> registrarCapacitacion() async {
     try {
       final response =
-          await capacitacionService.registrarModulo(entrenamientoModulo.value);
+          await capacitacionService.registrarModulo(entrenamientoModulo!);
       if (response.success) {
         log('Capacitación registrada con éxito');
       } else {
@@ -195,7 +235,7 @@ class NuevaCapacitacionController extends GetxController {
   Future<void> actualizarCapacitacion() async {
     try {
       final response =
-          await capacitacionService.actualizarModulo(entrenamientoModulo.value);
+          await capacitacionService.actualizarModulo(entrenamientoModulo!);
       if (response.success) {
         log('Capacitación actualizada con éxito');
       } else {

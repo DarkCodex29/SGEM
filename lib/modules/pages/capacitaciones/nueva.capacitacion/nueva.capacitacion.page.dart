@@ -11,7 +11,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
   final int? capacitacionKey;
   final String? dni;
   final String? codigoMcp;
-  final String? tipoPersona;
+  //final String? tipoPersona;
   final VoidCallback onCancel;
 
   final NuevaCapacitacionController controller =
@@ -21,20 +21,14 @@ class NuevaCapacitacionPage extends StatelessWidget {
     super.key,
     required this.isEditMode,
     this.dni,
-    this.tipoPersona,
+    //this.tipoPersona,
     this.codigoMcp,
     this.capacitacionKey,
     required this.onCancel,
   }) {
-    if (isEditMode && capacitacionKey != null) {
-      controller.loadCapacitacion(capacitacionKey!);
-    } else {
-      if (tipoPersona == 'Interno') {
-        controller.loadPersonalInterno(codigoMcp!);
-      } else {
-        controller.loadPersonalExterno(dni!);
-      }
-    }
+    //controller.loadCapacitacion(capacitacionKey!);
+    controller.loadPersonalInterno(codigoMcp!);
+    
   }
 
   @override

@@ -254,7 +254,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       inCapacitacion: 0,
       inModulo: 0,
       modulo: OptionValue(key: 0, nombre: ''),
-      inTipoPersona: 1,
+      tipoPersona: '',
       inPersona: data.key,
       inActividadEntrenamiento: 0,
       inCategoria: 0,

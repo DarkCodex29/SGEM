@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20training/entrenamiento.nuevo.controller.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+
+import '../../entrenamiento.personal.controller.dart';
+import 'entrenamiento.nuevo.controller.dart';
 
 class EntrenamientoNuevoModal extends StatelessWidget {
   final Personal data;
@@ -238,7 +239,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       return;
     }
 
-    int estadoEntrenamientoKey =
+    int? estadoEntrenamientoKey =
         isEdit && controller.estadoEntrenamientoSelected.value != null
             ? controller.estadoEntrenamientoSelected.value!.key
             : 0;
@@ -284,7 +285,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       observaciones: observaciones,
     );
 
-    final TrainingPersonalController trainingPersonalController = Get.find();
+    final EntrenamientoPersonalController trainingPersonalController = Get.find();
     if (isEdit) {
       trainingPersonalController
           .actualizarEntrenamiento(newTraining)

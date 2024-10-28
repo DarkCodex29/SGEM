@@ -127,7 +127,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
     return Obx(
       () {
-         var rowsToShow = controller.actualizacionMasivaResultados
+         var rowsToShow = controller.cargaMasivaResultados
              .take(controller.rowsPerPage.value)
              .toList();
 

@@ -5,6 +5,7 @@ import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
+import '../entrenamiento/modales/nuevo.modulo/entrenamiento.modulo.nuevo.dart';
 import 'personal.actualizacion.masiva.controller.dart';
 
 class PersonalActualizacionMasivaPage extends StatelessWidget {
@@ -440,7 +441,8 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoTablaData(List<dynamic> data, ActualizacionMasivaController controller) {
+  Widget _buildSeccionResultadoTablaData(
+      List<dynamic> data, ActualizacionMasivaController controller) {
     const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
 
     return SizedBox(
@@ -459,14 +461,14 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                   Expanded(child: Text(fila.modulo!.nombre!)),
                   Expanded(
                       child: Text(
-                        fila.inNotaPractica.toString(),
-                        textAlign: TextAlign.center,
-                      )),
+                    fila.inNotaPractica.toString(),
+                    textAlign: TextAlign.center,
+                  )),
                   Expanded(
                       child: Text(
-                        fila.inNotaTeorica.toString(),
-                        textAlign: TextAlign.center,
-                      )),
+                    fila.inNotaTeorica.toString(),
+                    textAlign: TextAlign.center,
+                  )),
                   //Todo: Cambiar por fecha de examen
                   Expanded(
                     child: Text(DateFormat('dd/MM/yyyy')
@@ -474,23 +476,48 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                   ),
                   Expanded(
                       child: Text(
-                        fila.inHorasAcumuladas.toString(),
-                        textAlign: TextAlign.center,
-                      )),
+                    fila.inHorasAcumuladas.toString(),
+                    textAlign: TextAlign.center,
+                  )),
                   Expanded(
-                    child: Text(DateFormat('dd/MM/yyyy')
-                        .format(fila.fechaInicio!)),
+                    child: Text(
+                        DateFormat('dd/MM/yyyy').format(fila.fechaInicio!)),
                   ),
                   Expanded(
-                    child: Text(DateFormat('dd/MM/yyyy')
-                        .format(fila.fechaTermino!)),
+                    child: Text(
+                        DateFormat('dd/MM/yyyy').format(fila.fechaTermino!)),
                   ),
                   //Todo: Botones de accion
                   Expanded(
                     child: _buildIconButton(
-                        Icons.edit, AppTheme.primaryColor, () {
-                      //controller.showEditPersonal(personal);
-                    }),
+                      Icons.edit,
+                      AppTheme.primaryColor,
+                      () async {
+                        final bool? success = await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          enableDrag: false,
+                          context: Get.context!,
+                          builder: (context) {
+                            return GestureDetector(
+                              onTap: () => FocusScope.of(context).unfocus(),
+                              child: Padding(
+                                padding: MediaQuery.of(context).viewInsets,
+                                child: EntrenamientoModuloNuevo(
+                                  isEdit: true,
+                                  inEntrenamientoModulo: fila.key,
+                                  //inEntrenamientoModulo: 20,
+                                  onCancel: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                        //controller.showEditPersonal(personal);
+                      },
+                    ),
                   ),
                 ],
               ),

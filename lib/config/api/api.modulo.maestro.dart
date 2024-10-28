@@ -79,18 +79,24 @@ class ModuloMaestroService {
   Future<ResponseHandler<EntrenamientoModulo>> obtenerModuloPorId(
       int moduloId) async {
     final url = '${ConfigFile.apiUrl}/modulo/ObtenerModuloPorId/$moduloId';
-
+log('Api modulo obtener modulo por id ${moduloId}');
     try {
+      log('Api: ${url}');
       final response = await dio.get(
         url,
         options: Options(followRedirects: false),
       );
 
       if (response.statusCode == 200 && response.data != null) {
+        log('Api modulo, obtenido con exito');
+
         EntrenamientoModulo modulo =
             EntrenamientoModulo.fromJson(response.data);
+        log('Api modulo, ${response.data}');
         return ResponseHandler.handleSuccess<EntrenamientoModulo>(modulo);
       } else {
+        log('Api modulo, error al obtener modulo por id');
+
         return ResponseHandler(
           success: false,
           message: 'Error al obtener el módulo por ID',

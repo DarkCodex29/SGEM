@@ -3,33 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20training/entrenamiento.nuevo.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
-import 'package:sgem/modules/pages/personal.training/training/modales/new%20module/entrenamiento.modulo.nuevo.dart';
-import 'modales/new training/entrenamiento.nuevo.modal.dart';
+import '../consulta.personal.controller.dart';
+import '../personal/nuevo.personal.controller.dart';
+import 'entrenamiento.personal.controller.dart';
+import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.controller.dart';
+import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.modal.dart';
+import 'modales/nuevo.modulo/entrenamiento.modulo.nuevo.dart';
 
-class TrainingPersonalPage extends StatelessWidget {
+class EntrenamientoPersonalPage extends StatelessWidget {
   final PersonalSearchController controllerPersonal;
-  final NewPersonalController controllerNewPersonal =
-      Get.put(NewPersonalController());
-  final TrainingPersonalController controller =
-      Get.put(TrainingPersonalController());
+  final NuevoPersonalController controllerNuevoPersonal =
+      Get.put(NuevoPersonalController());
+  final EntrenamientoPersonalController controller =
+      Get.put(EntrenamientoPersonalController());
   final VoidCallback onCancel;
 
-  TrainingPersonalPage({
+  EntrenamientoPersonalPage({
     required this.controllerPersonal,
     required this.onCancel,
     super.key,
   }) {
     controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
-    controllerNewPersonal.loadPersonalPhoto(
+    controllerNuevoPersonal.loadPersonalPhoto(
         controllerPersonal.selectedPersonal.value!.inPersonalOrigen);
   }
 
@@ -65,12 +65,12 @@ class TrainingPersonalPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Obx(() {
-            if (controllerNewPersonal.personalPhoto.value != null &&
-                controllerNewPersonal.personalPhoto.value!.isNotEmpty) {
+            if (controllerNuevoPersonal.personalPhoto.value != null &&
+                controllerNuevoPersonal.personalPhoto.value!.isNotEmpty) {
               try {
                 return CircleAvatar(
                   backgroundImage:
-                      MemoryImage(controllerNewPersonal.personalPhoto.value!),
+                      MemoryImage(controllerNuevoPersonal.personalPhoto.value!),
                   radius: 60,
                   backgroundColor: Colors.grey,
                 );
@@ -424,7 +424,11 @@ class TrainingPersonalPage extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
+                tooltip: 'Editar modulo',
+                icon: const Icon(
+                  Icons.edit,
+                  color: AppTheme.primaryColor,
+                ),
                 onPressed: () async {
                   final bool? success = await showModalBottomSheet(
                     isScrollControlled: true,
@@ -438,6 +442,8 @@ class TrainingPersonalPage extends StatelessWidget {
                           padding: MediaQuery.of(context).viewInsets,
                           child: EntrenamientoModuloNuevo(
                             entrenamiento: modulo,
+                            inPersona: modulo.inPersona,
+                            inEntrenamientoModulo: modulo.key,
                             isEdit: true,
                             onCancel: () {
                               Navigator.pop(context);
@@ -454,6 +460,7 @@ class TrainingPersonalPage extends StatelessWidget {
                 },
               ),
               IconButton(
+                tooltip:'Eliminar modulo',
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () async {
                   String motivoEliminacion = '';
@@ -541,6 +548,7 @@ class TrainingPersonalPage extends StatelessWidget {
         Row(
           children: [
             IconButton(
+              tooltip: 'Editar entrenamiento',
               icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
               onPressed: () async {
                 EntrenamientoNuevoController controllerModal =
@@ -581,6 +589,7 @@ class TrainingPersonalPage extends StatelessWidget {
               },
             ),
             IconButton(
+              tooltip: 'Eliminar entrenamiento',
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: () async {
                 String motivoEliminacion = '';
@@ -666,6 +675,7 @@ class TrainingPersonalPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.add_circle_outline,
                   color: AppTheme.primaryColor),
+              tooltip: 'Nuevo modulo',
               onPressed: () async {
                 final bool? success = await showModalBottomSheet(
                   isScrollControlled: true,

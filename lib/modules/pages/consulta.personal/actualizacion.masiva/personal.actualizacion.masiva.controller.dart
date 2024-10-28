@@ -7,7 +7,7 @@ import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 import '../../../../config/api/api.maestro.detail.dart';
 import '../../../../config/api/api.modulo.maestro.dart';
-import '../../../../config/api/api.training.dart';
+import '../../../../config/api/api.entrenamiento.dart';
 import '../../../../shared/modules/entrenamiento.actualizacion.masiva.dart';
 import '../../../../shared/modules/maestro.detail.dart';
 
@@ -38,7 +38,7 @@ class ActualizacionMasivaController extends GetxController {
   var totalRecords = 0.obs;
 
   RxBool isLoadingGuardia = false.obs;
-  final entrenamientoService = TrainingService();
+  final entrenamientoService = EntrenamientoService();
   final GenericDropdownController<MaestroDetalle> dropdownController =
       Get.put(GenericDropdownController<MaestroDetalle>());
   final GenericDropdownController<ModuloMaestro> moduloDropdownController =

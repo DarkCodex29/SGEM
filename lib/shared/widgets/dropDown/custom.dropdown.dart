@@ -213,7 +213,7 @@ class CustomDropdown<T> extends StatelessWidget {
 abstract class DropdownElement {
   // Definición de una interfaz implícita
   String get value;
-  int get id;
+  int? get id;
 
   @override
   String toString() {

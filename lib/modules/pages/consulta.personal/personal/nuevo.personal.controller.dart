@@ -15,7 +15,7 @@ import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
-class NewPersonalController extends GetxController {
+class NuevoPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
   final TextEditingController nombresController = TextEditingController();
   final TextEditingController puestoTrabajoController = TextEditingController();
@@ -60,7 +60,7 @@ class NewPersonalController extends GetxController {
   RxBool isLoadingDni = false.obs;
   RxBool isSaving = false.obs;
   List<String> errores = [];
-  final GenericDropdownController<MaestroDetalle> dropdownController =
+  final GenericDropdownController<MaestroDetalle> guardiaDropdownController =
       Get.put(GenericDropdownController<MaestroDetalle>());
   final maestroDetalleService = MaestroDetalleService();
 
@@ -70,8 +70,8 @@ class NewPersonalController extends GetxController {
     cargarDropdowns();
   }
 
-  void cargarDropdowns() {
-    dropdownController.loadOptions('guardia', () async {
+  Future<void> cargarDropdowns() async {
+    guardiaDropdownController.loadOptions('guardia', () async {
       var response =
           await maestroDetalleService.listarMaestroDetallePorMaestro(2);
       return response.success && response.data != null

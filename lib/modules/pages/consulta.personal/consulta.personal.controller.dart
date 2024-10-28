@@ -1,15 +1,17 @@
 import 'dart:developer';
 import 'dart:typed_data';
+
 import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sgem/config/api/api.maestro.detail.dart';
-import 'package:sgem/config/api/api.personal.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
+
+import '../../../config/api/api.maestro.detail.dart';
+import '../../../config/api/api.personal.dart';
+import '../../../shared/modules/maestro.detail.dart';
+import '../../../shared/modules/personal.dart';
+import '../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 enum PersonalSearchScreen {
   none,
@@ -24,22 +26,22 @@ enum PersonalSearchScreen {
 }
 
 extension PersonalSearchScreenExtension on PersonalSearchScreen {
-  String description() {
+  String descripcion() {
     switch (this) {
       case PersonalSearchScreen.none:
-        return "";
+        return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.newPersonal:
-        return "Nuevo personal a Entrenar";
+        return "Nuevo personal a entrenar";
       case PersonalSearchScreen.editPersonal:
-        return "Editar Personal";
+        return "Editar personal";
       case PersonalSearchScreen.trainingForm:
         return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.viewPersonal:
-        return "Visualizar";
+        return "Visualizar personal";
       case PersonalSearchScreen.carnetPersonal:
-        return "Carnet del Personal";
+        return "Carnet del personal";
       case PersonalSearchScreen.actualizacionMasiva:
-        return "Actualizacion Masiva";
+        return "Actualización masiva";
       default:
         return "Entrenamientos";
     }
@@ -76,7 +78,7 @@ class PersonalSearchController extends GetxController {
 
   @override
   void onInit() {
-    //cargarGuardiaOptions();
+        //cargarGuardiaOptions();
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }

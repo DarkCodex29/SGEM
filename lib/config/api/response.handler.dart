@@ -16,12 +16,14 @@ class ResponseHandler<T> {
   });
 
   static ResponseHandler<T> handleSuccess<T>(dynamic response) {
+    log('Response Handler Caso 1');
     // Caso 1: Booleano
     if (response is bool) {
       log('Operación booleana exitosa');
       return ResponseHandler<T>(success: response, data: response as T);
     }
 
+    log('Response Handler Caso 2');
     // Caso 2: Formato con 'Codigo' y 'Valor'
     if (response is Map<String, dynamic> &&
         response.containsKey('Codigo') &&
@@ -37,12 +39,14 @@ class ResponseHandler<T> {
       }
     }
 
+    log('Response Handler Caso 3');
     // Caso 3: Lista de Maestros, Maestros Detalles o Personal
     if (response is List) {
       log('Respuesta exitosa con datos de lista');
       return ResponseHandler<T>(success: true, data: response as T);
     }
 
+    log('Response Handler Caso 4');
     // Caso 4: Mapa genérico
     if (response is Map<String, dynamic>) {
       log('Respuesta exitosa con datos de mapa');
@@ -58,6 +62,7 @@ class ResponseHandler<T> {
           );
         }
       }
+      log('Caso 4: entrenamiento modulo');
       if (T == EntrenamientoModulo) {
         try {
           final entrenamientoModulo = EntrenamientoModulo.fromJson(response);
@@ -87,6 +92,21 @@ class ResponseHandler<T> {
       return ResponseHandler<T>(success: true, data: response as T);
     }
 
+    log('Response Handler Caso 5: Entrenamiento Modulo');
+    if (T == EntrenamientoModulo) {
+      try {
+        log('Mapeando EntrenamientoModulo: $T');
+        //final entrenamientoModulo = EntrenamientoModulo.fromJson(response);
+        return ResponseHandler<T>(
+            success: true, data: response as T);
+      } catch (e) {
+        log('Error al mapear la respuesta a EntrenamientoModulo: $e');
+        return ResponseHandler<T>(
+          success: false,
+          message: 'Error al mapear la respuesta a EntrenamientoModulo.',
+        );
+      }
+    }
     // Caso no esperado
     return ResponseHandler<T>(
       success: false,

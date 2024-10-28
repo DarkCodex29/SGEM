@@ -1,22 +1,25 @@
 import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/personal.training/actualizacion.masiva/personal.actualizacion.masiva.page.dart';
-import 'package:sgem/modules/pages/personal.training/personal/new.personal.controller.dart';
-import 'package:sgem/modules/pages/personal.training/personal/new.personal.page.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
-import 'package:sgem/modules/pages/personal.training/training/training.personal.page.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/utils/pdf.view.certificado.dart';
-import 'package:sgem/shared/utils/pdf.view.diploma.dart';
-import 'package:sgem/shared/utils/pdf.viewer.carnet.dart';
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
-import 'package:sgem/shared/widgets/custom.textfield.dart';
-import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
-import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
-import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
+
+import '../../../config/theme/app_theme.dart';
+import '../../../shared/modules/maestro.detail.dart';
+import '../../../shared/modules/personal.dart';
+import '../../../shared/utils/pdf.view.certificado.dart';
+import '../../../shared/utils/pdf.view.diploma.dart';
+import '../../../shared/utils/pdf.viewer.carnet.dart';
+import '../../../shared/widgets/custom.textfield.dart';
+import '../../../shared/widgets/delete/widget.delete.motivo.dart';
+import '../../../shared/widgets/delete/widget.delete.personal.confirmation.dart';
+import '../../../shared/widgets/delete/widget.delete.personal.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.dart';
+import 'actualizacion.masiva/personal.actualizacion.masiva.page.dart';
+import 'consulta.personal.controller.dart';
+import 'entrenamiento/entrenamiento.personal.page.dart';
+import 'personal/nuevo.personal.controller.dart';
+import 'personal/nuevo.personal.page.dart';
+
 
 class PersonalSearchPage extends StatelessWidget {
   const PersonalSearchPage({super.key});
@@ -30,7 +33,7 @@ class PersonalSearchPage extends StatelessWidget {
       appBar: AppBar(
         title: Obx(() {
           return Text(
-            controller.screen.value.description(),
+            controller.screen.value.descripcion(),
             style: const TextStyle(
               color: AppTheme.backgroundBlue,
               fontSize: 24,
@@ -55,7 +58,7 @@ class PersonalSearchPage extends StatelessWidget {
               },
             );
           case PersonalSearchScreen.trainingForm:
-            return TrainingPersonalPage(
+            return EntrenamientoPersonalPage(
               controllerPersonal: controller,
               onCancel: () {
                 controller.hideForms();
@@ -149,6 +152,7 @@ class PersonalSearchPage extends StatelessWidget {
         initiallyExpanded: controller.isExpanded.value,
         controller: controller.expansionController,
         children: [
+<<<<<<< HEAD:lib/modules/pages/personal.training/personal.training.page.dart
           Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
@@ -212,88 +216,52 @@ class PersonalSearchPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: CustomTextField(
+=======
+             Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Column(
+                children: [
+                  isSmallScreen
+                      ? Column(
+                          children: [
+                            CustomTextField(
+>>>>>>> 98b3963400964b306e5f40bd316aeb970d7d95b6:lib/modules/pages/consulta.personal/consulta.personal.page.dart
                               label: "Código MCP",
                               controller: controller.codigoMCPController,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
+                            const SizedBox(height: 10),
+                            CustomTextField(
                               label: "Documento de identidad",
-                              controller:
-                                  controller.documentoIdentidadController,
+                              controller: controller.documentoIdentidadController,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                              child: CustomDropdown(
-                            dropdownKey: 'guardia',
-                            hintText: 'Selecciona guardia',
-                            noDataHintText: 'No se encontraron guardias',
-                            controller: controller.dropdownController,
-                          )),
-                        ],
-                      ),
-                const SizedBox(height: 10),
-                isSmallScreen
-                    ? Column(
-                        children: [
-                          CustomTextField(
-                            label: "Nombres personal",
-                            controller: controller.nombresController,
-                          ),
-                          const SizedBox(height: 10),
-                          CustomTextField(
-                            label: "Apellidos personal",
-                            controller: controller.apellidosController,
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDropdown<String>(
-                            dropdownKey: 'estadoDropdown',
-                            hintText: "Estado",
-                            noDataHintText: "No hay datos de estado",
-                            staticOptions: const ["Activo", "Cesado", "Todos"],
-                            isSearchable: false,
-                            isRequired: false,
-                            onChanged: (value) {
-                              if (value == "Activo") {
-                                controller.searchPersonalEstado(95);
-                              } else if (value == "Cesado") {
-                                controller.searchPersonalEstado(96);
-                              } else {
-                                controller.searchPersonalEstado(null);
-                              }
-                            },
-                            controller: null,
-                          ),
-                        ],
-                      )
-                    : Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
+                            const SizedBox(height: 10),
+                            CustomDropdown<MaestroDetalle>(
+                              dropdownKey: 'guardia',
+                              hintText: 'Selecciona guardia',
+                              noDataHintText: 'No se encontraron guardias',
+                              controller: controller.dropdownController,
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextField(
                               label: "Nombres personal",
                               controller: controller.nombresController,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
+                            const SizedBox(height: 10),
+                            CustomTextField(
                               label: "Apellidos personal",
                               controller: controller.apellidosController,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomDropdown<String>(
+                            const SizedBox(height: 10),
+                            CustomDropdown<String>(
                               dropdownKey: 'estadoDropdown',
                               hintText: "Estado",
                               noDataHintText: "No hay datos de estado",
-                              staticOptions: const [
-                                "Activo",
-                                "Cesado",
-                                "Todos"
-                              ],
+                              staticOptions: const ["Activo", "Cesado", "Todos"],
                               isSearchable: false,
                               isRequired: false,
                               onChanged: (value) {
@@ -307,70 +275,205 @@ class PersonalSearchPage extends StatelessWidget {
                               },
                               controller: null,
                             ),
+                            /*
+                            Obx(
+                              () {
+                                String? selectedValue;
+                                if (controller.selectedEstadoKey.value == null) {
+                                  selectedValue = null;
+                                } else if (controller.selectedEstadoKey.value ==
+                                    95) {
+                                  selectedValue = "Activo";
+                                } else if (controller.selectedEstadoKey.value ==
+                                    96) {
+                                  selectedValue = "Cesado";
+                                } else {
+                                  selectedValue = "Todos";
+                                }
+
+                                return CustomDropdown(
+                                  hintText: "Estado",
+                                  noDataHintText: 'No hay datos de estado',
+                                  options: const ["Activo", "Cesado", "Todos"],
+                                  selectedValue: selectedValue,
+                                  isSearchable: false,
+                                  onChanged: (value) {
+                                    if (value == "Activo") {
+                                      controller.searchPersonalEstado(95);
+                                    } else if (value == "Cesado") {
+                                      controller.searchPersonalEstado(96);
+                                    } else {
+                                      controller.searchPersonalEstado(null);
+                                    }
+                                  },
+                                );
+                              },
+                            )*/
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Código MCP",
+                                controller: controller.codigoMCPController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Documento de identidad",
+                                controller:
+                                    controller.documentoIdentidadController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                                child: CustomDropdown(
+                              dropdownKey: 'guardia',
+                              hintText: 'Selecciona guardia',
+                              noDataHintText: 'No se encontraron guardias',
+                              controller: controller.dropdownController,
+                            )),
+                          ],
+                        ),
+                  const SizedBox(height: 10),
+                  isSmallScreen
+                      ? Column(
+                          children: [
+                            CustomTextField(
+                              label: "Nombres personal",
+                              controller: controller.nombresController,
+                            ),
+                            const SizedBox(height: 10),
+                            CustomTextField(
+                              label: "Apellidos personal",
+                              controller: controller.apellidosController,
+                            ),
+                            const SizedBox(height: 10),
+                            CustomDropdown<String>(
+                              dropdownKey: 'estadoDropdown',
+                              hintText: "Estado",
+                              noDataHintText: "No hay datos de estado",
+                              staticOptions: const ["Activo", "Cesado", "Todos"],
+                              isSearchable: false,
+                              isRequired: false,
+                              onChanged: (value) {
+                                if (value == "Activo") {
+                                  controller.searchPersonalEstado(95);
+                                } else if (value == "Cesado") {
+                                  controller.searchPersonalEstado(96);
+                                } else {
+                                  controller.searchPersonalEstado(null);
+                                }
+                              },
+                              controller: null,
+                            ),
+                          ],
+                        )
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Nombres personal",
+                                controller: controller.nombresController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Apellidos personal",
+                                controller: controller.apellidosController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomDropdown<String>(
+                                dropdownKey: 'estadoDropdown',
+                                hintText: "Estado",
+                                noDataHintText: "No hay datos de estado",
+                                staticOptions: const [
+                                  "Activo",
+                                  "Cesado",
+                                  "Todos"
+                                ],
+                                isSearchable: false,
+                                isRequired: false,
+                                onChanged: (value) {
+                                  if (value == "Activo") {
+                                    controller.searchPersonalEstado(95);
+                                  } else if (value == "Cesado") {
+                                    controller.searchPersonalEstado(96);
+                                  } else {
+                                    controller.searchPersonalEstado(null);
+                                  }
+                                },
+                                controller: null,
+                              ),
+                            ),
+                          ],
+                        ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          controller.clearFields();
+                          controller.searchPersonal();
+                        },
+                        icon: const Icon(
+                          Icons.cleaning_services,
+                          size: 18,
+                          color: AppTheme.primaryText,
+                        ),
+                        label: const Text(
+                          "Limpiar",
+                          style: TextStyle(
+                              fontSize: 16, color: AppTheme.primaryText),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 49, vertical: 18),
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side:
+                                const BorderSide(color: AppTheme.alternateColor),
                           ),
-                        ],
-                      ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        controller.clearFields();
-                        controller.searchPersonal();
-                      },
-                      icon: const Icon(
-                        Icons.cleaning_services,
-                        size: 18,
-                        color: AppTheme.primaryText,
-                      ),
-                      label: const Text(
-                        "Limpiar",
-                        style: TextStyle(
-                            fontSize: 16, color: AppTheme.primaryText),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 49, vertical: 18),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side:
-                              const BorderSide(color: AppTheme.alternateColor),
+                          elevation: 0,
                         ),
-                        elevation: 0,
                       ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        await controller.searchPersonal();
-                        controller.expansionController.collapse();
-                      },
-                      icon: const Icon(
-                        Icons.search,
-                        size: 18,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Buscar",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 49, vertical: 18),
-                        backgroundColor: AppTheme.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                      const SizedBox(width: 10),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          await controller.searchPersonal();
+                          //controller.expansionController.collapse();
+                        },
+                        icon: const Icon(
+                          Icons.search,
+                          size: 18,
+                          color: Colors.white,
                         ),
-                        elevation: 2,
+                        label: const Text(
+                          "Buscar",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 49, vertical: 18),
+                          backgroundColor: AppTheme.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 2,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
       );
     });
@@ -501,7 +604,7 @@ class PersonalSearchPage extends StatelessWidget {
           style: TextStyle(fontSize: 16, color: AppTheme.infoColor),
         ),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           backgroundColor: AppTheme.primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -521,7 +624,7 @@ class PersonalSearchPage extends StatelessWidget {
           style: TextStyle(fontSize: 16, color: AppTheme.primaryColor),
         ),
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
@@ -542,7 +645,7 @@ class PersonalSearchPage extends StatelessWidget {
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppTheme.primaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
             side: const BorderSide(color: AppTheme.primaryColor),
@@ -734,8 +837,8 @@ class PersonalSearchPage extends StatelessWidget {
                                         if (!confirmarEliminar) {
                                           return;
                                         }
-                                        NewPersonalController controllerNew =
-                                            Get.put(NewPersonalController());
+                                        NuevoPersonalController controllerNew =
+                                            Get.put(NuevoPersonalController());
                                         controllerNew.personalData =
                                             controller.selectedPersonal.value;
                                         try {

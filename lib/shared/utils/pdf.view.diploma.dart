@@ -1,11 +1,12 @@
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:sgem/modules/pages/personal.training/personal.training.controller.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.diploma.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 import 'dart:math';
 import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
+
+import '../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 class PdfToDiplomaScreen extends StatefulWidget {
 

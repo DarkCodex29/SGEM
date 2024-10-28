@@ -8,14 +8,14 @@ import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 
-class TrainingsPage extends StatelessWidget {
-  TrainingsPage({super.key});
+class ConsultaEntrenamientoPage extends StatelessWidget {
+  ConsultaEntrenamientoPage({super.key});
 
   final DateTime today = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    final TrainingsController controller = Get.put(TrainingsController());
+    final ConsultaEntrenamientoController controller = Get.put(ConsultaEntrenamientoController());
     return Scaffold(
       body: _buildConsultaEntrenamiento(
         controller,
@@ -25,7 +25,7 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Widget _buildConsultaEntrenamiento(
-      TrainingsController controller, BuildContext context) {
+      ConsultaEntrenamientoController controller, BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -45,7 +45,7 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Widget _buildSeccionConsulta(
-      BuildContext context, TrainingsController controller) {
+      BuildContext context, ConsultaEntrenamientoController controller) {
     return ExpansionTile(
       initiallyExpanded: controller.isExpanded.value,
       shape: RoundedRectangleBorder(
@@ -81,7 +81,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionConsultaPrimeraFila(TrainingsController controller) {
+  Widget _buildSeccionConsultaPrimeraFila(ConsultaEntrenamientoController controller) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -116,7 +116,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionConsultaSegundaFila(TrainingsController controller) {
+  Widget _buildSeccionConsultaSegundaFila(ConsultaEntrenamientoController controller) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -154,7 +154,7 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Widget _buildSeccionConsultaTerceraFila(
-      BuildContext context, TrainingsController controller) {
+      BuildContext context, ConsultaEntrenamientoController controller) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -187,7 +187,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBotonesAccion(TrainingsController controller) {
+  Widget _buildBotonesAccion(ConsultaEntrenamientoController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -245,7 +245,7 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Future<void> _selectDateRange(
-      BuildContext context, TrainingsController controller) async {
+      BuildContext context, ConsultaEntrenamientoController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(
       start: today.subtract(const Duration(days: 30)),
       end: today,
@@ -266,7 +266,7 @@ class TrainingsPage extends StatelessWidget {
     }
   }
 
-  Widget _buildSeccionResultado(TrainingsController controller) {
+  Widget _buildSeccionResultado(ConsultaEntrenamientoController controller) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -291,7 +291,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoBarraSuperior(TrainingsController controller) {
+  Widget _buildSeccionResultadoBarraSuperior(ConsultaEntrenamientoController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -322,7 +322,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoTabla(TrainingsController controller) {
+  Widget _buildSeccionResultadoTabla(ConsultaEntrenamientoController controller) {
     List<String> cabecera = [
       'Código MCP',
       'Nombres y Apellidos',
@@ -359,7 +359,7 @@ class TrainingsPage extends StatelessWidget {
   }
 
   Widget _buildSeccionResultadoTablaData(
-      List<dynamic> data, TrainingsController controller) {
+      List<dynamic> data, ConsultaEntrenamientoController controller) {
     return SizedBox(
       height: 500,
       child: SingleChildScrollView(
@@ -397,7 +397,7 @@ class TrainingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoTablaPaginado(TrainingsController controller) {
+  Widget _buildSeccionResultadoTablaPaginado(ConsultaEntrenamientoController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

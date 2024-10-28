@@ -24,9 +24,9 @@ class GenericDropdownController extends GetxController {
       String key, Future<List<OptionValue>?> Function() getOptions) async {
     initializeDropdown(key);
 
-    if (isLoadingMap[key]!.value) return; // Previene cargas duplicadas
+    //if (isLoadingMap[key]!.value) return; // Previene cargas duplicadas
 
-    isLoadingMap[key]!.value = true;
+    //isLoadingMap[key]!.value = true;
     try {
       var loadedOptions = await getOptions() ?? [];
       optionsMap[key]?.assignAll(loadedOptions);

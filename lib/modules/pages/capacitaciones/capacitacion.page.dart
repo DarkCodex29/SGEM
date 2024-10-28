@@ -5,6 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.page.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
@@ -47,7 +50,7 @@ class CapacitacionPage extends StatelessWidget {
           case CapacitacionScreen.visualizarCapacitacion:
             return const Placeholder();
           case CapacitacionScreen.cargaMasivaCapacitacion:
-            return CapacitacionCargaMasivaPage(onCancel: (){
+            return CapacitacionCargaMasivaPage(onCancel: () {
               controller.showCapacitacionPage();
             });
         }
@@ -281,211 +284,6 @@ class CapacitacionPage extends StatelessWidget {
     );
   }
 
-/*
-  Widget _buildDropdownGuardia(PersonalSearch Controller controller) {
-    return Obx(() {
-      return CustomDropdown(
-        isLoading: controller.isLoadingGuardia.value,
-        hintText: 'Selecciona Guardia',
-        noDataHintText: 'No se encontraron guardias',
-        options: controller.guardiaOptions.isEmpty
-            ? []
-            : controller.guardiaOptions.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
-            ? controller.guardiaOptions
-                .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          if (value != null) {
-            final selectedOption = controller.guardiaOptions.firstWhere(
-              (option) => option.valor == value,
-            );
-            controller.selectedGuardiaKey.value = selectedOption.key;
-            log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
-          }
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownNombreCapacitacion(CapacitacionController controller) {
-    return Obx(() {
-      if (controller.isLoadingCapacitacion.value) {
-        return const Center(
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-      if (controller.capacitacionOpciones.isEmpty) {
-        return const Center(
-          child: Text(
-            'No se encontraron capacitaciones',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        );
-      }
-      List<MaestroDetalle> options = controller.capacitacionOpciones;
-      return CustomDropdown(
-        hintText: 'Nombre de capacitacion',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedCapacitacionKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedCapacitacionKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedCapacitacionKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedCapacitacionKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownCategoria(CapacitacionController controller) {
-    return Obx(() {
-      if (controller.isLoadingCategoria.value) {
-        return const Center(
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-
-      if (controller.categoriaOpciones.isEmpty) {
-        return const Center(
-          child: Text(
-            'No se encontraron categorias',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        );
-      }
-      List<MaestroDetalle> options = controller.categoriaOpciones;
-      return CustomDropdown(
-        hintText: 'Categoria',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedCategoriaKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedCategoriaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedCategoriaKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedCategoriaKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownEmpresaCapacitacion(CapacitacionController controller) {
-    return Obx(() {
-      if (controller.isLoadingEmpresaCapacitacion.value) {
-        return const Center(
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-
-      if (controller.empresaCapacitacionOpciones.isEmpty) {
-        return const Center(
-          child: Text(
-            'No se encontraron empresa capacitacion',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        );
-      }
-      List<MaestroDetalle> options = controller.empresaCapacitacionOpciones;
-      return CustomDropdown(
-        hintText: 'Empresa de capacitacion',
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedEmpresaCapacitacionKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key ==
-                    controller.selectedEmpresaCapacitacionKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedEmpresaCapacitacionKey.value = selectedOption.key;
-          log('Guardia seleccionada - Key del Maestro: ${controller.selectedEmpresaCapacitacionKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownEntrenador(CapacitacionController controller) {
-    return Obx(() {
-      if (controller.isLoadingEntrenador.value) {
-        return const Center(
-          child: SizedBox(
-            height: 50,
-            width: 50,
-            child: CircularProgressIndicator(),
-          ),
-        );
-      }
-
-      if (controller.entrenadorOpciones.isEmpty) {
-        return const Center(
-          child: Text(
-            'No se encontraron entrenadores',
-            style: TextStyle(fontSize: 16, color: Colors.black54),
-          ),
-        );
-      }
-      List<Personal> options = controller.entrenadorOpciones;
-      return CustomDropdown(
-        hintText: 'Entrenador responsable',
-        options: options.map((option) => option.nombreCompleto).toList(),
-        selectedValue: controller.selectedEntrenadorKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.inPersonalOrigen ==
-                    controller.selectedEntrenadorKey.value)
-                .nombreCompleto
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.nombreCompleto == value,
-          );
-          controller.selectedEntrenadorKey.value =
-              selectedOption.inPersonalOrigen;
-          log('Entrenador seleccionada - Key del Maestro: ${controller.selectedEntrenadorKey.value}, Valor: $value');
-        },
-      );
-    });
-  }
-*/
   Widget _buildBotonesAccion(CapacitacionController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -744,15 +542,136 @@ class CapacitacionPage extends StatelessWidget {
                                 textAlign: TextAlign.center,
                               )),
                           Expanded(
-                              flex: 1,
-                              child: Row(
-                                children: [
-                                  _buildIconButton(
-                                      Icons.edit, AppTheme.primaryColor, () {}),
-                                  _buildIconButton(
-                                      Icons.delete, AppTheme.errorColor, () {})
-                                ],
-                              )),
+                            flex: 1,
+                            child: Row(
+                              children: [
+                                _buildIconButton(
+                                    Icons.edit, AppTheme.primaryColor, () {
+                                  //controller
+                                  //  .showEditarCapacitacion(entrenamiento);
+                                }),
+                                _buildIconButton(
+                                  Icons.delete,
+                                  AppTheme.errorColor,
+                                  () async {
+                                    controller.selectedCapacitacion.value =
+                                        entrenamiento;
+                                    String motivoEliminacion = '';
+
+                                    await showDialog(
+                                      context: Get.context!,
+                                      builder: (context) {
+                                        return GestureDetector(
+                                          onTap: () =>
+                                              FocusScope.of(context).unfocus(),
+                                          child: Padding(
+                                            padding: MediaQuery.of(context)
+                                                .viewInsets,
+                                            child: DeleteReasonWidget(
+                                              entityType: 'capacitacion',
+                                              onCancel: () {
+                                                Navigator.pop(context);
+                                              },
+                                              onConfirm: (motivo) {
+                                                motivoEliminacion = motivo;
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                    if (motivoEliminacion.isEmpty) {
+                                      return;
+                                    }
+                                    bool confirmarEliminar = false;
+
+                                    if (controller.selectedCapacitacion.value !=
+                                        null) {
+                                      /*
+                                      String? nombreCapacitacion = controller
+                                          .selectedCapacitacion
+                                          .value!
+                                          .nombreCompleto;*/
+                                      await showDialog(
+                                        context: Get.context!,
+                                        builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () => FocusScope.of(context)
+                                                .unfocus(),
+                                            child: Padding(
+                                              padding: MediaQuery.of(context)
+                                                  .viewInsets,
+                                              child: ConfirmDeleteWidget(
+                                                itemName: '',
+                                                entityType: 'capacitación',
+                                                onCancel: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                onConfirm: () {
+                                                  confirmarEliminar = true;
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      log('Error: No hay capacitación seleccionada');
+                                      return;
+                                    }
+
+                                    if (!confirmarEliminar) {
+                                      return;
+                                    }
+                                    try {
+                                      //  await controller.eliminarCapacitacion(
+                                      //    motivoEliminacion);
+                                      bool success = true;
+                                      if (success == true) {
+                                        await showDialog(
+                                          context: Get.context!,
+                                          builder: (context) {
+                                            return const SuccessDeleteWidget();
+                                          },
+                                        );
+                                        controller.buscarCapacitaciones();
+
+                                        ScaffoldMessenger.of(Get.context!)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                "Capacitación eliminada exitosamente."),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      } else {
+                                        ScaffoldMessenger.of(Get.context!)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                "Error al eliminar la capacitación. Intenta nuevamente."),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      log('Error eliminando la capacitación: $e');
+                                      ScaffoldMessenger.of(Get.context!)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                              "Error eliminando la capacitación: $e"),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     );

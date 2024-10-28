@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:get/get.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.controller.dart';
 
 class DynamicTable<T> extends StatelessWidget {

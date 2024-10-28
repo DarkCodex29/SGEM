@@ -8,7 +8,9 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
+import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import '../../../config/api/api.maestro.detail.dart';
@@ -57,20 +59,17 @@ class CapacitacionController extends GetxController {
   var currentPage = 1.obs;
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
+
   final GenericDropdownController<MaestroDetalle> dropdownController =
       Get.put(GenericDropdownController<MaestroDetalle>());
   final GenericDropdownController<Personal> personalDropdownController =
       Get.put(GenericDropdownController<Personal>());
+
+  Rxn<CapacitacionConsulta> selectedCapacitacion = Rxn<CapacitacionConsulta>();
+
   @override
   void onInit() {
     cargarDropdowns();
-    /*
-    cargarGuardia();
-    cargarCapacitacion();
-    cargarCategoria();
-    cargarEmpresaCapacitacion();         
-    cargarEntrenador();
-*/
     buscarCapacitaciones(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
@@ -117,106 +116,6 @@ class CapacitacionController extends GetxController {
     });
   }
 
-/*
-  Future<void> cargarGuardia() async {
-    isLoadingGuardia.value = true;
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-
-      if (response.success && response.data != null) {
-        guardiaOpciones.assignAll(response.data!);
-
-        log('Guardia opciones cargadas correctamente: $guardiaOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
-    } finally {
-      isLoadingGuardia.value = false;
-    }
-  }
-
-  Future<void> cargarCapacitacion() async {
-    isLoadingCapacitacion.value = true;
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(7);
-
-      if (response.success && response.data != null) {
-        capacitacionOpciones.assignAll(response.data!);
-
-        log('Capacitacion opciones cargadas correctamente: $capacitacionOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de capacitaciones maestro: $e');
-    } finally {
-      isLoadingCapacitacion.value = false;
-    }
-  }
-
-  Future<void> cargarCategoria() async {
-    isLoadingCategoria.value = true;
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(9);
-
-      if (response.success && response.data != null) {
-        categoriaOpciones.assignAll(response.data!);
-
-        log('Capacitacion opciones cargadas correctamente: $categoriaOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de capacitaciones maestro: $e');
-    } finally {
-      isLoadingCategoria.value = false;
-    }
-  }
-
-  Future<void> cargarEmpresaCapacitacion() async {
-    isLoadingEmpresaCapacitacion.value = true;
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(8);
-
-      if (response.success && response.data != null) {
-        empresaCapacitacionOpciones.assignAll(response.data!);
-
-        log('Empresa Capacitacion opciones cargadas correctamente: $empresaCapacitacionOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de empresa capacitaciones maestro: $e');
-    } finally {
-      isLoadingEmpresaCapacitacion.value = false;
-    }
-  }
-
-  Future<void> cargarEntrenador() async {
-    isLoadingEntrenador.value = true;
-    try {
-      var response = await personalService.listarEntrenadores();
-
-      if (response.success && response.data != null) {
-        entrenadorOpciones.assignAll(response.data!);
-
-        log('Entrenadores opciones cargadas correctamente: $entrenadorOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de entrenador: $e');
-    } finally {
-      isLoadingEntrenador.value = false;
-    }
-  }
-*/
   Future<void> buscarCapacitaciones(
       {int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =
@@ -380,13 +279,40 @@ class CapacitacionController extends GetxController {
   void showNuevaCapacitacion() {
     screenPage.value = CapacitacionScreen.nuevaCapacitacion;
   }
+
   void showCargaMasivaCapacitacion() {
     screenPage.value = CapacitacionScreen.cargaMasivaCapacitacion;
+  }
+
+  void showEditarCapacitacion(EntrenamientoModulo capacitacion) {
+    screenPage.value = CapacitacionScreen.editarCapacitacion;
+    NuevaCapacitacionController nuevaCapacitacionController = Get.find();
+    nuevaCapacitacionController.cargarDatosCapacitacion(capacitacion);
   }
 
   void showCapacitacionPage() {
     screenPage.value = CapacitacionScreen.none;
   }
+
+  Future<bool> eliminarCapacitacion(
+      EntrenamientoModulo capacitacion, String motivoEliminacion) async {
+    try {
+      capacitacion.motivoEliminado = motivoEliminacion;
+
+      final response = await capacitacionService.eliminarModulo(capacitacion);
+      if (response.success) {
+        log('Capacitación eliminada con éxito');
+        return true;
+      } else {
+        log('Error al eliminar la capacitación: ${response.message}');
+        return false;
+      }
+    } catch (e) {
+      log('Error al eliminar la capacitación: $e');
+      return false;
+    }
+  }
+
   void clearFields() {
     codigoMcpController.clear();
     numeroDocumentoController.clear();

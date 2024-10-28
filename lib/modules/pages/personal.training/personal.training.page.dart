@@ -206,40 +206,6 @@ class PersonalSearchPage extends StatelessWidget {
                             },
                             controller: null,
                           ),
-                          /*
-                          Obx(
-                            () {
-                              String? selectedValue;
-                              if (controller.selectedEstadoKey.value == null) {
-                                selectedValue = null;
-                              } else if (controller.selectedEstadoKey.value ==
-                                  95) {
-                                selectedValue = "Activo";
-                              } else if (controller.selectedEstadoKey.value ==
-                                  96) {
-                                selectedValue = "Cesado";
-                              } else {
-                                selectedValue = "Todos";
-                              }
-
-                              return CustomDropdown(
-                                hintText: "Estado",
-                                noDataHintText: 'No hay datos de estado',
-                                options: const ["Activo", "Cesado", "Todos"],
-                                selectedValue: selectedValue,
-                                isSearchable: false,
-                                onChanged: (value) {
-                                  if (value == "Activo") {
-                                    controller.searchPersonalEstado(95);
-                                  } else if (value == "Cesado") {
-                                    controller.searchPersonalEstado(96);
-                                  } else {
-                                    controller.searchPersonalEstado(null);
-                                  }
-                                },
-                              );
-                            },
-                          )*/
                         ],
                       )
                     : Row(

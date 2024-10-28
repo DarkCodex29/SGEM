@@ -385,7 +385,7 @@ class MaestroPage extends StatelessWidget {
   }
 
   Widget _buildSeccionResultadoTablaData(dynamic data) {
-    return Row(
+    return const Row(
       children: [
         // Expanded(child: Text(data.codigoMcp!)),
         // Expanded(child: Text(data.nombreCompleto!)),

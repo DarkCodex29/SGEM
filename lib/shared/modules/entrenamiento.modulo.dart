@@ -14,7 +14,7 @@ class EntrenamientoModulo {
   int? inCapacitacion;
   int? inModulo;
   OptionValue? modulo;
-  int? inTipoPersona;
+  String? tipoPersona;
   int? inPersona;
   int? inActividadEntrenamiento;
   int? inCategoria;
@@ -48,7 +48,7 @@ class EntrenamientoModulo {
     this.inCapacitacion,
     this.inModulo,
     this.modulo,
-    this.inTipoPersona,
+    this.tipoPersona,
     this.inPersona,
     this.inActividadEntrenamiento,
     this.inCategoria,
@@ -98,7 +98,7 @@ class EntrenamientoModulo {
         inCapacitacion: json["InCapacitacion"] ?? 0,
         inModulo: json["InModulo"] ?? 0,
         modulo: OptionValue.fromJson(json["Modulo"] ?? {}),
-        inTipoPersona: json["InTipoPersona"] ?? 0,
+        tipoPersona: json["InTipoPersona"] ?? '',
         inPersona: json["InPersona"] ?? 0,
         inActividadEntrenamiento: json["InActividadEntrenamiento"] ?? 0,
         inCategoria: json["InCategoria"] ?? 0,
@@ -144,7 +144,7 @@ class EntrenamientoModulo {
         "InCapacitacion": inCapacitacion,
         "InModulo": inModulo,
         "Modulo": modulo!.toJson(),
-        "InTipoPersona": inTipoPersona,
+        "tipoPersona": tipoPersona,
         "InPersona": inPersona,
         "InActividadEntrenamiento": inActividadEntrenamiento,
         "InCategoria": inCategoria,

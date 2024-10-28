@@ -222,7 +222,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
           nombre: 'Módulo ${convertirARomano(moduloNumero)}'),
       eliminado: 'N',
       motivoEliminado: '',
-      inTipoPersona: entrenamiento.inTipoPersona,
+      tipoPersona: entrenamiento.tipoPersona,
       inCategoria: entrenamiento.inCategoria,
       inEquipo: entrenamiento.inEquipo,
       equipo: entrenamiento.equipo,

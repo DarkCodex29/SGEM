@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 
 class GenericDropdownController extends GetxController {
-  var isLoadingMap = <String, RxBool>{}.obs;
-  var optionsMap = <String, RxList<OptionValue>>{}.obs;
-  var selectedValueMap = <String, Rxn<OptionValue>>{}.obs;
+  final isLoadingMap = <String, RxBool>{};
+  final optionsMap = <String, RxList<OptionValue>>{};
+  final selectedValueMap = <String, Rxn<OptionValue>>{};
 
   void initializeDropdown(String key) {
     if (!isLoadingMap.containsKey(key)) {
@@ -32,25 +32,38 @@ class GenericDropdownController extends GetxController {
   //   }
   // }
   Future<void> loadOptions(
-      String key, Future<List<OptionValue>> Function() getOptions) async {
+      String key, Future<List<OptionValue>?> Function() getOptions) async {
     initializeDropdown(key);
+
+    if (isLoadingMap[key] == null) {
+      log('Error: isLoadingMap[$key] no está inicializado');
+      return;
+    }
+
+    // Previene cargas duplicadas
+    if (isLoadingMap[key]!.value) return;
+
     isLoadingMap[key]!.value = true;
     try {
-      var loadedOptions = await getOptions();
-      optionsMap[key]!.assignAll(loadedOptions);
+      var loadedOptions = await getOptions() ?? [];
+      optionsMap[key]?.assignAll(loadedOptions);
     } catch (e) {
       log('Error loading options for $key: $e');
     } finally {
-      isLoadingMap[key]!.value = false;
+      isLoadingMap[key]?.value = false;
     }
   }
 
   void selectValue(String key, OptionValue? value) {
-    selectedValueMap[key]?.value = value;
+    if (selectedValueMap.containsKey(key)) {
+      selectedValueMap[key]!.value = value;
+    }
   }
 
   void resetSelection(String key) {
-    selectedValueMap[key]?.value = null;
+    if (selectedValueMap.containsKey(key)) {
+      selectedValueMap[key]!.value = null;
+    }
   }
 
   void resetAllSelections() {
@@ -62,7 +75,4 @@ class GenericDropdownController extends GetxController {
   bool isLoading(String key) => isLoadingMap[key]?.value ?? false;
   List<OptionValue> getOptions(String key) => optionsMap[key]?.toList() ?? [];
   OptionValue? getSelectedValue(String key) => selectedValueMap[key]?.value;
-
 }
-
-

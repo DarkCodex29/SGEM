@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-class CustomDropdown<T> extends StatelessWidget {
+class CustomDropdown extends StatelessWidget {
   final String dropdownKey;
   final String hintText;
   final String noDataHintText;
   final bool isSearchable;
   final bool isRequired;
   final bool isReadOnly;
-  final List<T>? staticOptions;
-  final GenericDropdownController<T>? controller;
-  final void Function(T?)? onChanged;
+  final GenericDropdownController? controller;
+  final List<OptionValue>? staticOptions;
+  final void Function(OptionValue?)? onChanged;
 
   const CustomDropdown({
     required this.dropdownKey,
@@ -37,10 +38,9 @@ class CustomDropdown<T> extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (controller != null)
+                if (controller != null && staticOptions == null)
                   Obx(() {
-                    var options =
-                        staticOptions ?? controller!.getOptions(dropdownKey);
+                    var options = controller!.getOptions(dropdownKey);
                     var isLoading = controller!.isLoading(dropdownKey);
 
                     if (isLoading) {
@@ -52,119 +52,12 @@ class CustomDropdown<T> extends StatelessWidget {
                         ),
                       );
                     }
-                    return SizedBox(
-                      height: 50,
-                      child: DropdownButtonFormField<T>(
-                        value: controller!.getSelectedValue(dropdownKey),
-                        isExpanded: true,
-                        hint: Text(
-                          options.isEmpty ? noDataHintText : hintText,
-                          style: const TextStyle(
-                            color: AppTheme.primaryText,
-                            fontSize: 16,
-                          ),
-                        ),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: AppTheme.alternateColor,
-                            ),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: AppTheme.alternateColor,
-                              width: 2.0,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 14.0,
-                            horizontal: 12.0,
-                          ),
-                        ),
-                        onChanged: isReadOnly || options.isEmpty
-                            ? null
-                            : (value) {
-                                if (controller != null) {
-                                  controller!.selectValue(dropdownKey, value);
-                                }
-                                if (onChanged != null) {
-                                  onChanged!(value);
-                                }
-                              },
-                        items: options.map((T option) {
-                          String displayText = option is DropdownElement
-                              ? option.value
-                              : option.toString();
-                          return DropdownMenuItem<T>(
-                            value: option,
-                            child: Text(displayText),
-                          );
-                        }).toList(),
-                        disabledHint: Text(
-                          controller!
-                                  .getSelectedValue(dropdownKey)
-                                  ?.toString() ??
-                              hintText,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    );
+                    return _buildDropdown(options);
                   })
+                else if (staticOptions != null)
+                  _buildDropdown(staticOptions!)
                 else
-                  SizedBox(
-                    height: 50,
-                    child: DropdownButtonFormField<T>(
-                      value: staticOptions?.first,
-                      isExpanded: true,
-                      hint: Text(
-                        staticOptions?.isEmpty ?? true
-                            ? noDataHintText
-                            : hintText,
-                        style: const TextStyle(
-                          color: AppTheme.primaryText,
-                          fontSize: 16,
-                        ),
-                      ),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: AppTheme.alternateColor,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: AppTheme.alternateColor,
-                            width: 2.0,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 14.0,
-                          horizontal: 12.0,
-                        ),
-                      ),
-                      onChanged: isReadOnly || staticOptions?.isEmpty == true
-                          ? null
-                          : (value) {
-                              if (onChanged != null) {
-                                onChanged!(value);
-                              }
-                            },
-                      items: staticOptions?.map((T option) {
-                        return DropdownMenuItem<T>(
-                          value: option,
-                          child: Text(option.toString()),
-                        );
-                      }).toList(),
-                      disabledHint: Text(
-                        hintText,
-                        style: const TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                  ),
+                  const Text("Error: No controller or static options provided"),
                 if (isSearchable && !isReadOnly) _buildSearchBar(),
               ],
             ),
@@ -185,6 +78,66 @@ class CustomDropdown<T> extends StatelessWidget {
     );
   }
 
+  Widget _buildDropdown(List<OptionValue> options) {
+    return SizedBox(
+      height: 50,
+      child: DropdownButtonFormField<OptionValue>(
+        value: controller != null
+            ? controller!.getSelectedValue(dropdownKey)
+            : staticOptions?.first,
+        isExpanded: true,
+        hint: Text(
+          options.isEmpty ? noDataHintText : hintText,
+          style: const TextStyle(
+            color: AppTheme.primaryText,
+            fontSize: 16,
+          ),
+        ),
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: AppTheme.alternateColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: AppTheme.alternateColor,
+              width: 2.0,
+            ),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 14.0,
+            horizontal: 12.0,
+          ),
+        ),
+        onChanged: isReadOnly || options.isEmpty
+            ? null
+            : (value) {
+                if (controller != null) {
+                  controller!.selectValue(dropdownKey, value);
+                }
+                if (onChanged != null) {
+                  onChanged!(value);
+                }
+              },
+        items: options.map((option) {
+          return DropdownMenuItem<OptionValue>(
+            value: option,
+            child: Text(option.nombre ?? ''),
+          );
+        }).toList(),
+        disabledHint: Text(
+          controller != null
+              ? controller!.getSelectedValue(dropdownKey)?.nombre ?? hintText
+              : hintText,
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ),
+    );
+  }
+
   Widget _buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
@@ -194,14 +147,12 @@ class CustomDropdown<T> extends StatelessWidget {
           border: OutlineInputBorder(),
         ),
         onChanged: (query) {
+          var options = (staticOptions ?? controller!.getOptions(dropdownKey))
+              .where((option) =>
+                  option.nombre?.toLowerCase().contains(query.toLowerCase()) ??
+                  false)
+              .toList();
           if (controller != null) {
-            var options = controller!
-                .getOptions(dropdownKey)
-                .where((option) => option
-                    .toString()
-                    .toLowerCase()
-                    .contains(query.toLowerCase()))
-                .toList();
             controller!.optionsMap[dropdownKey]?.assignAll(options);
           }
         },

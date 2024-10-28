@@ -90,6 +90,38 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
+  Future<Personal?> loadPersonalInterno(String codigoMcp) async {
+    try {
+      final response = await personalService.listarPersonalEntrenamiento(
+          codigoMcp: codigoMcp);
+      if (response.success && response.data != null) {
+        return response.data!.first;
+      } else {
+        log('Error al obtener datos de personal: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al cargar personal: $e');
+    }
+    return null;
+  }
+
+  Future<Personal?> loadPersonalExterno(String dni) async {
+    try {
+      final response =
+          await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+      if (response.success && response.data != null) {
+        return response.data!;
+      } else {
+        log('Error al obtener datos de personal: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al cargar personal externo: $e');
+    }
+    return null;
+  }
+
+  
+
   void cargarDropdowns() {
     dropdownController.loadOptions('guardia', () async {
       var response =

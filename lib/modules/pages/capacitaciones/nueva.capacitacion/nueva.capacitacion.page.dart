@@ -9,6 +9,9 @@ import 'package:sgem/shared/widgets/custom.textfield.dart';
 class NuevaCapacitacionPage extends StatelessWidget {
   final bool isEditMode;
   final int? capacitacionKey;
+  final String? dni;
+  final String? codigoMcp;
+  final String? tipoPersona;
   final VoidCallback onCancel;
 
   final NuevaCapacitacionController controller =
@@ -17,11 +20,20 @@ class NuevaCapacitacionPage extends StatelessWidget {
   NuevaCapacitacionPage({
     super.key,
     required this.isEditMode,
-    required this.onCancel,
+    this.dni,
+    this.tipoPersona,
+    this.codigoMcp,
     this.capacitacionKey,
+    required this.onCancel,
   }) {
     if (isEditMode && capacitacionKey != null) {
       controller.loadCapacitacion(capacitacionKey!);
+    } else {
+      if (tipoPersona == 'Interno') {
+        controller.loadPersonalInterno(codigoMcp!);
+      } else {
+        controller.loadPersonalExterno(dni!);
+      }
     }
   }
 

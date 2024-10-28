@@ -7,7 +7,7 @@ import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/personal.dart';
 
 class PersonalService {
-    final Dio dio = Dio();
+  final Dio dio = Dio();
 
   PersonalService() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -207,6 +207,30 @@ class PersonalService {
     }
   }
 
+  Future<ResponseHandler<Personal>> obtenerPersonalExternoPorNumeroDocumento(
+      String numeroDocumento) async {
+    final url =
+        '${ConfigFile.apiUrl}/Personal/ObtenerPersonalExternoPorNumeroDocumento?numeroDocumento=$numeroDocumento';
+
+    try {
+      log('Buscando personal externo por número de documento: $numeroDocumento');
+      final response = await dio.get(
+        url,
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      log('Respuesta recibida para obtenerPersonalExternoPorNumeroDocumento: ${response.data}');
+
+      return ResponseHandler.handleSuccess<Personal>(
+          Personal.fromJson(response.data));
+    } on DioException catch (e) {
+      log('Error al obtener personal externo por número de documento: $numeroDocumento. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
   Future<ResponseHandler<Map<String, dynamic>>>
       listarPersonalEntrenamientoPaginado({
     String? codigoMcp,
@@ -218,7 +242,8 @@ class PersonalService {
     int? pageSize,
     int? pageNumber,
   }) async {
-    const url = '${ConfigFile.apiUrl}/Personal/ListarPersonalEntrenamientoPaginado';
+    const url =
+        '${ConfigFile.apiUrl}/Personal/ListarPersonalEntrenamientoPaginado';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.numeroDocumento': numeroDocumento,

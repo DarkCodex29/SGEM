@@ -51,6 +51,9 @@ class CapacitacionPage extends StatelessWidget {
                 });
           case CapacitacionScreen.editarCapacitacion:
             return NuevaCapacitacionPage(
+              dni: controller.selectedCapacitacion.value!.numeroDocumento,
+              tipoPersona:
+                  controller.selectedCapacitacion.value!.categoria.nombre,
               isEditMode: true,
               capacitacionKey: controller.selectedCapacitacion.value!.key,
               onCancel: () {

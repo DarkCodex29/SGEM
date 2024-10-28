@@ -44,11 +44,19 @@ class CapacitacionPage extends StatelessWidget {
               context,
             );
           case CapacitacionScreen.nuevaCapacitacion:
-            return NuevaCapacitacionPage(isEditMode: false);
+            return NuevaCapacitacionPage(
+                isEditMode: false,
+                onCancel: () {
+                  controller.showCapacitacionPage();
+                });
           case CapacitacionScreen.editarCapacitacion:
             return NuevaCapacitacionPage(
-                isEditMode: true,
-                capacitacionKey: controller.selectedCapacitacion.value!.key);
+              isEditMode: true,
+              capacitacionKey: controller.selectedCapacitacion.value!.key,
+              onCancel: () {
+                controller.showCapacitacionPage();
+              },
+            );
           case CapacitacionScreen.visualizarCapacitacion:
             return const Placeholder();
           case CapacitacionScreen.cargaMasivaCapacitacion:
@@ -174,6 +182,9 @@ class CapacitacionPage extends StatelessWidget {
           hintText: 'Selecciona guardia',
           noDataHintText: 'No se encontraron guardias',
           controller: controller.dropdownController,
+          onChanged: (value) {
+            controller.dropdownController.selectValue('guardia', value);
+          },
         )),
       ],
     );
@@ -220,6 +231,9 @@ class CapacitacionPage extends StatelessWidget {
             hintText: 'Selecciona capacitación',
             noDataHintText: 'No se encontraron capacitaciones',
             controller: controller.dropdownController,
+            onChanged: (value) {
+              controller.dropdownController.selectValue('capacitacion', value);
+            },
           ),
         ),
         const SizedBox(
@@ -231,6 +245,9 @@ class CapacitacionPage extends StatelessWidget {
             hintText: 'Selecciona categoría',
             noDataHintText: 'No se encontraron categorías',
             controller: controller.dropdownController,
+            onChanged: (value) {
+              controller.dropdownController.selectValue('categoria', value);
+            },
           ),
         ),
         const SizedBox(
@@ -242,6 +259,10 @@ class CapacitacionPage extends StatelessWidget {
             hintText: 'Selecciona empresa de capacitación',
             noDataHintText: 'No se encontraron empresas',
             controller: controller.dropdownController,
+            onChanged: (value) {
+              controller.dropdownController
+                  .selectValue('empresaCapacitacion', value);
+            },
           ),
         ),
       ],
@@ -259,6 +280,10 @@ class CapacitacionPage extends StatelessWidget {
             hintText: 'Selecciona entrenador',
             noDataHintText: 'No se encontraron entrenadores',
             controller: controller.personalDropdownController,
+            onChanged: (value) {
+              controller.personalDropdownController
+                  .selectValue('entrenador', value);
+            },
           ),
         ),
         const SizedBox(
@@ -552,6 +577,8 @@ class CapacitacionPage extends StatelessWidget {
                                   AppTheme.primaryColor,
                                   () async {
                                     if (entrenamiento.key != null) {
+                                      controller.selectedCapacitacion.value =
+                                          entrenamiento;
                                       controller.showEditarCapacitacion(
                                           entrenamiento.key!);
                                     }

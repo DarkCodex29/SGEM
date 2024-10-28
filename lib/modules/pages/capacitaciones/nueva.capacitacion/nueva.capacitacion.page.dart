@@ -9,12 +9,15 @@ import 'package:sgem/shared/widgets/custom.textfield.dart';
 class NuevaCapacitacionPage extends StatelessWidget {
   final bool isEditMode;
   final int? capacitacionKey;
+  final VoidCallback onCancel;
+
   final NuevaCapacitacionController controller =
       Get.put(NuevaCapacitacionController());
 
   NuevaCapacitacionPage({
     super.key,
     required this.isEditMode,
+    required this.onCancel,
     this.capacitacionKey,
   }) {
     if (isEditMode && capacitacionKey != null) {
@@ -29,7 +32,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildSelectorDeTipo(),
+            if (!isEditMode) _buildSelectorDeTipo(),
             const SizedBox(height: 20),
             Obx(() => controller.isInternoSelected.value
                 ? _buildFormularioInterno()
@@ -39,7 +42,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildArchivosAdjuntos(),
             const SizedBox(height: 20),
-            _buildBotonesAccion(context, isEditMode),
+            _buildBotonesAccion(isEditMode),
           ],
         ),
       ),
@@ -148,16 +151,17 @@ class NuevaCapacitacionPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  width: 200,
-                  child: CustomTextField(
-                    label: "Código MCP",
-                    controller: controller.dniController,
-                    icon: const Icon(Icons.search),
-                    onIconPressed: () {},
+                if (!isEditMode)
+                  SizedBox(
+                    width: 200,
+                    child: CustomTextField(
+                      label: "Código MCP",
+                      controller: controller.dniController,
+                      icon: const Icon(Icons.search),
+                      onIconPressed: () {},
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
+                if (!isEditMode) const SizedBox(height: 12),
                 const Text('Datos del Personal',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -410,13 +414,13 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBotonesAccion(BuildContext context, bool isEditMode) {
+  Widget _buildBotonesAccion(bool isEditMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
           onPressed: () {
-            Get.back();
+            onCancel();
           },
           child: const Text("Cancelar"),
         ),

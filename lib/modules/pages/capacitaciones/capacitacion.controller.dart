@@ -33,13 +33,13 @@ class CapacitacionController extends GetxController {
   RxBool isLoadingEmpresaCapacitacion = false.obs;
   RxBool isLoadingCapacitacionResultados = false.obs;
   RxBool isLoadingEntrenador = false.obs;
-
+/*
   var selectedGuardiaKey = RxnInt();
   var selectedCapacitacionKey = RxnInt();
   var selectedCategoriaKey = RxnInt();
   var selectedEmpresaCapacitacionKey = RxnInt();
   var selectedEntrenadorKey = RxnInt();
-
+*/
   RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> capacitacionOpciones = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
@@ -134,14 +134,17 @@ class CapacitacionController extends GetxController {
       var response = await capacitacionService.CapacitacionConsultaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: selectedGuardiaKey.value,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
         nombres: nombres,
         apellidoPaterno: apellidoPaterno,
         apellidoMaterno: apellidoMaterno,
-        inCapacitacion: selectedCapacitacionKey.value,
-        inCategoria: selectedCategoriaKey.value,
-        inEmpresaCapacitacion: selectedEmpresaCapacitacionKey.value,
-        inEntrenador: selectedEntrenadorKey.value,
+        inCapacitacion:
+            dropdownController.getSelectedValue('capacitacion')?.key,
+        inCategoria: dropdownController.getSelectedValue('categoria')?.key,
+        inEmpresaCapacitacion:
+            dropdownController.getSelectedValue('empresaCapacitacion')?.key,
+        inEntrenador:
+            personalDropdownController.getSelectedValue('entrenador')?.key,
         fechaInicio: fechaInicio,
         fechaTermino: fechaTermino,
         pageSize: pageSize,
@@ -313,16 +316,20 @@ class CapacitacionController extends GetxController {
   void clearFields() {
     codigoMcpController.clear();
     numeroDocumentoController.clear();
-    selectedGuardiaKey.value = null;
+    //selectedGuardiaKey.value = null;
     nombresController.clear();
     apellidoPaternoController.clear();
     apellidoMaternoController.clear();
-    selectedCapacitacionKey.value = null;
-    selectedCategoriaKey.value = null;
-    selectedEmpresaCapacitacionKey.value = null;
-    selectedEntrenadorKey.value = null;
+    //selectedCapacitacionKey.value = null;
+    //selectedCategoriaKey.value = null;
+    //selectedEmpresaCapacitacionKey.value = null;
+    //selectedEntrenadorKey.value = null;
     rangoFechaController.clear();
     fechaInicio = null;
     fechaTermino = null;
+
+    //dropdownController.resetSelection('guardia');
+    dropdownController.resetAllSelections();
+    personalDropdownController.resetAllSelections();
   }
 }

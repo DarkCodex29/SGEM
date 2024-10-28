@@ -2,10 +2,10 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 
-class GenericDropdownController<T> extends GetxController {
+class GenericDropdownController extends GetxController {
   final isLoadingMap = <String, RxBool>{};
-  final optionsMap = <String, RxList<T>>{};
-  final selectedValueMap = <String, Rxn<T>>{};
+  final optionsMap = <String, RxList<OptionValue>>{};
+  final selectedValueMap = <String, Rxn<OptionValue>>{};
 
   void initializeDropdown(String key) {
     if (!isLoadingMap.containsKey(key)) {
@@ -20,7 +20,7 @@ class GenericDropdownController<T> extends GetxController {
   }
 
   Future<void> loadOptions(
-      String key, Future<List<T>?> Function() getOptions) async {
+      String key, Future<List<OptionValue>?> Function() getOptions) async {
     initializeDropdown(key);
 
     if (isLoadingMap[key] == null) {
@@ -42,7 +42,7 @@ class GenericDropdownController<T> extends GetxController {
     }
   }
 
-  void selectValue(String key, T? value) {
+  void selectValue(String key, OptionValue? value) {
     if (selectedValueMap.containsKey(key)) {
       selectedValueMap[key]!.value = value;
     }
@@ -61,9 +61,6 @@ class GenericDropdownController<T> extends GetxController {
   }
 
   bool isLoading(String key) => isLoadingMap[key]?.value ?? false;
-  List<T> getOptions(String key) => optionsMap[key]?.toList() ?? [];
-  T? getSelectedValue(String key) => selectedValueMap[key]?.value;
-  
+  List<OptionValue> getOptions(String key) => optionsMap[key]?.toList() ?? [];
+  OptionValue? getSelectedValue(String key) => selectedValueMap[key]?.value;
 }
-
-

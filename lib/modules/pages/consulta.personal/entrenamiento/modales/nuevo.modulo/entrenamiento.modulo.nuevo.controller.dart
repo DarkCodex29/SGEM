@@ -58,30 +58,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   RxList<Personal> entrenadoresOpciones = <Personal>[].obs;
 
-  final GenericDropdownController personalDropdownController =
-      Get.put(GenericDropdownController());
+  final GenericDropdownController dropdownController =
+      Get.find<GenericDropdownController>();
 
   @override
   void onInit() {
-    cargarEntrenadores();
     super.onInit();
-  }
-
-  void cargarEntrenadores() async {
-    personalDropdownController.loadOptions('entrenador', () async {
-      var response = await personalService.listarEntrenadores();
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.nombreCompleto,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
   }
 
   void buscarEntrenadores(String query) async {
@@ -402,11 +384,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
         entrenamientoModulo!.inHorasMinestar.toString();
     tituloModal.value =
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
-    log('Entrenador Key: ${ personalDropdownController
-        .getSelectedValue('entrenador')?.key} del control: ${entrenamientoModulo!.inEntrenador}');
-    personalDropdownController.selectValueKey('entrenador', entrenamientoModulo!.inEntrenador);
+    log('Entrenador Key: ${dropdownController.getSelectedValue('entrenador')?.key} del control: ${entrenamientoModulo!.inEntrenador}');
+    dropdownController.selectValueKey(
+        'entrenador', entrenamientoModulo!.inEntrenador);
 
-    log('Entrenador Key: ${ personalDropdownController
-        .getSelectedValue('entrenador')?.key}');
+    log('Entrenador Key: ${dropdownController.getSelectedValue('entrenador')?.key}');
   }
 }

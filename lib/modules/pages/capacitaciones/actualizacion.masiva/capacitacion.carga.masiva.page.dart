@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.controller.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
-
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 

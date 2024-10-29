@@ -12,7 +12,6 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/constants/tipo.actividad.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
@@ -65,9 +64,7 @@ class NuevaCapacitacionController extends GetxController {
   RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
 
   final GenericDropdownController dropdownController =
-      Get.put(GenericDropdownController());
-  // final GenericDropdownController<Personal> personalDropdownController =
-  //     Get.put(GenericDropdownController<Personal>());
+      Get.find<GenericDropdownController>();
 
   // MODELOS
   EntrenamientoModulo? entrenamientoModulo;
@@ -76,7 +73,6 @@ class NuevaCapacitacionController extends GetxController {
 
   @override
   void onInit() {
-    cargarDropdowns();
     super.onInit();
   }
 
@@ -161,89 +157,6 @@ class NuevaCapacitacionController extends GetxController {
       apellidoPaternoController.text = personalExterno!.apellidoPaterno;
       apellidoMaternoController.text = personalExterno!.apellidoMaterno;
     }
-  }
-
-  void cargarDropdowns() {
-    dropdownController.loadOptions('guardia', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-
-      if (response.success && response.data != null) {
-         return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('categoria', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(9);
-
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('empresaCapacitacion', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(8);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('capacitacion', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(7);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('entrenador', () async {
-      var response = await personalService.listarEntrenadores();
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.nombreCompleto,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
   }
 
   Future<void> loadPersonalPhoto(int idOrigen) async {

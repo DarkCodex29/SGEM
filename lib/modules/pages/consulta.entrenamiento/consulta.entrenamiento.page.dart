@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/consulta.entrenamiento/consulta.entrenamiento.controller.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../config/theme/app_theme.dart';
-import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 
@@ -15,7 +14,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ConsultaEntrenamientoController controller = Get.put(ConsultaEntrenamientoController());
+    final ConsultaEntrenamientoController controller =
+        Get.put(ConsultaEntrenamientoController());
     return Scaffold(
       body: _buildConsultaEntrenamiento(
         controller,
@@ -81,7 +81,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionConsultaPrimeraFila(ConsultaEntrenamientoController controller) {
+  Widget _buildSeccionConsultaPrimeraFila(
+      ConsultaEntrenamientoController controller) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -116,7 +117,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionConsultaSegundaFila(ConsultaEntrenamientoController controller) {
+  Widget _buildSeccionConsultaSegundaFila(
+      ConsultaEntrenamientoController controller) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -291,7 +293,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoBarraSuperior(ConsultaEntrenamientoController controller) {
+  Widget _buildSeccionResultadoBarraSuperior(
+      ConsultaEntrenamientoController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -322,7 +325,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoTabla(ConsultaEntrenamientoController controller) {
+  Widget _buildSeccionResultadoTabla(
+      ConsultaEntrenamientoController controller) {
     List<String> cabecera = [
       'Código MCP',
       'Nombres y Apellidos',
@@ -397,7 +401,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSeccionResultadoTablaPaginado(ConsultaEntrenamientoController controller) {
+  Widget _buildSeccionResultadoTablaPaginado(
+      ConsultaEntrenamientoController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

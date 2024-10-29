@@ -1,11 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/option.value.dart';
-
 import '../../../config/theme/app_theme.dart';
-import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/modules/personal.dart';
 import '../../../shared/utils/pdf.view.certificado.dart';
 import '../../../shared/utils/pdf.view.diploma.dart';

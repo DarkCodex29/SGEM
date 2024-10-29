@@ -4,13 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
-
 import '../../../../config/api/api.maestro.detail.dart';
 import '../../../../config/api/api.modulo.maestro.dart';
 import '../../../../config/api/api.entrenamiento.dart';
 import '../../../../shared/modules/entrenamiento.actualizacion.masiva.dart';
 import '../../../../shared/modules/maestro.detail.dart';
-import '../../../../shared/modules/option.value.dart';
 
 class ActualizacionMasivaController extends GetxController {
   RxBool isExpanded = true.obs;
@@ -41,124 +39,15 @@ class ActualizacionMasivaController extends GetxController {
   RxBool isLoadingGuardia = false.obs;
   final entrenamientoService = EntrenamientoService();
   final GenericDropdownController dropdownController =
-      Get.put(GenericDropdownController());
-  // final GenericDropdownController<ModuloMaestro> moduloDropdownController =
-  //     Get.put(GenericDropdownController<ModuloMaestro>());
+      Get.find<GenericDropdownController>();
+      
   @override
   void onInit() {
-    cargarDropdowns();
-
-    //cargarModulo();
-    //cargarEquipo();
-    //cargarGuardia();
     buscarActualizacionMasiva(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
   }
 
-  void cargarDropdowns() {
-    dropdownController.loadOptions('guardia', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('equipo', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(5);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('modulo', () async {
-      var response = await moduloMaestroService.listarMaestros();
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.modulo,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-  }
-
-/*
-  Future<void> cargarModulo() async {
-    isLoadingGuardia.value = true;
-    try {
-      var response = await moduloMaestroService.listarMaestros();
-
-      if (response.success && response.data != null) {
-        moduloOpciones.assignAll(response.data!);
-
-        log('Modulos maestro opciones cargadas correctamente: $guardiaOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de Modulos maestro: $e');
-    } finally {
-      isLoadingGuardia.value = false;
-    }
-  }
-
-  Future<void> cargarEquipo() async {
-    try {
-      var response = await maestroDetalleService
-          .listarMaestroDetallePorMaestro(5); //Maestro de Equipos
-
-      if (response.success && response.data != null) {
-        equipoOpciones.assignAll(response.data!);
-
-        log('Equipos opciones cargadas correctamente: $equipoOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
-    }
-  }
-
-  Future<void> cargarGuardia() async {
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-
-      if (response.success && response.data != null) {
-        guardiaOpciones.assignAll(response.data!);
-
-        log('Guardia opciones cargadas correctamente: $guardiaOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
-    }
-  }
-*/
   Future<void> buscarActualizacionMasiva(
       {int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =

@@ -40,6 +40,7 @@ class CustomDropdown extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Si controller está presente y staticOptions es null, usamos Obx
                 if (controller != null && staticOptions == null)
                   Obx(() {
                     var options = controller!.getOptions(dropdownKey);
@@ -56,6 +57,7 @@ class CustomDropdown extends StatelessWidget {
                     }
                     return _buildDropdown(options);
                   })
+                // Si staticOptions está presente, mostramos sin Obx
                 else if (staticOptions != null)
                   _buildDropdown(staticOptions!)
                 else
@@ -129,9 +131,7 @@ class CustomDropdown extends StatelessWidget {
           );
         }).toList(),
         disabledHint: Text(
-          initialValue?.nombre ??
-              controller?.getSelectedValue(dropdownKey)?.nombre ??
-              hintText,
+          initialValue?.nombre ?? hintText,
           style: const TextStyle(color: Colors.grey),
         ),
       ),
@@ -152,7 +152,7 @@ class CustomDropdown extends StatelessWidget {
                   option.nombre?.toLowerCase().contains(query.toLowerCase()) ??
                   false)
               .toList();
-          if (controller != null) {
+          if (controller != null && staticOptions == null) {
             controller!.optionsMap[dropdownKey]?.assignAll(options);
           }
         },

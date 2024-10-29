@@ -12,9 +12,7 @@ import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
-
 import '../../../config/api/api.maestro.detail.dart';
-import '../../../shared/modules/option.value.dart';
 
 class ConsultaEntrenamientoController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
@@ -48,104 +46,13 @@ class ConsultaEntrenamientoController extends GetxController {
   var totalRecords = 0.obs;
 
   final GenericDropdownController dropdownController =
-      Get.put(GenericDropdownController());
-  // final GenericDropdownController<ModuloMaestro> moduloDropdownController =
-  //     Get.put(GenericDropdownController());
+      Get.find<GenericDropdownController>();
 
   @override
   void onInit() {
-    /*
-    cargarModulo();
-    cargarEquipo();
-    cargarGuardia();
-    cargarEstadoEntrenamiento();
-    cargarCondicion();
-    */
-    cargarDropdowns();
     buscarEntrenamientos(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
-  }
-
-  void cargarDropdowns() {
-    dropdownController.loadOptions('equipo', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(5);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('guardia', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('estadoEntrenamiento', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(4);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('condicion', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(3);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
-
-    dropdownController.loadOptions('modulo', () async {
-      var response = await moduloService.listarMaestros();
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.modulo,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
   }
 
   Future<void> buscarEntrenamientos(
@@ -160,7 +67,8 @@ class ConsultaEntrenamientoController extends GetxController {
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,
         inModulo: dropdownController.getSelectedValue('modulo')?.key,
         inGuardia: dropdownController.getSelectedValue('guardia')?.key,
-        inEstadoEntrenamiento: dropdownController.getSelectedValue('estadoEntrenamiento')?.key,
+        inEstadoEntrenamiento:
+            dropdownController.getSelectedValue('estadoEntrenamiento')?.key,
         inCondicion: dropdownController.getSelectedValue('condicion')?.key,
         fechaInicio: fechaInicio,
         fechaTermino: fechaTermino,
@@ -298,108 +206,23 @@ class ConsultaEntrenamientoController extends GetxController {
     return 'ENTRENAMIENTOS_MINA_$day$month$year$hour$minute$second';
   }
 
-/*
-  Future<void> cargarEquipo() async {
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(5);
-
-      if (response.success && response.data != null) {
-        equipoOpciones.assignAll(response.data!);
-
-        log('Equipos opciones cargadas correctamente: $equipoOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
-    }
-  }
-
-  Future<void> cargarGuardia() async {
-    try {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-
-      if (response.success && response.data != null) {
-        guardiaOpciones.assignAll(response.data!);
-
-        log('Guardia opciones cargadas correctamente: $guardiaOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
-    }
-  }
-
-  Future<void> cargarEstadoEntrenamiento() async {
-    try {
-      var response = await maestroDetalleService.listarMaestroDetallePorMaestro(
-          4); //Catalogo de Estado de Entrenamiento
-
-      if (response.success && response.data != null) {
-        estadoEntrenamientoOpciones.assignAll(response.data!);
-
-        log('Estado entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de estado entrenamiento maestro: $e');
-    }
-  }
-
-  Future<void> cargarCondicion() async {
-    try {
-      var response = await maestroDetalleService.listarMaestroDetallePorMaestro(
-          3); //Catalogo de condicion de entrenamiento
-
-      if (response.success && response.data != null) {
-        condicionOpciones.assignAll(response.data!);
-
-        log('Condicion de entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de condicion de entrenamiento maestro: $e');
-    }
-  }
-
-  Future<void> cargarModulo() async {
-    try {
-      var response = await moduloService.listarMaestros();
-
-      if (response.success && response.data != null) {
-        moduloOpciones.assignAll(response.data!);
-
-        log('Modulos maestro opciones cargadas correctamente: $guardiaOpciones');
-      } else {
-        log('Error: ${response.message}');
-      }
-    } catch (e) {
-      log('Error cargando la data de Modulos maestro: $e');
-    }
-  }
-*/
   void clearFields() {
     codigoMcpController.clear();
 
     selectedEquipoKey.value = null;
-    dropdownController.selectValue('equipo',null);
+    dropdownController.selectValue('equipo', null);
 
     selectedModuloKey.value = null;
-    dropdownController.selectValue('modulo',null);
+    dropdownController.selectValue('modulo', null);
 
     selectedGuardiaKey.value = null;
-    dropdownController.selectValue('guardia',null);
+    dropdownController.selectValue('guardia', null);
 
     selectedEstadoEntrenamientoKey.value = null;
-    dropdownController.selectValue('estadoEntrenamiento',null);
+    dropdownController.selectValue('estadoEntrenamiento', null);
 
     selectedCondicionKey.value = null;
-    dropdownController.selectValue('condicion',null);
+    dropdownController.selectValue('condicion', null);
 
     rangoFechaController.clear();
     fechaInicio = null;

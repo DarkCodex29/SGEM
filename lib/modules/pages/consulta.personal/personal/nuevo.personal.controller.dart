@@ -8,14 +8,11 @@ import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
-
-import '../../../../shared/modules/option.value.dart';
 
 class NuevoPersonalController extends GetxController {
   final TextEditingController dniController = TextEditingController();
@@ -62,32 +59,14 @@ class NuevoPersonalController extends GetxController {
   RxBool isLoadingDni = false.obs;
   RxBool isSaving = false.obs;
   List<String> errores = [];
-  final GenericDropdownController guardiaDropdownController =
-      Get.put(GenericDropdownController());
+  final GenericDropdownController dropdownController =
+      Get.find<GenericDropdownController>();
+
   final maestroDetalleService = MaestroDetalleService();
 
   @override
   void onInit() {
     super.onInit();
-    cargarDropdowns();
-  }
-
-  Future<void> cargarDropdowns() async {
-    guardiaDropdownController.loadOptions('guardia', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
   }
 
   Future<void> loadPersonalPhoto(int idOrigen) async {

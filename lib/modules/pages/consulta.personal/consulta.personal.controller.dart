@@ -1,16 +1,13 @@
 import 'dart:developer';
 import 'dart:typed_data';
-
 import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
 import '../../../config/api/api.maestro.detail.dart';
 import '../../../config/api/api.personal.dart';
 import '../../../shared/modules/maestro.detail.dart';
-import '../../../shared/modules/option.value.dart';
 import '../../../shared/modules/personal.dart';
 import '../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 
@@ -75,12 +72,11 @@ class PersonalSearchController extends GetxController {
 
   var isLoadingGuardia = false.obs;
   final GenericDropdownController dropdownController =
-      Get.put(GenericDropdownController());
+      Get.find<GenericDropdownController>();
 
   @override
   void onInit() {
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
-    cargarDropdowns();
     super.onInit();
   }
 
@@ -96,24 +92,6 @@ class PersonalSearchController extends GetxController {
     } catch (e) {
       return null;
     }
-  }
-
-  void cargarDropdowns() {
-    dropdownController.loadOptions('guardia', () async {
-      var response =
-          await maestroDetalleService.listarMaestroDetallePorMaestro(2);
-      if (response.success && response.data != null) {
-        return  response.data!.map<OptionValue>((item) {
-          return OptionValue(
-            key: item.key,
-            nombre: item.valor,
-          );
-        }).toList();
-      }
-      else {
-        return <OptionValue>[];
-      }
-    });
   }
 
   void searchPersonalEstado(int? estadoKey) {
@@ -280,7 +258,7 @@ class PersonalSearchController extends GetxController {
 
     nombresController.clear();
     apellidosController.clear();
-    
+
     selectedGuardiaKey.value = null;
     selectedEstadoKey.value = null;
   }

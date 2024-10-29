@@ -339,7 +339,7 @@ class NuevoPersonalPage extends StatelessWidget {
                   dropdownKey: 'guardia',
                   hintText: 'Selecciona guardia',
                   noDataHintText: 'No se encontraron guardias',
-                  controller: controller.guardiaDropdownController,
+                  controller: controller.dropdownController,
                 ),
               ),
               const SizedBox(width: 10),

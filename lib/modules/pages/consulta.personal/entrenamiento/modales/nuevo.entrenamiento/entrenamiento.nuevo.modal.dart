@@ -8,7 +8,6 @@ import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
-
 import '../../entrenamiento.personal.controller.dart';
 import 'entrenamiento.nuevo.controller.dart';
 
@@ -285,7 +284,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       observaciones: observaciones,
     );
 
-    final EntrenamientoPersonalController trainingPersonalController = Get.find();
+    final EntrenamientoPersonalController trainingPersonalController =
+        Get.find();
     if (isEdit) {
       trainingPersonalController
           .actualizarEntrenamiento(newTraining)

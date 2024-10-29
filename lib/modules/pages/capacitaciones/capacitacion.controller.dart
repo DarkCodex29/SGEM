@@ -6,15 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
-import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/option.value.dart';
-import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
-import '../../../config/api/api.maestro.detail.dart';
-import '../../../shared/modules/maestro.detail.dart';
 
 class CapacitacionController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
@@ -29,26 +25,8 @@ class CapacitacionController extends GetxController {
 
   RxBool isExpanded = true.obs;
 
-  RxBool isLoadingCapacitacion = false.obs;
-  RxBool isLoadingCategoria = false.obs;
-  RxBool isLoadingEmpresaCapacitacion = false.obs;
   RxBool isLoadingCapacitacionResultados = false.obs;
-  RxBool isLoadingEntrenador = false.obs;
-/*
-  var selectedGuardiaKey = RxnInt();
-  var selectedCapacitacionKey = RxnInt();
-  var selectedCategoriaKey = RxnInt();
-  var selectedEmpresaCapacitacionKey = RxnInt();
-  var selectedEntrenadorKey = RxnInt();
-*/
-  RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
-  RxList<MaestroDetalle> capacitacionOpciones = <MaestroDetalle>[].obs;
-  RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
-  RxList<MaestroDetalle> empresaCapacitacionOpciones = <MaestroDetalle>[].obs;
-  RxList<Personal> entrenadorOpciones = <Personal>[].obs;
 
-  final maestroDetalleService = MaestroDetalleService();
-  final personalService = PersonalService();
   final capacitacionService = CapacitacionService();
   RxList<CapacitacionConsulta> capacitacionResultados =
       <CapacitacionConsulta>[].obs;
@@ -74,6 +52,7 @@ class CapacitacionController extends GetxController {
 
   Future<void> buscarCapacitaciones(
       {int pageNumber = 1, int pageSize = 10}) async {
+    isLoadingCapacitacionResultados.value = true;
     String? codigoMcp =
         codigoMcpController.text.isEmpty ? null : codigoMcpController.text;
     String? numeroDocumento = numeroDocumentoController.text.isEmpty
@@ -122,7 +101,7 @@ class CapacitacionController extends GetxController {
           totalRecords.value = result['TotalRecords'] as int;
           rowsPerPage.value = result['PageSize'] as int;
           isExpanded.value = false;
-
+          isLoadingCapacitacionResultados.value = false;
           log('Resultados obtenidos: ${capacitacionResultados.length}');
         } catch (e) {
           log('Error al procesar la respuesta: $e');
@@ -286,20 +265,12 @@ class CapacitacionController extends GetxController {
   void clearFields() {
     codigoMcpController.clear();
     numeroDocumentoController.clear();
-    //selectedGuardiaKey.value = null;
     nombresController.clear();
     apellidoPaternoController.clear();
     apellidoMaternoController.clear();
-    //selectedCapacitacionKey.value = null;
-    //selectedCategoriaKey.value = null;
-    //selectedEmpresaCapacitacionKey.value = null;
-    //selectedEntrenadorKey.value = null;
     rangoFechaController.clear();
     fechaInicio = null;
     fechaTermino = null;
-
-    //dropdownController.resetSelection('guardia');
     dropdownController.resetAllSelections();
-    //dropdownController.resetAllSelections();
   }
 }

@@ -9,7 +9,6 @@ import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import '../../../config/theme/app_theme.dart';
-import '../../../shared/modules/option.value.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
@@ -185,8 +184,8 @@ class CapacitacionPage extends StatelessWidget {
           hintText: 'Selecciona guardia',
           noDataHintText: 'No se encontraron guardias',
           controller: controller.dropdownController,
-          onChanged: ( value) {
-            controller.dropdownController.selectValue('guardia', value as OptionValue?);
+          onChanged: (value) {
+            controller.dropdownController.selectValue('guardia', value);
           },
         )),
       ],
@@ -235,7 +234,7 @@ class CapacitacionPage extends StatelessWidget {
             noDataHintText: 'No se encontraron capacitaciones',
             controller: controller.dropdownController,
             onChanged: (value) {
-              controller.dropdownController.selectValue('capacitacion', value as OptionValue?);
+              controller.dropdownController.selectValue('capacitacion', value);
             },
           ),
         ),
@@ -249,7 +248,7 @@ class CapacitacionPage extends StatelessWidget {
             noDataHintText: 'No se encontraron categorías',
             controller: controller.dropdownController,
             onChanged: (value) {
-              controller.dropdownController.selectValue('categoria', value as OptionValue?);
+              controller.dropdownController.selectValue('categoria', value);
             },
           ),
         ),
@@ -264,7 +263,7 @@ class CapacitacionPage extends StatelessWidget {
             controller: controller.dropdownController,
             onChanged: (value) {
               controller.dropdownController
-                  .selectValue('empresaCapacitacion', value as OptionValue?);
+                  .selectValue('empresaCapacitacion', value);
             },
           ),
         ),
@@ -284,8 +283,7 @@ class CapacitacionPage extends StatelessWidget {
             noDataHintText: 'No se encontraron entrenadores',
             controller: controller.dropdownController,
             onChanged: (value) {
-              controller.dropdownController
-                  .selectValue('entrenador', value as OptionValue?);
+              controller.dropdownController.selectValue('entrenador', value);
             },
           ),
         ),

@@ -8,7 +8,6 @@ import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/option.value.dart';
-import 'package:sgem/shared/modules/personal.dart';
 import '../../../../../../shared/widgets/alert/widget.alert.dart';
 import '../../../../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 import '../../entrenamiento.personal.controller.dart';
@@ -16,7 +15,6 @@ import '../../entrenamiento.personal.controller.dart';
 class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController fechaInicioController = TextEditingController();
   TextEditingController fechaTerminoController = TextEditingController();
-  TextEditingController responsableController = TextEditingController();
   TextEditingController notaTeoricaController =
       TextEditingController(text: '0');
   TextEditingController notaPracticaController =
@@ -43,9 +41,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
   List<String> errores = [];
 
   RxBool isSaving = false.obs;
-  RxBool isLoadingResponsable = false.obs;
-  RxList<Personal> responsables = <Personal>[].obs;
-  Personal? responsableSeleccionado;
 
   late EntrenamientoModulo entrenamiento;
   int? siguienteModulo;
@@ -53,47 +48,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
   RxString tituloModal = ''.obs;
 
   RxBool isLoadingModulo = false.obs;
-  RxBool isLoading = false.obs;
-  EntrenamientoModulo? entrenamientoModulo;
 
-  RxList<Personal> entrenadoresOpciones = <Personal>[].obs;
+  EntrenamientoModulo? entrenamientoModulo;
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  void buscarEntrenadores(String query) async {
-    if (query.isEmpty) {
-      responsables.clear();
-      return;
-    }
-    isLoadingResponsable.value = true;
-    final result = await personalService.listarEntrenadores();
-    if (result.success) {
-      responsables.value = result.data!
-          .where((entrenador) => entrenador.nombreCompleto
-                  .toLowerCase()
-                  .contains(query.toLowerCase())
-
-              //     ||
-              // entrenador.apellidoPaterno
-              //     .toLowerCase()
-              //     .contains(query.toLowerCase()
-              //    )
-              )
-          .toList();
-    }
-    isLoadingResponsable.value = false;
-  }
-
-  void seleccionarEntrenador(Personal responsable) {
-    responsableSeleccionado = responsable;
-    responsableController.text = responsable.nombreCompleto;
-  }
 
   Future<void> setDatosEntrenamiento(
       EntrenamientoModulo entrenamiento, bool isEdit) async {
@@ -188,7 +147,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inTipoActividad: entrenamiento.inTipoActividad,
       inActividadEntrenamiento: entrenamiento.key,
       inPersona: entrenamiento.inPersona,
-      inEntrenador: responsableSeleccionado!.inPersonalOrigen,
+      //inEntrenador: responsableSeleccionado!.inPersonalOrigen,
+      inEntrenador: dropdownController.getSelectedValue('entrenador')!.key,
       entrenador: entrenamiento.entrenador,
       fechaInicio: fechaInicio,
       fechaTermino: fechaTermino,
@@ -263,7 +223,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
     bool respuesta = true;
     errores.clear();
 
-    if (responsableController.text.isEmpty) {
+    if (dropdownController.getSelectedValue('entrenador') == null) {
       respuesta = false;
       errores.add("Debe seleccionar un entrenador responsable.");
     }
@@ -384,10 +344,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
         entrenamientoModulo!.inHorasMinestar.toString();
     tituloModal.value =
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
-    log('Entrenador Key: ${dropdownController.getSelectedValue('entrenador')?.key} del control: ${entrenamientoModulo!.inEntrenador}');
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
-
-    log('Entrenador Key: ${dropdownController.getSelectedValue('entrenador')?.key}');
   }
 }

@@ -71,10 +71,6 @@ class NuevaCapacitacionController extends GetxController {
   Personal? personalInterno;
   Personal? personalExterno;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   Future<EntrenamientoModulo?> loadCapacitacion(int capacitacionKey) async {
     try {

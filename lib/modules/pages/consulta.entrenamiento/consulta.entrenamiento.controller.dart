@@ -6,13 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
-import '../../../config/api/api.maestro.detail.dart';
 
 class ConsultaEntrenamientoController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
@@ -23,22 +19,9 @@ class ConsultaEntrenamientoController extends GetxController {
   DateTime? fechaTermino;
 
   final entrenamientoService = EntrenamientoService();
-  final maestroDetalleService = MaestroDetalleService();
-  final moduloService = ModuloMaestroService();
+
   RxBool isExpanded = true.obs;
   var entrenamientoResultados = <EntrenamientoConsulta>[].obs;
-
-  var selectedEquipoKey = RxnInt();
-  var selectedModuloKey = RxnInt();
-  var selectedGuardiaKey = RxnInt();
-  var selectedEstadoEntrenamientoKey = RxnInt();
-  var selectedCondicionKey = RxnInt();
-
-  RxList<ModuloMaestro> moduloOpciones = <ModuloMaestro>[].obs;
-  RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
-  RxList<MaestroDetalle> equipoOpciones = <MaestroDetalle>[].obs;
-  RxList<MaestroDetalle> estadoEntrenamientoOpciones = <MaestroDetalle>[].obs;
-  RxList<MaestroDetalle> condicionOpciones = <MaestroDetalle>[].obs;
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
@@ -206,27 +189,12 @@ class ConsultaEntrenamientoController extends GetxController {
     return 'ENTRENAMIENTOS_MINA_$day$month$year$hour$minute$second';
   }
 
-  void clearFields() {
+  void resetControllers() {
     codigoMcpController.clear();
-
-    selectedEquipoKey.value = null;
-    dropdownController.selectValue('equipo', null);
-
-    selectedModuloKey.value = null;
-    dropdownController.selectValue('modulo', null);
-
-    selectedGuardiaKey.value = null;
-    dropdownController.selectValue('guardia', null);
-
-    selectedEstadoEntrenamientoKey.value = null;
-    dropdownController.selectValue('estadoEntrenamiento', null);
-
-    selectedCondicionKey.value = null;
-    dropdownController.selectValue('condicion', null);
-
     rangoFechaController.clear();
     fechaInicio = null;
     fechaTermino = null;
     nombresController.clear();
+    dropdownController.resetAllSelections();
   }
 }

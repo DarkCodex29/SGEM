@@ -195,7 +195,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
       children: [
         ElevatedButton.icon(
           onPressed: () async {
-            controller.clearFields();
+            controller.resetControllers();
             await controller.buscarEntrenamientos();
             controller.isExpanded.value = false;
           },

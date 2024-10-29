@@ -49,7 +49,7 @@ class NuevoPersonalPage extends StatelessWidget {
         controller.dropdownController
             .selectValueKey('guardia', personal.guardia.key);
       } else {
-        controller.selectedGuardiaKey.value = null;
+        controller.dropdownController.selectValueKey('guardia', null);
       }
       controller.restriccionesController.text = personal.restricciones;
       controller.fechaIngresoMina = personal.fechaIngresoMina;

@@ -37,11 +37,9 @@ class NuevoPersonalController extends GetxController {
   final TextEditingController restriccionesController = TextEditingController();
 
   final PersonalService personalService = PersonalService();
-  var selectedGuardiaKey = RxnInt();
 
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
-  //RxString estadoPersonal = 'Cesado'.obs;
   RxInt estadoPersonalKey = 0.obs;
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
@@ -64,10 +62,6 @@ class NuevoPersonalController extends GetxController {
 
   final maestroDetalleService = MaestroDetalleService();
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
     try {
@@ -164,9 +158,9 @@ class NuevoPersonalController extends GetxController {
     codigoLicenciaController.text = personal.licenciaConducir;
     restriccionesController.text = personal.restricciones;
     if (personal.guardia.key != 0) {
-      selectedGuardiaKey.value = personal.guardia.key;
+      dropdownController.selectValueKey('guardia', personal.guardia.key);
     } else {
-      selectedGuardiaKey.value = null;
+      dropdownController.selectValueKey('guardia', null);
     }
     isOperacionMina.value = personal.operacionMina == 'S';
     isZonaPlataforma.value = personal.zonaPlataforma == 'S';
@@ -214,7 +208,7 @@ class NuevoPersonalController extends GetxController {
         ..licenciaConducir = verificarTexto(codigoLicenciaController.text)
         ..fechaIngresoMina = fechaIngresoMina
         ..licenciaVencimiento = fechaRevalidacion
-        ..guardia.key = selectedGuardiaKey.value ?? 0
+        ..guardia.key = dropdownController.getSelectedValue('guardia')?.key ?? 0
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = verificarTexto(restriccionesController.text);
@@ -283,7 +277,7 @@ class NuevoPersonalController extends GetxController {
       errores
           .add('El código de licencia debe tener 9 caracteres alfanuméricos.');
     }
-    if (selectedGuardiaKey.value == null) {
+    if (dropdownController.getSelectedValue('guardia')?.nombre == null) {
       errores.add('Debe seleccionar una guardia.');
     }
     if (restriccionesController.text.length > 100) {
@@ -456,7 +450,6 @@ class NuevoPersonalController extends GetxController {
     fechaIngresoMinaController.clear();
     fechaRevalidacionController.clear();
     restriccionesController.clear();
-    selectedGuardiaKey.value = null;
     personalPhoto.value = null;
     isOperacionMina.value = false;
     isZonaPlataforma.value = false;

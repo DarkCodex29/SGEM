@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'package:get/get.dart';
 /*
 class GenericDropdownController<T> extends GetxController {
   var isLoadingMap = <String, RxBool>{}.obs;

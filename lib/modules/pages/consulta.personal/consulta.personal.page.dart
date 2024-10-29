@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/personal.dart';
 import '../../../shared/utils/pdf.view.certificado.dart';
@@ -572,36 +573,12 @@ class PersonalSearchPage extends StatelessWidget {
         var rowsToShow = controller.personalResults
             .take(controller.rowsPerPage.value)
             .toList();
+        List<String> cabecera=['Código MCP','Nombre completo','Documento de identidad','Guardia','Estado','Acciones',];
+
 
         return Column(
           children: [
-            Container(
-              color: Colors.grey[200],
-              padding:
-                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-              child: const Row(
-                children: [
-                  Expanded(
-                      child: Text('Código MCP',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      child: Text('Nombre completo',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      child: Text('Documento de identidad',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      child: Text('Guardia',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      child: Text('Estado',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  Expanded(
-                      child: Text('Acciones',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                ],
-              ),
-            ),
+            DynamicTableCabecera( cabecera: cabecera),
             SizedBox(
               height: 500,
               child: SingleChildScrollView(

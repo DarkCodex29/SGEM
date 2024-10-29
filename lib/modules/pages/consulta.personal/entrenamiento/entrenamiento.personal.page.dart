@@ -28,7 +28,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
     required this.onCancel,
     super.key,
   }) {
-    controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
+     controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
     controllerNuevoPersonal.loadPersonalPhoto(
         controllerPersonal.selectedPersonal.value!.inPersonalOrigen);
   }

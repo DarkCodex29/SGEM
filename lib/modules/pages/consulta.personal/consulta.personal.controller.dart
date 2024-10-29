@@ -314,6 +314,7 @@ class PersonalSearchController extends GetxController {
   void showTraining(Personal personal) {
     selectedPersonal.value = personal;
     screen.value = PersonalSearchScreen.trainingForm;
+
   }
 
   void showActualizacionMasiva() {

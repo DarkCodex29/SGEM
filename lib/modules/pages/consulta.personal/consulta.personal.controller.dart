@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../config/api/api.maestro.detail.dart';
 import '../../../config/api/api.personal.dart';
-import '../../../shared/modules/maestro.detail.dart';
 import '../../../shared/modules/personal.dart';
 import '../../../shared/widgets/dropDown/generic.dropdown.controller.dart';
 
@@ -61,8 +60,6 @@ class PersonalSearchController extends GetxController {
 
   var personalResults = <Personal>[].obs;
   var selectedPersonal = Rxn<Personal>();
-  RxList<MaestroDetalle> guardiaOptions = <MaestroDetalle>[].obs;
-  var selectedGuardiaKey = RxnInt();
   var selectedEstadoKey = RxnInt(95);
 
   var rowsPerPage = 10.obs;
@@ -251,15 +248,12 @@ class PersonalSearchController extends GetxController {
     return 'PERSONAL_MINA_$day$month$year$hour$minute$second';
   }
 
-  void clearFields() {
+  void resetControllers() {
     codigoMCPController.clear();
     documentoIdentidadController.clear();
     dropdownController.resetAllSelections();
-
     nombresController.clear();
     apellidosController.clear();
-
-    selectedGuardiaKey.value = null;
     selectedEstadoKey.value = null;
   }
 

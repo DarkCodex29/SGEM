@@ -325,7 +325,7 @@ class PersonalSearchPage extends StatelessWidget {
                   children: [
                     ElevatedButton.icon(
                       onPressed: () {
-                        controller.clearFields();
+                        controller.resetControllers();
                         controller.searchPersonal();
                       },
                       icon: const Icon(
@@ -540,6 +540,7 @@ class PersonalSearchPage extends StatelessWidget {
       const SizedBox(width: 10),
       ElevatedButton.icon(
         onPressed: () {
+          controller.resetControllers();
           controller.showNewPersonal();
         },
         icon:

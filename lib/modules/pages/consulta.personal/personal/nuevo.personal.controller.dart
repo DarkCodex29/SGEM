@@ -465,5 +465,7 @@ class NuevoPersonalController extends GetxController {
     documentoAdjuntoNombre.value = '';
     documentoAdjuntoBytes.value = null;
     personalData = null;
+
+    dropdownController.resetAllSelections();
   }
 }

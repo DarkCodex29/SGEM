@@ -24,6 +24,9 @@ class NuevoPersonalPage extends StatelessWidget {
     required this.onCancel,
     super.key,
   }) {
+    Future.microtask(() => _initializePersonalData());
+  }
+  void _initializePersonalData() {
     if (isEditing || isViewing) {
       controller.loadPersonalPhoto(personal.inPersonalOrigen);
       controller.personalData = personal;
@@ -43,7 +46,8 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.categoriaLicenciaController.text = personal.licenciaCategoria;
       controller.codigoLicenciaController.text = personal.licenciaConducir;
       if (personal.guardia.key != 0) {
-        controller.selectedGuardiaKey.value = personal.guardia.key;
+        controller.dropdownController
+            .selectValueKey('guardia', personal.guardia.key);
       } else {
         controller.selectedGuardiaKey.value = null;
       }
@@ -524,44 +528,6 @@ class NuevoPersonalPage extends StatelessWidget {
     }
   }
 
-/*
-  Widget _buildDropdownGuardia() {
-    if (!isEditing) {
-      controllerPersonalSearch.clearFields();
-    }
-
-      return Obx(() {
-        return CustomDropdown(
-          isLoading: controller.isLoadingGuardia.value,
-          hintText: 'Selecciona Guardia',
-          noDataHintText: 'No se encontraron guardias',
-          options: controller.guardiaOptions.isEmpty
-              ? []
-              : controller.guardiaOptions
-                  .map((option) => option.valor!)
-                  .toList(),
-          selectedValue: controller.selectedGuardiaKey.value != null
-              ? controller.guardiaOptions
-                  .firstWhere((option) =>
-                      option.key == controller.selectedGuardiaKey.value)
-                  .valor
-              : null,
-          isSearchable: false,
-          isRequired: false,
-          onChanged: (value) {
-            if (value != null) {
-              final selectedOption = controller.guardiaOptions.firstWhere(
-                (option) => option.valor == value,
-              );
-              controller.selectedGuardiaKey.value = selectedOption.key;
-              log('Guardia seleccionada - Key del Maestro: ${controller.selectedGuardiaKey.value}, Valor: $value');
-            }
-          },
-        );
-      });
-    }
-  }
-*/
   Future<DateTime?> _selectDate(BuildContext context) async {
     DateTime? picked = await showDatePicker(
       context: context,

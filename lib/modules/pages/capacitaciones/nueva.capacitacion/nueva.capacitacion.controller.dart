@@ -36,7 +36,7 @@ class NuevaCapacitacionController extends GetxController {
   RxnString categoriaSeleccionada = RxnString();
   RxnString empresaSeleccionada = RxnString();
   RxnString entrenadorSeleccionado = RxnString();
-  RxnString nombreCapacitacionSeleccionada = RxnString();
+  RxnString nombreCapacitacionwSeleccionada = RxnString();
 
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   final PersonalService personalService = PersonalService();

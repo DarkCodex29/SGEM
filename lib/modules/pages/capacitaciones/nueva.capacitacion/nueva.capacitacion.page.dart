@@ -26,9 +26,10 @@ class NuevaCapacitacionPage extends StatelessWidget {
     this.capacitacionKey,
     required this.onCancel,
   }) {
-    //controller.loadCapacitacion(capacitacionKey!);
-    controller.loadPersonalInterno(codigoMcp!);
-    
+    if (isEditMode) {
+      controller.loadCapacitacion(capacitacionKey!);
+      controller.loadPersonalInterno(codigoMcp!);
+    }
   }
 
   @override

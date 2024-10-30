@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.page.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
@@ -11,6 +10,7 @@ import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../shared/widgets/custom.textfield.dart';
+import 'carga.masiva/capacitacion.carga.masiva.page.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
 
 class CapacitacionPage extends StatelessWidget {

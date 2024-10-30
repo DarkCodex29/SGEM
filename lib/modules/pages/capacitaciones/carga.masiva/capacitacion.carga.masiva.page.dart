@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.controller.dart';
+import 'package:sgem/shared/modules/capacitacion.carga.masiva.resultado.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
+import 'capacitacion.carga.masiva.controller.dart';
 
 class CapacitacionCargaMasivaPage extends StatelessWidget {
   const CapacitacionCargaMasivaPage({super.key, required this.onCancel});
@@ -126,17 +127,65 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
     return Obx(
       () {
-         var rowsToShow = controller.cargaMasivaResultados
-             .take(controller.rowsPerPage.value)
-             .toList();
+        var rowsToShow = controller.cargaMasivaResultados
+            .take(controller.rowsPerPage.value)
+            .toList();
 
         return Column(
           children: [
             DynamicTableCabecera(cabecera: cabecera),
-            //_buildSeccionResultadoTablaData(rowsToShow, controller),
+            _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildSeccionResultadoTablaData(
+      List<CapacitacionCargaMasivaResultado> data,
+      CapacitacionCargaMasivaController controller) {
+    return SizedBox(
+      height: 500,
+      child: SingleChildScrollView(
+        child: Column(
+          children: data.map((fila) {
+            List<Widget> celdas = [
+              Text(fila.codigo),
+              Text(fila.dni),
+              Text(fila.nombres),
+              Text(fila.guardia),
+              Text(fila.entrenador),
+              Text(fila.nombreCapacitacion),
+              Text(fila.categoria),
+              Text(fila.empresa),
+              Text(fila.fechaInicio != null
+                  ? _formatDate(fila.fechaInicio!)
+                  : ''),
+              Text(fila.fechaTermino != null
+                  ? _formatDate(fila.fechaTermino!)
+                  : ''),
+              Text(fila.horas?.toString() ?? ''),
+              Text(fila.notaTeorica?.toString() ?? ''),
+              Text(fila.notaPractica?.toString() ?? ''),
+            ];
+            return _buildFila(celdas);
+          }).toList(),
+        ),
+      ),
+    );
+  }
+  String _formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/'
+        '${date.month.toString().padLeft(2, '0')}/'
+        '${date.year}';
+  }
+  Widget _buildFila(List<Widget> celdas) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+          children: celdas.map((celda) {
+        return Expanded(flex: 1, child: celda);
+      }).toList()),
     );
   }
 

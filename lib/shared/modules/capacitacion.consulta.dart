@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final capacitacionConsulta = capacitacionConsultaFromJson(jsonString);
-
 import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';

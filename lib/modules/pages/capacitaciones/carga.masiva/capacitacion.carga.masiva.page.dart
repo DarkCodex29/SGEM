@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/modules/pages/capacitaciones/actualizacion.masiva/capacitacion.carga.masiva.controller.dart';
+import 'package:sgem/shared/modules/capacitacion.carga.masiva.resultado.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
+import 'capacitacion.carga.masiva.controller.dart';
 
 class CapacitacionCargaMasivaPage extends StatelessWidget {
   const CapacitacionCargaMasivaPage({super.key, required this.onCancel});
@@ -64,7 +65,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          //_buildSeccionResultadoTablaPaginado(controller),
+          _buildSeccionResultadoTablaPaginado(controller),
         ],
       ),
     );
@@ -126,17 +127,67 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
     return Obx(
       () {
-         var rowsToShow = controller.cargaMasivaResultados
-             .take(controller.rowsPerPage.value)
-             .toList();
+        var rowsToShow = controller.cargaMasivaResultados
+            .take(controller.rowsPerPage.value)
+            .toList();
 
         return Column(
           children: [
             DynamicTableCabecera(cabecera: cabecera),
-            //_buildSeccionResultadoTablaData(rowsToShow, controller),
+            _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildSeccionResultadoTablaData(
+      List<CapacitacionCargaMasivaResultado> data,
+      CapacitacionCargaMasivaController controller) {
+    return SizedBox(
+      height: 500,
+      child: SingleChildScrollView(
+        child: Column(
+          children: data.map((fila) {
+            List<Widget> celdas = [
+              Text(fila.codigo),
+              Text(fila.dni),
+              Text(fila.nombres),
+              Text(fila.guardia),
+              Text(fila.entrenador),
+              Text(fila.nombreCapacitacion),
+              Text(fila.categoria),
+              Text(fila.empresa),
+              Text(fila.fechaInicio != null
+                  ? _formatDate(fila.fechaInicio!)
+                  : ''),
+              Text(fila.fechaTermino != null
+                  ? _formatDate(fila.fechaTermino!)
+                  : ''),
+              Text(fila.horas?.toString() ?? ''),
+              Text(fila.notaTeorica?.toString() ?? ''),
+              Text(fila.notaPractica?.toString() ?? ''),
+            ];
+            return _buildFila(celdas);
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day.toString().padLeft(2, '0')}/'
+        '${date.month.toString().padLeft(2, '0')}/'
+        '${date.year}';
+  }
+
+  Widget _buildFila(List<Widget> celdas) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+          children: celdas.map((celda) {
+        return Expanded(flex: 1, child: celda);
+      }).toList()),
     );
   }
 
@@ -145,7 +196,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
     return [
       ElevatedButton.icon(
         onPressed: () {
-          //controller.showActualizacionMasiva();
+          controller.previsualizarCarga();
         },
         icon: const Icon(
           Icons.upload_rounded,
@@ -189,6 +240,69 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         ),
       ),
     ];
+  }
+
+  Widget _buildSeccionResultadoTablaPaginado(
+      CapacitacionCargaMasivaController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Obx(() => Text(
+              'Mostrando ${controller.currentPage.value * controller.rowsPerPage.value - controller.rowsPerPage.value + 1} - '
+              '${controller.currentPage.value * controller.rowsPerPage.value > controller.totalRecords.value ? controller.totalRecords.value : controller.currentPage.value * controller.rowsPerPage.value} '
+              'de ${controller.totalRecords.value} registros',
+              style: const TextStyle(fontSize: 14),
+            )),
+        Obx(
+          () => Row(
+            children: [
+              const Text("Items por página: "),
+              DropdownButton<int>(
+                value: controller.rowsPerPage.value > 0 &&
+                        controller.rowsPerPage.value <= 50
+                    ? controller.rowsPerPage.value
+                    : null,
+                items: [10, 20, 50]
+                    .map((value) => DropdownMenuItem<int>(
+                          value: value,
+                          child: Text(value.toString()),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    controller.rowsPerPage.value = value;
+                    controller.currentPage.value = 1; // Reiniciar a la primera página
+                    // Recalcular el total de páginas
+                    controller.totalPages.value = (controller.totalRecords.value / controller.rowsPerPage.value).ceil();
+                    controller.goToPage(1); // Mostrar la primera página
+                  }
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: controller.currentPage.value > 1
+                    ? () {
+                        controller
+                            .previousPage();
+                      }
+                    : null,
+              ),
+              Text(
+                  '${controller.currentPage.value} de ${controller.totalPages.value}'),
+              IconButton(
+                icon: const Icon(Icons.arrow_forward),
+                onPressed:
+                    controller.currentPage.value < controller.totalPages.value
+                        ? () {
+                            controller.nextPage();
+                          }
+                        : null,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildRegresarButton(BuildContext context) {

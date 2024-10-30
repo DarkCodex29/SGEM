@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
@@ -9,21 +12,39 @@ import 'package:sgem/shared/modules/notfound.dart';
 import 'package:sgem/shared/widgets/dropDown/dropdown.initializer.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-void main() async {
-  final dropdownController = Get.put(GenericDropdownController());
-  final maestroDetalleService = MaestroDetalleService();
-  final moduloMaestroService = ModuloMaestroService();
-  final personalService = PersonalService();
+Future<void> main() async {
+  // Asegúrate de que esta es la primera línea en main()
+  WidgetsFlutterBinding.ensureInitialized();
 
-  final dropdownInitializer = DropdownDataInitializer(
-    dropdownController: dropdownController,
-    maestroDetalleService: maestroDetalleService,
-    moduloMaestroService: moduloMaestroService,
-    personalService: personalService,
-  );
+  // Configura servicios y el controlador
+  await initializeServices();
 
-  await dropdownInitializer.initializeAllDropdowns();
+  // Inicia la aplicación
   runApp(const MyApp());
+}
+
+Future<void> initializeServices() async {
+  final dropdownController = Get.put(GenericDropdownController());
+  dropdownController.isLoadingControl.value = true;
+
+  try {
+    final maestroDetalleService = MaestroDetalleService();
+    final moduloMaestroService = ModuloMaestroService();
+    final personalService = PersonalService();
+
+    final dropdownInitializer = DropdownDataInitializer(
+      dropdownController: dropdownController,
+      maestroDetalleService: maestroDetalleService,
+      moduloMaestroService: moduloMaestroService,
+      personalService: personalService,
+    );
+
+    await dropdownInitializer.initializeAllDropdowns();
+  } catch (e) {
+    log('Error initializing services: $e');
+  } finally {
+    dropdownController.completeLoading();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -35,16 +56,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'SGEM',
       theme: AppTheme.lightTheme,
-      //darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const HomePage()),
-        //GetPage(name: '/buscarEntrenamiento', page: () => const PersonalSearchPage()),
       ],
       unknownRoute:
           GetPage(name: '/notfound', page: () => const NotFoundPage()),
-      home: const HomePage(),
+      home: Obx(() {
+        final dropdownController = Get.find<GenericDropdownController>();
+        return dropdownController.isLoadingControl.value
+            ? const Center(child: CircularProgressIndicator())
+            : const HomePage(); // Muestra la HomePage cuando no está cargando
+      }),
     );
   }
 }

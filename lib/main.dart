@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,18 +25,26 @@ Future<void> main() async {
 
 Future<void> initializeServices() async {
   final dropdownController = Get.put(GenericDropdownController());
-  final maestroDetalleService = MaestroDetalleService();
-  final moduloMaestroService = ModuloMaestroService();
-  final personalService = PersonalService();
+  dropdownController.isLoadingControl.value = true;
 
-  final dropdownInitializer = DropdownDataInitializer(
-    dropdownController: dropdownController,
-    maestroDetalleService: maestroDetalleService,
-    moduloMaestroService: moduloMaestroService,
-    personalService: personalService,
-  );
+  try {
+    final maestroDetalleService = MaestroDetalleService();
+    final moduloMaestroService = ModuloMaestroService();
+    final personalService = PersonalService();
 
-  await dropdownInitializer.initializeAllDropdowns();
+    final dropdownInitializer = DropdownDataInitializer(
+      dropdownController: dropdownController,
+      maestroDetalleService: maestroDetalleService,
+      moduloMaestroService: moduloMaestroService,
+      personalService: personalService,
+    );
+
+    await dropdownInitializer.initializeAllDropdowns();
+  } catch (e) {
+    log('Error initializing services: $e');
+  } finally {
+    dropdownController.completeLoading();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -47,16 +56,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'SGEM',
       theme: AppTheme.lightTheme,
-      //darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const HomePage()),
-        //GetPage(name: '/buscarEntrenamiento', page: () => const PersonalSearchPage()),
       ],
       unknownRoute:
           GetPage(name: '/notfound', page: () => const NotFoundPage()),
-      home: const HomePage(),
+      home: Obx(() {
+        final dropdownController = Get.find<GenericDropdownController>();
+        return dropdownController.isLoadingControl.value
+            ? const Center(child: CircularProgressIndicator())
+            : const HomePage(); // Muestra la HomePage cuando no está cargando
+      }),
     );
   }
 }

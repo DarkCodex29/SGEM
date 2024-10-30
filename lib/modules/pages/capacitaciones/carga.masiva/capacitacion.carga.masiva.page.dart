@@ -127,18 +127,9 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
     return Obx(
       () {
-        // var rowsToShow = controller.cargaMasivaResultados
-        //     .take(controller.rowsPerPage.value)
-        //     .toList();
-
-        int startIndex = (controller.currentPage.value - 1) * controller.rowsPerPage.value;
-        int endIndex = startIndex + controller.rowsPerPage.value;
-
-        // Get the relevant slice of the results.
-        var rowsToShow = controller.cargaMasivaResultados.sublist(
-          startIndex,
-          endIndex > controller.cargaMasivaResultados.length ? controller.cargaMasivaResultados.length : endIndex,
-        );
+        var rowsToShow = controller.cargaMasivaResultados
+            .take(controller.rowsPerPage.value)
+            .toList();
 
         return Column(
           children: [

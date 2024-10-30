@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
@@ -9,7 +11,18 @@ import 'package:sgem/shared/modules/notfound.dart';
 import 'package:sgem/shared/widgets/dropDown/dropdown.initializer.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-void main() async {
+Future<void> main() async {
+  // Asegúrate de que esta es la primera línea en main()
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Configura servicios y el controlador
+  await initializeServices();
+
+  // Inicia la aplicación
+  runApp(const MyApp());
+}
+
+Future<void> initializeServices() async {
   final dropdownController = Get.put(GenericDropdownController());
   final maestroDetalleService = MaestroDetalleService();
   final moduloMaestroService = ModuloMaestroService();
@@ -23,7 +36,6 @@ void main() async {
   );
 
   await dropdownInitializer.initializeAllDropdowns();
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

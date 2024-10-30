@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:excel/excel.dart';
 
 class CapacitacionCargaMasivaResultado {
@@ -41,8 +40,11 @@ class CapacitacionCargaMasivaResultado {
     String nombreCapacitacion = row[5]?.value.toString() ?? '';
     String categoria = row[6]?.value.toString() ?? '';
     String empresa = row[7]?.value.toString() ?? '';
-    DateTime? fechaInicio = Daterow[8]?.value.toString() ?? '';
-
+    DateTime? fechaInicio = DateTime.parse(row[8]!.value.toString());
+    DateTime? fechaTermino = DateTime.parse(row[9]!.value.toString());
+    int? horas = int.parse(row[10]!.value.toString());
+    int? notaTeorica = int.parse(row[11]!.value.toString());
+    int? notaPractica = int.parse(row[12]!.value.toString());
 
     return CapacitacionCargaMasivaResultado(
       codigo: codigo,

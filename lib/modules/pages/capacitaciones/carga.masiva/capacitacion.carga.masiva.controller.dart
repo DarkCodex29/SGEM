@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'dart:typed_data';
-
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -52,6 +51,7 @@ class CapacitacionCargaMasivaController extends GetxController {
           log('Archivo Excel cargado con éxito');
           totalRecords.value = cargaMasivaResultados.length;
           totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
+          goToPage(1);
         }
       } else {
         log('No se seleccionaron archivos');

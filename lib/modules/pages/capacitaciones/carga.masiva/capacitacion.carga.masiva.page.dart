@@ -147,30 +147,32 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
     return SizedBox(
       height: 500,
       child: SingleChildScrollView(
-        child: Column(
-          children: data.map((fila) {
-            List<Widget> celdas = [
-              Text(fila.codigo),
-              Text(fila.dni),
-              Text(fila.nombres),
-              Text(fila.guardia),
-              Text(fila.entrenador),
-              Text(fila.nombreCapacitacion),
-              Text(fila.categoria),
-              Text(fila.empresa),
-              Text(fila.fechaInicio != null
-                  ? _formatDate(fila.fechaInicio!)
-                  : ''),
-              Text(fila.fechaTermino != null
-                  ? _formatDate(fila.fechaTermino!)
-                  : ''),
-              Text(fila.horas?.toString() ?? ''),
-              Text(fila.notaTeorica?.toString() ?? ''),
-              Text(fila.notaPractica?.toString() ?? ''),
-            ];
-            return _buildFila(celdas);
-          }).toList(),
-        ),
+        child: Obx(() {
+          return Column(
+            children: controller.cargaMasivaResultadosPaginados.map((fila) {
+              List<Widget> celdas = [
+                Text(fila.codigo),
+                Text(fila.dni),
+                Text(fila.nombres),
+                Text(fila.guardia),
+                Text(fila.entrenador),
+                Text(fila.nombreCapacitacion),
+                Text(fila.categoria),
+                Text(fila.empresa),
+                Text(fila.fechaInicio != null
+                    ? _formatDate(fila.fechaInicio!)
+                    : ''),
+                Text(fila.fechaTermino != null
+                    ? _formatDate(fila.fechaTermino!)
+                    : ''),
+                Text(fila.horas?.toString() ?? ''),
+                Text(fila.notaTeorica?.toString() ?? ''),
+                Text(fila.notaPractica?.toString() ?? ''),
+              ];
+              return _buildFila(celdas);
+            }).toList(),
+          );
+        }),
       ),
     );
   }
@@ -271,9 +273,13 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 onChanged: (value) {
                   if (value != null) {
                     controller.rowsPerPage.value = value;
-                    controller.currentPage.value = 1; // Reiniciar a la primera página
+                    controller.currentPage.value =
+                        1; // Reiniciar a la primera página
                     // Recalcular el total de páginas
-                    controller.totalPages.value = (controller.totalRecords.value / controller.rowsPerPage.value).ceil();
+                    controller.totalPages.value =
+                        (controller.totalRecords.value /
+                                controller.rowsPerPage.value)
+                            .ceil();
                     controller.goToPage(1); // Mostrar la primera página
                   }
                 },
@@ -282,8 +288,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                        controller
-                            .previousPage();
+                        controller.previousPage();
                       }
                     : null,
               ),

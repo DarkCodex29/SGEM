@@ -14,6 +14,7 @@ class CapacitacionCargaMasivaResultado {
    int? horas;
    int? notaTeorica;
    int? notaPractica;
+   bool esCorrecto=true;
 
   CapacitacionCargaMasivaResultado({
     required this.codigo,

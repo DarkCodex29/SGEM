@@ -109,19 +109,23 @@ class CapacitacionCargaMasivaController extends GetxController {
     if (registro.codigo.isEmpty) {
       if (registro.dni.isEmpty) {
         registro.dni = 'Campo obligatorio';
+        registro.esCorrecto=false;
       }
     }
 
     if (registro.entrenador.isEmpty) {
       registro.entrenador = 'Campo obligatorio';
+      registro.esCorrecto=false;
     }
 
     if (registro.nombreCapacitacion.isEmpty) {
       registro.nombreCapacitacion = 'Campo obligatorio';
+      registro.esCorrecto=false;
     }
 
     if (registro.categoria.isEmpty) {
       registro.categoria = 'Campo obligatorio';
+      registro.esCorrecto=false;
     }
 
     if ((registro.categoria.toLowerCase() == 'interna' &&
@@ -129,10 +133,12 @@ class CapacitacionCargaMasivaController extends GetxController {
         (registro.categoria.toLowerCase() == 'externa' &&
             registro.empresa == 'Entrenamiento mina')) {
       registro.categoria ='Categoria errada';
+      registro.esCorrecto=false;
     }
 
     if (registro.empresa.isEmpty) {
       registro.empresa = 'Campo obligatorio';
+      registro.esCorrecto=false;
     }
 
     // if ((registro.categoria.toLowerCase() == 'interna' && registro.empresa != 'Entrenamiento mina') ||

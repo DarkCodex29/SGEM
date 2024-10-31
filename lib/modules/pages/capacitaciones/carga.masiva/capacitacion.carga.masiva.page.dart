@@ -148,26 +148,29 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
       height: 500,
       child: SingleChildScrollView(
         child: Obx(() {
+          var esCorrectoFila=true;
           return Column(
             children: controller.cargaMasivaResultadosPaginados.map((fila) {
+              //var styleFila  = fila.esCorrecto==false ? const TextStyle(color: Colors.redAccent):const TextStyle(color: AppTheme.primaryText);
+              var styleFila  = const TextStyle(color: AppTheme.primaryText);
               List<Widget> celdas = [
-                Text(fila.codigo),
-                Text(fila.dni),
-                Text(fila.nombres),
-                Text(fila.guardia),
-                Text(fila.entrenador),
-                Text(fila.nombreCapacitacion),
-                Text(fila.categoria),
-                Text(fila.empresa),
+                Text(fila.codigo,style: styleFila),
+                Text(fila.dni, style: styleFila),
+                Text(fila.nombres, style: styleFila),
+                Text(fila.guardia, style: styleFila),
+                Text(fila.entrenador, style: styleFila),
+                Text(fila.nombreCapacitacion, style: styleFila),
+                Text(fila.categoria, style: styleFila),
+                Text(fila.empresa, style: styleFila),
                 Text(fila.fechaInicio != null
                     ? _formatDate(fila.fechaInicio!)
-                    : ''),
+                    : '', style: styleFila),
                 Text(fila.fechaTermino != null
                     ? _formatDate(fila.fechaTermino!)
-                    : ''),
-                Text(fila.horas?.toString() ?? ''),
-                Text(fila.notaTeorica?.toString() ?? ''),
-                Text(fila.notaPractica?.toString() ?? ''),
+                    : '', style: styleFila),
+                Text(fila.horas?.toString() ?? '', style: styleFila),
+                Text(fila.notaTeorica?.toString() ?? '', style: styleFila),
+                Text(fila.notaPractica?.toString() ?? '', style: styleFila),
               ];
               return _buildFila(celdas);
             }).toList(),

@@ -97,8 +97,7 @@ class ResponseHandler<T> {
       try {
         log('Mapeando EntrenamientoModulo: $T');
         //final entrenamientoModulo = EntrenamientoModulo.fromJson(response);
-        return ResponseHandler<T>(
-            success: true, data: response as T);
+        return ResponseHandler<T>(success: true, data: response as T);
       } catch (e) {
         log('Error al mapear la respuesta a EntrenamientoModulo: $e');
         return ResponseHandler<T>(

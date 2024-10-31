@@ -103,7 +103,7 @@ class CapacitacionPage extends StatelessWidget {
         side: const BorderSide(color: Colors.white),
       ),
       title: const Text(
-        "Busqueda de Capacitaciones",
+        "Filtro de Capacitaciones",
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.bold,

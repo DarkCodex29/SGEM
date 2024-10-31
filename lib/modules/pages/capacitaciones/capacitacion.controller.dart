@@ -67,7 +67,7 @@ class CapacitacionController extends GetxController {
         ? null
         : apellidoMaternoController.text;
     try {
-      var response = await capacitacionService.CapacitacionConsultaPaginado(
+      var response = await capacitacionService.capacitacionConsultaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
         inGuardia: dropdownController.getSelectedValue('guardia')?.key,
@@ -245,7 +245,8 @@ class CapacitacionController extends GetxController {
         estadoEntrenamiento: OptionValue(key: 0, nombre: ''),
       );
 
-      final response = await capacitacionService.eliminarModulo(capacitacion);
+      final response =
+          await capacitacionService.eliminarCapacitacion(capacitacion);
       log('Respuesta recibida: ${response.data}');
       if (response.success) {
         log('Capacitación eliminada con éxito');

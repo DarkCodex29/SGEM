@@ -33,10 +33,6 @@ class NuevaCapacitacionController extends GetxController {
 
   // Variables de selección
   RxBool isInternoSelected = true.obs;
-  RxnString categoriaSeleccionada = RxnString();
-  RxnString empresaSeleccionada = RxnString();
-  RxnString entrenadorSeleccionado = RxnString();
-  RxnString nombreCapacitacionwSeleccionada = RxnString();
 
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   final PersonalService personalService = PersonalService();
@@ -71,14 +67,12 @@ class NuevaCapacitacionController extends GetxController {
   Personal? personalInterno;
   Personal? personalExterno;
 
-
   Future<EntrenamientoModulo?> loadCapacitacion(int capacitacionKey) async {
     try {
       final response =
           await capacitacionService.obtenerCapacitacionPorId(capacitacionKey);
       if (response.success && response.data != null) {
         entrenamientoModulo = response.data;
-        log('LLENADO DE CONTROLLERS LOAD CAPACITACION');
         llenarControladores();
       } else {
         log('Error al obtener datos de capacitación: ${response.message}');
@@ -90,7 +84,6 @@ class NuevaCapacitacionController extends GetxController {
   }
 
   Future<Personal?> loadPersonalInterno(String codigoMcp) async {
-    log('¿CÓDIGO MCP? $codigoMcp');
     try {
       final response = await personalService.listarPersonalEntrenamiento(
           codigoMcp: codigoMcp);
@@ -123,6 +116,7 @@ class NuevaCapacitacionController extends GetxController {
   }
 
   void llenarControladores() {
+    resetControllers();
     if (entrenamientoModulo != null) {
       fechaInicioController.text = entrenamientoModulo!.fechaInicio != null
           ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaInicio!)
@@ -136,9 +130,17 @@ class NuevaCapacitacionController extends GetxController {
           entrenamientoModulo!.inNotaTeorica?.toString() ?? '';
       notaPracticaController.text =
           entrenamientoModulo!.inNotaPractica?.toString() ?? '';
+      dropdownController.selectValueKey(
+          'categoria', entrenamientoModulo!.inCategoria);
+      dropdownController.selectValueKey(
+          'empresaCapacitacion', entrenamientoModulo!.inEmpresaCapacitadora);
+      dropdownController.selectValueKey(
+          'entrenador', entrenamientoModulo!.inEntrenador);
+      dropdownController.selectValueKey('capacitacion', 25);
     }
 
     if (personalInterno != null) {
+      loadPersonalPhoto(personalInterno!.inPersonalOrigen);
       codigoMcpController.text = personalInterno!.codigoMcp;
       dniController.text = personalInterno!.numeroDocumento;
       nombresController.text = personalInterno!.nombreCompleto;
@@ -148,6 +150,7 @@ class NuevaCapacitacionController extends GetxController {
     }
 
     if (personalExterno != null) {
+      loadPersonalPhoto(personalExterno!.inPersonalOrigen);
       dniController.text = personalExterno!.numeroDocumento;
       nombresController.text = personalExterno!.nombreCompleto;
       apellidoPaternoController.text = personalExterno!.apellidoPaterno;
@@ -173,7 +176,7 @@ class NuevaCapacitacionController extends GetxController {
   Future<void> registrarCapacitacion() async {
     try {
       final response =
-          await capacitacionService.registrarModulo(entrenamientoModulo!);
+          await capacitacionService.registrarCapacitacion(entrenamientoModulo!);
       if (response.success) {
         log('Capacitación registrada con éxito');
       } else {
@@ -186,8 +189,10 @@ class NuevaCapacitacionController extends GetxController {
 
   Future<void> actualizarCapacitacion() async {
     try {
-      final response =
-          await capacitacionService.actualizarModulo(entrenamientoModulo!);
+      log('capacitacion: ${entrenamientoModulo!.toJson()}');
+      final response = await capacitacionService
+          .actualizarCapacitacion(entrenamientoModulo!);
+      log('response: ${response.data}');
       if (response.success) {
         log('Capacitación actualizada con éxito');
       } else {
@@ -295,18 +300,19 @@ class NuevaCapacitacionController extends GetxController {
     log('Archivo $nombreArchivo eliminado');
   }
 
-  @override
-  void onClose() {
-    codigoMcpController.dispose();
-    dniController.dispose();
-    nombresController.dispose();
-    apellidoPaternoController.dispose();
-    apellidoMaternoController.dispose();
-    fechaInicioController.dispose();
-    fechaTerminoController.dispose();
-    horasController.dispose();
-    notaTeoriaController.dispose();
-    notaPracticaController.dispose();
-    super.onClose();
+  void resetControllers() {
+    personalPhoto.value = null;
+    codigoMcpController.clear();
+    dniController.clear();
+    nombresController.clear();
+    apellidoPaternoController.clear();
+    apellidoMaternoController.clear();
+    fechaInicioController.clear();
+    fechaTerminoController.clear();
+    horasController.clear();
+    notaTeoriaController.clear();
+    notaPracticaController.clear();
+    guardiaController.clear();
+    dropdownController.resetAllSelections();
   }
 }

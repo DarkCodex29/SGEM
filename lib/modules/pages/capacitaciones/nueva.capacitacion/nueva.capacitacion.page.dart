@@ -11,7 +11,6 @@ class NuevaCapacitacionPage extends StatelessWidget {
   final int? capacitacionKey;
   final String? dni;
   final String? codigoMcp;
-  //final String? tipoPersona;
   final VoidCallback onCancel;
 
   final NuevaCapacitacionController controller =
@@ -21,14 +20,19 @@ class NuevaCapacitacionPage extends StatelessWidget {
     super.key,
     required this.isEditMode,
     this.dni,
-    //this.tipoPersona,
     this.codigoMcp,
     this.capacitacionKey,
     required this.onCancel,
   }) {
+    Future.microtask(() => _initializeCapacitacion());
+  }
+
+  void _initializeCapacitacion() {
     if (isEditMode) {
       controller.loadCapacitacion(capacitacionKey!);
       controller.loadPersonalInterno(codigoMcp!);
+    } else {
+      controller.resetControllers();
     }
   }
 
@@ -175,41 +179,31 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildCustomTextField('Código', ''),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    _buildCustomTextField('DNI', ''),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    _buildCustomTextField('Nombres y Apellidos', ''),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    _buildCustomTextField(
-                        'Guardia',
-                        controller.selectedPersonal.value?.guardia.nombre ??
-                            ''),
+                    Expanded(
+                        child: CustomTextField(
+                            label: "Código",
+                            controller: controller.codigoMcpController)),
+                    const SizedBox(width: 20),
+                    Expanded(
+                        child: CustomTextField(
+                            label: "DNI",
+                            controller: controller.dniController)),
+                    const SizedBox(width: 20),
+                    Expanded(
+                        child: CustomTextField(
+                            label: "Nombres",
+                            controller: controller.nombresController)),
+                    const SizedBox(width: 20),
+                    Expanded(
+                        child: CustomTextField(
+                            label: "Guardia",
+                            controller: controller.guardiaController)),
                   ],
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildCustomTextField(String label, String initialValue) {
-    TextEditingController controller =
-        TextEditingController(text: initialValue);
-    return SizedBox(
-      width: 200,
-      child: CustomTextField(
-        label: label,
-        controller: controller,
-        isReadOnly: true,
       ),
     );
   }

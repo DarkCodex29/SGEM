@@ -21,7 +21,7 @@ class CapacitacionService {
     ));
   }
 
-  Future<ResponseHandler<Map<String, dynamic>>> CapacitacionConsultaPaginado({
+  Future<ResponseHandler<Map<String, dynamic>>> capacitacionConsultaPaginado({
     String? codigoMcp,
     String? numeroDocumento,
     int? inGuardia,
@@ -125,34 +125,35 @@ class CapacitacionService {
         } else {
           return ResponseHandler(
             success: false,
-            message: 'Formato de respuesta inesperado al manejar el módulo',
+            message:
+                'Formato de respuesta inesperado al manejar la capacitación',
           );
         }
       } else {
         return ResponseHandler(
           success: false,
-          message: 'Error al manejar el módulo',
+          message: 'Error al manejar el capacitación',
         );
       }
     } on DioException catch (e) {
-      log('Error al manejar el módulo. Datos: ${jsonEncode(capacitacion.toJson())}, Error: ${e.response?.data}');
+      log('Error al manejar el capacitación. Datos: ${jsonEncode(capacitacion.toJson())}, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure<bool>(e);
     }
   }
 
-  Future<ResponseHandler<bool>> registrarModulo(
+  Future<ResponseHandler<bool>> registrarCapacitacion(
       EntrenamientoModulo capacitacion) async {
     const url = '${ConfigFile.apiUrl}/Capacitacion/RegistrarCapacitacion';
     return _manageCapacitacion(url, 'POST', capacitacion);
   }
 
-  Future<ResponseHandler<bool>> actualizarModulo(
+  Future<ResponseHandler<bool>> actualizarCapacitacion(
       EntrenamientoModulo capacitacion) async {
     const url = '${ConfigFile.apiUrl}/Capacitacion/ActualizarCapacitacion';
     return _manageCapacitacion(url, 'PUT', capacitacion);
   }
 
-  Future<ResponseHandler<bool>> eliminarModulo(
+  Future<ResponseHandler<bool>> eliminarCapacitacion(
       EntrenamientoModulo capacitacion) async {
     const url = '${ConfigFile.apiUrl}/Capacitacion/EliminarCapacitacion';
     return _manageCapacitacion(url, 'DELETE', capacitacion);

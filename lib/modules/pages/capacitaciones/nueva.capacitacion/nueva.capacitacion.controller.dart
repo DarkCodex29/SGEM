@@ -107,12 +107,14 @@ class NuevaCapacitacionController extends GetxController {
       if (response.success && response.data != null) {
         personalExterno = response.data;
 
-        dniController.text = personalExterno!.numeroDocumento;
-        nombresController.text = personalExterno!.nombreCompleto;
+        //dniController.text = personalExterno!.numeroDocumento;
+        nombresController.text =
+            '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
+        //guardiaController.text = personalExterno!.guardia.nombre;
         apellidoPaternoController.text = personalExterno!.apellidoPaterno;
         apellidoMaternoController.text = personalExterno!.apellidoMaterno;
 
-        await loadPersonalPhoto(personalExterno!.inPersonalOrigen);
+        //await loadPersonalPhoto(personalExterno!.inPersonalOrigen);
 
         log('Personal externo cargado con éxito: ${personalExterno!.nombreCompleto}');
       } else {

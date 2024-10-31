@@ -182,11 +182,13 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
+                    /*
                     Expanded(
                         child: CustomTextField(
                             label: "Código",
                             controller: controller.codigoMcpController)),
                     const SizedBox(width: 20),
+                    */
                     Expanded(
                         child: CustomTextField(
                             label: "DNI",

@@ -1,19 +1,19 @@
 import 'package:excel/excel.dart';
 
 class CapacitacionCargaMasivaResultado {
-  final String codigo;
-  final String dni;
-  final String nombres;
-  final String guardia;
-  final String entrenador;
-  final String nombreCapacitacion;
-  final String categoria;
-  final String empresa;
-  final DateTime? fechaInicio;
-  final DateTime? fechaTermino;
-  final int? horas;
-  final int? notaTeorica;
-  final int? notaPractica;
+   String codigo;
+   String dni;
+   String nombres;
+   String guardia;
+   String entrenador;
+   String nombreCapacitacion;
+   String categoria;
+   String empresa;
+   DateTime? fechaInicio;
+   DateTime? fechaTermino;
+   int? horas;
+   int? notaTeorica;
+   int? notaPractica;
 
   CapacitacionCargaMasivaResultado({
     required this.codigo,

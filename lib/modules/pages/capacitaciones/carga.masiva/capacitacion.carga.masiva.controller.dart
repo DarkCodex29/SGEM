@@ -12,11 +12,15 @@ class CapacitacionCargaMasivaController extends GetxController {
 
   var cargaMasivaResultados = <CapacitacionCargaMasivaResultado>[].obs;
   var cargaMasivaResultadosPaginados = <CapacitacionCargaMasivaResultado>[].obs;
+  var registrosConErrores = <Map<String, dynamic>>[].obs;
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
+  var correctRecords = 0.obs;
+
+  var errorRecords = 0.obs;
 
   Future<void> cargarArchivo() async {
     try {
@@ -42,15 +46,26 @@ class CapacitacionCargaMasivaController extends GetxController {
 
           // Procesar datos de Excel
           cargaMasivaResultados.clear();
+          registrosConErrores.clear();
+
           for (var i = 1; i < rows.length; i++) {
             // Ignorar la primera fila (cabecera)
             var row = rows[i];
-            cargaMasivaResultados
-                .add(CapacitacionCargaMasivaResultado.fromExcelRow(row));
+            var registro = CapacitacionCargaMasivaResultado.fromExcelRow(row);
+            // cargaMasivaResultados
+            //     .add(CapacitacionCargaMasivaResultado.fromExcelRow(row));
+
+            registro = validarRegistro(registro);
+
+            cargaMasivaResultados.add(registro);
           }
           log('Archivo Excel cargado con éxito');
           totalRecords.value = cargaMasivaResultados.length;
           totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
+
+          correctRecords.value = cargaMasivaResultados.length;
+          errorRecords.value = registrosConErrores.length;
+
           goToPage(1);
         }
       } else {
@@ -85,5 +100,56 @@ class CapacitacionCargaMasivaController extends GetxController {
     if (currentPage.value > 1) {
       goToPage(currentPage.value - 1);
     }
+  }
+
+  CapacitacionCargaMasivaResultado validarRegistro(
+      CapacitacionCargaMasivaResultado registro) {
+    //List<String> errores = [];
+
+    if (registro.codigo.isEmpty) {
+      if (registro.dni.isEmpty) {
+        registro.dni = 'Campo obligatorio';
+      }
+    }
+
+    if (registro.entrenador.isEmpty) {
+      registro.entrenador = 'Campo obligatorio';
+    }
+
+    if (registro.nombreCapacitacion.isEmpty) {
+      registro.nombreCapacitacion = 'Campo obligatorio';
+    }
+
+    if (registro.categoria.isEmpty) {
+      registro.categoria = 'Campo obligatorio';
+    }
+
+    if ((registro.categoria.toLowerCase() == 'interna' &&
+            registro.empresa != 'Entrenamiento mina') ||
+        (registro.categoria.toLowerCase() == 'externa' &&
+            registro.empresa == 'Entrenamiento mina')) {
+      registro.categoria ='Categoria errada';
+    }
+
+    if (registro.empresa.isEmpty) {
+      registro.empresa = 'Campo obligatorio';
+    }
+
+    // if ((registro.categoria.toLowerCase() == 'interna' && registro.empresa != 'Entrenamiento mina') ||
+    //     (registro.categoria.toLowerCase() == 'externa' && registro.empresa == 'Entrenamiento mina')) {
+    //
+    // }
+
+    // if (registro.fechaInicio == null || registro.fechaTermino == null) {
+    //
+    // } else if (registro.fechaTermino!.isBefore(registro.fechaInicio!)) {
+    //
+    // }
+
+    if (registro.horas == null) {
+      //errores.add('Las horas son obligatorias y deben ser válidas');
+    }
+
+    return registro;
   }
 }

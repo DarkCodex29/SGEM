@@ -29,10 +29,10 @@ Future<pw.Page> generatePersonalCarnetFrontPdf( Personal? personal, String image
       "Restricción": personal.restricciones,
     };
     fechaIngreso = personal.fechaIngreso.toString();
-    nombreCompleto = personal.nombreCompleto;
-    cargo = personal.cargo;
-    zonaPlataforma = personal.zonaPlataforma;
-    operacionMina = personal.operacionMina;
+    nombreCompleto = personal.nombreCompleto!;
+    cargo = personal.cargo!;
+    zonaPlataforma = personal.zonaPlataforma!;
+    operacionMina = personal.operacionMina!;
   }
 
   final page = pw.Page(

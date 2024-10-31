@@ -65,7 +65,10 @@ class NuevaCapacitacionPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         InkWell(
-          onTap: () => controller.seleccionarInterno(),
+          onTap: () {
+            controller.seleccionarInterno();
+            controller.resetControllers();
+          },
           child: Obx(
             () => Container(
               width: 150,
@@ -90,7 +93,10 @@ class NuevaCapacitacionPage extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         InkWell(
-          onTap: () => controller.seleccionarExterno(),
+          onTap: () {
+            controller.seleccionarExterno();
+            controller.resetControllers();
+          },
           child: Obx(
             () => Container(
               width: 150,
@@ -236,6 +242,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
               onIconPressed: () {
                 controller
                     .buscarPersonalExternoPorDni(controller.dniController.text);
+
+                //controller.loadPersonalExterno(controller.dniController.text);
               },
             ),
           ),

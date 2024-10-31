@@ -18,7 +18,7 @@ Future<pw.Page> generatePersonalCarnetBackPdf(Personal? personal, String imageFr
         "Área": personal.area,
         "Restricción": personal.restricciones,
       };
-      guardia = personal.guardia.nombre;
+      guardia = personal.guardia!.nombre!;
     }
     
     final page = pw.Page(

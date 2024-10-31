@@ -28,9 +28,9 @@ class EntrenamientoPersonalPage extends StatelessWidget {
     required this.onCancel,
     super.key,
   }) {
-     controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key);
+    controller.fetchTrainings(controllerPersonal.selectedPersonal.value!.key!);
     controllerNuevoPersonal.loadPersonalPhoto(
-        controllerPersonal.selectedPersonal.value!.inPersonalOrigen);
+        controllerPersonal.selectedPersonal.value!.inPersonalOrigen!);
   }
 
   @override
@@ -119,7 +119,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     _buildCustomTextField(
                         'Guardia',
                         controllerPersonal
-                                .selectedPersonal.value?.guardia.nombre ??
+                                .selectedPersonal.value?.guardia!.nombre ??
                             ''),
                   ],
                 ),
@@ -455,7 +455,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   );
                   if (success != null && success) {
                     controller.fetchTrainings(
-                        controllerPersonal.selectedPersonal.value!.key);
+                        controllerPersonal.selectedPersonal.value!.key!);
                   }
                 },
               ),
@@ -699,7 +699,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 );
                 if (success != null && success) {
                   controller.fetchTrainings(
-                      controllerPersonal.selectedPersonal.value!.key);
+                      controllerPersonal.selectedPersonal.value!.key!);
                 }
               },
             ),

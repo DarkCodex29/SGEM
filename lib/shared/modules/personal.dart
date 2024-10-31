@@ -1,69 +1,70 @@
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 
 class Personal implements DropdownElement {
-  int key;
-  String tipoPersona;
-  int inPersonalOrigen;
+  int? key;
+  String? tipoPersona;
+  int? inPersonalOrigen;
   DateTime? fechaIngresoMina;
-  String licenciaConducir;
-  String operacionMina;
-  String zonaPlataforma;
-  String restricciones;
-  String usuarioRegistro;
-  String usuarioModifica;
-  String codigoMcp;
-  String nombreCompleto;
-  String cargo;
-  String numeroDocumento;
-  Guardia guardia;
-  Estado estado;
-  String eliminado;
-  String motivoElimina;
-  String usuarioElimina;
-  String apellidoPaterno;
-  String apellidoMaterno;
-  String primerNombre;
-  String segundoNombre;
+  String? licenciaConducir;
+  String? operacionMina;
+  String? zonaPlataforma;
+  String? restricciones;
+  String? usuarioRegistro;
+  String? usuarioModifica;
+  String? codigoMcp;
+  String? nombreCompleto;
+  String? cargo;
+  String? numeroDocumento;
+  OptionValue? guardia;
+  OptionValue? estado;
+  String? eliminado;
+  String? motivoElimina;
+  String? usuarioElimina;
+  String? apellidoPaterno;
+  String? apellidoMaterno;
+  String? primerNombre;
+  String? segundoNombre;
   DateTime? fechaIngreso;
-  String licenciaCategoria;
+  String? licenciaCategoria;
   DateTime? licenciaVencimiento;
-  String gerencia;
-  String area;
+  String? gerencia;
+  String? area;
 
   @override
-  String get value => nombreCompleto;
+  String get value => nombreCompleto!;
   @override
-  int get id => key;
+  int get id => key!;
 
   Personal({
-    required this.key,
-    required this.tipoPersona,
-    required this.inPersonalOrigen,
+    this.key,
+    this.tipoPersona,
+    this.inPersonalOrigen,
     this.fechaIngresoMina,
-    required this.licenciaConducir,
-    required this.operacionMina,
-    required this.zonaPlataforma,
-    required this.restricciones,
-    required this.usuarioRegistro,
-    required this.usuarioModifica,
-    required this.codigoMcp,
-    required this.nombreCompleto,
-    required this.cargo,
-    required this.numeroDocumento,
-    required this.guardia,
-    required this.estado,
-    required this.eliminado,
-    required this.motivoElimina,
-    required this.usuarioElimina,
-    required this.apellidoPaterno,
-    required this.apellidoMaterno,
-    required this.primerNombre,
-    required this.segundoNombre,
+    this.licenciaConducir,
+    this.operacionMina,
+    this.zonaPlataforma,
+    this.restricciones,
+    this.usuarioRegistro,
+    this.usuarioModifica,
+    this.codigoMcp,
+    this.nombreCompleto,
+    this.cargo,
+    this.numeroDocumento,
+    this.guardia,
+    this.estado,
+    this.eliminado,
+    this.motivoElimina,
+    this.usuarioElimina,
+    this.apellidoPaterno,
+    this.apellidoMaterno,
+    this.primerNombre,
+    this.segundoNombre,
     this.fechaIngreso,
-    required this.licenciaCategoria,
+    this.licenciaCategoria,
     this.licenciaVencimiento,
-    required this.gerencia,
-    required this.area,
+    this.gerencia,
+    this.area,
   });
 
   static DateTime? parseDate(dynamic rawDate) {
@@ -104,12 +105,8 @@ class Personal implements DropdownElement {
       nombreCompleto: json['NombreCompleto'] ?? "",
       cargo: json['Cargo'] ?? "",
       numeroDocumento: json['NumeroDocumento'] ?? "",
-      guardia: json['Guardia'] != null
-          ? Guardia.fromJson(json['Guardia'])
-          : Guardia(key: 0, nombre: ""),
-      estado: json['Estado'] != null
-          ? Estado.fromJson(json['Estado'])
-          : Estado(key: 0, nombre: ""),
+      guardia: OptionValue.fromJson(json['Guardia'] ?? {}),
+      estado: OptionValue.fromJson(json['Estado'] ?? {}),
       eliminado: json['Eliminado'] ?? "S",
       motivoElimina: json['MotivoElimina'] ?? "",
       usuarioElimina: json['UsuarioElimina'] ?? "",
@@ -141,8 +138,8 @@ class Personal implements DropdownElement {
       'NombreCompleto': nombreCompleto,
       'Cargo': cargo,
       'NumeroDocumento': numeroDocumento,
-      'Guardia': guardia.toJson(),
-      'Estado': estado.toJson(),
+      'Guardia': guardia!.toJson(),
+      'Estado': estado!.toJson(),
       'Eliminado': eliminado,
       'MotivoElimina': motivoElimina,
       'UsuarioElimina': usuarioElimina,
@@ -158,14 +155,14 @@ class Personal implements DropdownElement {
     };
   }
 }
-
+/*
 class Guardia {
-  int key;
-  String nombre;
+  int? key;
+  String? nombre;
 
   Guardia({
-    required this.key,
-    required this.nombre,
+    this.key,
+    this.nombre,
   });
 
   factory Guardia.fromJson(Map<String, dynamic> json) {
@@ -184,12 +181,12 @@ class Guardia {
 }
 
 class Estado {
-  int key;
-  String nombre;
+  int? key;
+  String? nombre;
 
   Estado({
-    required this.key,
-    required this.nombre,
+    this.key,
+    this.nombre,
   });
 
   factory Estado.fromJson(Map<String, dynamic> json) {
@@ -205,4 +202,6 @@ class Estado {
       'Nombre': nombre,
     };
   }
+  
 }
+*/

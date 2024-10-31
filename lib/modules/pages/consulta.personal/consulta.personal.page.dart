@@ -95,8 +95,8 @@ class PersonalSearchPage extends StatelessWidget {
             nombreCompleto: '',
             cargo: '',
             numeroDocumento: '',
-            guardia: Guardia(key: 0, nombre: ''),
-            estado: Estado(key: 0, nombre: ''),
+            guardia: OptionValue(key: 0, nombre: ''),
+            estado: OptionValue(key: 0, nombre: ''),
             eliminado: '',
             motivoElimina: '',
             usuarioElimina: '',
@@ -573,31 +573,37 @@ class PersonalSearchPage extends StatelessWidget {
         var rowsToShow = controller.personalResults
             .take(controller.rowsPerPage.value)
             .toList();
-        List<String> cabecera=['Código MCP','Nombre completo','Documento de identidad','Guardia','Estado','Acciones',];
-
+        List<String> cabecera = [
+          'Código MCP',
+          'Nombre completo',
+          'Documento de identidad',
+          'Guardia',
+          'Estado',
+          'Acciones',
+        ];
 
         return Column(
           children: [
-            DynamicTableCabecera( cabecera: cabecera),
+            DynamicTableCabecera(cabecera: cabecera),
             SizedBox(
               height: 500,
               child: SingleChildScrollView(
                 child: Column(
                   children: rowsToShow.map((personal) {
-                    String estado = personal.estado.nombre;
+                    String estado = personal.estado!.nombre!;
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       child: Row(
                         children: [
-                          Expanded(child: Text(personal.codigoMcp)),
+                          Expanded(child: Text(personal.codigoMcp!)),
                           Expanded(
                               child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(personal.nombreCompleto),
+                              Text(personal.nombreCompleto!),
                               Text(
-                                personal.cargo,
+                                personal.cargo!,
                                 style: const TextStyle(
                                   fontSize: 11,
                                   color: AppTheme.primaryColor,
@@ -606,8 +612,8 @@ class PersonalSearchPage extends StatelessWidget {
                               ),
                             ],
                           )),
-                          Expanded(child: Text(personal.numeroDocumento)),
-                          Expanded(child: Text(personal.guardia.nombre)),
+                          Expanded(child: Text(personal.numeroDocumento!)),
+                          Expanded(child: Text(personal.guardia!.nombre!)),
                           Expanded(
                             child: Row(
                               children: [
@@ -699,7 +705,7 @@ class PersonalSearchPage extends StatelessWidget {
                                                       MediaQuery.of(context)
                                                           .viewInsets,
                                                   child: ConfirmDeleteWidget(
-                                                    itemName: nombreCompleto,
+                                                    itemName: nombreCompleto!,
                                                     entityType: 'personal',
                                                     onCancel: () {
                                                       Navigator.pop(context);

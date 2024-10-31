@@ -167,9 +167,12 @@ class NuevaCapacitacionPage extends StatelessWidget {
                     width: 200,
                     child: CustomTextField(
                       label: "Código MCP",
-                      controller: controller.dniController,
+                      controller: controller.codigoMcpController,
                       icon: const Icon(Icons.search),
-                      onIconPressed: () {},
+                      onIconPressed: () {
+                        controller.loadPersonalInterno(
+                            controller.codigoMcpController.text);
+                      },
                     ),
                   ),
                 if (!isEditMode) const SizedBox(height: 12),
@@ -228,7 +231,10 @@ class NuevaCapacitacionPage extends StatelessWidget {
               label: "DNI",
               controller: controller.dniController,
               icon: const Icon(Icons.search),
-              onIconPressed: () {},
+              onIconPressed: () {
+                controller
+                    .buscarPersonalExternoPorDni(controller.dniController.text);
+              },
             ),
           ),
           const SizedBox(height: 12),

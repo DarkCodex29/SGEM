@@ -99,6 +99,33 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
+  Future<void> buscarPersonalExternoPorDni(String dni) async {
+    try {
+      final response =
+          await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+
+      if (response.success && response.data != null) {
+        personalExterno = response.data;
+
+        dniController.text = personalExterno!.numeroDocumento;
+        nombresController.text = personalExterno!.nombreCompleto;
+        apellidoPaternoController.text = personalExterno!.apellidoPaterno;
+        apellidoMaternoController.text = personalExterno!.apellidoMaterno;
+
+        await loadPersonalPhoto(personalExterno!.inPersonalOrigen);
+
+        log('Personal externo cargado con éxito: ${personalExterno!.nombreCompleto}');
+      } else {
+        log('No se encontró personal externo con el DNI proporcionado');
+        Get.snackbar('Error',
+            'No se encontró personal externo con el DNI proporcionado');
+      }
+    } catch (e) {
+      log('Error al buscar personal externo: $e');
+      Get.snackbar('Error', 'Error al buscar personal externo: $e');
+    }
+  }
+
   Future<Personal?> loadPersonalExterno(String dni) async {
     try {
       final response =

@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import '../../shared/modules/capacitacion.carga.masiva.dart';
+import '../../shared/modules/capacitacion.carga.masiva.excel.dart';
 import '../../shared/modules/capacitacion.consulta.dart';
 import '../constants/config.dart';
 
@@ -183,6 +186,41 @@ class CapacitacionService {
       }
     } on DioException catch (e) {
       log('Error al obtener la capacitación por ID: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<ResponseHandler<List<CapacitacionCargaMasivaValidado>>>
+      validarCargaMasiva(
+          {required List<CapacitacionCargaMasivaExcel> cargaMasivaList}) async {
+    log('Llamando al endpoint carga masiva');
+    const url = '${ConfigFile.apiUrl}/Capacitacion/ValidarCargaMasiva';
+    final request = cargaMasivaList.map((e) => e.toJson()).toList();
+
+    try {
+      log('Enviando datos de capacitación para validación: $request');
+      final response = await dio.get(
+        url,
+        data: request,
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      log('Respuesta recibida para validación de carga masiva: ${response.data}');
+
+      final result = response.data as Map<String, dynamic>;
+
+      // Convertir los elementos de la respuesta a la lista de `CapacitacionCargaMasivaValidado`
+      final items = result['Items'] as List;
+      final validadoList = items
+          .map((json) => CapacitacionCargaMasivaValidado.fromJson(json))
+          .toList();
+
+      return ResponseHandler.handleSuccess<
+          List<CapacitacionCargaMasivaValidado>>(validadoList);
+    } on DioException catch (e) {
+      log('Error al consultar capacitaciones paginado. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

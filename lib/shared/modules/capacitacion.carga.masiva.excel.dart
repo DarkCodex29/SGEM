@@ -1,6 +1,6 @@
 import 'package:excel/excel.dart';
 
-class CapacitacionCargaMasivaResultado {
+class CapacitacionCargaMasivaExcel {
    String codigo;
    String dni;
    String nombres;
@@ -14,9 +14,9 @@ class CapacitacionCargaMasivaResultado {
    int? horas;
    int? notaTeorica;
    int? notaPractica;
-   bool esCorrecto=true;
 
-  CapacitacionCargaMasivaResultado({
+
+  CapacitacionCargaMasivaExcel({
     required this.codigo,
     required this.dni,
     required this.nombres,
@@ -32,7 +32,7 @@ class CapacitacionCargaMasivaResultado {
     this.notaPractica,
   });
 
-  factory CapacitacionCargaMasivaResultado.fromExcelRow(List<Data?> row) {
+  factory CapacitacionCargaMasivaExcel.fromExcelRow(List<Data?> row) {
     String codigo = row[0]?.value.toString() ?? '';
     String dni = row[1]?.value.toString() ?? '';
     String nombres = row[2]?.value.toString() ?? '';
@@ -52,7 +52,7 @@ class CapacitacionCargaMasivaResultado {
     int? notaPractica =
         row[12]?.value != null ? int.parse(row[12]!.value.toString()) : null;
 
-    return CapacitacionCargaMasivaResultado(
+    return CapacitacionCargaMasivaExcel(
       codigo: codigo,
       dni: dni,
       nombres: nombres,
@@ -68,4 +68,20 @@ class CapacitacionCargaMasivaResultado {
       notaPractica: notaPractica,
     );
   }
+
+   Map<String, dynamic> toJson() => {
+     "Codigo": codigo,
+     "Dni": dni,
+     "Nombres": nombres,
+     "Guardia": guardia,
+     "Entrenador": entrenador,
+     "NombreCapacitacion": nombreCapacitacion,
+     "Categoria": categoria,
+     "Empresa": empresa,
+     "FechaInicio": fechaInicio?.toIso8601String(),
+     "FechaTermino": fechaTermino?.toIso8601String(),
+     "Horas": horas,
+     "NotaTeorica": notaTeorica,
+     "NotaPractica": notaPractica,
+   };
 }

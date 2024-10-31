@@ -4,16 +4,19 @@ import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/config/api/api.capacitacion.dart';
+import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
 
-import '../../../../shared/modules/capacitacion.carga.masiva.resultado.dart';
+import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 
 class CapacitacionCargaMasivaController extends GetxController {
   TextEditingController archivoController = TextEditingController();
 
-  var cargaMasivaResultados = <CapacitacionCargaMasivaResultado>[].obs;
-  var cargaMasivaResultadosPaginados = <CapacitacionCargaMasivaResultado>[].obs;
+  var cargaMasivaResultados = <CapacitacionCargaMasivaExcel>[].obs;
+  var cargaMasivaResultadosValidados = <CapacitacionCargaMasivaValidado>[].obs;
+  var cargaMasivaResultadosPaginados = <CapacitacionCargaMasivaExcel>[].obs;
   var registrosConErrores = <Map<String, dynamic>>[].obs;
-
+var capacitacionService = CapacitacionService();
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
   var totalPages = 1.obs;
@@ -51,14 +54,15 @@ class CapacitacionCargaMasivaController extends GetxController {
           for (var i = 1; i < rows.length; i++) {
             // Ignorar la primera fila (cabecera)
             var row = rows[i];
-            var registro = CapacitacionCargaMasivaResultado.fromExcelRow(row);
+            var registro = CapacitacionCargaMasivaExcel.fromExcelRow(row);
             // cargaMasivaResultados
             //     .add(CapacitacionCargaMasivaResultado.fromExcelRow(row));
 
-            registro = validarRegistro(registro);
+           // registro = validarRegistro(registro);
 
             cargaMasivaResultados.add(registro);
           }
+
           log('Archivo Excel cargado con éxito');
           totalRecords.value = cargaMasivaResultados.length;
           totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
@@ -76,8 +80,11 @@ class CapacitacionCargaMasivaController extends GetxController {
     }
   }
 
-  void previsualizarCarga() {
-    totalRecords.value = cargaMasivaResultados.length;
+  Future<void> previsualizarCarga() async {
+
+    var result = capacitacionService.validarCargaMasiva(cargaMasivaList: cargaMasivaResultados);
+
+    //totalRecords.value = cargaMasivaResultados.length;
   }
 
   void goToPage(int page) {
@@ -102,60 +109,4 @@ class CapacitacionCargaMasivaController extends GetxController {
     }
   }
 
-  CapacitacionCargaMasivaResultado validarRegistro(
-      CapacitacionCargaMasivaResultado registro) {
-    //List<String> errores = [];
-
-    if (registro.codigo.isEmpty) {
-      if (registro.dni.isEmpty) {
-        registro.dni = 'Campo obligatorio';
-        registro.esCorrecto=false;
-      }
-    }
-
-    if (registro.entrenador.isEmpty) {
-      registro.entrenador = 'Campo obligatorio';
-      registro.esCorrecto=false;
-    }
-
-    if (registro.nombreCapacitacion.isEmpty) {
-      registro.nombreCapacitacion = 'Campo obligatorio';
-      registro.esCorrecto=false;
-    }
-
-    if (registro.categoria.isEmpty) {
-      registro.categoria = 'Campo obligatorio';
-      registro.esCorrecto=false;
-    }
-
-    if ((registro.categoria.toLowerCase() == 'interna' &&
-            registro.empresa != 'Entrenamiento mina') ||
-        (registro.categoria.toLowerCase() == 'externa' &&
-            registro.empresa == 'Entrenamiento mina')) {
-      registro.categoria ='Categoria errada';
-      registro.esCorrecto=false;
-    }
-
-    if (registro.empresa.isEmpty) {
-      registro.empresa = 'Campo obligatorio';
-      registro.esCorrecto=false;
-    }
-
-    // if ((registro.categoria.toLowerCase() == 'interna' && registro.empresa != 'Entrenamiento mina') ||
-    //     (registro.categoria.toLowerCase() == 'externa' && registro.empresa == 'Entrenamiento mina')) {
-    //
-    // }
-
-    // if (registro.fechaInicio == null || registro.fechaTermino == null) {
-    //
-    // } else if (registro.fechaTermino!.isBefore(registro.fechaInicio!)) {
-    //
-    // }
-
-    if (registro.horas == null) {
-      //errores.add('Las horas son obligatorias y deben ser válidas');
-    }
-
-    return registro;
-  }
 }

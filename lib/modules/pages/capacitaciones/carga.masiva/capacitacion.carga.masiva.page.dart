@@ -148,13 +148,12 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
       height: 500,
       child: SingleChildScrollView(
         child: Obx(() {
-          var esCorrectoFila=true;
           return Column(
             children: controller.cargaMasivaResultadosPaginados.map((fila) {
               //var styleFila  = fila.esCorrecto==false ? const TextStyle(color: Colors.redAccent):const TextStyle(color: AppTheme.primaryText);
-              var styleFila  = const TextStyle(color: AppTheme.primaryText);
+              var styleFila = const TextStyle(color: AppTheme.primaryText);
               List<Widget> celdas = [
-                Text(fila.codigo,style: styleFila),
+                Text(fila.codigo, style: styleFila),
                 Text(fila.dni, style: styleFila),
                 Text(fila.nombres, style: styleFila),
                 Text(fila.guardia, style: styleFila),
@@ -162,12 +161,16 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 Text(fila.nombreCapacitacion, style: styleFila),
                 Text(fila.categoria, style: styleFila),
                 Text(fila.empresa, style: styleFila),
-                Text(fila.fechaInicio != null
-                    ? _formatDate(fila.fechaInicio!)
-                    : '', style: styleFila),
-                Text(fila.fechaTermino != null
-                    ? _formatDate(fila.fechaTermino!)
-                    : '', style: styleFila),
+                Text(
+                    fila.fechaInicio != null
+                        ? _formatDate(fila.fechaInicio!)
+                        : '',
+                    style: styleFila),
+                Text(
+                    fila.fechaTermino != null
+                        ? _formatDate(fila.fechaTermino!)
+                        : '',
+                    style: styleFila),
                 Text(fila.horas?.toString() ?? '', style: styleFila),
                 Text(fila.notaTeorica?.toString() ?? '', style: styleFila),
                 Text(fila.notaPractica?.toString() ?? '', style: styleFila),

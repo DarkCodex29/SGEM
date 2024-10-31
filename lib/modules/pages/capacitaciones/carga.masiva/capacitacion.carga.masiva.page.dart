@@ -150,8 +150,8 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         child: Obx(() {
           return Column(
             children: controller.cargaMasivaResultadosPaginados.map((fila) {
-              //var styleFila  = fila.esCorrecto==false ? const TextStyle(color: Colors.redAccent):const TextStyle(color: AppTheme.primaryText);
-              var styleFila = const TextStyle(color: AppTheme.primaryText);
+              var styleFila  = fila.esCorrecto==false ? const TextStyle(color: Colors.redAccent):const TextStyle(color: AppTheme.primaryText);
+              //var styleFila = const TextStyle(color: AppTheme.primaryText);
               List<Widget> celdas = [
                 Text(fila.codigo, style: styleFila),
                 Text(fila.dni, style: styleFila),

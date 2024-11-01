@@ -136,6 +136,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         return Column(
           children: [
             DynamicTableCabecera(cabecera: cabecera),
+            const SizedBox(height: 10),
             _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
@@ -217,7 +218,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         color: esCorrecto
             ? Colors.blueAccent.withOpacity(0.20)
-            : Colors.redAccent.withOpacity(0.2),
+            : Colors.redAccent.withOpacity(0.20),
         child: Row(
             children: celdas.map((celda) {
           return Expanded(flex: 1, child: celda);

@@ -82,13 +82,27 @@ class CapacitacionCargaMasivaController extends GetxController {
   }
 
   Future<void> previsualizarCarga() async {
-    final response = await capacitacionService.validarCargaMasiva(
-        cargaMasivaList: cargaMasivaResultados);
-    if (response.success) {
-      cargaMasivaResultadosValidados.value = response.data!;
+    if (cargaMasivaResultados.isNotEmpty) {
+      final response = await capacitacionService.validarCargaMasiva(
+        cargaMasivaList: cargaMasivaResultados,
+      );
+      if (response.success) {
+        cargaMasivaResultadosValidados.value = response.data!;
+      }
+    } else {
+      // Mostrar mensaje de error cuando no hay archivo seleccionado
+      Get.snackbar(
+        'Error',
+        'No se ha seleccionado ningún archivo para cargar.',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     }
-    //totalRecords.value = cargaMasivaResultados.length;
+
+    // totalRecords.value = cargaMasivaResultados.length;
   }
+
 
   void goToPage(int page) {
     currentPage.value = page;

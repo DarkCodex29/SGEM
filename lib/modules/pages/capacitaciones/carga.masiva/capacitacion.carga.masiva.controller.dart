@@ -26,6 +26,7 @@ class CapacitacionCargaMasivaController extends GetxController {
   var errorRecords = 0.obs;
 
   Future<void> cargarArchivo() async {
+    cargaMasivaResultadosValidados.clear();
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,

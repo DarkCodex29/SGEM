@@ -37,20 +37,20 @@ class CapacitacionCargaMasivaValidado {
   String mensajeHoras;
   String mensajeNotaTeorica;
   String mensajeNotaPractica;
-  bool? esCorrectoCodigo;
-  bool? esCorrectoDni;
-  bool? esCorrectoNombres;
-  bool? esCorrectoGuardia;
-  bool? esCorrectoEntrenador;
-  bool? esCorrectoNombreCapacitacion;
-  bool? esCorrectoCategoria;
-  bool? esCorrectoEmpresa;
-  bool? esCorrectoFechaInicio;
-  bool? esCorrectoFechaTermino;
-  bool? esCorrectoHoras;
-  bool? esCorrectoNotaTeorica;
-  bool? esCorrectoNotaPractica;
-  bool? esValido;
+  bool esCorrectoCodigo;
+  bool esCorrectoDni;
+  bool esCorrectoNombres;
+  bool esCorrectoGuardia;
+  bool esCorrectoEntrenador;
+  bool esCorrectoNombreCapacitacion;
+  bool esCorrectoCategoria;
+  bool esCorrectoEmpresa;
+  bool esCorrectoFechaInicio;
+  bool esCorrectoFechaTermino;
+  bool esCorrectoHoras;
+  bool esCorrectoNotaTeorica;
+  bool esCorrectoNotaPractica;
+  bool esValido;
 
   CapacitacionCargaMasivaValidado({
     this.codigo = '',
@@ -79,20 +79,20 @@ class CapacitacionCargaMasivaValidado {
     this.mensajeHoras = '',
     this.mensajeNotaTeorica = '',
     this.mensajeNotaPractica = '',
-    this.esCorrectoCodigo,
-    this.esCorrectoDni,
-    this.esCorrectoNombres,
-    this.esCorrectoGuardia,
-    this.esCorrectoEntrenador,
-    this.esCorrectoNombreCapacitacion,
-    this.esCorrectoCategoria,
-    this.esCorrectoEmpresa,
-    this.esCorrectoFechaInicio,
-    this.esCorrectoFechaTermino,
-    this.esCorrectoHoras,
-    this.esCorrectoNotaTeorica,
-    this.esCorrectoNotaPractica,
-    this.esValido,
+    this.esCorrectoCodigo=true,
+    this.esCorrectoDni=true,
+    this.esCorrectoNombres=true,
+    this.esCorrectoGuardia=true,
+    this.esCorrectoEntrenador=true,
+    this.esCorrectoNombreCapacitacion=true,
+    this.esCorrectoCategoria=true,
+    this.esCorrectoEmpresa=true,
+    this.esCorrectoFechaInicio=true,
+    this.esCorrectoFechaTermino=true,
+    this.esCorrectoHoras=true,
+    this.esCorrectoNotaTeorica=true,
+    this.esCorrectoNotaPractica=true,
+    this.esValido=true,
   });
 
   factory CapacitacionCargaMasivaValidado.fromJson(Map<String, dynamic> json) =>

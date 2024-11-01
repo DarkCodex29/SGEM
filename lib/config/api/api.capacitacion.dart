@@ -193,35 +193,36 @@ class CapacitacionService {
   Future<ResponseHandler<List<CapacitacionCargaMasivaValidado>>>
       validarCargaMasiva(
           {required List<CapacitacionCargaMasivaExcel> cargaMasivaList}) async {
+
     log('Llamando al endpoint carga masiva');
     const url = '${ConfigFile.apiUrl}/Capacitacion/ValidarCargaMasiva';
+
     final request = cargaMasivaList.map((e) => e.toJson()).toList();
 
     try {
       log('Enviando datos de capacitación para validación: $request');
-      final response = await dio.get(
+      final response = await dio.post(
         url,
         data: request,
-        options: Options(
-          followRedirects: false,
-        ),
       );
 
-      log('Respuesta recibida para validación de carga masiva: ${response.data}');
-
-      final result = response.data as Map<String, dynamic>;
-
-      // Convertir los elementos de la respuesta a la lista de `CapacitacionCargaMasivaValidado`
-      final items = result['Items'] as List;
-      final validadoList = items
-          .map((json) => CapacitacionCargaMasivaValidado.fromJson(json))
-          .toList();
-
-      return ResponseHandler.handleSuccess<
-          List<CapacitacionCargaMasivaValidado>>(validadoList);
+      if (response.statusCode == 200 && response.data != null) {
+        List<CapacitacionCargaMasivaValidado> cargaMasivaValidada =
+        List<CapacitacionCargaMasivaValidado>.from(
+          response.data.map((json) => CapacitacionCargaMasivaValidado.fromJson(json)),
+        );
+        return ResponseHandler.handleSuccess<List<CapacitacionCargaMasivaValidado>>(cargaMasivaValidada);
+      }
+      else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al listar carga masiva',
+        );
+      }
     } on DioException catch (e) {
       log('Error al consultar capacitaciones paginado. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }
 }
+

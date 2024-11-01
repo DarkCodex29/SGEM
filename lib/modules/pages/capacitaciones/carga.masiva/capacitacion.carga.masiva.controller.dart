@@ -16,7 +16,7 @@ class CapacitacionCargaMasivaController extends GetxController {
   var cargaMasivaResultadosValidados = <CapacitacionCargaMasivaValidado>[].obs;
   var cargaMasivaResultadosPaginados = <CapacitacionCargaMasivaExcel>[].obs;
   var registrosConErrores = <Map<String, dynamic>>[].obs;
-var capacitacionService = CapacitacionService();
+  var capacitacionService = CapacitacionService();
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
   var totalPages = 1.obs;
@@ -58,7 +58,7 @@ var capacitacionService = CapacitacionService();
             // cargaMasivaResultados
             //     .add(CapacitacionCargaMasivaResultado.fromExcelRow(row));
 
-           // registro = validarRegistro(registro);
+            // registro = validarRegistro(registro);
 
             cargaMasivaResultados.add(registro);
           }
@@ -81,9 +81,11 @@ var capacitacionService = CapacitacionService();
   }
 
   Future<void> previsualizarCarga() async {
-
-    var result = capacitacionService.validarCargaMasiva(cargaMasivaList: cargaMasivaResultados);
-
+    final response = await capacitacionService.validarCargaMasiva(
+        cargaMasivaList: cargaMasivaResultados);
+    if (response.success) {
+      cargaMasivaResultadosValidados.value = response.data!;
+    }
     //totalRecords.value = cargaMasivaResultados.length;
   }
 
@@ -108,5 +110,4 @@ var capacitacionService = CapacitacionService();
       goToPage(currentPage.value - 1);
     }
   }
-
 }

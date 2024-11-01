@@ -5,6 +5,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import '../../../config/api/api.maestro.detail.dart';
 import '../../../config/api/api.personal.dart';
 import '../../../shared/modules/personal.dart';
@@ -190,27 +191,27 @@ class PersonalSearchController extends GetxController {
     for (int rowIndex = 0; rowIndex < personalResults.length; rowIndex++) {
       var personal = personalResults[rowIndex];
       List<CellValue> row = [
-        TextCellValue(personal.numeroDocumento),
-        TextCellValue(personal.codigoMcp),
-        TextCellValue(personal.apellidoPaterno),
-        TextCellValue(personal.apellidoMaterno),
+        TextCellValue(personal.numeroDocumento!),
+        TextCellValue(personal.codigoMcp!),
+        TextCellValue(personal.apellidoPaterno!),
+        TextCellValue(personal.apellidoMaterno!),
         TextCellValue('${personal.primerNombre} ${personal.segundoNombre}'),
-        TextCellValue(personal.guardia.nombre),
-        TextCellValue(personal.cargo),
-        TextCellValue(personal.gerencia),
-        TextCellValue(personal.area),
+        TextCellValue(personal.guardia!.nombre!),
+        TextCellValue(personal.cargo!),
+        TextCellValue(personal.gerencia!),
+        TextCellValue(personal.area!),
         personal.fechaIngreso != null
             ? TextCellValue(dateFormat.format(personal.fechaIngreso!))
             : TextCellValue(''),
         personal.fechaIngresoMina != null
             ? TextCellValue(dateFormat.format(personal.fechaIngresoMina!))
             : TextCellValue(''),
-        TextCellValue(personal.licenciaConducir),
-        TextCellValue(personal.licenciaCategoria),
+        TextCellValue(personal.licenciaConducir!),
+        TextCellValue(personal.licenciaCategoria!),
         personal.licenciaVencimiento != null
             ? TextCellValue(dateFormat.format(personal.licenciaVencimiento!))
             : TextCellValue(''),
-        TextCellValue(personal.restricciones),
+        TextCellValue(personal.restricciones!),
       ];
 
       for (int colIndex = 0; colIndex < row.length; colIndex++) {
@@ -272,8 +273,8 @@ class PersonalSearchController extends GetxController {
       nombreCompleto: "",
       cargo: "",
       numeroDocumento: "",
-      guardia: Guardia(key: 0, nombre: ""),
-      estado: Estado(key: 0, nombre: ""),
+      guardia: OptionValue(key: 0, nombre: ""),
+      estado: OptionValue(key: 0, nombre: ""),
       eliminado: "",
       motivoElimina: "",
       usuarioElimina: "",
@@ -314,7 +315,6 @@ class PersonalSearchController extends GetxController {
   void showTraining(Personal personal) {
     selectedPersonal.value = personal;
     screen.value = PersonalSearchScreen.trainingForm;
-
   }
 
   void showActualizacionMasiva() {

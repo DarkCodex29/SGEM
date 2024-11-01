@@ -66,6 +66,7 @@ class NuevaCapacitacionController extends GetxController {
   EntrenamientoModulo? entrenamientoModulo;
   Personal? personalInterno;
   Personal? personalExterno;
+  String tipoPersona = '';
 
   Future<EntrenamientoModulo?> loadCapacitacion(int capacitacionKey) async {
     try {
@@ -111,16 +112,17 @@ class NuevaCapacitacionController extends GetxController {
         nombresController.text =
             '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
         //guardiaController.text = personalExterno!.guardia.nombre;
-        apellidoPaternoController.text = personalExterno!.apellidoPaterno;
-        apellidoMaternoController.text = personalExterno!.apellidoMaterno;
+        apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
+        apellidoMaternoController.text = personalExterno!.apellidoMaterno!;
 
         //await loadPersonalPhoto(personalExterno!.inPersonalOrigen);
 
         log('Personal externo cargado con éxito: ${personalExterno!.nombreCompleto}');
       } else {
         log('No se encontró personal externo con el DNI proporcionado');
-        Get.snackbar('Error',
-            'No se encontró personal externo con el DNI proporcionado');
+        Get.snackbar(
+            'Error', 'No se encontró personal externo con el DNI proporcionado',
+            backgroundColor: Colors.red);
       }
     } catch (e) {
       log('Error al buscar personal externo: $e');
@@ -169,21 +171,21 @@ class NuevaCapacitacionController extends GetxController {
     }
 
     if (personalInterno != null) {
-      loadPersonalPhoto(personalInterno!.inPersonalOrigen);
-      codigoMcpController.text = personalInterno!.codigoMcp;
-      dniController.text = personalInterno!.numeroDocumento;
-      nombresController.text = personalInterno!.nombreCompleto;
-      apellidoPaternoController.text = personalInterno!.apellidoPaterno;
-      apellidoMaternoController.text = personalInterno!.apellidoMaterno;
-      guardiaController.text = personalInterno!.guardia.nombre;
+      loadPersonalPhoto(personalInterno!.inPersonalOrigen!);
+      codigoMcpController.text = personalInterno!.codigoMcp!;
+      dniController.text = personalInterno!.numeroDocumento!;
+      nombresController.text = personalInterno!.nombreCompleto!;
+      apellidoPaternoController.text = personalInterno!.apellidoPaterno!;
+      apellidoMaternoController.text = personalInterno!.apellidoMaterno!;
+      guardiaController.text = personalInterno!.guardia!.nombre!;
     }
 
     if (personalExterno != null) {
-      loadPersonalPhoto(personalExterno!.inPersonalOrigen);
-      dniController.text = personalExterno!.numeroDocumento;
-      nombresController.text = personalExterno!.nombreCompleto;
-      apellidoPaternoController.text = personalExterno!.apellidoPaterno;
-      apellidoMaternoController.text = personalExterno!.apellidoMaterno;
+      loadPersonalPhoto(personalExterno!.inPersonalOrigen!);
+      dniController.text = personalExterno!.numeroDocumento!;
+      nombresController.text = personalExterno!.nombreCompleto!;
+      apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
+      apellidoMaternoController.text = personalExterno!.apellidoMaterno!;
     }
   }
 
@@ -268,7 +270,7 @@ class NuevaCapacitacionController extends GetxController {
           .listarPersonalEntrenamiento(numeroDocumento: dni);
 
       if (personalResponse.success && personalResponse.data!.isNotEmpty) {
-        int origenKey = personalResponse.data!.first.key;
+        int origenKey = personalResponse.data!.first.key!;
         log('Key del personal obtenida: $origenKey');
         var archivosNuevos = archivosAdjuntos
             .where((archivo) => archivo['nuevo'] == true)

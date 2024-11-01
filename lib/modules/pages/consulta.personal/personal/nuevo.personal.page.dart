@@ -28,30 +28,30 @@ class NuevoPersonalPage extends StatelessWidget {
   }
   void _initializePersonalData() {
     if (isEditing || isViewing) {
-      controller.loadPersonalPhoto(personal.inPersonalOrigen);
+      controller.loadPersonalPhoto(personal.inPersonalOrigen!);
       controller.personalData = personal;
-      controller.dniController.text = personal.numeroDocumento;
+      controller.dniController.text = personal.numeroDocumento!;
       controller.nombresController.text =
           '${personal.primerNombre} ${personal.segundoNombre}';
-      controller.puestoTrabajoController.text = personal.cargo;
-      controller.codigoController.text = personal.codigoMcp;
-      controller.apellidoPaternoController.text = personal.apellidoPaterno;
-      controller.apellidoMaternoController.text = personal.apellidoMaterno;
-      controller.gerenciaController.text = personal.gerencia;
+      controller.puestoTrabajoController.text = personal.cargo!;
+      controller.codigoController.text = personal.codigoMcp!;
+      controller.apellidoPaternoController.text = personal.apellidoPaterno!;
+      controller.apellidoMaternoController.text = personal.apellidoMaterno!;
+      controller.gerenciaController.text = personal.gerencia!;
       controller.fechaIngreso = personal.fechaIngreso;
       controller.fechaIngresoController.text =
           DateFormat('dd/MM/yyyy').format(controller.fechaIngreso!);
 
-      controller.areaController.text = personal.area;
-      controller.categoriaLicenciaController.text = personal.licenciaCategoria;
-      controller.codigoLicenciaController.text = personal.licenciaConducir;
-      if (personal.guardia.key != 0) {
+      controller.areaController.text = personal.area!;
+      controller.categoriaLicenciaController.text = personal.licenciaCategoria!;
+      controller.codigoLicenciaController.text = personal.licenciaConducir!;
+      if (personal.guardia!.key != 0) {
         controller.dropdownController
-            .selectValueKey('guardia', personal.guardia.key);
+            .selectValueKey('guardia', personal.guardia!.key);
       } else {
         controller.dropdownController.selectValueKey('guardia', null);
       }
-      controller.restriccionesController.text = personal.restricciones;
+      controller.restriccionesController.text = personal.restricciones!;
       controller.fechaIngresoMina = personal.fechaIngresoMina;
       controller.fechaIngresoMinaController.text =
           DateFormat('dd/MM/yyyy').format(controller.fechaIngresoMina!);
@@ -66,8 +66,8 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
       //controller.estadoPersonal.value =
       //  personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
-      controller.estadoPersonalKey.value = personal.estado.key;
-      controller.obtenerArchivosRegistrados(1, personal.key);
+      controller.estadoPersonalKey.value = personal.estado!.key!;
+      controller.obtenerArchivosRegistrados(1, personal.key!);
     }
   }
 
@@ -344,7 +344,7 @@ class NuevoPersonalPage extends StatelessWidget {
                   hintText: 'Selecciona guardia',
                   noDataHintText: 'No se encontraron guardias',
                   controller: controller.dropdownController,
-                  isReadOnly: isViewing ? true:false,
+                  isReadOnly: isViewing ? true : false,
                 ),
               ),
               const SizedBox(width: 10),

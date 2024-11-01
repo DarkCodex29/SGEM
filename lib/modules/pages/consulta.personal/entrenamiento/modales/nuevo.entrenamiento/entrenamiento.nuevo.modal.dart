@@ -291,14 +291,14 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           .actualizarEntrenamiento(newTraining)
           .then((isSuccess) {
         if (isSuccess) {
-          trainingPersonalController.fetchTrainings(data.key);
+          trainingPersonalController.fetchTrainings(data.key!);
           close();
         }
       });
     } else {
       controller.registertraining(newTraining, (isSuccess) {
         if (isSuccess) {
-          trainingPersonalController.fetchTrainings(data.key);
+          trainingPersonalController.fetchTrainings(data.key!);
           close();
         }
       });

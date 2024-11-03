@@ -193,11 +193,10 @@ class CapacitacionService {
   Future<ResponseHandler<List<CapacitacionCargaMasivaValidado>>>
       validarCargaMasiva(
           {required List<CapacitacionCargaMasivaExcel> cargaMasivaList}) async {
-
     log('Llamando al endpoint carga masiva');
     const url = '${ConfigFile.apiUrl}/Capacitacion/ValidarCargaMasiva';
 
-    final request = cargaMasivaList.map((e) => e.toJson()).toList();
+    final request = cargaMasivaList.map((e) =>  e.toJson()).toList();
 
     try {
       log('Enviando datos de capacitación para validación: $request');
@@ -208,12 +207,13 @@ class CapacitacionService {
 
       if (response.statusCode == 200 && response.data != null) {
         List<CapacitacionCargaMasivaValidado> cargaMasivaValidada =
-        List<CapacitacionCargaMasivaValidado>.from(
-          response.data.map((json) => CapacitacionCargaMasivaValidado.fromJson(json)),
+            List<CapacitacionCargaMasivaValidado>.from(
+          response.data
+              .map((json) => CapacitacionCargaMasivaValidado.fromJson(json)),
         );
-        return ResponseHandler.handleSuccess<List<CapacitacionCargaMasivaValidado>>(cargaMasivaValidada);
-      }
-      else {
+        return ResponseHandler.handleSuccess<
+            List<CapacitacionCargaMasivaValidado>>(cargaMasivaValidada);
+      } else {
         return ResponseHandler(
           success: false,
           message: 'Error al listar carga masiva',
@@ -225,4 +225,3 @@ class CapacitacionService {
     }
   }
 }
-

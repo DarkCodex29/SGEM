@@ -92,6 +92,7 @@ class CapacitacionCargaMasivaExcel {
 
   // Método para serializar la fecha de vuelta al formato .NET
   static String _toDotNetDate(DateTime date) {
-    return '/Date(${date.millisecondsSinceEpoch})/';
+    final utcDate = date.toUtc();
+    return '/Date(${utcDate.millisecondsSinceEpoch})/';
   }
 }

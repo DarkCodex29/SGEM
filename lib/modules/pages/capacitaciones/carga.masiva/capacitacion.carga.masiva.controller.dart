@@ -56,6 +56,7 @@ class CapacitacionCargaMasivaController extends GetxController {
             // Ignorar la primera fila (cabecera)
             var row = rows[i];
             var registro = CapacitacionCargaMasivaExcel.fromExcelRow(row);
+            log('Fecha inicio: ${registro.fechaInicio}');
             // cargaMasivaResultados
             //     .add(CapacitacionCargaMasivaResultado.fromExcelRow(row));
 
@@ -83,6 +84,7 @@ class CapacitacionCargaMasivaController extends GetxController {
 
   Future<void> previsualizarCarga() async {
     if (cargaMasivaResultados.isNotEmpty) {
+
       final response = await capacitacionService.validarCargaMasiva(
         cargaMasivaList: cargaMasivaResultados,
       );

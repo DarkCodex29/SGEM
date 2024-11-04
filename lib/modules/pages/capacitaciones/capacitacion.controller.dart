@@ -111,6 +111,8 @@ class CapacitacionController extends GetxController {
       }
     } catch (e) {
       log('Error en la búsqueda 2: $e');
+    } finally {
+      isLoadingCapacitacionResultados.value = false;
     }
   }
 

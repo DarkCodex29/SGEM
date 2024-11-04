@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import '../../shared/modules/capacitacion.carga.masiva.dart';
 import '../../shared/modules/capacitacion.carga.masiva.excel.dart';
 import '../../shared/modules/capacitacion.consulta.dart';
 import '../constants/config.dart';

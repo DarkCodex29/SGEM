@@ -55,8 +55,6 @@ class NuevaCapacitacionController extends GetxController {
 
   RxBool isLoadingCategoria = false.obs;
 
-  var selectedCategoriaKey = RxnInt();
-
   RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
 
   final GenericDropdownController dropdownController =
@@ -219,6 +217,21 @@ class NuevaCapacitacionController extends GetxController {
   }
 
   Future<void> actualizarCapacitacion() async {
+    entrenamientoModulo!.inCategoria =
+        dropdownController.getSelectedValue('categoria')?.key;
+    entrenamientoModulo!.inEmpresaCapacitadora =
+        dropdownController.getSelectedValue('empresaCapacitacion')?.key;
+    entrenamientoModulo!.inEntrenador =
+        dropdownController.getSelectedValue('entrenador')?.key;
+    entrenamientoModulo!.fechaInicio =
+        DateFormat('dd/MM/yyyy').parse(fechaInicioController.text);
+    entrenamientoModulo!.fechaTermino =
+        DateFormat('dd/MM/yyyy').parse(fechaTerminoController.text);
+    entrenamientoModulo!.inHorasAcumuladas = int.parse(horasController.text);
+    entrenamientoModulo!.inCapacitacion = 25;
+    entrenamientoModulo!.inNotaTeorica = int.parse(notaTeoriaController.text);
+    entrenamientoModulo!.inNotaPractica =
+        int.parse(notaPracticaController.text);
     try {
       log('capacitacion: ${entrenamientoModulo!.toJson()}');
       final response = await capacitacionService

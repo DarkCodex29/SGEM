@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/shared/modules/capacitacion.carga.masiva.resultado.dart';
+import 'package:intl/intl.dart';
+
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import '../../../../config/theme/app_theme.dart';
+import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 import '../../../../shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import 'capacitacion.carga.masiva.controller.dart';
 
@@ -134,6 +136,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         return Column(
           children: [
             DynamicTableCabecera(cabecera: cabecera),
+            const SizedBox(height: 10),
             _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
@@ -142,40 +145,61 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
   }
 
   Widget _buildSeccionResultadoTablaData(
-      List<CapacitacionCargaMasivaResultado> data,
+      List<CapacitacionCargaMasivaExcel> data,
       CapacitacionCargaMasivaController controller) {
     return SizedBox(
       height: 500,
       child: SingleChildScrollView(
         child: Obx(() {
           return Column(
-            children: controller.cargaMasivaResultadosPaginados.map((fila) {
-              var styleFila  = fila.esCorrecto==false ? const TextStyle(color: Colors.redAccent):const TextStyle(color: AppTheme.primaryText);
-              //var styleFila = const TextStyle(color: AppTheme.primaryText);
+            children: controller.cargaMasivaResultadosValidados.map((fila) {
+              var styleError = const TextStyle(color: Colors.redAccent);
+              var styleRegular = const TextStyle(color: AppTheme.primaryText);
               List<Widget> celdas = [
-                Text(fila.codigo, style: styleFila),
-                Text(fila.dni, style: styleFila),
-                Text(fila.nombres, style: styleFila),
-                Text(fila.guardia, style: styleFila),
-                Text(fila.entrenador, style: styleFila),
-                Text(fila.nombreCapacitacion, style: styleFila),
-                Text(fila.categoria, style: styleFila),
-                Text(fila.empresa, style: styleFila),
-                Text(
-                    fila.fechaInicio != null
-                        ? _formatDate(fila.fechaInicio!)
-                        : '',
-                    style: styleFila),
-                Text(
-                    fila.fechaTermino != null
-                        ? _formatDate(fila.fechaTermino!)
-                        : '',
-                    style: styleFila),
-                Text(fila.horas?.toString() ?? '', style: styleFila),
-                Text(fila.notaTeorica?.toString() ?? '', style: styleFila),
-                Text(fila.notaPractica?.toString() ?? '', style: styleFila),
+                fila.esCorrectoCodigo
+                    ? Text(fila.codigo, style: styleRegular)
+                    : Text(fila.mensajeCodigo, style: styleError),
+                fila.esCorrectoDni
+                    ? Text(fila.dni, style: styleRegular)
+                    : Text(fila.mensajeDni, style: styleError),
+                fila.esCorrectoNombres
+                    ? Text(fila.nombres, style: styleRegular)
+                    : Text(fila.mensajeNombres, style: styleError),
+                fila.esCorrectoGuardia
+                    ? Text(fila.guardia, style: styleRegular)
+                    : Text(fila.mensajeGuardia, style: styleError),
+                fila.esCorrectoEntrenador
+                    ? Text(fila.entrenador, style: styleRegular)
+                    : Text(fila.mensajeEntrenador, style: styleError),
+                fila.esCorrectoNombreCapacitacion
+                    ? Text(fila.nombreCapacitacion, style: styleRegular)
+                    : Text(fila.mensajeNombreCapacitacion, style: styleError),
+                fila.esCorrectoCategoria
+                    ? Text(fila.categoria, style: styleRegular)
+                    : Text(fila.mensajeCategoria, style: styleError),
+                fila.esCorrectoEmpresa
+                    ? Text(fila.empresa, style: styleRegular)
+                    : Text(fila.mensajeEmpresa, style: styleError),
+                fila.esCorrectoFechaInicio
+                    ? Text(_formatoFecha(fila.fechaInicio), style: styleRegular)
+                    : Text(fila.mensajeFechaInicio, style: styleError),
+                fila.esCorrectoFechaTermino
+                    ? Text(_formatoFecha(fila.fechaTermino),
+                        style: styleRegular)
+                    : Text(fila.mensajeFechaTermino, style: styleError),
+                fila.esCorrectoHoras
+                    ? Text(fila.horas?.toString() ?? '', style: styleRegular)
+                    : Text(fila.mensajeHoras, style: styleError),
+                fila.esCorrectoNotaTeorica
+                    ? Text(fila.notaTeorica?.toString() ?? '',
+                        style: styleRegular)
+                    : Text(fila.mensajeNotaTeorica, style: styleError),
+                fila.esCorrectoNotaPractica
+                    ? Text(fila.notaPractica?.toString() ?? '',
+                        style: styleRegular)
+                    : Text(fila.mensajeNotaPractica, style: styleError),
               ];
-              return _buildFila(celdas);
+              return _buildFila(celdas, fila.esValido);
             }).toList(),
           );
         }),
@@ -183,19 +207,23 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.day.toString().padLeft(2, '0')}/'
-        '${date.month.toString().padLeft(2, '0')}/'
-        '${date.year}';
+  String _formatoFecha(DateTime? date) {
+    return date != null ? DateFormat('dd/MM/yyyy').format(date) : '';
   }
 
-  Widget _buildFila(List<Widget> celdas) {
+  Widget _buildFila(List<Widget> celdas, bool esCorrecto) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-          children: celdas.map((celda) {
-        return Expanded(flex: 1, child: celda);
-      }).toList()),
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        color: esCorrecto
+            ? Colors.blueAccent.withOpacity(0.20)
+            : Colors.redAccent.withOpacity(0.20),
+        child: Row(
+            children: celdas.map((celda) {
+          return Expanded(flex: 1, child: celda);
+        }).toList()),
+      ),
     );
   }
 

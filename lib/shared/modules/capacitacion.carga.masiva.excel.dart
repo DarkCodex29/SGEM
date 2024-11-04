@@ -1,22 +1,21 @@
 import 'package:excel/excel.dart';
 
-class CapacitacionCargaMasivaResultado {
-   String codigo;
-   String dni;
-   String nombres;
-   String guardia;
-   String entrenador;
-   String nombreCapacitacion;
-   String categoria;
-   String empresa;
-   DateTime? fechaInicio;
-   DateTime? fechaTermino;
-   int? horas;
-   int? notaTeorica;
-   int? notaPractica;
-   bool esCorrecto=true;
+class CapacitacionCargaMasivaExcel {
+  String codigo;
+  String dni;
+  String nombres;
+  String guardia;
+  String entrenador;
+  String nombreCapacitacion;
+  String categoria;
+  String empresa;
+  DateTime? fechaInicio;
+  DateTime? fechaTermino;
+  int? horas;
+  int? notaTeorica;
+  int? notaPractica;
 
-  CapacitacionCargaMasivaResultado({
+  CapacitacionCargaMasivaExcel({
     required this.codigo,
     required this.dni,
     required this.nombres,
@@ -32,7 +31,7 @@ class CapacitacionCargaMasivaResultado {
     this.notaPractica,
   });
 
-  factory CapacitacionCargaMasivaResultado.fromExcelRow(List<Data?> row) {
+  factory CapacitacionCargaMasivaExcel.fromExcelRow(List<Data?> row) {
     String codigo = row[0]?.value.toString() ?? '';
     String dni = row[1]?.value.toString() ?? '';
     String nombres = row[2]?.value.toString() ?? '';
@@ -52,7 +51,7 @@ class CapacitacionCargaMasivaResultado {
     int? notaPractica =
         row[12]?.value != null ? int.parse(row[12]!.value.toString()) : null;
 
-    return CapacitacionCargaMasivaResultado(
+    return CapacitacionCargaMasivaExcel(
       codigo: codigo,
       dni: dni,
       nombres: nombres,
@@ -67,5 +66,33 @@ class CapacitacionCargaMasivaResultado {
       notaTeorica: notaTeorica,
       notaPractica: notaPractica,
     );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "Codigo": codigo,
+        "Dni": dni,
+        "Nombres": nombres,
+        "Guardia": guardia,
+        "Entrenador": entrenador,
+        "NombreCapacitacion": nombreCapacitacion,
+        "Categoria": categoria,
+        "Empresa": empresa,
+        "FechaInicio": _toDotNetDate(fechaInicio!),
+        "FechaTermino": _toDotNetDate(fechaTermino!),
+        "Horas": horas,
+        "NotaTeorica": notaTeorica,
+        "NotaPractica": notaPractica,
+      };
+
+  // Método para deserializar la fecha en formato .NET
+  static DateTime _fromDotNetDate(String dotNetDate) {
+    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
+    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
+  }
+
+  // Método para serializar la fecha de vuelta al formato .NET
+  static String _toDotNetDate(DateTime date) {
+    final utcDate = date.toUtc();
+    return '/Date(${utcDate.millisecondsSinceEpoch})/';
   }
 }

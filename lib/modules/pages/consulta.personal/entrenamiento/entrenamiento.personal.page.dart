@@ -689,6 +689,9 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         padding: MediaQuery.of(context).viewInsets,
                         child: EntrenamientoModuloNuevo(
                           entrenamiento: training,
+                          isEdit: false,
+                          inEntrenamiento: training.key,
+                          inPersona: training.inPersona,
                           onCancel: () {
                             Navigator.pop(context);
                           },

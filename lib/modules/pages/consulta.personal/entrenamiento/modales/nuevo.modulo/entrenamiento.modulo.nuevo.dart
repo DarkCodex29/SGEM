@@ -29,10 +29,13 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //controller.setDatosEntrenamiento(entrenamiento!, isEdit);
+
 
     if (inEntrenamientoModulo != null) {
       controller.obtenerModuloPorId(inEntrenamientoModulo!);
+    }
+    else{
+      controller.setDatosEntrenamiento(entrenamiento!, isEdit);
     }
 
     return Align(

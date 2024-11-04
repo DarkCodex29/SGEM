@@ -255,7 +255,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
       const SizedBox(width: 10),
       ElevatedButton.icon(
         onPressed: () {
-          //controller.showNewPersonal();
+          controller.descargarPlantilla();
         },
         icon: const Icon(
           Icons.download_rounded,

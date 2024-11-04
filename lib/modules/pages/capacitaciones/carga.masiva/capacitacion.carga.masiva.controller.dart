@@ -2,7 +2,9 @@ import 'dart:developer';
 import 'dart:typed_data';
 import 'package:excel/excel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
@@ -84,7 +86,6 @@ class CapacitacionCargaMasivaController extends GetxController {
 
   Future<void> previsualizarCarga() async {
     if (cargaMasivaResultados.isNotEmpty) {
-
       final response = await capacitacionService.validarCargaMasiva(
         cargaMasivaList: cargaMasivaResultados,
       );
@@ -105,6 +106,28 @@ class CapacitacionCargaMasivaController extends GetxController {
     // totalRecords.value = cargaMasivaResultados.length;
   }
 
+  Future<void> descargarPlantilla() async {
+    try {
+      ByteData data = await rootBundle.load('assets/excel/Plantilla.xlsx');
+      Uint8List bytes = data.buffer.asUint8List();
+      String fileName = 'Plantilla.xlsx';
+      await FileSaver.instance.saveFile(
+          name: fileName,
+          bytes: bytes,
+          ext: 'xlsx',
+          mimeType: MimeType.microsoftExcel);
+
+      Get.snackbar('Descarga exitosa', 'Plantilla descargada con éxito',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white);
+    } catch (e) {
+      Get.snackbar('Error', 'Error al descargar la plantilla',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white);
+    }
+  }
 
   void goToPage(int page) {
     currentPage.value = page;

@@ -11,7 +11,7 @@ class CustomTextField extends StatelessWidget {
   final Function()? onIconPressed;
   final bool isReadOnly;
   final Function(String)? onChanged;
-  final FocusNode? focusNode;
+  //final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -24,7 +24,7 @@ class CustomTextField extends StatelessWidget {
     this.onIconPressed,
     this.isReadOnly = false,
     this.onChanged,
-    this.focusNode,
+    //this.focusNode,
   });
 
   @override
@@ -40,7 +40,7 @@ class CustomTextField extends StatelessWidget {
               keyboardType: keyboardType,
               readOnly: isReadOnly,
               onChanged: onChanged,
-              focusNode: focusNode,
+              //focusNode: focusNode,
               decoration: InputDecoration(
                 labelText: label,
                 labelStyle: const TextStyle(

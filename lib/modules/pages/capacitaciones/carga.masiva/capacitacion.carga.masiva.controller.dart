@@ -12,9 +12,9 @@ import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 class CapacitacionCargaMasivaController extends GetxController {
   TextEditingController archivoController = TextEditingController();
 
-  var cargaMasivaResultados = <CapacitacionCargaMasivaExcel>[].obs;
+  var cargaMasivaExcel = <CapacitacionCargaMasivaExcel>[].obs;
   var cargaMasivaResultadosValidados = <CapacitacionCargaMasivaValidado>[].obs;
-  var cargaMasivaResultadosPaginados = <CapacitacionCargaMasivaExcel>[].obs;
+  var cargaMasivaResultadosPaginados = <CapacitacionCargaMasivaValidado>[].obs;
   var registrosConErrores = <Map<String, dynamic>>[].obs;
   var capacitacionService = CapacitacionService();
   var rowsPerPage = 10.obs;
@@ -26,6 +26,7 @@ class CapacitacionCargaMasivaController extends GetxController {
   var errorRecords = 0.obs;
 
   Future<void> cargarArchivo() async {
+    cargaMasivaResultadosPaginados.clear();
     cargaMasivaResultadosValidados.clear();
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -49,7 +50,7 @@ class CapacitacionCargaMasivaController extends GetxController {
           var rows = excel.tables[sheet]?.rows ?? [];
 
           // Procesar datos de Excel
-          cargaMasivaResultados.clear();
+          cargaMasivaExcel.clear();
           registrosConErrores.clear();
 
           for (var i = 1; i < rows.length; i++) {
@@ -57,22 +58,18 @@ class CapacitacionCargaMasivaController extends GetxController {
             var row = rows[i];
             var registro = CapacitacionCargaMasivaExcel.fromExcelRow(row);
             log('Fecha inicio: ${registro.fechaInicio}');
-            // cargaMasivaResultados
-            //     .add(CapacitacionCargaMasivaResultado.fromExcelRow(row));
 
-            // registro = validarRegistro(registro);
-
-            cargaMasivaResultados.add(registro);
+            cargaMasivaExcel.add(registro);
           }
 
           log('Archivo Excel cargado con éxito');
-          totalRecords.value = cargaMasivaResultados.length;
-          totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
+          // totalRecords.value = cargaMasivaExcel.length;
+          // totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
+          //
+          // correctRecords.value = cargaMasivaExcel.length;
+          // errorRecords.value = registrosConErrores.length;
 
-          correctRecords.value = cargaMasivaResultados.length;
-          errorRecords.value = registrosConErrores.length;
-
-          goToPage(1);
+          //goToPage(1);
         }
       } else {
         log('No se seleccionaron archivos');
@@ -83,13 +80,30 @@ class CapacitacionCargaMasivaController extends GetxController {
   }
 
   Future<void> previsualizarCarga() async {
-    if (cargaMasivaResultados.isNotEmpty) {
+    if (cargaMasivaExcel.isNotEmpty) {
+
+      // Muestra el mensaje de espera
+      Get.dialog(
+        const Center(
+          child: CircularProgressIndicator(),
+        ),
+        barrierDismissible: false, // Evita cerrar el diálogo
+      );
 
       final response = await capacitacionService.validarCargaMasiva(
-        cargaMasivaList: cargaMasivaResultados,
+        cargaMasivaList: cargaMasivaExcel,
       );
       if (response.success) {
         cargaMasivaResultadosValidados.value = response.data!;
+
+        Get.back();
+        goToPage(1);
+
+        totalRecords.value = cargaMasivaResultadosValidados.length;
+        totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
+
+        // correctRecords.value = cargaMasivaExcel.length;
+        // errorRecords.value = registrosConErrores.length;
       }
     } else {
       // Mostrar mensaje de error cuando no hay archivo seleccionado
@@ -112,8 +126,8 @@ class CapacitacionCargaMasivaController extends GetxController {
     int end = start + rowsPerPage.value;
 
     // Actualiza los resultados paginados
-    cargaMasivaResultadosPaginados.value = cargaMasivaResultados.sublist(
-        start, end.clamp(0, cargaMasivaResultados.length));
+    cargaMasivaResultadosPaginados.value = cargaMasivaResultadosValidados.sublist(
+        start, end.clamp(0, cargaMasivaResultadosValidados.length));
   }
 
   void nextPage() {

@@ -15,6 +15,7 @@ class CapacitacionCargaMasivaValidado {
   String dni;
   String nombres;
   String guardia;
+  int? codigoEntrenador;
   String entrenador;
   String nombreCapacitacion;
   String categoria;
@@ -28,6 +29,7 @@ class CapacitacionCargaMasivaValidado {
   String mensajeDni;
   String mensajeNombres;
   String mensajeGuardia;
+  String mensajeCodigoEntrenador;
   String mensajeEntrenador;
   String mensajeNombreCapacitacion;
   String mensajeCategoria;
@@ -41,6 +43,7 @@ class CapacitacionCargaMasivaValidado {
   bool esCorrectoDni;
   bool esCorrectoNombres;
   bool esCorrectoGuardia;
+  bool esCorrectoCodigoEntrenador;
   bool esCorrectoEntrenador;
   bool esCorrectoNombreCapacitacion;
   bool esCorrectoCategoria;
@@ -57,6 +60,7 @@ class CapacitacionCargaMasivaValidado {
     this.dni = '',
     this.nombres = '',
     this.guardia = '',
+    this.codigoEntrenador,
     this.entrenador = '',
     this.nombreCapacitacion = '',
     this.categoria = '',
@@ -70,6 +74,7 @@ class CapacitacionCargaMasivaValidado {
     this.mensajeDni = '',
     this.mensajeNombres = '',
     this.mensajeGuardia = '',
+    this.mensajeCodigoEntrenador='',
     this.mensajeEntrenador = '',
     this.mensajeNombreCapacitacion = '',
     this.mensajeCategoria = '',
@@ -83,6 +88,7 @@ class CapacitacionCargaMasivaValidado {
     this.esCorrectoDni=true,
     this.esCorrectoNombres=true,
     this.esCorrectoGuardia=true,
+    this.esCorrectoCodigoEntrenador=true,
     this.esCorrectoEntrenador=true,
     this.esCorrectoNombreCapacitacion=true,
     this.esCorrectoCategoria=true,
@@ -101,6 +107,7 @@ class CapacitacionCargaMasivaValidado {
         dni: json["Dni"],
         nombres: json["Nombres"],
         guardia: json["Guardia"],
+        codigoEntrenador: json["CodigoEntrenador"],
         entrenador: json["Entrenador"],
         nombreCapacitacion: json["NombreCapacitacion"],
         categoria: json["Categoria"],
@@ -114,6 +121,7 @@ class CapacitacionCargaMasivaValidado {
         mensajeDni: json["MensajeDni"] ?? '',
         mensajeNombres: json["MensajeNombres"] ?? '',
         mensajeGuardia: json["MensajeGuardia"] ?? '',
+        mensajeCodigoEntrenador: json["MensajeCodigoEntrenador"] ?? '',
         mensajeEntrenador: json["MensajeEntrenador"] ?? '',
         mensajeNombreCapacitacion: json["MensajeNombreCapacitacion"] ?? '',
         mensajeCategoria: json["MensajeCategoria"] ?? '',
@@ -127,6 +135,7 @@ class CapacitacionCargaMasivaValidado {
         esCorrectoDni: json["EsCorrectoDni"],
         esCorrectoNombres: json["EsCorrectoNombres"],
         esCorrectoGuardia: json["EsCorrectoGuardia"],
+        esCorrectoCodigoEntrenador: json["EsCorrectoCodigoEntrenador"],
         esCorrectoEntrenador: json["EsCorrectoEntrenador"],
         esCorrectoNombreCapacitacion: json["EsCorrectoNombreCapacitacion"],
         esCorrectoCategoria: json["EsCorrectoCategoria"],
@@ -144,6 +153,7 @@ class CapacitacionCargaMasivaValidado {
         "Dni": dni,
         "Nombres": nombres,
         "Guardia": guardia,
+        "CodigoEntrenador":codigoEntrenador,
         "Entrenador": entrenador,
         "NombreCapacitacion": nombreCapacitacion,
         "Categoria": categoria,
@@ -157,6 +167,7 @@ class CapacitacionCargaMasivaValidado {
         "MensajeDni": mensajeDni,
         "MensajeNombres": mensajeNombres,
         "MensajeGuardia": mensajeGuardia,
+        "MensajeCodigoEntrenador": mensajeCodigoEntrenador,
         "MensajeEntrenador": mensajeEntrenador,
         "MensajeNombreCapacitacion": mensajeNombreCapacitacion,
         "MensajeCategoria": mensajeCategoria,
@@ -170,6 +181,7 @@ class CapacitacionCargaMasivaValidado {
         "EsCorrectoDni": esCorrectoDni,
         "EsCorrectoNombres": esCorrectoNombres,
         "EsCorrectoGuardia": esCorrectoGuardia,
+        "EsCorrectoCodigoEntrenador": esCorrectoCodigoEntrenador,
         "EsCorrectoEntrenador": esCorrectoEntrenador,
         "EsCorrectoNombreCapacitacion": esCorrectoNombreCapacitacion,
         "EsCorrectoCategoria": esCorrectoCategoria,

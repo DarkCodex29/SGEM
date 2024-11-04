@@ -110,7 +110,7 @@ class CapacitacionCargaMasivaController extends GetxController {
     try {
       ByteData data = await rootBundle.load('assets/excel/Plantilla.xlsx');
       Uint8List bytes = data.buffer.asUint8List();
-      String fileName = 'Plantilla.xlsx';
+      String fileName = 'Plantilla';
       await FileSaver.instance.saveFile(
           name: fileName,
           bytes: bytes,

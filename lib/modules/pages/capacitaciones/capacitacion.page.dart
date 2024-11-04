@@ -484,10 +484,11 @@ class CapacitacionPage extends StatelessWidget {
               height: 50,
               width: 50,
               child: CircularProgressIndicator(),
-            ),
+            ), 
           );
         }
-        if (controller.capacitacionResultados.isEmpty) {
+        if (!controller.isLoadingCapacitacionResultados.value &&
+            controller.capacitacionResultados.isEmpty) {
           return const Center(child: Text("No se encontraron resultados"));
         }
 

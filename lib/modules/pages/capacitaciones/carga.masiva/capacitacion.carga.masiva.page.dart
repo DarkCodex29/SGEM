@@ -113,6 +113,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
       'DNI',
       'Nombres y apellidos',
       'Guardia',
+      'Codigo Entrenador',
       'Entrenador responsable',
       'Nombre capacitación',
       'Categoría',
@@ -129,7 +130,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
     return Obx(
       () {
-        var rowsToShow = controller.cargaMasivaResultados
+        var rowsToShow = controller.cargaMasivaExcel
             .take(controller.rowsPerPage.value)
             .toList();
 
@@ -152,7 +153,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
       child: SingleChildScrollView(
         child: Obx(() {
           return Column(
-            children: controller.cargaMasivaResultadosValidados.map((fila) {
+            children: controller.cargaMasivaResultadosPaginados.map((fila) {
               var styleError = const TextStyle(color: Colors.redAccent);
               var styleRegular = const TextStyle(color: AppTheme.primaryText);
               List<Widget> celdas = [
@@ -168,6 +169,9 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 fila.esCorrectoGuardia
                     ? Text(fila.guardia, style: styleRegular)
                     : Text(fila.mensajeGuardia, style: styleError),
+                fila.esCorrectoCodigoEntrenador
+                    ? Text(fila.codigoEntrenador.toString(), style: styleRegular)
+                    : Text(fila.mensajeCodigoEntrenador, style: styleError),
                 fila.esCorrectoEntrenador
                     ? Text(fila.entrenador, style: styleRegular)
                     : Text(fila.mensajeEntrenador, style: styleError),

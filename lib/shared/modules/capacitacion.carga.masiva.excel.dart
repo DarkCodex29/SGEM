@@ -5,6 +5,7 @@ class CapacitacionCargaMasivaExcel {
   String dni;
   String nombres;
   String guardia;
+  int? codigoEntrenador;
   String entrenador;
   String nombreCapacitacion;
   String categoria;
@@ -20,6 +21,7 @@ class CapacitacionCargaMasivaExcel {
     required this.dni,
     required this.nombres,
     required this.guardia,
+    this.codigoEntrenador,
     required this.entrenador,
     required this.nombreCapacitacion,
     required this.categoria,
@@ -36,26 +38,29 @@ class CapacitacionCargaMasivaExcel {
     String dni = row[1]?.value.toString() ?? '';
     String nombres = row[2]?.value.toString() ?? '';
     String guardia = row[3]?.value.toString() ?? '';
-    String entrenador = row[4]?.value.toString() ?? '';
-    String nombreCapacitacion = row[5]?.value.toString() ?? '';
-    String categoria = row[6]?.value.toString() ?? '';
-    String empresa = row[7]?.value.toString() ?? '';
+    int? codigoEntrenador =
+    row[4]?.value != null ? int.parse(row[4]!.value.toString()) : null;
+    String entrenador = row[5]?.value.toString() ?? '';
+    String nombreCapacitacion = row[6]?.value.toString() ?? '';
+    String categoria = row[7]?.value.toString() ?? '';
+    String empresa = row[8]?.value.toString() ?? '';
     DateTime? fechaInicio =
-        row[8]?.value != null ? DateTime.parse(row[8]!.value.toString()) : null;
-    DateTime? fechaTermino =
         row[9]?.value != null ? DateTime.parse(row[9]!.value.toString()) : null;
+    DateTime? fechaTermino =
+        row[10]?.value != null ? DateTime.parse(row[10]!.value.toString()) : null;
     int? horas =
-        row[10]?.value != null ? int.parse(row[10]!.value.toString()) : null;
-    int? notaTeorica =
         row[11]?.value != null ? int.parse(row[11]!.value.toString()) : null;
-    int? notaPractica =
+    int? notaTeorica =
         row[12]?.value != null ? int.parse(row[12]!.value.toString()) : null;
+    int? notaPractica =
+        row[13]?.value != null ? int.parse(row[13]!.value.toString()) : null;
 
     return CapacitacionCargaMasivaExcel(
       codigo: codigo,
       dni: dni,
       nombres: nombres,
       guardia: guardia,
+      codigoEntrenador: codigoEntrenador,
       entrenador: entrenador,
       nombreCapacitacion: nombreCapacitacion,
       categoria: categoria,
@@ -73,6 +78,7 @@ class CapacitacionCargaMasivaExcel {
         "Dni": dni,
         "Nombres": nombres,
         "Guardia": guardia,
+        "CodigoEntrenador": codigoEntrenador,
         "Entrenador": entrenador,
         "NombreCapacitacion": nombreCapacitacion,
         "Categoria": categoria,

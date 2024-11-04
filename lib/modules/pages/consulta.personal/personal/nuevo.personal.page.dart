@@ -439,6 +439,12 @@ class NuevoPersonalPage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    IconButton(
+                      icon: const Icon(Icons.download, color: Colors.blue),
+                      onPressed: () {
+                        controller.descargarArchivo(archivo);
+                      },
+                    ),
                   ],
                 );
               }).toList(),

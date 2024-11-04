@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
 import 'package:sgem/modules/pages/monitoring/view/create.monitoring.dart';
 import 'package:sgem/modules/pages/monitoring/widget/detail.table.monitoring.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/custom.dropdown.dart';
 
 import '../../../../config/theme/app_theme.dart';
@@ -24,7 +27,7 @@ class MonitoringPage extends StatelessWidget {
             return CreateMonioringView(controller: controller);
           case MonitoringSearchScreen.viewMonitoring:
           case MonitoringSearchScreen.editMonitoring:
-            return Container();
+            return CreateMonioringView(controller: controller, isEditing: true);
           case MonitoringSearchScreen.actualizacionMasiva:
             return Container();
           case MonitoringSearchScreen.trainingForm:
@@ -257,66 +260,139 @@ class MonitoringPage extends StatelessWidget {
     });
   }
 
-  Widget _buildDropdownGuardia(MonitoringSearchController controller) {
-    // return Obx(() {
-    List<String> options = ["Prueba"];
-    String? selectDp;
-    return CustomDropdown(
-      hintText: 'Selecciona Guardia',
-      options: options.map((option) => option).toList(),
-      selectedValue: selectDp,
-      isSearchable: false,
-      isRequired: false,
-      onChanged: (value) {},
-    );
-    // });
-  }
-
   Widget _buildDropdownEstadoEntrenamiento(
       MonitoringSearchController controller) {
-    // return Obx(() {
-    List<String> options = ["Prueba"];
-    String? selectDp;
-    return CustomDropdown(
-      hintText: 'Selecciona Estado de Entrenamiento',
-      options: options.map((option) => option).toList(),
-      selectedValue: selectDp,
-      isSearchable: false,
-      isRequired: false,
-      onChanged: (value) {},
-    );
-    // });
+    return Obx(() {
+      if (controller.estadoEntrenamientoOpciones.isEmpty) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+      String? selectValue;
+      if (controller.estadoEntrenamientoOpciones.isNotEmpty) {
+        final selectOptionValue = controller.estadoEntrenamientoOpciones
+            .where((option) =>
+                option.key == controller.selectedEstadoEntrenamientoKey.value)
+            .toList();
+        if (selectOptionValue.isNotEmpty) {
+          selectValue = selectOptionValue.first.valor;
+        }
+      }
+
+      return CustomDropdown(
+        hintText: 'Selecciona Estado de Entrenamiento',
+        options: controller.estadoEntrenamientoOpciones
+            .map((option) => option.valor ?? "")
+            .toList(),
+        selectedValue: controller.selectedEstadoEntrenamientoKey.value != null
+            ? selectValue
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption =
+              controller.estadoEntrenamientoOpciones.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedEstadoEntrenamientoKey.value = selectedOption.key;
+        },
+      );
+    });
+  }
+
+  Widget _buildDropdownGuardia(MonitoringSearchController controller) {
+    return Obx(() {
+      if (controller.guardiaOpciones.isEmpty) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+      List<MaestroDetalle> options = controller.guardiaOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona Guardia',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedGuardiaKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedGuardiaKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedGuardiaKey.value = selectedOption.key;
+        },
+      );
+    });
   }
 
   Widget _buildDropdownEquipo(MonitoringSearchController controller) {
-    // return Obx(() {
-    List<String> options = ["Prueba"];
-    String? selectDp;
-    return CustomDropdown(
-      hintText: 'Selecciona Equipo',
-      options: options.map((option) => option).toList(),
-      selectedValue: selectDp,
-      isSearchable: false,
-      isRequired: false,
-      onChanged: (value) {},
-    );
-    // });
+    return Obx(() {
+      if (controller.equipoOpciones.isEmpty) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+      List<MaestroDetalle> options = controller.equipoOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona Equipo',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedEquipoKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedEquipoKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedEquipoKey.value = selectedOption.key;
+        },
+      );
+    });
   }
 
   Widget _buildDropdownEntrenadorResponsable(
       MonitoringSearchController controller) {
-    // return Obx(() {
-    List<String> options = ["Prueba"];
-    String? selectDp;
-    return CustomDropdown(
-      hintText: 'Selecciona Entrenador responsable',
-      options: options.map((option) => option).toList(),
-      selectedValue: selectDp,
-      isSearchable: false,
-      isRequired: false,
-      onChanged: (value) {},
-    );
-    // });
+    return Obx(() {
+      if (controller.equipoOpciones.isEmpty) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+      List<Personal> options = controller.entrenadores;
+      return CustomDropdown(
+        hintText: 'Selecciona Entrenador',
+        options: options.map((option) => option.nombreCompleto).toList(),
+        selectedValue: controller.selectedEntrenadorKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.inPersonalOrigen ==
+                    controller.selectedEntrenadorKey.value)
+                .nombreCompleto
+                .toString()
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.nombreCompleto == value,
+          );
+          controller.selectedEntrenadorKey.value =
+              selectedOption.inPersonalOrigen;
+        },
+      );
+    });
   }
 
   Widget _buildDropdownCondicionMonitoreo(

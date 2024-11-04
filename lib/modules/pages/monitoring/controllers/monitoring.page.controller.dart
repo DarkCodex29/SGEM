@@ -1,7 +1,11 @@
 import 'dart:developer';
+import 'dart:typed_data';
 
+import 'package:excel/excel.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.monitoring.dart';
@@ -97,23 +101,26 @@ class MonitoringSearchController extends GetxController {
   Future<void> searchMonitoring({int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =
         codigoMCPController.text.isEmpty ? null : codigoMCPController.text;
-    String? numeroDocumento = documentoIdentidadController.text.isEmpty
+    String? apellidoMaterno = apellidosMaternoController.text.isEmpty
         ? null
-        : documentoIdentidadController.text;
+        : apellidosMaternoController.text;
+    String? apllidoPaterno = apellidosPaternoController.text.isEmpty
+        ? null
+        : apellidosPaternoController.text;
     String? nombres =
         nombresController.text.isEmpty ? null : nombresController.text;
 
     try {
       var response = await monitoringService.queryMonitoringPaginated(
-          codigoMcp: null,
-          apellidoMaterno: null,
-          apellidoPaterno: null,
-          nombres: null,
-          inEntrenador: null,
-          inCondicion: null,
-          inEquipo: null,
-          inEstadoEntrenamiento: null,
-          inGuardia: null,
+          codigoMcp: codigoMcp,
+          apellidoMaterno: apellidoMaterno,
+          apellidoPaterno: apllidoPaterno,
+          nombres: nombres,
+          inEntrenador: selectedEntrenadorKey.value,
+          inCondicion: selectedCondicionKey.value,
+          inEquipo: selectedEquipoKey.value,
+          inEstadoEntrenamiento: selectedEstadoEntrenamientoKey.value,
+          inGuardia: selectedGuardiaKey.value,
           pageNumber: pageNumber,
           pageSize: pageSize,
           fechaInicio: null,
@@ -229,5 +236,94 @@ class MonitoringSearchController extends GetxController {
     } catch (e) {
       log('Error cargando la data de guardia maestro: $e');
     }
+  }
+
+  Future<void> downloadExcel() async {
+    var excel = Excel.createExcel();
+    excel.rename('Sheet1', 'Monitoreo');
+
+    CellStyle headerStyle = CellStyle(
+      backgroundColorHex: ExcelColor.blue,
+      fontColorHex: ExcelColor.white,
+      bold: true,
+      horizontalAlign: HorizontalAlign.Center,
+      verticalAlign: VerticalAlign.Center,
+    );
+    List<String> headers = [
+      'CÓDIGO_MCP',
+      'APPELLIDO_PATERNO',
+      'APPELLIDO_MATERNO',
+      'NOMBRES',
+      'GUARDIA',
+      'EQUIPO',
+      'ENTRENADOR_RESPONSABLE',
+      'CONDICIÓN_MONITOREO',
+      'FECHA_MONITOREO',
+      'FECHA_REGISTRO'
+    ];
+
+    for (int i = 0; i < headers.length; i++) {
+      var cell = excel.sheets['Monitoreo']!
+          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
+      cell.value = TextCellValue(headers[i]);
+      cell.cellStyle = headerStyle;
+
+      excel.sheets['Monitoreo']!
+          .setColumnWidth(i, headers[i].length.toDouble() + 5);
+    }
+
+    // final dateFormat = DateFormat('dd/MM/yyyy');
+
+    for (int rowIndex = 0; rowIndex < monitoringAll.length; rowIndex++) {
+      var entrenamiento = monitoringAll[rowIndex];
+      List<CellValue> row = [
+        TextCellValue(entrenamiento.codigoMcp ?? ""),
+        TextCellValue(entrenamiento.apellidoPaterno ?? ""),
+        TextCellValue(entrenamiento.apellidoMaterno ?? ""),
+        TextCellValue(
+            "${entrenamiento.primerNombre} ${entrenamiento.segundoNombre}"),
+        TextCellValue(entrenamiento.guardia?.nombre ?? ""),
+        TextCellValue(entrenamiento.equipo?.nombre ?? ""),
+        TextCellValue(entrenamiento.entrenador?.nombre ?? ""),
+        TextCellValue(entrenamiento.condicion?.nombre ?? ""),
+        TextCellValue(''),
+        TextCellValue(''),
+      ];
+
+      for (int colIndex = 0; colIndex < row.length; colIndex++) {
+        var cell = excel.sheets['Monitoreo']!.cell(CellIndex.indexByColumnRow(
+            columnIndex: colIndex, rowIndex: rowIndex + 1));
+        cell.value = row[colIndex];
+
+        // double contentWidth = row[colIndex].toString().length.toDouble();
+        // if (contentWidth >
+        //     excel.sheets['Monitoreo']!.getColumnWidth(colIndex)) {
+        //   excel.sheets['Monitoreos']!
+        //       .setColumnWidth(colIndex, contentWidth + 5);
+        // }
+      }
+    }
+
+    var excelBytes = excel.encode();
+    Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
+
+    String fileName = generateExcelFileName();
+    await FileSaver.instance.saveFile(
+        name: fileName,
+        bytes: uint8ListBytes,
+        ext: "xlsx",
+        mimeType: MimeType.microsoftExcel);
+  }
+
+  String generateExcelFileName() {
+    final now = DateTime.now();
+    final day = now.day.toString().padLeft(2, '0');
+    final month = now.month.toString().padLeft(2, '0');
+    final year = now.year.toString().substring(2);
+    final hour = now.hour.toString().padLeft(2, '0');
+    final minute = now.minute.toString().padLeft(2, '0');
+    final second = now.second.toString().padLeft(2, '0');
+
+    return 'MONITOREO_MINA_$day$month$year$hour$minute$second.xlsx';
   }
 }

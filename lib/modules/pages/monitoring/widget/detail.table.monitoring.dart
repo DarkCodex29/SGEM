@@ -201,7 +201,13 @@ class DetailTableMonitoring extends StatelessWidget {
                                   child: IconButton(
                                     icon: const Icon(Icons.edit),
                                     color: AppTheme.backgroundBlue,
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      controller.screen.value =
+                                          MonitoringSearchScreen.editMonitoring;
+                                      await createMonitoringController
+                                          .searchMonitoringDetailById(controller
+                                              .monitoringAll[index].key!);
+                                    },
                                   ),
                                 ),
                               ),
@@ -264,7 +270,8 @@ class DetailTableMonitoring extends StatelessWidget {
                 Navigator.pop(context);
                 createController.modelMonitoring.motivoEliminado = motivo;
                 createController.modelMonitoring.key = key;
-                final state = await createController.deleteMonitoring(contextapp);
+                final state =
+                    await createController.deleteMonitoring(contextapp);
                 if (state) {
                   controller.searchMonitoring();
                 }
@@ -289,7 +296,7 @@ class DetailTableMonitoring extends StatelessWidget {
           Expanded(
             child: ElevatedButton.icon(
               onPressed: () async {
-                controller.isExpanded.value = false;
+                await controller.downloadExcel();
               },
               icon: const Icon(
                 Icons.download,

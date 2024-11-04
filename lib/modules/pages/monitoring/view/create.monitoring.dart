@@ -8,7 +8,7 @@ import 'package:sgem/modules/pages/monitoring/widget/form.monitoring.dart';
 import 'package:sgem/modules/pages/monitoring/widget/info.person.monitoring.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
-class CreateMonioringView extends StatelessWidget {
+class CreateMonioringView extends StatefulWidget {
   const CreateMonioringView({
     super.key,
     required this.controller,
@@ -18,6 +18,12 @@ class CreateMonioringView extends StatelessWidget {
   final MonitoringSearchController controller;
   final bool isEditing;
   final bool isViewing;
+
+  @override
+  State<CreateMonioringView> createState() => _CreateMonioringViewState();
+}
+
+class _CreateMonioringViewState extends State<CreateMonioringView> {
   @override
   Widget build(BuildContext context) {
     final CreateMonitoringController createMonitoringController =
@@ -68,12 +74,12 @@ class CreateMonioringView extends StatelessWidget {
                                     )
                                   : const Icon(Icons.search);
                             }),
-                            isReadOnly: isEditing || isViewing,
+                            isReadOnly: widget.isEditing || widget.isViewing,
                             onIconPressed: () {
                               if (!createMonitoringController
                                       .isLoadingCodeMcp.value &&
-                                  !isEditing &&
-                                  !isViewing) {
+                                  !widget.isEditing &&
+                                  !widget.isViewing) {
                                 createMonitoringController
                                     .searchPersonByCodeMcp();
                               }
@@ -92,8 +98,8 @@ class CreateMonioringView extends StatelessWidget {
                         ),
                         FormMonitoringWidget(
                           isSmallScreen: isSmallScreen,
-                          monitoringSearchController: controller,
-                          isEditing: isEditing,
+                          monitoringSearchController: widget.controller,
+                          isEditing: widget.isEditing,
                           createMonitoringController:
                               createMonitoringController,
                         )

@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/monitoring.dart';
+import 'package:sgem/shared/modules/monitoring.detail.dart';
 import 'package:sgem/shared/modules/monitoring.save.dart';
 
 class MonitoringService {
@@ -71,6 +72,60 @@ class MonitoringService {
       return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);
     } on DioException catch (e) {
       log('Error al listar monitorieo  paginado. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
+  Future<Map<String, dynamic>> searchMonitoringDetailById(int key) async {
+    try {
+      final response = await dio.get(
+        '$baseUrl/monitoreo/ObtenerMonitoreoPorId?idMonitoreo=$key',
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.data != null && response.data.isNotEmpty) {
+        return response.data;
+      } else {
+        throw Exception('Error al buscar monitoreo por id: $key');
+      }
+    } on DioException catch (e) {
+      log('Error al buscar monitoreo. $e');
+      throw Exception('Error al buscar monitoreo por id: $key');
+    }
+  }
+
+  Future<ResponseHandler<bool>> updateMonitoring(
+      MonitoingSave monitoring) async {
+    final url = '$baseUrl/monitoreo/ActualizarMonitoreo';
+    try {
+      log(jsonEncode(monitoring.toJson()));
+      final response = await dio.put(
+        url,
+        data: jsonEncode(monitoring.toJson()),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        if (response.data == true) {
+          return ResponseHandler.handleSuccess<bool>(true);
+        } else {
+          return ResponseHandler(
+            success: false,
+            message: response.data['Message'] ?? 'Error desconocido',
+          );
+        }
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al registrar monitoreo',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al registrar monitoreo. Datos: ${jsonEncode(monitoring.toJson())}, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

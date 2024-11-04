@@ -289,20 +289,36 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           color: Colors.grey,
         );
       }
+      if (widget.createMonitoringController.isLoandingDetail.value) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+      String? selectValue;
+      if (widget
+          .monitoringSearchController.estadoEntrenamientoOpciones.isNotEmpty) {
+        final selectOptionValue = widget
+            .monitoringSearchController.estadoEntrenamientoOpciones
+            .where((option) =>
+                option.key ==
+                widget.createMonitoringController.selectedEstadoEntrenamientoKey
+                    .value)
+            .toList();
+        if (selectOptionValue.isNotEmpty) {
+          selectValue = selectOptionValue.first.valor;
+        }
+      }
+
       return CustomDropdown(
         hintText: 'Selecciona Estado de Entrenamiento',
         options: widget.monitoringSearchController.estadoEntrenamientoOpciones
             .map((option) => option.valor ?? "")
             .toList(),
-        selectedValue: widget.monitoringSearchController
+        selectedValue: widget.createMonitoringController
                     .selectedEstadoEntrenamientoKey.value !=
                 null
-            ? widget.monitoringSearchController.estadoEntrenamientoOpciones
-                .firstWhere((option) =>
-                    option.key ==
-                    widget.monitoringSearchController
-                        .selectedEstadoEntrenamientoKey.value)
-                .valor
+            ? selectValue
             : null,
         isSearchable: false,
         isRequired: false,
@@ -329,17 +345,23 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           color: Colors.grey,
         );
       }
+      if (widget.createMonitoringController.isLoandingDetail.value) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
       List<MaestroDetalle> options =
           widget.monitoringSearchController.condicionOpciones;
       return CustomDropdown(
         hintText: 'Selecciona condicion',
         options: options.map((option) => option.valor!).toList(),
         selectedValue:
-            widget.monitoringSearchController.selectedCondicionKey.value != null
+            widget.createMonitoringController.selectedCondicionKey.value != null
                 ? options
                     .firstWhere((option) =>
                         option.key ==
-                        widget.monitoringSearchController.selectedCondicionKey
+                        widget.createMonitoringController.selectedCondicionKey
                             .value)
                     .valor
                 : null,
@@ -366,18 +388,24 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           color: Colors.grey,
         );
       }
+      if (widget.createMonitoringController.isLoandingDetail.value) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
       List<MaestroDetalle> options =
           widget.monitoringSearchController.equipoOpciones;
       return CustomDropdown(
         hintText: 'Selecciona Equipo',
         options: options.map((option) => option.valor!).toList(),
         selectedValue:
-            widget.monitoringSearchController.selectedEquipoKey.value != null
+            widget.createMonitoringController.selectedEquipoKey.value != null
                 ? options
                     .firstWhere((option) =>
                         option.key ==
                         widget
-                            .monitoringSearchController.selectedEquipoKey.value)
+                            .createMonitoringController.selectedEquipoKey.value)
                     .valor
                 : null,
         isSearchable: false,
@@ -403,17 +431,23 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           color: Colors.grey,
         );
       }
+      if (widget.createMonitoringController.isLoandingDetail.value) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
       List<Personal> options = widget.monitoringSearchController.entrenadores;
       return CustomDropdown(
         hintText: 'Selecciona Entrenador',
         options: options.map((option) => option.nombreCompleto).toList(),
         selectedValue:
-            widget.monitoringSearchController.selectedEntrenadorKey.value !=
+            widget.createMonitoringController.selectedEntrenadorKey.value !=
                     null
                 ? options
                     .firstWhere((option) =>
                         option.inPersonalOrigen ==
-                        widget.monitoringSearchController.selectedEntrenadorKey
+                        widget.createMonitoringController.selectedEntrenadorKey
                             .value)
                     .nombreCompleto
                     .toString()
@@ -475,6 +509,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           onPressed: () {
             widget.monitoringSearchController.screen.value =
                 MonitoringSearchScreen.none;
+            widget.createMonitoringController.clearModel();
           },
           style: TextButton.styleFrom(
             backgroundColor: Colors.white,
@@ -496,16 +531,6 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                       widget.monitoringSearchController.searchMonitoring();
                     }
                   }
-                  // bool success = false;
-                  // String accion = isEditing ? 'actualizar' : 'registrar';
-
-                  // success = await controller.gestionarPersona(
-                  //   accion: accion,
-                  //   context: context,
-                  // );
-                  // if (success) {
-                  //   onCancel();
-                  // }
                 },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,

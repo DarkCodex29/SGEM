@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.monitoring.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/monitoring.detail.dart';
 import 'package:sgem/shared/modules/monitoring.save.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
@@ -37,6 +40,7 @@ class CreateMonitoringController extends GetxController {
   RxBool isLoadingCodeMcp = false.obs;
   RxBool isSaving = false.obs;
   RxBool isLoandingSave = false.obs;
+  RxBool isLoandingDetail = false.obs;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
 
   var selectedEquipoKey = RxnInt();
@@ -60,24 +64,49 @@ class CreateMonitoringController extends GetxController {
           inTotalHoras: 0,
           estadoEntrenamiento: OptionValue(),
         );
+    selectedPersonKey.value = null;
+    selectedEquipoKey.value = null;
+    selectedEntrenadorKey.value = null;
+    selectedCondicionKey.value = null;
+    selectedEstadoEntrenamientoKey.value = null;
+    fechaProximoMonitoreoController.text = "";
+    fechaRealMonitoreoController.text = "";
+    horasController.text = "";
+    modelMonitoring.key = null;
+    codigoMCP2Controller.text = "";
+    codigoMCPController.text = "";
+    fullNameController.text = "";
+    guardController.text = "";
+    stateTrainingController.text = "";
+    moduleController.text = "";
+    selectedPersonKey.value = null;
   }
 
   Future<bool> saveMonitoring(BuildContext context) async {
     bool state = false;
     try {
-      modelMonitoring.inPersona = 1;
-      modelMonitoring.inEquipo = selectedEquipoKey.value;
+      if (selectedPersonKey.value == null) {
+        _mostrarErroresValidacion(
+            Get.context!, ['No hay información de la persona']);
+        return false;
+      }
+      modelMonitoring.inPersona = selectedPersonKey.value;
       modelMonitoring.inEquipo = selectedEquipoKey.value;
       modelMonitoring.inEntrenador = selectedEntrenadorKey.value;
       modelMonitoring.inCondicion = selectedCondicionKey.value;
+      modelMonitoring.estadoEntrenamiento =
+          OptionValue(key: selectedEstadoEntrenamientoKey.value, nombre: "");
       modelMonitoring.fechaProximoMonitoreo =
           DateTime.parse(fechaProximoMonitoreoController.text);
       modelMonitoring.fechaRealMonitoreo =
           DateTime.parse(fechaRealMonitoreoController.text);
       modelMonitoring.inTotalHoras = int.parse(horasController.text);
-
-      final response =
-          await monitoringService.registerMonitoring(modelMonitoring);
+      ResponseHandler<bool> response;
+      if (modelMonitoring.key == null || modelMonitoring.key == 0) {
+        response = await monitoringService.registerMonitoring(modelMonitoring);
+      } else {
+        response = await monitoringService.updateMonitoring(modelMonitoring);
+      }
       if (response.success) {
         // ignore: use_build_context_synchronously
         _mostrarMensajeGuardado(context);
@@ -136,7 +165,7 @@ class CreateMonitoringController extends GetxController {
             Get.context!, ['No hay infromación para mostar.']);
       }
       setInfoPerson(responseListar.data!.first);
-      loadPersonalPhoto(responseListar.data!.first.key);
+      loadPersonalPhoto(responseListar.data!.first.inPersonalOrigen);
     } catch (e) {
       log('Error inesperado al buscar el personal: $e');
     } finally {
@@ -159,6 +188,36 @@ class CreateMonitoringController extends GetxController {
     }
   }
 
+  Future<void> searchMonitoringDetailById(int key) async {
+    try {
+      isLoandingDetail.value = true;
+      final result = await monitoringService.searchMonitoringDetailById(key);
+      final monitoring = MonitoringDetail.fromJson(result);
+      selectedPersonKey.value = monitoring.inPersona;
+      selectedEquipoKey.value = monitoring.equipo?.key;
+      selectedEntrenadorKey.value = monitoring.entrenador?.key;
+      selectedCondicionKey.value = monitoring.condicion?.key;
+      selectedEstadoEntrenamientoKey.value =
+          monitoring.estadoEntrenamiento?.key;
+      fechaProximoMonitoreoController.text =
+          FnDateTime.fromDotNetDate(monitoring.fechaProximoMonitoreo ?? "")
+              .toString();
+      fechaRealMonitoreoController.text =
+          FnDateTime.fromDotNetDate(monitoring.fechaRealMonitoreo ?? "")
+              .toString();
+      horasController.text = monitoring.inTotalHoras.toString();
+      modelMonitoring.key = monitoring.key;
+      final personalInfo = await personalService
+          .buscarPersonalPorId(monitoring.inPersona!.toString());
+      final person = Personal.fromJson(personalInfo);
+      codigoMCPController.text = person.codigoMcp;
+      await searchPersonByCodeMcp();
+      isLoandingDetail.value = false;
+    } catch (e) {
+      log('error al obtener la información del monitoreo');
+    }
+  }
+
   setInfoPerson(Personal person) {
     codigoMCP2Controller.text = person.codigoMcp;
     fullNameController.text =
@@ -166,7 +225,7 @@ class CreateMonitoringController extends GetxController {
     guardController.text = person.guardia.nombre;
     stateTrainingController.text = "";
     moduleController.text = "";
-    selectedPersonKey.value = person.inPersonalOrigen;
+    selectedPersonKey.value = person.key;
   }
 
   resetInfoPerson() {

@@ -306,8 +306,17 @@ class EntrenamientoModuloNuevoController extends GetxController {
       },
     );
   }
-void nuevoMOdulo(){
+void nuevoModulo(){
     tituloModal.value= 'Nuevo Modulo -';
+    //TODO: Obtener el Entrenamiento
+    // Ahi obtenemos la condicion
+
+    //TODO: Validar el modulo que corresponde; I y IV / I, II, II , IV
+
+
+    //TODO : Obtener la condicion del personal (Experiencia / sin experiencia)
+
+
 }
   Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {
     try {

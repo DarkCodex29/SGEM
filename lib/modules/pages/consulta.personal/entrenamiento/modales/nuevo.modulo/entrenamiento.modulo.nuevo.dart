@@ -30,12 +30,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
     if (inEntrenamientoModulo != null) {
       controller.obtenerModuloPorId(inEntrenamientoModulo!);
     }
     else{
-      controller.nuevoMOdulo();
+      controller.nuevoModulo();
     }
 
     return Align(

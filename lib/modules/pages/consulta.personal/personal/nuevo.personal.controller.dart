@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -402,8 +403,38 @@ class NuevoPersonalController extends GetxController {
     }
   }
 
+  Future<void> descargarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      String nombreArchivo = archivo['nombre'];
+      Uint8List archivoBytes = archivo['bytes'];
+      String extension = archivo['nombre'].split('.').last;
+      MimeType mimeType = _determinarMimeType2(extension);
+      await FileSaver.instance.saveFile(
+        name: nombreArchivo,
+        bytes: archivoBytes,
+        ext: extension,
+        mimeType: mimeType,
+      );
+
+      Get.snackbar(
+        'Descarga exitosa',
+        'El archivo $nombreArchivo se descargó correctamente',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      log('Error al descargar el archivo $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo descargar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   String _determinarMimeType(String extension) {
-    switch (extension) {
+    switch (extension.toLowerCase()) {
       case 'pdf':
         return 'application/pdf';
       case 'doc':
@@ -414,6 +445,20 @@ class NuevoPersonalController extends GetxController {
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
       default:
         return 'application/octet-stream';
+    }
+  }
+
+  MimeType _determinarMimeType2(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return MimeType.pdf;
+      case 'doc':
+      case 'docx':
+        return MimeType.microsoftWord;
+      case 'xlsx':
+        return MimeType.microsoftExcel;
+      default:
+        return MimeType.other;
     }
   }
 

@@ -407,8 +407,14 @@ class NuevoPersonalController extends GetxController {
     try {
       String nombreArchivo = archivo['nombre'];
       Uint8List archivoBytes = archivo['bytes'];
-      String extension = archivo['nombre'].split('.').last;
+      String extension = nombreArchivo.split('.').last;
+      if (nombreArchivo.endsWith('.$extension')) {
+        nombreArchivo = nombreArchivo.substring(
+            0, nombreArchivo.length - extension.length - 1);
+      }
+
       MimeType mimeType = _determinarMimeType2(extension);
+
       await FileSaver.instance.saveFile(
         name: nombreArchivo,
         bytes: archivoBytes,
@@ -418,7 +424,7 @@ class NuevoPersonalController extends GetxController {
 
       Get.snackbar(
         'Descarga exitosa',
-        'El archivo $nombreArchivo se descargó correctamente',
+        'El archivo $nombreArchivo.$extension se descargó correctamente',
         snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {

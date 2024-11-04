@@ -310,11 +310,14 @@ void nuevoModulo(){
     tituloModal.value= 'Nuevo Modulo -';
     //TODO: Obtener el Entrenamiento
     // Ahi obtenemos la condicion
+    //Llamar al endpoint de obtenerentrenamientoporid
+
+    //TODO : Obtener la condicion del entrenamiento (Experiencia / sin experiencia)
 
     //TODO: Validar el modulo que corresponde; I y IV / I, II, II , IV
 
+    // COnsultar ultimo modulo por entrenamiento
 
-    //TODO : Obtener la condicion del personal (Experiencia / sin experiencia)
 
 
 }

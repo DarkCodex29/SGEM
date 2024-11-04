@@ -306,7 +306,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
       },
     );
   }
-
+void nuevoMOdulo(){
+    tituloModal.value= 'Nuevo Modulo -';
+}
   Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {
     try {
       log('Obteniendo modulo por id: $inEntrenamientoModulo');

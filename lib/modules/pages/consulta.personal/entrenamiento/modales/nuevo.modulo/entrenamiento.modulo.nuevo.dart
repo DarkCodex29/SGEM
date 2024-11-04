@@ -35,7 +35,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
       controller.obtenerModuloPorId(inEntrenamientoModulo!);
     }
     else{
-      controller.setDatosEntrenamiento(entrenamiento!, isEdit);
+      controller.nuevoMOdulo();
     }
 
     return Align(

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
@@ -42,11 +43,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   RxBool isSaving = false.obs;
 
-  late EntrenamientoModulo entrenamiento;
+  EntrenamientoModulo? entrenamiento;
   int? siguienteModulo;
   bool isEdit = false;
   RxString tituloModal = ''.obs;
-
+  RxInt inModulo = 1.obs;
   RxBool isLoadingModulo = false.obs;
 
   //int? inEntrenamiento;
@@ -96,12 +97,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
     isLoadingModulo.value = true;
     try {
       final modulos = await entrenamientoService
-          .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key!);
+          .obtenerUltimoModuloPorEntrenamiento(entrenamiento!.key!);
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo!;
 
         int maxModulosPermitidos =
-            entrenamiento.condicion!.nombre! == "Experiencia" ? 2 : 4;
+            entrenamiento!.condicion!.nombre! == "Experiencia" ? 2 : 4;
 
         if (ultimosModulos >= maxModulosPermitidos) {
           siguienteModulo = null;
@@ -142,16 +143,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
       return false;
     }
 
-    int moduloNumero = isEdit ? entrenamiento.inModulo! : siguienteModulo!;
+   // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
 
     EntrenamientoModulo modulo = EntrenamientoModulo(
-      key: isEdit ? entrenamiento.key : 0,
-      inTipoActividad: entrenamiento.inTipoActividad,
-      inActividadEntrenamiento: entrenamiento.key,
-      inPersona: entrenamiento.inPersona,
-      //inEntrenador: responsableSeleccionado!.inPersonalOrigen,
+      key: isEdit ? entrenamiento!.key : 0,
+      inTipoActividad: entrenamiento!.inTipoActividad,
+      inActividadEntrenamiento: entrenamiento!.key,
+      inPersona: entrenamiento!.inPersona,
       inEntrenador: dropdownController.getSelectedValue('entrenador')!.key,
-      entrenador: entrenamiento.entrenador,
+      entrenador: entrenamiento!.entrenador,
       fechaInicio: fechaInicio,
       fechaTermino: fechaTermino,
       fechaExamen: fechaExamen,
@@ -160,24 +160,22 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inTotalHoras: int.parse(totalHorasModuloController.value.text),
       inHorasAcumuladas: int.parse(horasAcumuladasController.text),
       inHorasMinestar: int.parse(horasMinestarController.text),
-      inModulo: moduloNumero,
-      modulo: OptionValue(
-          key: moduloNumero,
-          nombre: 'Módulo ${convertirARomano(moduloNumero)}'),
+      inModulo: inModulo.value,
+      modulo: OptionValue(key: inModulo.value, nombre: ''),
       eliminado: 'N',
       motivoEliminado: '',
-      tipoPersona: entrenamiento.tipoPersona,
-      inCategoria: entrenamiento.inCategoria,
-      inEquipo: entrenamiento.inEquipo,
-      equipo: entrenamiento.equipo,
-      inEmpresaCapacitadora: entrenamiento.inEmpresaCapacitadora,
-      inCondicion: entrenamiento.inCondicion,
-      condicion: entrenamiento.condicion,
+      tipoPersona: entrenamiento!.tipoPersona,
+      inCategoria: entrenamiento!.inCategoria,
+      inEquipo: entrenamiento!.inEquipo,
+      equipo: entrenamiento!.equipo,
+      inEmpresaCapacitadora: entrenamiento!.inEmpresaCapacitadora,
+      inCondicion: entrenamiento!.inCondicion,
+      condicion: entrenamiento!.condicion,
       inEstado: 0,
       estadoEntrenamiento: OptionValue(key: 0, nombre: 'Pendiente'),
       comentarios: '',
       inCapacitacion: 0,
-      observaciones: entrenamiento.observaciones,
+      observaciones: entrenamiento!.observaciones,
     );
 
     try {
@@ -195,7 +193,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
         EntrenamientoPersonalController controller =
             Get.find<EntrenamientoPersonalController>();
-        controller.fetchModulosPorEntrenamiento(entrenamiento.key!);
+        controller.fetchModulosPorEntrenamiento(entrenamiento!.key!);
 
         return true;
       } else {
@@ -230,18 +228,18 @@ class EntrenamientoModuloNuevoController extends GetxController {
       errores.add("Debe seleccionar un entrenador responsable.");
     }
 
-    if (entrenamiento.inModulo == 1) {
+    if (entrenamiento?.inModulo == 1) {
       if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento.fechaInicio!)) {
+          fechaInicio!.isBefore(entrenamiento!.fechaInicio!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
       }
     }
 
-    if (entrenamiento.inModulo! > 1) {
+    if (entrenamiento!.inModulo! > 1) {
       if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento.fechaTermino!)) {
+          fechaInicio!.isBefore(entrenamiento!.fechaTermino!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
@@ -290,16 +288,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
     return respuesta;
   }
 
-  String convertirARomano(int numero) {
-    const Map<int, String> romanos = {
-      1: 'I',
-      2: 'II',
-      3: 'III',
-      4: 'IV',
-    };
-    return romanos[numero] ?? '$numero';
-  }
-
   void _mostrarErroresValidacion(BuildContext context, List<String> errores) {
     showDialog(
       context: context,
@@ -310,20 +298,20 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<void> nuevoModulo(int inEntrenamiento) async {
-    tituloModal.value = 'Nuevo Modulo -';
-    EntrenamientoModulo? entrenamiento2 = EntrenamientoModulo();
+    tituloModal.value = 'Nuevo Modulo';
+    //EntrenamientoModulo? entrenamiento2 = EntrenamientoModulo();
     //TODO: Obtener el Entrenamiento
     var response =
         await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
 
     if (response.success) {
       log('Obteniendo entrenamiento por id: $inEntrenamiento');
-      entrenamiento2 = response.data;
-      log('Entrenamiento: ${entrenamiento2!.condicion!.nombre!}');
+      entrenamiento = response.data;
+      log('Entrenamiento: ${entrenamiento!.condicion!.nombre!}');
     }
     // Experiencia
     // Entrenamiento (Sin experiencia)
-    if (entrenamiento2.condicion?.nombre!.toLowerCase() == "experiencia") {
+    if (entrenamiento?.condicion?.nombre!.toLowerCase() == "experiencia") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
       if (responseModulo.success) {
@@ -331,14 +319,18 @@ class EntrenamientoModuloNuevoController extends GetxController {
         var ultimoModulo = responseModulo.data;
         log('Ultimo modulo: $ultimoModulo');
       }
-    } else if (entrenamiento2.condicion?.nombre!.toLowerCase() ==
+    } else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
         "entrenamiento (sin experiencia)") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
       if (responseModulo.success) {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
         var ultimoModulo = responseModulo.data;
-        log('Ultimo modulo: $ultimoModulo');
+        log('Ultimo modulo: ${ultimoModulo == null ? 'NUll' : ultimoModulo.key}');
+        if (ultimoModulo!.key == null) {
+          tituloModal.value = 'Nuevo Modulo - Modulo I';
+          inModulo.value=1;
+        }
       }
     }
 

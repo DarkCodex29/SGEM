@@ -9,7 +9,7 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import '../../shared/modules/entrenamiento.consulta.dart';
 
 class EntrenamientoService {
-   final Dio dio = Dio();
+  final Dio dio = Dio();
 
   EntrenamientoService() {
     dio.interceptors.add(InterceptorsWrapper(
@@ -91,6 +91,10 @@ class EntrenamientoService {
             message: 'Error al mapear los datos a EntrenamientoModulo.',
           );
         }
+      } else if (response.statusCode == 200 && response.data == null) {
+        EntrenamientoModulo? ultimoModulo = EntrenamientoModulo();
+        return ResponseHandler<EntrenamientoModulo>(
+            success: true, data: ultimoModulo);
       } else {
         log('Error en la respuesta del servidor: ${response.statusCode}, Datos: ${response.data}');
         return ResponseHandler<EntrenamientoModulo>(
@@ -106,7 +110,8 @@ class EntrenamientoService {
 
   Future<ResponseHandler<List<dynamic>>> listarEntrenamientoPorPersona(
       int id) async {
-    final url = '${ConfigFile.apiUrl}/Entrenamiento/ListarEntrenamientoPorPersona?id=$id';
+    final url =
+        '${ConfigFile.apiUrl}/Entrenamiento/ListarEntrenamientoPorPersona?id=$id';
     try {
       final response =
           await dio.get(url, options: Options(followRedirects: false));
@@ -188,7 +193,8 @@ class EntrenamientoService {
     int? pageSize,
     int? pageNumber,
   }) async {
-    const url = '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoConsultarPaginado';
+    const url =
+        '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoConsultarPaginado';
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.inEquipo': inEquipo,
@@ -299,34 +305,36 @@ class EntrenamientoService {
     }
   }
 
-   Future<ResponseHandler<EntrenamientoModulo>> obtenerEntrenamientoPorId(
-       int entrenamientoId) async {
-     final url = '${ConfigFile.apiUrl}/Entrenamiento/ObtenerEntrenamientoPorId?inEntrenamiento=$entrenamientoId';
-     log('Api entrenamiento obtener entrenamiento por id $entrenamientoId');
-     try {
-       log('Api: $url');
-       final response = await dio.get(
-         url,
-         options: Options(followRedirects: false),
-       );
+  Future<ResponseHandler<EntrenamientoModulo>> obtenerEntrenamientoPorId(
+      int entrenamientoId) async {
+    final url =
+        '${ConfigFile.apiUrl}/Entrenamiento/ObtenerEntrenamientoPorId?inEntrenamiento=$entrenamientoId';
+    log('Api entrenamiento obtener entrenamiento por id $entrenamientoId');
+    try {
+      log('Api: $url');
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
 
-       if (response.statusCode == 200 && response.data != null) {
-         log('Api entrenamiento, obtenido con exito');
+      if (response.statusCode == 200 && response.data != null) {
+        log('Api entrenamiento, obtenido con exito');
 
-         EntrenamientoModulo entrenamiento =
-         EntrenamientoModulo.fromJson(response.data);
-         log('Api entrenamiento, ${response.data}');
-         return ResponseHandler.handleSuccess<EntrenamientoModulo>(entrenamiento);
-       } else {
-         log('Api entrenamiento, error al obtener modulo por id');
+        EntrenamientoModulo entrenamiento =
+            EntrenamientoModulo.fromJson(response.data);
+        log('Api entrenamiento, ${response.data}');
+        return ResponseHandler.handleSuccess<EntrenamientoModulo>(
+            entrenamiento);
+      } else {
+        log('Api entrenamiento, error al obtener modulo por id');
 
-         return ResponseHandler(
-           success: false,
-           message: 'Error al obtener el módulo por ID',
-         );
-       }
-     } on DioException catch (e) {
-       return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
-     }
-   }
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener el módulo por ID',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
+    }
+  }
 }

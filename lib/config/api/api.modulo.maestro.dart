@@ -79,7 +79,7 @@ class ModuloMaestroService {
   Future<ResponseHandler<EntrenamientoModulo>> obtenerModuloPorId(
       int moduloId) async {
     final url = '${ConfigFile.apiUrl}/modulo/ObtenerModuloPorId/$moduloId';
-log('Api modulo obtener modulo por id $moduloId');
+    log('Api modulo obtener modulo por id $moduloId');
     try {
       log('Api: $url');
       final response = await dio.get(

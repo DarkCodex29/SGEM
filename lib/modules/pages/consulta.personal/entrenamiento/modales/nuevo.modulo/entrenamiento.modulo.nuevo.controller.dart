@@ -36,7 +36,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   ModuloMaestroService moduloMaestroService = ModuloMaestroService();
   PersonalService personalService = PersonalService();
-  EntrenamientoService trainingService = EntrenamientoService();
+  EntrenamientoService entrenamientoService = EntrenamientoService();
 
   List<String> errores = [];
 
@@ -48,6 +48,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   RxString tituloModal = ''.obs;
 
   RxBool isLoadingModulo = false.obs;
+
+  //int? inEntrenamiento;
 
   EntrenamientoModulo? entrenamientoModulo;
 
@@ -93,7 +95,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   Future<void> obtenerSiguienteModulo() async {
     isLoadingModulo.value = true;
     try {
-      final modulos = await trainingService
+      final modulos = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key!);
       if (modulos.success && modulos.data != null) {
         int ultimosModulos = modulos.data!.inModulo!;
@@ -306,9 +308,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
       },
     );
   }
-void nuevoModulo(){
+void nuevoModulo(int inEntrenamiento){
     tituloModal.value= 'Nuevo Modulo -';
     //TODO: Obtener el Entrenamiento
+  var entrenamiento = entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
+
+  if (entrenamiento!=null){
+
+  }
     // Ahi obtenemos la condicion
     //Llamar al endpoint de obtenerentrenamientoporid
 

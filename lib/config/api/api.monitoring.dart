@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/monitoring.dart';
-import 'package:sgem/shared/modules/monitoring.detail.dart';
 import 'package:sgem/shared/modules/monitoring.save.dart';
 
 class MonitoringService {

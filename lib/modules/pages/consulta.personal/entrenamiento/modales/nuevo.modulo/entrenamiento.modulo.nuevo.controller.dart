@@ -42,7 +42,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   RxBool isSaving = false.obs;
 
- late EntrenamientoModulo entrenamiento;
+  late EntrenamientoModulo entrenamiento;
   int? siguienteModulo;
   bool isEdit = false;
   RxString tituloModal = ''.obs;
@@ -120,8 +120,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-
-
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
     try {
       final response =
@@ -137,7 +135,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Error al obtener el módulo maestro: $e');
     }
   }
-
 
   Future<bool> registrarModulo(BuildContext context) async {
     if (!validar(context)) {
@@ -223,7 +220,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       return false;
     }
   }
-
 
   bool validar(BuildContext context) {
     bool respuesta = true;
@@ -315,7 +311,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   Future<void> nuevoModulo(int inEntrenamiento) async {
     tituloModal.value = 'Nuevo Modulo -';
-    EntrenamientoModulo? entrenamiento2=EntrenamientoModulo();
+    EntrenamientoModulo? entrenamiento2 = EntrenamientoModulo();
     //TODO: Obtener el Entrenamiento
     var response =
         await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
@@ -327,25 +323,24 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
     // Experiencia
     // Entrenamiento (Sin experiencia)
-    if (entrenamiento2?.condicion?.nombre!.toLowerCase()=="experiencia") {
-        var responseModulo = await entrenamientoService.obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
-        if (responseModulo.success){
-          log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
-          var ultimoModulo= responseModulo.data;
-          log('Ultimo modulo: $ultimoModulo');
-        }
-
-    }
-    else if(entrenamiento2?.condicion?.nombre!.toLowerCase()=="entrenamiento (sin experiencia)"){
-      var responseModulo = await entrenamientoService.obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
-      if (responseModulo.success){
+    if (entrenamiento2.condicion?.nombre!.toLowerCase() == "experiencia") {
+      var responseModulo = await entrenamientoService
+          .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
+      if (responseModulo.success) {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
-        var ultimoModulo= responseModulo.data;
+        var ultimoModulo = responseModulo.data;
+        log('Ultimo modulo: $ultimoModulo');
+      }
+    } else if (entrenamiento2.condicion?.nombre!.toLowerCase() ==
+        "entrenamiento (sin experiencia)") {
+      var responseModulo = await entrenamientoService
+          .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
+      if (responseModulo.success) {
+        log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
+        var ultimoModulo = responseModulo.data;
         log('Ultimo modulo: $ultimoModulo');
       }
     }
-
-
 
     //TODO : Obtener la condicion del entrenamiento (Experiencia / sin experiencia)
 

@@ -119,16 +119,6 @@ class MaestroPage extends StatelessWidget {
           ),
         );
       }
-      // if (controller.maestroOpciones.isEmpty) {
-      //   return const Center(
-      //     child: Text(
-      //       'No se encontraron maestros',
-      //       style: TextStyle(fontSize: 16, color: Colors.black54),
-      //     ),
-      //   );
-      // }
-      //List<MaestroDetalle> options = controller.guardiaOpciones;
-      List options = controller.maestroOpciones;
       return CustomDropdownGlobal(
         dropdownKey: 'maestro',
         noDataHintText: 'No se encontraron maestros',
@@ -136,23 +126,10 @@ class MaestroPage extends StatelessWidget {
         hintText: controller.maestroOpciones.isEmpty
             ? 'No se encontraron maestros'
             : 'Maestro',
-        // options: options.map((option) => option.valor!).toList(),
         staticOptions: const [],
-        /*
-        selectedValue: controller.selectedMaestroKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedMaestroKey.value)
-                .valor
-            : null,
-            */
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
-          // final selectedOption = options.firstWhere(
-          //       (option) => option.valor == value,
-          // );
-          // controller.selectedMaestroKey.value = selectedOption.key;
           log('Guardia seleccionada - Key del Maestro: ${controller.selectedMaestroKey.value}, Valor: $value');
         },
       );
@@ -171,16 +148,6 @@ class MaestroPage extends StatelessWidget {
         );
       }
 
-      // if (controller.estadoOpciones.isEmpty) {
-      //   return const Center(
-      //     child: Text(
-      //       'No se encontraron estados',
-      //       style: TextStyle(fontSize: 16, color: Colors.black54),
-      //     ),
-      //   );
-      // }
-      // List<MaestroDetalle> options = controller.guardiaOpciones;
-
       List options = [];
       return CustomDropdownGlobal(
         dropdownKey: 'estado',
@@ -189,16 +156,7 @@ class MaestroPage extends StatelessWidget {
         hintText: controller.estadoOpciones.isEmpty
             ? 'No se encontraron estados'
             : 'Estado',
-        //options: options.map((option) => option.valor!).toList(),
         staticOptions: const [],
-        /*
-        selectedValue: controller.selectedEstadoKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedEstadoKey.value)
-                .valor
-            : null,
-            */
         isSearchable: false,
         isRequired: false,
         onChanged: (value) {
@@ -217,11 +175,7 @@ class MaestroPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         ElevatedButton.icon(
-          onPressed: () async {
-            //controller.clearFields();
-            // await controller.buscarActualizacionMasiva();
-            // controller.isExpanded.value = false;
-          },
+          onPressed: () async {},
           icon: const Icon(
             Icons.cleaning_services,
             size: 18,
@@ -243,10 +197,7 @@ class MaestroPage extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         ElevatedButton.icon(
-          onPressed: () async {
-            //await controller.buscarActualizacionMasiva();
-            // controller.isExpanded.value = false;
-          },
+          onPressed: () async {},
           icon: const Icon(
             Icons.search,
             size: 18,
@@ -288,7 +239,6 @@ class MaestroPage extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          //_buildSeccionResultadoTablaPaginado(controller),
         ],
       ),
     );

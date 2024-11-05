@@ -333,8 +333,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
 
   Widget _buildSeccionResultadoTablaData(
       List<dynamic> data, ActualizacionMasivaController controller) {
-    const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
-
     return SizedBox(
       height: 500,
       child: SingleChildScrollView(

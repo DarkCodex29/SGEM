@@ -12,7 +12,7 @@ import '../../../shared/widgets/custom.textfield.dart';
 import '../../../shared/widgets/delete/widget.delete.motivo.dart';
 import '../../../shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import '../../../shared/widgets/delete/widget.delete.personal.dart';
-import '../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'actualizacion.masiva/personal.actualizacion.masiva.page.dart';
 import 'consulta.personal.controller.dart';
 import 'entrenamiento/entrenamiento.personal.page.dart';
@@ -172,7 +172,7 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.documentoIdentidadController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown(
+                          CustomDropdownGlobal(
                             dropdownKey: 'guardia',
                             hintText: 'Selecciona guardia',
                             noDataHintText: 'No se encontraron guardias',
@@ -189,7 +189,7 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown(
+                          CustomDropdownGlobal(
                             dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
                             noDataHintText: "No hay datos de estado",
@@ -231,7 +231,7 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: CustomDropdown(
+                            child: CustomDropdownGlobal(
                               dropdownKey: 'guardia',
                               hintText: 'Selecciona guardia',
                               noDataHintText: 'No se encontraron guardias',
@@ -254,7 +254,7 @@ class PersonalSearchPage extends StatelessWidget {
                             controller: controller.apellidosController,
                           ),
                           const SizedBox(height: 10),
-                          CustomDropdown(
+                          CustomDropdownGlobal(
                             dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
                             noDataHintText: "No hay datos de estado",
@@ -295,7 +295,7 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: CustomDropdown(
+                            child: CustomDropdownGlobal(
                               dropdownKey: 'estadoDropdown',
                               hintText: "Estado",
                               noDataHintText: "No hay datos de estado",

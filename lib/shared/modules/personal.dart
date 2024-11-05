@@ -1,5 +1,5 @@
 import 'package:sgem/shared/modules/option.value.dart';
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class Personal implements DropdownElement {
   int? key;

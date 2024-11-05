@@ -1,5 +1,5 @@
 import 'package:sgem/shared/modules/maestro.dart';
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class MaestroDetalle implements DropdownElement {
   int? key;

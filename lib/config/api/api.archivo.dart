@@ -5,7 +5,6 @@ import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 
 class ArchivoService {
-
   final Dio dio = Dio();
 
   ArchivoService() {
@@ -84,7 +83,7 @@ class ArchivoService {
           followRedirects: false,
         ),
       );
-log(response.data.toString());
+      log(response.data.toString());
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<List<dynamic>>(response.data);
       } else {

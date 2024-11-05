@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.page.dart';
+import 'package:sgem/modules/pages/monitoring/view/monitoring.page.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
-
 import '../administracion/administracion.page.dart';
 import '../consulta.entrenamiento/consulta.entrenamiento.page.dart';
 import '../consulta.personal/consulta.personal.page.dart';
@@ -52,7 +52,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     final List<Widget> pages = [
       _buildHomeContent(isLargeScreen, isSmallScreen),
       const PersonalSearchPage(),
-      const Center(child: Text("Búsqueda de Monitoreos")),
+      const MonitoringPage(),
       CapacitacionPage(onCancel: () {}),
       ConsultaEntrenamientoPage(),
       const AdministracionPage(),

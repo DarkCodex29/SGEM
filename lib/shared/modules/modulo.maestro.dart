@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 List<ModuloMaestro> moduloMaestroFromJson(String str) =>
     List<ModuloMaestro>.from(

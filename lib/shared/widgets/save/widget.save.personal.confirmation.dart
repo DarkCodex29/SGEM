@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MensajeGuardadoWidget extends StatelessWidget {
-  const MensajeGuardadoWidget({super.key});
+  const MensajeGuardadoWidget({super.key, this.title = "Los datos se guardaron \nsatisfactoriamente"});
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
       child: Align(
-        alignment: const AlignmentDirectional(0,0),
+        alignment: const AlignmentDirectional(0, 0),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
           child: Container(
@@ -64,12 +65,12 @@ class MensajeGuardadoWidget extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Align(
-                    alignment: AlignmentDirectional(0, 0),
+                  Align(
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
-                      'Los datos se guardaron \nsatisfactoriamente',
+                      title,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Calibri',
                         fontSize: 18,
                         fontWeight: FontWeight.bold,

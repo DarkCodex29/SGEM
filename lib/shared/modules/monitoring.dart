@@ -6,11 +6,12 @@ import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';
 
-Monitoing monitoingFromJson(String str) => Monitoing.fromJson(json.decode(str));
+Monitoring monitoingFromJson(String str) =>
+    Monitoring.fromJson(json.decode(str));
 
-String monitoingToJson(Monitoing data) => json.encode(data.toJson());
+String monitoingToJson(Monitoring data) => json.encode(data.toJson());
 
-class Monitoing {
+class Monitoring {
   int? key;
   String? codigoMcp;
   String? primerNombre;
@@ -23,7 +24,7 @@ class Monitoing {
   OptionValue? condicion;
   dynamic fechaRealMonitoreo;
 
-  Monitoing({
+  Monitoring({
     this.key,
     this.codigoMcp,
     this.primerNombre,
@@ -37,7 +38,7 @@ class Monitoing {
     this.fechaRealMonitoreo,
   });
 
-  factory Monitoing.fromJson(Map<String, dynamic> json) => Monitoing(
+  factory Monitoring.fromJson(Map<String, dynamic> json) => Monitoring(
         key: json["Key"],
         codigoMcp: json["CodigoMcp"],
         primerNombre: json["PrimerNombre"],
@@ -47,8 +48,9 @@ class Monitoing {
         guardia: json["Guardia"] == null
             ? null
             : OptionValue.fromJson(json["Guardia"]),
-        equipo:
-            json["Equipo"] == null ? null : OptionValue.fromJson(json["Equipo"]),
+        equipo: json["Equipo"] == null
+            ? null
+            : OptionValue.fromJson(json["Equipo"]),
         entrenador: json["Entrenador"] == null
             ? null
             : OptionValue.fromJson(json["Entrenador"]),

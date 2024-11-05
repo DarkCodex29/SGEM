@@ -58,7 +58,7 @@ class MonitoringService {
 
       final items = result['Items'] as List;
       final personalList = items
-          .map((personalJson) => Monitoing.fromJson(personalJson))
+          .map((personalJson) => Monitoring.fromJson(personalJson))
           .toList();
 
       final responseData = {

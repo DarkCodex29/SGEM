@@ -67,7 +67,7 @@ class MonitoringSearchController extends GetxController {
   var totalPages = 1.obs;
   var totalRecords = 0.obs;
   RxList<MaestroDetalle> guardiaOptions = <MaestroDetalle>[].obs;
-  var monitoringAll = <Monitoing>[].obs;
+  var monitoringAll = <Monitoring>[].obs;
 
   RxList<ModuloMaestro> moduloOpciones = <ModuloMaestro>[].obs;
   RxList<MaestroDetalle> guardiaOpciones = <MaestroDetalle>[].obs;
@@ -127,7 +127,7 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         var result = response.data as Map<String, dynamic>;
 
-        var items = result['Items'] as List<Monitoing>;
+        var items = result['Items'] as List<Monitoring>;
         monitoringAll.assignAll(items);
         currentPage.value = result['PageNumber'] as int;
         totalPages.value = result['TotalPages'] as int;

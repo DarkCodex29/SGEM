@@ -300,9 +300,9 @@ class EntrenamientoService {
   }
 
    Future<ResponseHandler<EntrenamientoModulo>> obtenerEntrenamientoPorId(
-       int moduloId) async {
-     final url = '${ConfigFile.apiUrl}/modulo/ObtenerModuloPorId/$moduloId';
-     log('Api modulo obtener modulo por id $moduloId');
+       int entrenamientoId) async {
+     final url = '${ConfigFile.apiUrl}/Entrenamiento/ObtenerEntrenamientoPorId?inEntrenamiento=$entrenamientoId';
+     log('Api entrenamiento obtener entrenamiento por id $entrenamientoId');
      try {
        log('Api: $url');
        final response = await dio.get(

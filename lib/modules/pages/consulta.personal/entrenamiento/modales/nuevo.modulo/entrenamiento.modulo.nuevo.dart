@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import '../../../../../../config/theme/app_theme.dart';
 import '../../../../../../shared/widgets/custom.textfield.dart';
-import '../../../../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'entrenamiento.modulo.nuevo.controller.dart';
 
 class EntrenamientoModuloNuevo extends StatelessWidget {
@@ -29,12 +29,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if (inEntrenamientoModulo != null) {
       controller.obtenerModuloPorId(inEntrenamientoModulo!);
-    }
-    else{
-      controller.nuevoModulo();
+    } else {
+      //controller.nuevoModulo();
     }
 
     return Align(
@@ -134,7 +132,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'entrenador',
             hintText: "Responsable",
             noDataHintText: 'No se encontraron entrenadores',

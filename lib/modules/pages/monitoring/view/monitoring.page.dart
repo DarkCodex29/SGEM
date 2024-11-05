@@ -6,7 +6,7 @@ import 'package:sgem/modules/pages/monitoring/view/create.monitoring.dart';
 import 'package:sgem/modules/pages/monitoring/widget/detail.table.monitoring.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
@@ -373,7 +373,7 @@ class MonitoringPage extends StatelessWidget {
       List<Personal> options = controller.entrenadores;
       return CustomDropdown(
         hintText: 'Selecciona Entrenador',
-        options: options.map((option) => option.nombreCompleto).toList(),
+        options: options.map((option) => option.nombreCompleto!).toList(),
         selectedValue: controller.selectedEntrenadorKey.value != null
             ? options
                 .firstWhere((option) =>

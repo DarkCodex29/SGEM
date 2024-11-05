@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/modules/pages/administracion/maestro/maestro.controller.dart';
 import '../../../../config/theme/app_theme.dart';
-import '../../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
 
 class MaestroPage extends StatelessWidget {
@@ -129,7 +129,7 @@ class MaestroPage extends StatelessWidget {
       // }
       //List<MaestroDetalle> options = controller.guardiaOpciones;
       List options = controller.maestroOpciones;
-      return CustomDropdown(
+      return CustomDropdownGlobal(
         dropdownKey: 'maestro',
         noDataHintText: 'No se encontraron maestros',
         isReadOnly: controller.maestroOpciones.isEmpty ? true : false,
@@ -182,7 +182,7 @@ class MaestroPage extends StatelessWidget {
       // List<MaestroDetalle> options = controller.guardiaOpciones;
 
       List options = [];
-      return CustomDropdown(
+      return CustomDropdownGlobal(
         dropdownKey: 'estado',
         noDataHintText: 'No se encontraron estados',
         isReadOnly: controller.estadoOpciones.isEmpty ? true : false,

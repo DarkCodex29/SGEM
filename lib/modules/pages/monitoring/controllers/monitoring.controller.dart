@@ -165,7 +165,7 @@ class CreateMonitoringController extends GetxController {
             Get.context!, ['No hay infromación para mostar.']);
       }
       setInfoPerson(responseListar.data!.first);
-      loadPersonalPhoto(responseListar.data!.first.inPersonalOrigen);
+      loadPersonalPhoto(responseListar.data!.first.inPersonalOrigen!);
     } catch (e) {
       log('Error inesperado al buscar el personal: $e');
     } finally {
@@ -210,7 +210,7 @@ class CreateMonitoringController extends GetxController {
       final personalInfo = await personalService
           .buscarPersonalPorId(monitoring.inPersona!.toString());
       final person = Personal.fromJson(personalInfo);
-      codigoMCPController.text = person.codigoMcp;
+      codigoMCPController.text = person.codigoMcp!;
       await searchPersonByCodeMcp();
       isLoandingDetail.value = false;
     } catch (e) {
@@ -219,10 +219,10 @@ class CreateMonitoringController extends GetxController {
   }
 
   setInfoPerson(Personal person) {
-    codigoMCP2Controller.text = person.codigoMcp;
+    codigoMCP2Controller.text = person.codigoMcp!;
     fullNameController.text =
         "${person.apellidoPaterno} ${person.apellidoMaterno} ${person.segundoNombre}";
-    guardController.text = person.guardia.nombre;
+    guardController.text = person.guardia!.nombre!;
     stateTrainingController.text = "";
     moduleController.text = "";
     selectedPersonKey.value = person.key;

@@ -6,8 +6,8 @@ import 'package:sgem/modules/pages/monitoring/controllers/monitoring.controller.
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/custom.dropdown.dart';
 import 'package:sgem/shared/widgets/custom.text.fromfield.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 
 class FormMonitoringWidget extends StatefulWidget {
   const FormMonitoringWidget(
@@ -440,7 +440,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
       List<Personal> options = widget.monitoringSearchController.entrenadores;
       return CustomDropdown(
         hintText: 'Selecciona Entrenador',
-        options: options.map((option) => option.nombreCompleto).toList(),
+        options: options.map((option) => option.nombreCompleto!).toList(),
         selectedValue:
             widget.createMonitoringController.selectedEntrenadorKey.value !=
                     null

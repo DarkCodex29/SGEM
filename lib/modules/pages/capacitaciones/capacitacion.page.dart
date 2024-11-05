@@ -8,7 +8,7 @@ import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import '../../../config/theme/app_theme.dart';
-import '../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 import 'carga.masiva/capacitacion.carga.masiva.page.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
@@ -179,7 +179,7 @@ class CapacitacionPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-            child: CustomDropdown(
+            child: CustomDropdownGlobal(
           dropdownKey: 'guardia',
           hintText: 'Selecciona guardia',
           noDataHintText: 'No se encontraron guardias',
@@ -228,7 +228,7 @@ class CapacitacionPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'capacitacion',
             hintText: 'Selecciona capacitación',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -242,7 +242,7 @@ class CapacitacionPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'categoria',
             hintText: 'Selecciona categoría',
             noDataHintText: 'No se encontraron categorías',
@@ -256,7 +256,7 @@ class CapacitacionPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'empresaCapacitacion',
             hintText: 'Selecciona empresa de capacitación',
             noDataHintText: 'No se encontraron empresas',
@@ -277,7 +277,7 @@ class CapacitacionPage extends StatelessWidget {
       children: <Widget>[
         Expanded(
           flex: 1,
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'entrenador',
             hintText: 'Selecciona entrenador',
             noDataHintText: 'No se encontraron entrenadores',
@@ -484,7 +484,7 @@ class CapacitacionPage extends StatelessWidget {
               height: 50,
               width: 50,
               child: CircularProgressIndicator(),
-            ), 
+            ),
           );
         }
         if (!controller.isLoadingCapacitacionResultados.value &&

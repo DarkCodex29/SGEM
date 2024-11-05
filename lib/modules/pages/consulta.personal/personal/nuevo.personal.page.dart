@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import '../consulta.personal.controller.dart';
 import 'nuevo.personal.controller.dart';
@@ -339,7 +339,7 @@ class NuevoPersonalPage extends StatelessWidget {
             children: [
               const SizedBox(width: 10),
               Expanded(
-                child: CustomDropdown(
+                child: CustomDropdownGlobal(
                   dropdownKey: 'guardia',
                   hintText: 'Selecciona guardia',
                   noDataHintText: 'No se encontraron guardias',

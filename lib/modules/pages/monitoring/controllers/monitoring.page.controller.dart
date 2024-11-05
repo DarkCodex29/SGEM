@@ -1,16 +1,14 @@
 import 'dart:developer';
 import 'dart:typed_data';
-
 import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:intl/intl.dart';
+import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.monitoring.dart';
 import 'package:sgem/config/api/api.personal.dart';
-import 'package:sgem/config/api/api.training.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/monitoring.dart';
@@ -53,7 +51,7 @@ extension MonitoringSearchScreenExtension on MonitoringSearchScreen {
 
 class MonitoringSearchController extends GetxController {
   final PersonalService personalService = PersonalService();
-  final entrenamientoService = TrainingService();
+  final entrenamientoService = EntrenamientoService();
   final maestroDetalleService = MaestroDetalleService();
   final moduloService = ModuloMaestroService();
   final monitoringService = MonitoringService();

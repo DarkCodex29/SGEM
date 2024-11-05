@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
-import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
@@ -290,7 +290,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CustomDropdown(
+                child: CustomDropdownGlobal(
                   dropdownKey: 'categoria',
                   hintText: 'Selecciona categoría',
                   noDataHintText: 'No se encontraron categorías',
@@ -299,7 +299,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: CustomDropdown(
+                child: CustomDropdownGlobal(
                   dropdownKey: 'empresaCapacitacion',
                   hintText: 'Selecciona empresa de capacitación',
                   noDataHintText: 'No se encontraron empresas',
@@ -308,7 +308,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               Expanded(
-                child: CustomDropdown(
+                child: CustomDropdownGlobal(
                   dropdownKey: 'entrenador',
                   hintText: 'Selecciona entrenador',
                   noDataHintText: 'No se encontraron entrenadores',
@@ -340,7 +340,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: CustomDropdown(
+                child: CustomDropdownGlobal(
                   dropdownKey: 'capacitacion',
                   hintText: 'Selecciona capacitacion',
                   noDataHintText: 'No se encontraron capacitaciones',

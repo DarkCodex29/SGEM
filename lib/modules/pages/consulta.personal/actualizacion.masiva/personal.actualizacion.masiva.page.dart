@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../../config/theme/app_theme.dart';
-import '../../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
 import '../entrenamiento/modales/nuevo.modulo/entrenamiento.modulo.nuevo.dart';
 import 'personal.actualizacion.masiva.controller.dart';
@@ -109,7 +109,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'guardia',
             hintText: 'Selecciona guardia',
             noDataHintText: 'No se encontraron guardias',
@@ -143,7 +143,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'equipo',
             hintText: 'Selecciona equipo',
             noDataHintText: 'No se encontraron equipos',
@@ -159,7 +159,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'modulo',
             hintText: 'Selecciona estado de avance',
             noDataHintText: 'No se encontraron estados de avance',

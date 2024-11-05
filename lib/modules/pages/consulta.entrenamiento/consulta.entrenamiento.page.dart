@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/consulta.entrenamiento/consulta.entrenamiento.controller.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../config/theme/app_theme.dart';
-import '../../../shared/widgets/dropDown/custom.dropdown.dart';
+import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 
 class ConsultaEntrenamientoPage extends StatelessWidget {
@@ -95,7 +95,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'equipo',
             hintText: 'Selecciona equipo',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -106,7 +106,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'modulo',
             hintText: 'Selecciona modulo',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -122,7 +122,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'guardia',
             hintText: 'Selecciona guardia',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -133,7 +133,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'estadoEntrenamiento',
             hintText: 'Selecciona estado de entrenamiento',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -144,7 +144,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
           width: 20,
         ),
         Expanded(
-          child: CustomDropdown(
+          child: CustomDropdownGlobal(
             dropdownKey: 'condicion',
             hintText: 'Selecciona condicion',
             noDataHintText: 'No se encontraron capacitaciones',

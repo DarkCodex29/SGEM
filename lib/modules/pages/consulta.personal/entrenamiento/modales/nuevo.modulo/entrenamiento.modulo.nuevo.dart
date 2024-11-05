@@ -32,7 +32,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     if (inEntrenamientoModulo != null) {
       controller.obtenerModuloPorId(inEntrenamientoModulo!);
     } else {
-      //controller.nuevoModulo();
+      controller.nuevoModulo(inEntrenamiento!);
     }
 
     return Align(

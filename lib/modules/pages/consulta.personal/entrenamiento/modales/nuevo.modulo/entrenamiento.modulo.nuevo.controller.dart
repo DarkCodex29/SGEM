@@ -312,10 +312,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
   Future<void> nuevoModulo(int inEntrenamiento) async {
     tituloModal.value = 'Nuevo Modulo -';
     //TODO: Obtener el Entrenamiento
-    var entrenamiento =
+    var response =
         await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
-    log('Obtener entrenamiento $entrenamiento');
-    if (entrenamiento != null) {}
+    //log('Obtener entrenamiento $entrenamiento');
+    if (response.success) {
+      log('Obteniendo entrenamiento por id: $inEntrenamiento');
+      var entrenamiento = response.data;
+    }
+    //if (entrenamiento != null) {}
     // Ahi obtenemos la condicion
     //Llamar al endpoint de obtenerentrenamientoporid
 

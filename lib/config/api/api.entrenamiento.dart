@@ -311,14 +311,14 @@ class EntrenamientoService {
        );
 
        if (response.statusCode == 200 && response.data != null) {
-         log('Api modulo, obtenido con exito');
+         log('Api entrenamiento, obtenido con exito');
 
-         EntrenamientoModulo modulo =
+         EntrenamientoModulo entrenamiento =
          EntrenamientoModulo.fromJson(response.data);
-         log('Api modulo, ${response.data}');
-         return ResponseHandler.handleSuccess<EntrenamientoModulo>(modulo);
+         log('Api entrenamiento, ${response.data}');
+         return ResponseHandler.handleSuccess<EntrenamientoModulo>(entrenamiento);
        } else {
-         log('Api modulo, error al obtener modulo por id');
+         log('Api entrenamiento, error al obtener modulo por id');
 
          return ResponseHandler(
            success: false,

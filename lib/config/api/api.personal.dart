@@ -213,16 +213,12 @@ class PersonalService {
         '${ConfigFile.apiUrl}/Personal/ObtenerPersonalExternoPorNumeroDocumento?numeroDocumento=$numeroDocumento';
 
     try {
-      log('Buscando personal externo por número de documento: $numeroDocumento');
       final response = await dio.get(
         url,
         options: Options(
           followRedirects: false,
         ),
       );
-
-      log('Respuesta recibida para obtenerPersonalExternoPorNumeroDocumento: ${response.data}');
-
       return ResponseHandler.handleSuccess<Personal>(
           Personal.fromJson(response.data));
     } on DioException catch (e) {

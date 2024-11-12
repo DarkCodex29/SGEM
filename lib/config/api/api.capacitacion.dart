@@ -39,7 +39,7 @@ class CapacitacionService {
     int? pageSize,
     int? pageNumber,
   }) async {
-    log('Llamando al endpoint actuaalizacion masiva');
+    log('Llamando al endpoint consulta paginado');
     const url =
         '${ConfigFile.apiUrl}/Capacitacion/CapacitacionConsultaPaginado';
     Map<String, dynamic> queryParams = {
@@ -195,7 +195,7 @@ class CapacitacionService {
     log('Llamando al endpoint carga masiva');
     const url = '${ConfigFile.apiUrl}/Capacitacion/ValidarCargaMasiva';
 
-    final request = cargaMasivaList.map((e) =>  e.toJson()).toList();
+    final request = cargaMasivaList.map((e) => e.toJson()).toList();
 
     try {
       log('Enviando datos de capacitación para validación: $request');

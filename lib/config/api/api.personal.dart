@@ -211,7 +211,6 @@ class PersonalService {
       String numeroDocumento) async {
     final url =
         '${ConfigFile.apiUrl}/Personal/ObtenerPersonalExternoPorNumeroDocumento?numeroDocumento=$numeroDocumento';
-
     try {
       final response = await dio.get(
         url,
@@ -219,12 +218,7 @@ class PersonalService {
           followRedirects: false,
         ),
       );
-      log("Api Personal: se obtuvo datos del personal $numeroDocumento");
-log('Api Personal: ${response.data}');
-      return ResponseHandler.handleSuccess<Personal>(
-          //Personal.fromJson(response.data)
-          response.data
-      );
+      return ResponseHandler.handleSuccess<Personal>(response.data);
     } on DioException catch (e) {
       log('Error al obtener personal externo por número de documento: $numeroDocumento. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);

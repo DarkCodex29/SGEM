@@ -27,6 +27,10 @@ class CapacitacionCargaMasivaController extends GetxController {
 
   var errorRecords = 0.obs;
 
+  var archivoSeleccionado = false.obs; // Estado de archivo seleccionado
+  var registrosValidados = false.obs; // Estado de validación de registros
+  var sinErrores = false.obs; // Estado de errores en registros
+
   Future<void> cargarArchivo() async {
     cargaMasivaResultadosPaginados.clear();
     cargaMasivaResultadosValidados.clear();
@@ -54,7 +58,7 @@ class CapacitacionCargaMasivaController extends GetxController {
           // Procesar datos de Excel
           cargaMasivaExcel.clear();
           registrosConErrores.clear();
-
+          log('Cantidad de registros excel: ${rows.length}');
           for (var i = 1; i < rows.length; i++) {
             // Ignorar la primera fila (cabecera)
             var row = rows[i];
@@ -65,13 +69,7 @@ class CapacitacionCargaMasivaController extends GetxController {
           }
 
           log('Archivo Excel cargado con éxito');
-          // totalRecords.value = cargaMasivaExcel.length;
-          // totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
-          //
-          // correctRecords.value = cargaMasivaExcel.length;
-          // errorRecords.value = registrosConErrores.length;
-
-          //goToPage(1);
+          archivoSeleccionado.value = true;
         }
       } else {
         log('No se seleccionaron archivos');
@@ -83,7 +81,6 @@ class CapacitacionCargaMasivaController extends GetxController {
 
   Future<void> previsualizarCarga() async {
     if (cargaMasivaExcel.isNotEmpty) {
-
       // Muestra el mensaje de espera
       Get.dialog(
         const Center(
@@ -104,8 +101,25 @@ class CapacitacionCargaMasivaController extends GetxController {
         totalRecords.value = cargaMasivaResultadosValidados.length;
         totalPages.value = (totalRecords.value / rowsPerPage.value).ceil();
 
-        // correctRecords.value = cargaMasivaExcel.length;
-        // errorRecords.value = registrosConErrores.length;
+        // Contar los registros correctos y con errores
+        int correctCount = 0;
+        int errorCount = 0;
+
+        for (var record in cargaMasivaResultadosValidados) {
+          if (record.esValido) {
+            correctCount++;
+          } else {
+            errorCount++;
+          }
+        }
+
+        correctRecords.value = correctCount;
+        errorRecords.value = errorCount;
+
+        registrosValidados.value = true;
+        if (errorRecords.value == 0) {
+          sinErrores.value = true;
+        }
       }
     } else {
       // Mostrar mensaje de error cuando no hay archivo seleccionado
@@ -115,12 +129,15 @@ class CapacitacionCargaMasivaController extends GetxController {
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.redAccent,
         colorText: Colors.white,
+        isDismissible: true,
       );
     }
 
     // totalRecords.value = cargaMasivaResultados.length;
   }
-
+  bool esConfirmacionValida() {
+    return archivoSeleccionado.value && registrosValidados.value && sinErrores.value;
+  }
   Future<void> descargarPlantilla() async {
     try {
       ByteData data = await rootBundle.load('assets/excel/Plantilla.xlsx');
@@ -135,7 +152,7 @@ class CapacitacionCargaMasivaController extends GetxController {
       Get.snackbar('Descarga exitosa', 'Plantilla descargada con éxito',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green,
-          colorText: Colors.white);
+          colorText: Colors.white,);
     } catch (e) {
       Get.snackbar('Error', 'Error al descargar la plantilla',
           snackPosition: SnackPosition.TOP,
@@ -150,8 +167,8 @@ class CapacitacionCargaMasivaController extends GetxController {
     int end = start + rowsPerPage.value;
 
     // Actualiza los resultados paginados
-    cargaMasivaResultadosPaginados.value = cargaMasivaResultadosValidados.sublist(
-        start, end.clamp(0, cargaMasivaResultadosValidados.length));
+    cargaMasivaResultadosPaginados.value = cargaMasivaResultadosValidados
+        .sublist(start, end.clamp(0, cargaMasivaResultadosValidados.length));
   }
 
   void nextPage() {

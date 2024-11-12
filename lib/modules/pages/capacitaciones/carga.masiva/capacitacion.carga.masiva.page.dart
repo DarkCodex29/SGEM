@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +41,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _buildRegresarButton(context)
+              _buildRegresarButton(context,controller)
             ],
           ),
         );
@@ -60,6 +61,10 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildSeccionResultadoBarraSuperior(controller),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildSeccionResultadoContador(controller),
           const SizedBox(
             height: 20,
           ),
@@ -106,6 +111,74 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
     );
   }
 
+  Widget _buildSeccionResultadoContador(
+      CapacitacionCargaMasivaController controller) {
+    return Obx(
+      () {return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                color: Colors.blueAccent.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                child: Text(
+                  "Cantidad de registros: ${controller.totalRecords}",
+                  style: TextStyle(color: Colors.blue.shade700),
+                ),
+              )),
+          const SizedBox(
+            width: 20,
+          ),
+          Container(
+              decoration: BoxDecoration(
+                color: Colors.blueAccent.withOpacity(0.20),
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                child: Text(
+                  "Correctos: ${controller.correctRecords}",
+                  style: TextStyle(color: Colors.blueAccent.shade400),
+                ),
+              )),
+          const SizedBox(
+            width: 20,
+          ),
+          Container(
+              decoration: BoxDecoration(
+                color: Colors.redAccent.withOpacity(0.20),
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                child: Text(
+                  "Con errores: ${controller.errorRecords}",
+                  style: const TextStyle(color: Colors.red),
+                ),
+              )),
+        ],
+      );}
+    );
+  }
+
+  Widget _buildEtiquetas(String label) {
+    return Container(
+        decoration: BoxDecoration(
+          color: Colors.blueAccent.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            label,
+            style: TextStyle(color: Colors.blue.shade700),
+          ),
+        ));
+  }
+
   Widget _buildSeccionResultadoTabla(
       CapacitacionCargaMasivaController controller) {
     List<String> cabecera = [
@@ -137,7 +210,6 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
         return Column(
           children: [
             DynamicTableCabecera(cabecera: cabecera),
-            const SizedBox(height: 10),
             _buildSeccionResultadoTablaData(rowsToShow, controller),
           ],
         );
@@ -170,7 +242,8 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                     ? Text(fila.guardia, style: styleRegular)
                     : Text(fila.mensajeGuardia, style: styleError),
                 fila.esCorrectoCodigoEntrenador
-                    ? Text(fila.codigoEntrenador.toString(), style: styleRegular)
+                    ? Text(fila.codigoEntrenador.toString(),
+                        style: styleRegular)
                     : Text(fila.mensajeCodigoEntrenador, style: styleError),
                 fila.esCorrectoEntrenador
                     ? Text(fila.entrenador, style: styleRegular)
@@ -217,7 +290,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
   Widget _buildFila(List<Widget> celdas, bool esCorrecto) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Container(
         padding: const EdgeInsets.all(10.0),
         color: esCorrecto
@@ -348,19 +421,56 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRegresarButton(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          //controller.resetControllers();
-          onCancel();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+  Widget _buildRegresarButton(BuildContext context, CapacitacionCargaMasivaController controller) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            //controller.resetControllers();
+            onCancel();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.primaryColor,
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+          ),
+          child: const Text("Regresar", style: TextStyle(color: Colors.white)),
         ),
-        child: const Text("Regresar", style: TextStyle(color: Colors.white)),
-      ),
+        const SizedBox(
+          width: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            if (controller.esConfirmacionValida()) {
+              // Proceder con la carga
+              //controller.confirmarCarga();
+
+              Get.snackbar(
+                "Confirmacion",
+                "Carga con exito",
+                backgroundColor: Colors.green,
+                colorText: Colors.white,
+                isDismissible: true,
+              );
+
+            } else {
+              // Mostrar un mensaje de advertencia si las condiciones no se cumplen
+              Get.snackbar(
+                "Advertencia",
+                "Seleccione un archivo y asegúrese de que todos los registros estén validados y sin errores",
+                backgroundColor: Colors.redAccent,
+                colorText: Colors.white,
+              );
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.primaryColor,
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+          ),
+          child: const Text("Confirmar carga",
+              style: TextStyle(color: Colors.white)),
+        ),
+      ],
     );
   }
 }

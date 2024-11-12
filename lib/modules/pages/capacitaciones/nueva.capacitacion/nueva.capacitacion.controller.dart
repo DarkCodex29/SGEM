@@ -109,6 +109,8 @@ class NuevaCapacitacionController extends GetxController {
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+      log("Exito: ${response.success}, Data: ${response.data}");
+
       if (response.success && response.data != null) {
         personalExterno = response.data!;
         log('PersonalExterno: ${personalExterno!.toJson()}');

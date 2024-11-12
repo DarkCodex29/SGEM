@@ -381,14 +381,10 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                       Icons.edit,
                       AppTheme.primaryColor,
                       () async {
-                        final bool? success = await showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          enableDrag: false,
+                        await showDialog(
                           context: Get.context!,
                           builder: (context) {
                             return GestureDetector(
-                              onTap: () => FocusScope.of(context).unfocus(),
                               child: Padding(
                                 padding: MediaQuery.of(context).viewInsets,
                                 child: EntrenamientoModuloNuevo(

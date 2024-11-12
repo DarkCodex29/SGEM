@@ -677,17 +677,19 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   color: AppTheme.primaryColor),
               tooltip: 'Nuevo modulo',
               onPressed: () async {
+                var response = await controller.entrenamientoService.obtenerUltimoModuloPorEntrenamiento(training.key!);
                 final bool? success = await showModalBottomSheet(
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   enableDrag: false,
                   context: Get.context!,
                   builder: (context) {
+
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
                       child: Padding(
                         padding: MediaQuery.of(context).viewInsets,
-                        child: EntrenamientoModuloNuevo(
+                        child: response.data!.inModulo != 4 ?  EntrenamientoModuloNuevo(
                           entrenamiento: training,
                           isEdit: false,
                           inEntrenamiento: training.key,
@@ -695,7 +697,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                           onCancel: () {
                             Navigator.pop(context);
                           },
-                        ),
+                        ): Text(""),
                       ),
                     );
                   },

@@ -555,7 +555,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     Get.put(EntrenamientoNuevoController());
                 await controllerModal.getEquiposAndConditions();
                 final EntrenamientoModulo? updatedTraining = await showDialog(
-                  context: context,
+                  context: Get.context!,
                   builder: (context) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
@@ -577,7 +577,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   bool success =
                       await controller.actualizarEntrenamiento(updatedTraining);
                   if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(Get.context!).showSnackBar(
                       const SnackBar(
                         content:
                             Text("Entrenamiento actualizado correctamente"),
@@ -620,7 +620,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
 
                 bool confirmarEliminar = false;
                 await showDialog(
-                  context: context,
+                  context: Get.context!,
                   builder: (context) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
@@ -648,13 +648,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       await controller.eliminarEntrenamiento(training);
                   if (success) {
                     await showDialog(
-                      context: context,
+                      context: Get.context!,
                       builder: (context) {
                         return const SuccessDeleteWidget();
                       },
                     );
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(Get.context!).showSnackBar(
                       const SnackBar(
                         content: Text("Error al eliminar el entrenamiento."),
                         backgroundColor: Colors.red,
@@ -663,7 +663,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   }
                 } catch (e) {
                   log('Error eliminando el entrenamiento: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(Get.context!).showSnackBar(
                     SnackBar(
                       content: Text("Error eliminando el entrenamiento: $e"),
                       backgroundColor: Colors.red,
@@ -681,14 +681,10 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     .obtenerUltimoModuloPorEntrenamiento(training.key!);
 
                 if (response.data!.inModulo != 4) {
-                  final bool? success = await showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    enableDrag: false,
+                  final bool? success = await showDialog(
                     context: Get.context!,
                     builder: (context) {
                       return GestureDetector(
-                        onTap: () => FocusScope.of(context).unfocus(),
                         child: Padding(
                           padding: MediaQuery.of(context).viewInsets,
                           child: EntrenamientoModuloNuevo(

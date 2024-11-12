@@ -16,8 +16,7 @@ class DeleteReasonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      // Aseguramos que haya un Material widget aquí
-      color: Colors.transparent, // Si no quieres color de fondo en Material
+      color: Colors.transparent,
       child: Align(
         alignment: const AlignmentDirectional(0, 0),
         child: Padding(

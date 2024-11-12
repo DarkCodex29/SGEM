@@ -197,7 +197,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
             });
             if (selectedIndex == 0 ||
                 MediaQuery.of(context).size.width <= 800) {
-              Get.toNamed('/buscarEntrenamiento');
+              Get.toNamed('/');
               //Navigator.pop(context);
             }
           },

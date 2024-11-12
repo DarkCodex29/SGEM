@@ -49,78 +49,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
   RxInt inModulo = 1.obs;
   RxBool isLoadingModulo = false.obs;
 
-  //int? inEntrenamiento;
-
   EntrenamientoModulo? entrenamientoModulo;
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
 
-/*
-  Future<void> setDatosEntrenamiento(
-      EntrenamientoModulo entrenamiento, bool isEdit) async {
-    //this.entrenamiento = entrenamiento;
-    this.isEdit = isEdit;
-
-    if (entrenamiento.fechaInicio != null) {
-      fechaInicio = entrenamiento.fechaInicio;
-      fechaInicioController.text =
-          DateFormat('dd/MM/yyyy').format(entrenamiento.fechaInicio!);
-    }
-
-    if (entrenamiento.fechaTermino != null) {
-      fechaTermino = entrenamiento.fechaTermino;
-      fechaTerminoController.text =
-          DateFormat('dd/MM/yyyy').format(entrenamiento.fechaTermino!);
-    }
-
-    if (!isEdit) {
-      await obtenerSiguienteModulo();
-
-      if (siguienteModulo == null) {
-        return;
-      }
-
-      int moduloNumero = siguienteModulo ?? 1;
-      //tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
-      //tituloModal = 'Nuevo Módulo - ${}';
-      // await obtenerDatosModuloMaestro(moduloNumero);
-    } else {
-      int moduloNumero = entrenamiento.inModulo ?? 1;
-      //tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
-      // await obtenerDatosModuloMaestro(moduloNumero);
-    }
-    update();
-  }
-
-  Future<void> obtenerSiguienteModulo() async {
-    isLoadingModulo.value = true;
-    try {
-      final modulos = await entrenamientoService
-          .obtenerUltimoModuloPorEntrenamiento(entrenamiento!.key!);
-      if (modulos.success && modulos.data != null) {
-        int ultimosModulos = modulos.data!.inModulo!;
-
-        int maxModulosPermitidos =
-            entrenamiento!.condicion!.nombre! == "Experiencia" ? 2 : 4;
-
-        if (ultimosModulos >= maxModulosPermitidos) {
-          siguienteModulo = null;
-        } else {
-          siguienteModulo = ultimosModulos + 1;
-        }
-      } else {
-        siguienteModulo = 1;
-      }
-    } catch (e) {
-      siguienteModulo = 1;
-      log('Error obteniendo el siguiente módulo: $e');
-    } finally {
-      isLoadingModulo.value = false;
-      update();
-    }
-  }
-*/
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
     try {
       final response =
@@ -299,8 +232,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   Future<void> nuevoModulo(int inEntrenamiento) async {
     tituloModal.value = 'Nuevo Modulo';
-    //EntrenamientoModulo? entrenamiento2 = EntrenamientoModulo();
-    //TODO: Obtener el Entrenamiento
+
     var response =
         await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
 
@@ -310,7 +242,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Entrenamiento: ${entrenamiento!.condicion!.nombre!}');
     }
     // Experiencia
-    // Entrenamiento (Sin experiencia)
     if (entrenamiento?.condicion?.nombre!.toLowerCase() == "experiencia") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
@@ -326,7 +257,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           tituloModal.value = 'Nuevo Modulo - Modulo IV';
           inModulo.value = 4;
         }
-
       }
     } //Condicion: Entrenamiento (Sin Experiencia)
     else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
@@ -359,10 +289,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         }
       }
     }
-
-    //TODO : Obtener la condicion del entrenamiento (Experiencia / sin experiencia)
-
-    //TODO: Validar el modulo que corresponde; I y IV / I, II, II , IV
   }
 
   Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {

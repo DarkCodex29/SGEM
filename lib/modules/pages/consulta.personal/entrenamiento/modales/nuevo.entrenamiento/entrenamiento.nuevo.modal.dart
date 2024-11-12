@@ -285,7 +285,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     );
 
     final EntrenamientoPersonalController trainingPersonalController =
-        Get.find();
+        Get.put(EntrenamientoPersonalController());
     if (isEdit) {
       trainingPersonalController
           .actualizarEntrenamiento(newTraining)

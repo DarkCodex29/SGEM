@@ -111,7 +111,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       observaciones: entrenamiento!.observaciones,
     );
 
-    if(isEdit){
+    if (isEdit) {
       if (!validar(context)) {
         _mostrarErroresValidacion(context, errores);
         return false;
@@ -132,7 +132,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
         );
 
         EntrenamientoPersonalController controller =
-            Get.find<EntrenamientoPersonalController>();
+            Get.put(EntrenamientoPersonalController());
         controller.fetchModulosPorEntrenamiento(entrenamiento!.key!);
 
         return true;
@@ -168,19 +168,19 @@ class EntrenamientoModuloNuevoController extends GetxController {
       errores.add("Debe seleccionar un entrenador responsable.");
     }
 
-    if (entrenamientoModulo?.inModulo == 1) {
+    if (entrenamiento?.inModulo == 1) {
       if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamientoModulo!.fechaInicio!)) {
+          fechaInicio!.isBefore(entrenamiento!.fechaInicio!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
       }
     }
-    log("Modulo: ${entrenamientoModulo}");
-    log("Modulo: ${entrenamientoModulo!.inModulo!}");
-    if (entrenamientoModulo!.inModulo! > 1) {
+    log("Modulo: ${entrenamiento}");
+    log("Modulo: ${entrenamiento!.inModulo!}");
+    if (entrenamiento!.inModulo! > 1) {
       if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamientoModulo!.fechaTermino!)) {
+          fechaInicio!.isBefore(entrenamiento!.fechaTermino!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
@@ -299,9 +299,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-  Future<void> obtenerModuloPorId(int inEntrenamiento,int inEntrenamientoModulo) async {
+  Future<void> obtenerModuloPorId(
+      int inEntrenamiento, int inEntrenamientoModulo) async {
     var responseEntrenamiento =
-    await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
+        await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
 
     if (responseEntrenamiento.success) {
       log('Obteniendo entrenamiento por id: $inEntrenamiento');
@@ -347,6 +348,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
-    inModulo.value= entrenamientoModulo!.inModulo!;
+    inModulo.value = entrenamientoModulo!.inModulo!;
   }
 }

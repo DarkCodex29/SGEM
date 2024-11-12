@@ -430,20 +430,17 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   color: AppTheme.primaryColor,
                 ),
                 onPressed: () async {
-                  final bool? success = await showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    enableDrag: false,
+                  final bool? success = await showDialog(
                     context: Get.context!,
                     builder: (context) {
                       return GestureDetector(
-                        onTap: () => FocusScope.of(context).unfocus(),
                         child: Padding(
                           padding: MediaQuery.of(context).viewInsets,
                           child: EntrenamientoModuloNuevo(
                             entrenamiento: modulo,
                             inPersona: modulo.inPersona,
                             inEntrenamientoModulo: modulo.key,
+                            inEntrenamiento: modulo.inActividadEntrenamiento,
                             isEdit: true,
                             onCancel: () {
                               Navigator.pop(context);

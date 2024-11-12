@@ -29,8 +29,9 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.isEdit = isEdit;
     if (inEntrenamientoModulo != null) {
-      controller.obtenerModuloPorId(inEntrenamiento!,inEntrenamientoModulo!);
+      controller.obtenerModuloPorId(inEntrenamiento!, inEntrenamientoModulo!);
     } else {
       controller.nuevoModulo(inEntrenamiento!);
     }

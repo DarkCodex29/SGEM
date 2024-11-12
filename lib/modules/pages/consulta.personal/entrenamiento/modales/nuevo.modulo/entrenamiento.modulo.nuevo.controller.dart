@@ -55,7 +55,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       Get.find<GenericDropdownController>();
 
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
-
     try {
       final response =
           await moduloMaestroService.obtenerModuloMaestroPorId(moduloNumero);
@@ -72,15 +71,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
-    //  if (!validar(context)) {
-    //   _mostrarErroresValidacion(context, errores);
-    //   return false;
-    // }
-
-    // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
-
     EntrenamientoModulo modulo = EntrenamientoModulo(
-      key: isEdit ? entrenamiento!.key : 0,
+      key: entrenamiento!.key,
       inTipoActividad: entrenamiento!.inTipoActividad,
       inActividadEntrenamiento: entrenamiento!.key,
       inPersona: entrenamiento!.inPersona,
@@ -112,8 +104,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       observaciones: entrenamiento!.observaciones,
     );
 
-    if (isEdit) {
-      if (!validar(context)) {
+    if (!isEdit) {
+      if (!validar(context, modulo)) {
         _mostrarErroresValidacion(context, errores);
         return false;
       }
@@ -134,12 +126,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
         EntrenamientoPersonalController controller =
             Get.put(EntrenamientoPersonalController());
-        controller.fetchModulosPorEntrenamiento(entrenamiento!.key!);
+        controller
+            .fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento!);
+        controller.fetchTrainings(modulo.inPersona!);
 
         return true;
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
                 "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
@@ -149,7 +143,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return false;
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
         SnackBar(
           content: Text(
               "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
@@ -160,7 +154,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-  bool validar(BuildContext context) {
+  bool validar(BuildContext context, EntrenamientoModulo modulo) {
     bool respuesta = true;
     errores.clear();
 
@@ -169,26 +163,27 @@ class EntrenamientoModuloNuevoController extends GetxController {
       errores.add("Debe seleccionar un entrenador responsable.");
     }
 
-    if (entrenamiento?.inModulo == 1) {
-      if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento!.fechaInicio!)) {
+    if (modulo.inModulo == 1) {
+      if (modulo.fechaInicio == null ||
+          modulo.fechaInicio!.isBefore(modulo.fechaInicio!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
       }
     }
-    log("Modulo: ${entrenamiento}");
-    log("Modulo: ${entrenamiento!.inModulo!}");
-    if (entrenamiento!.inModulo! > 1) {
-      if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento!.fechaTermino!)) {
+    log("Modulo: $modulo");
+    log("Modulo: ${modulo.inModulo!}");
+    if (modulo.inModulo! >= 1) {
+      if (modulo.fechaInicio == null ||
+          modulo.fechaInicio!.isBefore(modulo.fechaTermino!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
       }
     }
 
-    if (fechaTermino == null || fechaTermino!.isBefore(fechaInicio!)) {
+    if (modulo.fechaTermino == null ||
+        modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
       respuesta = false;
       errores.add(
           "La fecha de término no puede ser anterior a la fecha de inicio.");

@@ -71,10 +71,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
-    if (!validar(context)) {
-      _mostrarErroresValidacion(context, errores);
-      return false;
-    }
+    //  if (!validar(context)) {
+    //   _mostrarErroresValidacion(context, errores);
+    //   return false;
+    // }
 
     // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
 
@@ -110,6 +110,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inCapacitacion: 0,
       observaciones: entrenamiento!.observaciones,
     );
+
+    if(isEdit){
+      if (!validar(context)) {
+        _mostrarErroresValidacion(context, errores);
+        return false;
+      }
+    }
 
     try {
       final response = isEdit
@@ -169,7 +176,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
             "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
       }
     }
-
+    log("Modulo: ${entrenamiento}");
+    log("Modulo: ${entrenamiento!.inModulo!}");
     if (entrenamiento!.inModulo! > 1) {
       if (fechaInicio == null ||
           fechaInicio!.isBefore(entrenamiento!.fechaTermino!)) {
@@ -330,5 +338,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
+    inModulo.value= entrenamientoModulo!.inModulo!;
   }
 }

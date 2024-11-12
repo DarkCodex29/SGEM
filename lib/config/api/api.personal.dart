@@ -209,6 +209,7 @@ class PersonalService {
 
   Future<ResponseHandler<Personal>> obtenerPersonalExternoPorNumeroDocumento(
       String numeroDocumento) async {
+    log("Api: ${numeroDocumento}");
     final url =
         '${ConfigFile.apiUrl}/Personal/ObtenerPersonalExternoPorNumeroDocumento?numeroDocumento=$numeroDocumento';
     try {
@@ -218,7 +219,9 @@ class PersonalService {
           followRedirects: false,
         ),
       );
+      //Personal personal = Personal.fromJson(response.data);
       return ResponseHandler.handleSuccess<Personal>(response.data);
+      //return ResponseHandler.handleSuccess<Personal>(response.data);
     } on DioException catch (e) {
       log('Error al obtener personal externo por número de documento: $numeroDocumento. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);

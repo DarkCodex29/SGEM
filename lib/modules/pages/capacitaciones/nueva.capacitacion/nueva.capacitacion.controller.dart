@@ -137,12 +137,18 @@ class NuevaCapacitacionController extends GetxController {
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
-      log('PersonalExterno: ${personalExterno!.toJson()}');
+
+      log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
+      log('PersonalExterno: ${response.data!.toJson()}');
       if (response.success && response.data != null) {
+        log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
+
+        log('Personal Externo: Key- ${response.data}');
         personalExterno = response.data;
         llenarControladores();
       } else {
         log('Error al obtener datos de personal: ${response.message}');
+        log('PersonalExterno: ${personalExterno!.toJson()}');
       }
     } catch (e) {
       log('Error al cargar personal externo: $e');

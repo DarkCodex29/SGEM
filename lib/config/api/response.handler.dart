@@ -45,14 +45,31 @@ class ResponseHandler<T> {
       log('Respuesta exitosa con datos de lista');
       return ResponseHandler<T>(success: true, data: response as T);
     }
+    log('Response Handler Caso: Personal');
+    if (T == Personal) {
+      try {
+        log("Api: Mapeando personal ");
+        final personal = Personal.fromJson(response);
+        log("Api: Fin Mapeando personal ");
+        return ResponseHandler<T>(success: true, data: personal as T);
 
+      } catch (e) {
+        log('Error al mapear la respuesta a Personal: $e');
+        return ResponseHandler<T>(
+          success: false,
+          message: 'Error al mapear la respuesta a Personal.',
+        );
+      }
+    }
     log('Response Handler Caso 4');
     // Caso 4: Mapa genérico
     if (response is Map<String, dynamic>) {
       log('Respuesta exitosa con datos de mapa');
       if (T == Personal) {
         try {
+          log("Api: Mapeando personal ");
           final personal = Personal.fromJson(response);
+          log("Api: Fin Mapeando personal ");
           return ResponseHandler<T>(success: true, data: personal as T);
         } catch (e) {
           log('Error al mapear la respuesta a Personal: $e');

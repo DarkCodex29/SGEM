@@ -26,7 +26,7 @@ class Personal implements DropdownElement {
   String? primerNombre;
   String? segundoNombre;
   DateTime? fechaIngreso;
-  String? licenciaCategoria;
+  String? licenciaCategoria=' ';
   DateTime? licenciaVencimiento;
   String? gerencia;
   String? area;
@@ -67,29 +67,6 @@ class Personal implements DropdownElement {
     this.area,
   });
 
-/*
-  static DateTime? parseDate(dynamic rawDate) {
-    if (rawDate == null) {
-      return null;
-    }
-    if (rawDate is String) {
-      final regExp = RegExp(r'\/Date\((\d+)\)\/');
-      final match = regExp.firstMatch(rawDate);
-      if (match != null) {
-        final timestamp = int.parse(match.group(1)!);
-        return DateTime.fromMillisecondsSinceEpoch(timestamp);
-      }
-      try {
-        return DateTime.parse(rawDate);
-      } catch (e) {
-        return null;
-      }
-    } else if (rawDate is int) {
-      return DateTime.fromMillisecondsSinceEpoch(rawDate);
-    }
-    return null;
-  }
-*/
   factory Personal.fromJson(Map<String, dynamic> json) {
     return Personal(
       key: json['Key'] ?? 0,

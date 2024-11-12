@@ -399,7 +399,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                             );
                           },
                         );
-                        //controller.showEditPersonal(personal);
+                        controller.buscarActualizacionMasiva();
                       },
                     ),
                   ),

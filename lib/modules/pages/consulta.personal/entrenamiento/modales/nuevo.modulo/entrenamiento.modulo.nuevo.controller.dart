@@ -43,6 +43,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   RxBool isSaving = false.obs;
 
   EntrenamientoModulo? entrenamiento;
+  int entrenamientoId = 0;
+  int entrenamientoModuloId = 0;
   int? siguienteModulo;
   bool isEdit = false;
   RxString tituloModal = ''.obs;
@@ -55,11 +57,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       Get.find<GenericDropdownController>();
 
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
+    log('Maestro: $moduloNumero');
     try {
       final response =
           await moduloMaestroService.obtenerModuloMaestroPorId(moduloNumero);
       if (response.success && response.data != null) {
         ModuloMaestro moduloMaestro = response.data!;
+        log('horas: ${moduloMaestro.inHoras}');
         totalHorasModuloController.value.text =
             moduloMaestro.inHoras.toString();
       } else {
@@ -72,7 +76,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   Future<bool> registrarModulo(BuildContext context) async {
     EntrenamientoModulo modulo = EntrenamientoModulo(
-      key: entrenamiento!.key,
+      key: isEdit ? entrenamientoModuloId : 0,
       inTipoActividad: entrenamiento!.inTipoActividad,
       inActividadEntrenamiento: entrenamiento!.key,
       inPersona: entrenamiento!.inPersona,
@@ -116,7 +120,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
                 "Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
@@ -249,20 +253,25 @@ class EntrenamientoModuloNuevoController extends GetxController {
     if (entrenamiento?.condicion?.nombre!.toLowerCase() == "experiencia") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
+
       if (responseModulo.success) {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
         var ultimoModulo = responseModulo.data;
+
         log('Ultimo modulo: $ultimoModulo');
         if (ultimoModulo!.inModulo == null) {
+          obtenerDatosModuloMaestro(1);
           tituloModal.value = 'Nuevo Modulo - Modulo I';
           inModulo.value = 1;
         }
         if (ultimoModulo.inModulo == 1) {
+          obtenerDatosModuloMaestro(4);
           tituloModal.value = 'Nuevo Modulo - Modulo IV';
           inModulo.value = 4;
         }
       }
     } //Condicion: Entrenamiento (Sin Experiencia)
+
     else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
         "entrenamiento (sin experiencia)") {
       var responseModulo = await entrenamientoService
@@ -272,24 +281,24 @@ class EntrenamientoModuloNuevoController extends GetxController {
         var ultimoModulo = responseModulo.data;
         log('Ultimo modulo: ${ultimoModulo == null ? 'NUll' : ultimoModulo.key}');
         if (ultimoModulo!.inModulo == null) {
+          obtenerDatosModuloMaestro(1);
           tituloModal.value = 'Nuevo Modulo - Modulo I';
           inModulo.value = 1;
         }
         if (ultimoModulo.inModulo == 1) {
+          obtenerDatosModuloMaestro(2);
           tituloModal.value = 'Nuevo Modulo - Modulo II';
           inModulo.value = 2;
         }
         if (ultimoModulo.inModulo == 2) {
+          obtenerDatosModuloMaestro(3);
           tituloModal.value = 'Nuevo Modulo - Modulo III';
           inModulo.value = 3;
         }
         if (ultimoModulo.inModulo == 3) {
+          obtenerDatosModuloMaestro(4);
           tituloModal.value = 'Nuevo Modulo - Modulo IV';
           inModulo.value = 4;
-        }
-        if (ultimoModulo.inModulo == 4) {
-          tituloModal.value = 'Nuevo Modulo';
-          onClose();
         }
       }
     }
@@ -303,6 +312,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
     if (responseEntrenamiento.success) {
       log('Obteniendo entrenamiento por id: $inEntrenamiento');
       entrenamiento = responseEntrenamiento.data;
+      entrenamientoId = inEntrenamiento;
+      entrenamientoModuloId = inEntrenamientoModulo;
       log('Entrenamiento: ${entrenamiento!.condicion!.nombre!}');
     }
 
@@ -310,10 +321,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Obteniendo modulo por id: $inEntrenamientoModulo');
       final response =
           await moduloMaestroService.obtenerModuloPorId(inEntrenamientoModulo);
+
       log('Obteniendo modulo por id: ${response.success}');
       if (response.success) {
         log('Modulo obtenido: ${response.data}');
         entrenamientoModulo = response.data!;
+        obtenerDatosModuloMaestro(entrenamientoModulo!.inModulo!);
         llenarDatos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar el módulo');

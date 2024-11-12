@@ -234,9 +234,9 @@ class NuevaCapacitacionPage extends StatelessWidget {
               controller: controller.dniController,
               icon: const Icon(Icons.search),
               onIconPressed: () {
-                //controller.loadPersonalExterno(controller.dniController.text);
-                controller
-                    .buscarPersonalExternoPorDni(controller.dniController.text);
+                controller.loadPersonalExterno(controller.dniController.text);
+                //controller
+                //  .buscarPersonalExternoPorDni(controller.dniController.text);
               },
             ),
           ),

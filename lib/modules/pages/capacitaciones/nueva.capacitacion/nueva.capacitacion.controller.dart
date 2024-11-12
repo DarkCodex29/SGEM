@@ -105,14 +105,15 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
+/*
   Future<void> buscarPersonalExternoPorDni(String dni) async {
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+      log('PersonalExterno: ${personalExterno!.toJson()}');
+
       if (response.success && response.data != null) {
         personalExterno = response.data!;
-        log('PersonalExterno: ${personalExterno!.toJson()}');
-
         nombresController.text =
             '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
         apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
@@ -130,11 +131,13 @@ class NuevaCapacitacionController extends GetxController {
       Get.snackbar('Error', 'Error al buscar personal externo: $e');
     }
   }
-
+*/
   Future<Personal?> loadPersonalExterno(String dni) async {
+    log('Buscando personal externo con DNI: $dni');
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+      log('PersonalExterno: ${personalExterno!.toJson()}');
       if (response.success && response.data != null) {
         personalExterno = response.data;
         llenarControladores();

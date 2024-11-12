@@ -211,7 +211,6 @@ class PersonalService {
       String numeroDocumento) async {
     final url =
         '${ConfigFile.apiUrl}/Personal/ObtenerPersonalExternoPorNumeroDocumento?numeroDocumento=$numeroDocumento';
-
     try {
       final response = await dio.get(
         url,

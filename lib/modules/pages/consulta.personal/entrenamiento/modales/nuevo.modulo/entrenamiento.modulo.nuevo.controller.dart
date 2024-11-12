@@ -168,19 +168,19 @@ class EntrenamientoModuloNuevoController extends GetxController {
       errores.add("Debe seleccionar un entrenador responsable.");
     }
 
-    if (entrenamiento?.inModulo == 1) {
+    if (entrenamientoModulo?.inModulo == 1) {
       if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento!.fechaInicio!)) {
+          fechaInicio!.isBefore(entrenamientoModulo!.fechaInicio!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
       }
     }
-    log("Modulo: ${entrenamiento}");
-    log("Modulo: ${entrenamiento!.inModulo!}");
-    if (entrenamiento!.inModulo! > 1) {
+    log("Modulo: ${entrenamientoModulo}");
+    log("Modulo: ${entrenamientoModulo!.inModulo!}");
+    if (entrenamientoModulo!.inModulo! > 1) {
       if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento!.fechaTermino!)) {
+          fechaInicio!.isBefore(entrenamientoModulo!.fechaTermino!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
@@ -299,7 +299,16 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-  Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {
+  Future<void> obtenerModuloPorId(int inEntrenamiento,int inEntrenamientoModulo) async {
+    var responseEntrenamiento =
+    await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
+
+    if (responseEntrenamiento.success) {
+      log('Obteniendo entrenamiento por id: $inEntrenamiento');
+      entrenamiento = responseEntrenamiento.data;
+      log('Entrenamiento: ${entrenamiento!.condicion!.nombre!}');
+    }
+
     try {
       log('Obteniendo modulo por id: $inEntrenamientoModulo');
       final response =

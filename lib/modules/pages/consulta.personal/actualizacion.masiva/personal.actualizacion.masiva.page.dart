@@ -390,7 +390,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                                 child: EntrenamientoModuloNuevo(
                                   isEdit: true,
                                   inEntrenamientoModulo: fila.key,
-                                  //inEntrenamientoModulo: 20,
+                                  inEntrenamiento: fila.inEntrenamiento,
                                   onCancel: () {
                                     Navigator.pop(context);
                                   },

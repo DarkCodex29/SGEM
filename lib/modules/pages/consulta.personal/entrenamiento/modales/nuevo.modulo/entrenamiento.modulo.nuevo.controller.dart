@@ -55,6 +55,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       Get.find<GenericDropdownController>();
 
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
+
     try {
       final response =
           await moduloMaestroService.obtenerModuloMaestroPorId(moduloNumero);

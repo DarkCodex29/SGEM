@@ -677,34 +677,44 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   color: AppTheme.primaryColor),
               tooltip: 'Nuevo modulo',
               onPressed: () async {
-                var response = await controller.entrenamientoService.obtenerUltimoModuloPorEntrenamiento(training.key!);
-                final bool? success = await showModalBottomSheet(
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  enableDrag: false,
-                  context: Get.context!,
-                  builder: (context) {
+                var response = await controller.entrenamientoService
+                    .obtenerUltimoModuloPorEntrenamiento(training.key!);
 
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Padding(
-                        padding: MediaQuery.of(context).viewInsets,
-                        child: response.data!.inModulo != 4 ?  EntrenamientoModuloNuevo(
-                          entrenamiento: training,
-                          isEdit: false,
-                          inEntrenamiento: training.key,
-                          inPersona: training.inPersona,
-                          onCancel: () {
-                            Navigator.pop(context);
-                          },
-                        ): Text(""),
-                      ),
-                    );
-                  },
-                );
-                if (success != null && success) {
-                  controller.fetchTrainings(
-                      controllerPersonal.selectedPersonal.value!.key!);
+                if (response.data!.inModulo != 4) {
+                  final bool? success = await showModalBottomSheet(
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    enableDrag: false,
+                    context: Get.context!,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: EntrenamientoModuloNuevo(
+                            entrenamiento: training,
+                            isEdit: false,
+                            inEntrenamiento: training.key,
+                            inPersona: training.inPersona,
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                  if (success != null && success) {
+                    controller.fetchTrainings(
+                        controllerPersonal.selectedPersonal.value!.key!);
+                  }
+                } else {
+                  Get.snackbar(
+                    "Alerta",
+                    "No se puede agregar más módulos",
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
                 }
               },
             ),

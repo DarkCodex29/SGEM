@@ -143,7 +143,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       return false;
     }
 
-   // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
+    // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
 
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: isEdit ? entrenamiento!.key : 0,
@@ -318,8 +318,18 @@ class EntrenamientoModuloNuevoController extends GetxController {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
         var ultimoModulo = responseModulo.data;
         log('Ultimo modulo: $ultimoModulo');
+        if (ultimoModulo!.inModulo == null) {
+          tituloModal.value = 'Nuevo Modulo - Modulo I';
+          inModulo.value = 1;
+        }
+        if (ultimoModulo.inModulo == 1) {
+          tituloModal.value = 'Nuevo Modulo - Modulo IV';
+          inModulo.value = 4;
+        }
+
       }
-    } else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
+    } //Condicion: Entrenamiento (Sin Experiencia)
+    else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
         "entrenamiento (sin experiencia)") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
@@ -327,9 +337,25 @@ class EntrenamientoModuloNuevoController extends GetxController {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
         var ultimoModulo = responseModulo.data;
         log('Ultimo modulo: ${ultimoModulo == null ? 'NUll' : ultimoModulo.key}');
-        if (ultimoModulo!.key == null) {
+        if (ultimoModulo!.inModulo == null) {
           tituloModal.value = 'Nuevo Modulo - Modulo I';
-          inModulo.value=1;
+          inModulo.value = 1;
+        }
+        if (ultimoModulo.inModulo == 1) {
+          tituloModal.value = 'Nuevo Modulo - Modulo II';
+          inModulo.value = 2;
+        }
+        if (ultimoModulo.inModulo == 2) {
+          tituloModal.value = 'Nuevo Modulo - Modulo III';
+          inModulo.value = 3;
+        }
+        if (ultimoModulo.inModulo == 3) {
+          tituloModal.value = 'Nuevo Modulo - Modulo IV';
+          inModulo.value = 4;
+        }
+        if (ultimoModulo.inModulo == 4) {
+          tituloModal.value = 'Nuevo Modulo';
+          onClose();
         }
       }
     }

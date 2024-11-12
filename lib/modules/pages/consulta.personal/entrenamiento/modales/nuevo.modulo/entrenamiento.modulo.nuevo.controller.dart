@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
@@ -57,6 +56,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
 
+/*
   Future<void> setDatosEntrenamiento(
       EntrenamientoModulo entrenamiento, bool isEdit) async {
     //this.entrenamiento = entrenamiento;
@@ -120,7 +120,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       update();
     }
   }
-
+*/
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
     try {
       final response =
@@ -143,7 +143,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       return false;
     }
 
-   // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
+    // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
 
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: isEdit ? entrenamiento!.key : 0,
@@ -329,7 +329,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
         log('Ultimo modulo: ${ultimoModulo == null ? 'NUll' : ultimoModulo.key}');
         if (ultimoModulo!.key == null) {
           tituloModal.value = 'Nuevo Modulo - Modulo I';
-          inModulo.value=1;
+          inModulo.value = 1;
         }
       }
     }

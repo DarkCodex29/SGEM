@@ -671,16 +671,7 @@ class CapacitacionPage extends StatelessWidget {
                                             return const SuccessDeleteWidget();
                                           },
                                         );
-                                        controller.buscarCapacitaciones();
-
-                                        ScaffoldMessenger.of(Get.context!)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                                "Capacitación eliminada exitosamente."),
-                                            backgroundColor: Colors.green,
-                                          ),
-                                        );
+                                        //controller.buscarCapacitaciones();
                                       } else {
                                         ScaffoldMessenger.of(Get.context!)
                                             .showSnackBar(

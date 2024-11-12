@@ -337,8 +337,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
     //TODO : Obtener la condicion del entrenamiento (Experiencia / sin experiencia)
 
     //TODO: Validar el modulo que corresponde; I y IV / I, II, II , IV
-
-    // COnsultar ultimo modulo por entrenamiento
   }
 
   Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {

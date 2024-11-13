@@ -209,7 +209,7 @@ class PersonalService {
 
   Future<ResponseHandler<Personal>> obtenerPersonalExternoPorNumeroDocumento(
       String numeroDocumento) async {
-    log("Api: ${numeroDocumento}");
+    log("Api: $numeroDocumento");
     final url =
         '${ConfigFile.apiUrl}/Personal/ObtenerPersonalExternoPorNumeroDocumento?numeroDocumento=$numeroDocumento';
     try {

@@ -32,6 +32,7 @@ class DropdownDataInitializer {
       _loadEntrenador(),
       _loadEstadoEntrenamiento(),
       _loadCondicion(),
+      _loadEstadoModulo(),
     ]);
   }
 
@@ -147,5 +148,14 @@ class DropdownDataInitializer {
       );
     });
     log('Condición cargada');
+  }
+
+  Future<void> _loadEstadoModulo() async {
+    await dropdownController.loadOptions('estadoModulo', () async {
+      return await _handleResponse(
+        maestroDetalleService.listarMaestroDetallePorMaestro(10),
+      );
+    });
+    log('Estados de módulo cargados');
   }
 }

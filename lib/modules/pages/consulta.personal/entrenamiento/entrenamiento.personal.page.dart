@@ -156,20 +156,28 @@ class EntrenamientoPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
+              var ultimoEntrenamiento = await controller.ObtenerUltimoEntrenamientoPorPersona(
+                  controllerPersonal.selectedPersonal.value!.id );
+
               await showDialog(
                 context: context,
                 builder: (context) {
                   if (controllerPersonal.selectedPersonal.value != null) {
+                    if (ultimoEntrenamiento?.estadoEntrenamiento!.nombre!="entrenando"){
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Center(
+                            child: EntrenamientoNuevoModal(
+                                data: controllerPersonal.selectedPersonal.value!,
+                                close: () {
+                                  Navigator.pop(context);
+                                })),
+                      );
+                    }
+                    else{
+                      return  Text("Null person");
+                    }
 
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Center(
-                          child: EntrenamientoNuevoModal(
-                              data: controllerPersonal.selectedPersonal.value!,
-                              close: () {
-                                Navigator.pop(context);
-                              })),
-                    );
                   } else {
                     return const Text("Null person");
                   }

@@ -73,23 +73,23 @@ class EntrenamientoPersonalController extends GetxController {
   List<EntrenamientoModulo> obtenerModulosPorEntrenamiento(int trainingKey) {
     return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
-  Future<void> ObtenerUltimoEntrenamientoPorPersona() async {
-    for (var entrenamiento in trainingList) {
+  Future<EntrenamientoModulo?> ObtenerUltimoEntrenamientoPorPersona(int personaId) async {
       try {
-        final response = await moduloMaestroService
-            .listarModulosPorEntrenamiento(entrenamiento.key!);
-        log('Modulos por entrenamiento: ${response.data}');
+        final response = await entrenamientoService.obtenerUltimoEntrenamientoPorPersona(personaId);
+
+        log('Entrenamiento: ${response.data}');
         if (response.success) {
-          modulosPorEntrenamiento[entrenamiento.key!] =
-              RxList<EntrenamientoModulo>(response.data!);
+          var entrenamientoModulo = response.data as EntrenamientoModulo;
+
+          return entrenamientoModulo;
         }
       } catch (e) {
         log('Error al cargar los módulos: $e');
         Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos, $e');
+        return null;
       }
-    }
+      return null;
   }
-
 
   Future<bool> actualizarEntrenamiento(EntrenamientoModulo training) async {
     try {

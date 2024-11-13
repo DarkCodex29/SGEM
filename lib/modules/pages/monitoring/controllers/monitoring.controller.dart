@@ -1,8 +1,14 @@
+
+
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/api.monitoring.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/response.handler.dart';
@@ -50,6 +56,10 @@ class CreateMonitoringController extends GetxController {
   var selectedEstadoEntrenamientoKey = RxnInt();
   var selectedCondicionKey = RxnInt();
   var selectedPersonKey = RxnInt();
+  final ArchivoService archivoService = ArchivoService();
+  var documentoAdjuntoNombre = ''.obs;
+  var documentoAdjuntoBytes = Rxn<Uint8List>();
+  var archivosAdjuntos = <Map<String, dynamic>>[].obs;
 
   clearModel() {
     modelMonitoring ==
@@ -110,7 +120,6 @@ class CreateMonitoringController extends GetxController {
       if (response.success) {
         // ignore: use_build_context_synchronously
         _mostrarMensajeGuardado(context);
-        clearModel();
         state = true;
       } else {
         _mostrarErroresValidacion(Get.context!, ['Error al guardar monitoreo']);
@@ -121,6 +130,167 @@ class CreateMonitoringController extends GetxController {
       isLoandingSave.value = false;
     }
     return state;
+  }
+
+  Future<void> adjuntarDocumentos() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'doc', 'docx', 'xlsx'],
+      );
+
+      if (result != null) {
+        for (var file in result.files) {
+          if (file.bytes != null) {
+            Uint8List fileBytes = file.bytes!;
+            String fileName = file.name;
+
+            archivosAdjuntos.add({
+              'nombre': fileName,
+              'bytes': fileBytes,
+              'nuevo': true,
+            });
+            log('Documento adjuntado correctamente: $fileName');
+          }
+        }
+      } else {
+        log('No se seleccionaron archivos');
+      }
+    } catch (e) {
+      log('Error al adjuntar documentos: $e');
+    }
+  }
+
+  Future<void> uploadArchive() async {
+    final archivosNuevos =
+        archivosAdjuntos.where((archivo) => archivo['nuevo'] == true).toList();
+    for (final archivo in archivosNuevos) {
+      try {
+        String datosBase64 = base64Encode(archivo['bytes']);
+        String extension = archivo['nombre'].split('.').last;
+        String mimeType = _determinarMimeType(extension);
+
+        final response = await archivoService.registrarArchivo(
+          key: 0,
+          nombre: archivo['nombre'],
+          extension: extension,
+          mime: mimeType,
+          datos: datosBase64,
+          inTipoArchivo: 1,
+          inOrigen: 1, // 1: TABLA Personal
+          inOrigenKey: modelMonitoring.key!,
+        );
+
+        if (response.success) {
+          log('Archivo ${archivo['nombre']} registrado con éxito');
+          archivo['nuevo'] = false;
+        } else {
+          log('Error al registrar archivo ${archivo['nombre']}: ${response.message}');
+        }
+      } catch (e) {
+        log('Error al registrar archivo ${archivo['nombre']}: $e');
+      }
+    }
+  }
+
+  String _determinarMimeType(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'xlsx':
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
+  Future<void> obtenerArchivosRegistrados(int idOrigen, int idOrigenKey) async {
+    log('Obteniendo archivos registrados');
+    log('idOrigen: $idOrigen, idOrigenKey: $idOrigenKey');
+    try {
+      final response = await archivoService.obtenerArchivosPorOrigen(
+        idOrigen: idOrigen,
+        idOrigenKey: idOrigenKey,
+      );
+      log('Response: ${response.data}');
+      if (response.success && response.data != null) {
+        archivosAdjuntos.clear();
+        for (var archivo in response.data!) {
+          List<int> datos = List<int>.from(archivo['Datos']);
+          Uint8List archivoBytes = Uint8List.fromList(datos);
+
+          archivosAdjuntos.add({
+            'nombre': archivo['Nombre'],
+            'bytes': archivoBytes,
+          });
+
+          log('Archivo ${archivo['Nombre']} obtenido con éxito');
+        }
+      } else {
+        log('Error al obtener archivos: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener archivos: $e');
+    }
+  }
+  void eliminarArchivo(String nombreArchivo) {
+    archivosAdjuntos.removeWhere((archivo) =>
+        archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
+    log('Archivo $nombreArchivo eliminado');
+  }
+  Future<void> descargarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      String nombreArchivo = archivo['nombre'];
+      Uint8List archivoBytes = archivo['bytes'];
+      String extension = nombreArchivo.split('.').last;
+      if (nombreArchivo.endsWith('.$extension')) {
+        nombreArchivo = nombreArchivo.substring(
+            0, nombreArchivo.length - extension.length - 1);
+      }
+
+      MimeType mimeType = _determinarMimeType2(extension);
+
+      await FileSaver.instance.saveFile(
+        name: nombreArchivo,
+        bytes: archivoBytes,
+        ext: extension,
+        mimeType: mimeType,
+      );
+
+      Get.snackbar(
+        'Descarga exitosa',
+        'El archivo $nombreArchivo.$extension se descargó correctamente',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      log('Error al descargar el archivo $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo descargar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  MimeType _determinarMimeType2(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return MimeType.pdf;
+      case 'doc':
+      case 'docx':
+        return MimeType.microsoftWord;
+      case 'xlsx':
+        return MimeType.microsoftExcel;
+      default:
+        return MimeType.other;
+    }
   }
 
   Future<bool> deleteMonitoring(BuildContext context) async {
@@ -165,7 +335,7 @@ class CreateMonitoringController extends GetxController {
             Get.context!, ['No hay infromación para mostar.']);
       }
       setInfoPerson(responseListar.data!.first);
-      loadPersonalPhoto(responseListar.data!.first.inPersonalOrigen!);
+      await loadPersonalPhoto(responseListar.data!.first.inPersonalOrigen!);
     } catch (e) {
       log('Error inesperado al buscar el personal: $e');
     } finally {
@@ -213,6 +383,7 @@ class CreateMonitoringController extends GetxController {
       codigoMCPController.text = person.codigoMcp!;
       await searchPersonByCodeMcp();
       isLoandingDetail.value = false;
+      obtenerArchivosRegistrados(1, monitoring.key!);
     } catch (e) {
       log('error al obtener la información del monitoreo');
     }

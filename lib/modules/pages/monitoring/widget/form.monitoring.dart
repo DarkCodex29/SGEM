@@ -177,106 +177,84 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
             ),
           ),
           const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.only(left: 7),
-            child: RichText(
-              text: const TextSpan(
-                text: "Adjuntar Archivos: ",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                children: [
-                  TextSpan(
-                    text: "Archivo adjunto peso max:4MB",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: AppTheme.backgroundBlue,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: widget.isSmallScreen
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Monitoreo de equipos pesados:"),
-                      const SizedBox(height: 10),
-                      CustomTextFormField(
-                        label: "",
-                        isReadOnly: true,
-                        isRequired: false,
-                        controller: TextEditingController(text: ""),
-                        icon: const Icon(Icons.attach_file),
-                        onIconPressed: () {},
-                      ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      const Text("Monitoreo de equipos pesados:"),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 250,
-                        child: CustomTextFormField(
-                          label: "",
-                          isReadOnly: true,
-                          isRequired: false,
-                          controller: TextEditingController(text: ""),
-                          icon: const Icon(Icons.attach_file),
-                          onIconPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: widget.isSmallScreen
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text("Otros:"),
-                      const SizedBox(height: 10),
-                      CustomTextFormField(
-                        label: "",
-                        isReadOnly: true,
-                        controller: TextEditingController(text: ""),
-                        icon: const Icon(Icons.attach_file),
-                        onIconPressed: () {},
-                        isRequired: false,
-                      ),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      const SizedBox(width: 200, child: Text("Otros:")),
-                      const SizedBox(width: 10),
-                      SizedBox(
-                        width: 250,
-                        child: CustomTextFormField(
-                          label: "",
-                          isReadOnly: true,
-                          controller: TextEditingController(text: ""),
-                          icon: const Icon(Icons.attach_file),
-                          isRequired: false,
-                          onIconPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-          ),
+          if (widget.isEditing) _buildArchivoSection(),
           Padding(
             padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
             child: _buildButtons(context),
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildArchivoSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Icon(Icons.attach_file, color: Colors.grey),
+            SizedBox(width: 10),
+            Text("Archivos adjuntos:"),
+            SizedBox(width: 10),
+            Text(
+              "(Archivos adjuntos peso máx: 8MB c/u)",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Obx(() {
+          if (widget.createMonitoringController.archivosAdjuntos.isEmpty) {
+            return const Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Text("No hay archivos adjuntos."),
+            );
+          } else {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: widget.createMonitoringController.archivosAdjuntos
+                  .map((archivo) {
+                return Row(
+                  children: [
+                    TextButton.icon(
+                      onPressed: () {
+                        widget.createMonitoringController
+                            .eliminarArchivo(archivo['nombre']);
+                      },
+                      icon: const Icon(Icons.close, color: Colors.red),
+                      label: Text(
+                        archivo['nombre'] ?? '',
+                        style: TextStyle(
+                          color: archivo['nuevo'] == true
+                              ? Colors.red
+                              : Colors.green,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.download, color: Colors.blue),
+                      onPressed: () {
+                        widget.createMonitoringController
+                            .descargarArchivo(archivo);
+                      },
+                    ),
+                  ],
+                );
+              }).toList(),
+            );
+          }
+        }),
+        const SizedBox(height: 10),
+        TextButton.icon(
+          onPressed: () {
+            widget.createMonitoringController.adjuntarDocumentos();
+          },
+          icon: const Icon(Icons.attach_file, color: Colors.blue),
+          label: const Text("Adjuntar Documentos",
+              style: TextStyle(color: Colors.blue)),
+        ),
+      ],
     );
   }
 
@@ -328,8 +306,6 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
               .firstWhere(
             (option) => option.valor == value,
           );
-          widget.monitoringSearchController.selectedEstadoEntrenamientoKey
-              .value = selectedOption.key;
           widget.createMonitoringController.selectedEstadoEntrenamientoKey
               .value = selectedOption.key;
         },
@@ -371,8 +347,6 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          widget.monitoringSearchController.selectedCondicionKey.value =
-              selectedOption.key;
           widget.createMonitoringController.selectedCondicionKey.value =
               selectedOption.key;
         },
@@ -414,8 +388,6 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
           );
-          widget.monitoringSearchController.selectedEquipoKey.value =
-              selectedOption.key;
           widget.createMonitoringController.selectedEquipoKey.value =
               selectedOption.key;
         },
@@ -458,8 +430,6 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           final selectedOption = options.firstWhere(
             (option) => option.nombreCompleto == value,
           );
-          widget.monitoringSearchController.selectedEntrenadorKey.value =
-              selectedOption.inPersonalOrigen;
           widget.createMonitoringController.selectedEntrenadorKey.value =
               selectedOption.inPersonalOrigen;
         },
@@ -526,9 +496,16 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                     final state = await widget.createMonitoringController
                         .saveMonitoring(context);
                     if (state) {
-                      widget.monitoringSearchController.screen.value =
-                          MonitoringSearchScreen.none;
-                      widget.monitoringSearchController.searchMonitoring();
+                      MonitoringSearchScreen.none;
+                      if (widget.isEditing) {
+                        widget.createMonitoringController.uploadArchive();
+                      } else {
+                        widget.monitoringSearchController.screen.value =
+                            widget.monitoringSearchController.clearFilter();
+                        widget.createMonitoringController.clearModel();
+                        widget.monitoringSearchController
+                            .searchMonitoring(pageNumber: 1, pageSize: 10);
+                      }
                     }
                   }
                 },

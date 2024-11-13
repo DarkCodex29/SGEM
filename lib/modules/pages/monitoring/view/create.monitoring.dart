@@ -75,13 +75,14 @@ class _CreateMonioringViewState extends State<CreateMonioringView> {
                                   : const Icon(Icons.search);
                             }),
                             isReadOnly: widget.isEditing || widget.isViewing,
-                            onIconPressed: () {
+                            onIconPressed: () async {
                               if (!createMonitoringController
                                       .isLoadingCodeMcp.value &&
                                   !widget.isEditing &&
                                   !widget.isViewing) {
-                                createMonitoringController
+                                await createMonitoringController
                                     .searchPersonByCodeMcp();
+                                setState(() {});
                               }
                             },
                           ),
@@ -90,9 +91,9 @@ class _CreateMonioringViewState extends State<CreateMonioringView> {
                           height: 20,
                         ),
                         InfoPersonMonitoringWidegt(
-                          isSmallScreen: isSmallScreen,
-                          createMonitoringController:createMonitoringController
-                        ),
+                            isSmallScreen: isSmallScreen,
+                            createMonitoringController:
+                                createMonitoringController),
                         const SizedBox(
                           height: 20,
                         ),

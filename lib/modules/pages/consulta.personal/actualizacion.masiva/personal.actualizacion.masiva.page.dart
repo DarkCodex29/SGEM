@@ -102,7 +102,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Documento de identidad",
-            controller: controller.codigoMcpController,
+            controller: controller.numeroDocumentoController,
           ),
         ),
         const SizedBox(
@@ -127,7 +127,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Nombres Personal",
-            controller: controller.codigoMcpController,
+            controller: controller.nombresController,
           ),
         ),
         const SizedBox(
@@ -136,7 +136,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Apellidos Personal",
-            controller: controller.codigoMcpController,
+            controller: controller.apellidosController,
           ),
         ),
         const SizedBox(

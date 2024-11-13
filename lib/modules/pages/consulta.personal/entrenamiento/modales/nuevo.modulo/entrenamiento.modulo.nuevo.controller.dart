@@ -177,6 +177,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
     log("Modulo: $modulo");
     log("Modulo: ${modulo.inModulo!}");
+    /*
     if (modulo.inModulo! >= 1) {
       if (modulo.fechaInicio == null ||
           modulo.fechaInicio!.isBefore(modulo.fechaTermino!)) {
@@ -185,7 +186,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
             "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
       }
     }
-
+*/
     if (modulo.fechaTermino == null ||
         modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
       respuesta = false;

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
@@ -188,13 +189,6 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    /*
-                    Expanded(
-                        child: CustomTextField(
-                            label: "Código",
-                            controller: controller.codigoMcpController)),
-                    const SizedBox(width: 20),
-                    */
                     Expanded(
                         child: CustomTextField(
                             label: "DNI",
@@ -240,10 +234,9 @@ class NuevaCapacitacionPage extends StatelessWidget {
               controller: controller.dniController,
               icon: const Icon(Icons.search),
               onIconPressed: () {
-                controller
-                    .buscarPersonalExternoPorDni(controller.dniController.text);
-
-                //controller.loadPersonalExterno(controller.dniController.text);
+                controller.loadPersonalExterno(controller.dniController.text);
+                //controller
+                //  .buscarPersonalExternoPorDni(controller.dniController.text);
               },
             ),
           ),
@@ -295,6 +288,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona categoría',
                   noDataHintText: 'No se encontraron categorías',
                   controller: controller.dropdownController,
+                  isRequired: true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -304,6 +298,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona empresa de capacitación',
                   noDataHintText: 'No se encontraron empresas',
                   controller: controller.dropdownController,
+                  isRequired: true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -313,6 +308,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona entrenador',
                   noDataHintText: 'No se encontraron entrenadores',
                   controller: controller.dropdownController,
+                  isRequired: true,
                 ),
               ),
             ],
@@ -321,19 +317,42 @@ class NuevaCapacitacionPage extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                  child: CustomTextField(
-                      label: "Fecha inicio",
-                      controller: controller.fechaInicioController)),
+                child: CustomTextField(
+                  label: "Fecha inicio",
+                  controller: controller.fechaInicioController,
+                  icon: const Icon(Icons.calendar_today),
+                  onIconPressed: () async {
+                    controller.fechaInicio = await _selectDate(Get.context!);
+                    controller.fechaInicioController.text =
+                        DateFormat('dd/MM/yyyy')
+                            .format(controller.fechaInicio!);
+                  },
+                  isRequired: true,
+                ),
+              ),
               const SizedBox(width: 20),
               Expanded(
-                  child: CustomTextField(
-                      label: "Fecha de término",
-                      controller: controller.fechaTerminoController)),
+                child: CustomTextField(
+                  label: "Fecha de término",
+                  controller: controller.fechaTerminoController,
+                  icon: const Icon(Icons.calendar_today),
+                  onIconPressed: () async {
+                    controller.fechaTermino = await _selectDate(Get.context!);
+                    controller.fechaTerminoController.text =
+                        DateFormat('dd/MM/yyyy')
+                            .format(controller.fechaTermino!);
+                  },
+                  isRequired: true,
+                ),
+              ),
               const SizedBox(width: 20),
               Expanded(
-                  child: CustomTextField(
-                      label: "Horas de capacitación",
-                      controller: controller.horasController)),
+                child: CustomTextField(
+                  label: "Horas de capacitación",
+                  controller: controller.horasController,
+                  isRequired: true,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -345,18 +364,24 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona capacitacion',
                   noDataHintText: 'No se encontraron capacitaciones',
                   controller: controller.dropdownController,
+                  isRequired: true,
                 ),
               ),
               const SizedBox(width: 20),
               Expanded(
-                  child: CustomTextField(
-                      label: "Nota teoría",
-                      controller: controller.notaTeoriaController)),
-              const SizedBox(width: 20),
+                child: CustomTextField(
+                  label: "Nota teoría",
+                  controller: controller.notaTeoriaController,
+                ),
+              ),
+              const SizedBox(width: 30),
               Expanded(
-                  child: CustomTextField(
-                      label: "Nota práctica",
-                      controller: controller.notaPracticaController)),
+                child: CustomTextField(
+                  label: "Nota práctica",
+                  controller: controller.notaPracticaController,
+                ),
+              ),
+              const SizedBox(width: 10),
             ],
           ),
         ],
@@ -437,22 +462,38 @@ class NuevaCapacitacionPage extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
+            controller.resetControllers();
             onCancel();
           },
           child: const Text("Cancelar"),
         ),
         const SizedBox(width: 20),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
+            bool? success = false;
             if (isEditMode) {
-              controller.actualizarCapacitacion();
+              success = await controller.actualizarCapacitacion();
             } else {
-              controller.registrarCapacitacion();
+              success = await controller.registrarCapacitacion();
+            }
+            if (success!) {
+              controller.resetControllers();
+              onCancel();
             }
           },
           child: Text(isEditMode ? "Actualizar" : "Guardar"),
         ),
       ],
     );
+  }
+
+  Future<DateTime?> _selectDate(BuildContext context) async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    return picked;
   }
 }

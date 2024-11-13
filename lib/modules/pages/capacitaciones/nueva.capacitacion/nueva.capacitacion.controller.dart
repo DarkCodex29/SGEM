@@ -10,10 +10,12 @@ import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/constants/tipo.actividad.dart';
+import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
+import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
 class NuevaCapacitacionController extends GetxController {
   // Controladores de campos de texto
@@ -26,6 +28,8 @@ class NuevaCapacitacionController extends GetxController {
       TextEditingController();
   final TextEditingController fechaInicioController = TextEditingController();
   final TextEditingController fechaTerminoController = TextEditingController();
+  DateTime? fechaInicio;
+  DateTime? fechaTermino;
   final TextEditingController horasController = TextEditingController();
   final TextEditingController notaTeoriaController = TextEditingController();
   final TextEditingController notaPracticaController = TextEditingController();
@@ -55,7 +59,7 @@ class NuevaCapacitacionController extends GetxController {
 
   RxBool isLoadingCategoria = false.obs;
 
-  RxList<MaestroDetalle> categoriaOpciones = <MaestroDetalle>[].obs;
+  final List<String> errores = [];
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
@@ -65,6 +69,9 @@ class NuevaCapacitacionController extends GetxController {
   Personal? personalInterno;
   Personal? personalExterno;
   String tipoPersona = '';
+
+  CapacitacionController capacitacionController =
+      Get.put(CapacitacionController());
 
   Future<EntrenamientoModulo?> loadCapacitacion(int capacitacionKey) async {
     try {
@@ -98,45 +105,50 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
+/*
   Future<void> buscarPersonalExternoPorDni(String dni) async {
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+      log('PersonalExterno: ${personalExterno!.toJson()}');
 
       if (response.success && response.data != null) {
-        personalExterno = response.data;
-
-        //dniController.text = personalExterno!.numeroDocumento;
+        personalExterno = response.data!;
         nombresController.text =
             '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
-        //guardiaController.text = personalExterno!.guardia.nombre;
         apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
         apellidoMaternoController.text = personalExterno!.apellidoMaterno!;
-
-        //await loadPersonalPhoto(personalExterno!.inPersonalOrigen);
 
         log('Personal externo cargado con éxito: ${personalExterno!.nombreCompleto}');
       } else {
         log('No se encontró personal externo con el DNI proporcionado');
         Get.snackbar(
             'Error', 'No se encontró personal externo con el DNI proporcionado',
-            backgroundColor: Colors.red);
+            backgroundColor: Colors.red, colorText: Colors.white);
       }
     } catch (e) {
       log('Error al buscar personal externo: $e');
       Get.snackbar('Error', 'Error al buscar personal externo: $e');
     }
   }
-
+*/
   Future<Personal?> loadPersonalExterno(String dni) async {
+    log('Buscando personal externo con DNI: $dni');
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
+
+      log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
+      log('PersonalExterno: ${response.data!.toJson()}');
       if (response.success && response.data != null) {
+        log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
+
+        log('Personal Externo: Key- ${response.data}');
         personalExterno = response.data;
         llenarControladores();
       } else {
         log('Error al obtener datos de personal: ${response.message}');
+        log('PersonalExterno: ${personalExterno!.toJson()}');
       }
     } catch (e) {
       log('Error al cargar personal externo: $e');
@@ -179,9 +191,8 @@ class NuevaCapacitacionController extends GetxController {
     }
 
     if (personalExterno != null) {
-      loadPersonalPhoto(personalExterno!.inPersonalOrigen!);
-      dniController.text = personalExterno!.numeroDocumento!;
-      nombresController.text = personalExterno!.nombreCompleto!;
+      nombresController.text =
+          '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
       apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
       apellidoMaternoController.text = personalExterno!.apellidoMaterno!;
     }
@@ -202,49 +213,216 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
-  Future<void> registrarCapacitacion() async {
+  Future<bool?> registrarCapacitacion() async {
     try {
+      // Validar que exista el personal interno
+      if (personalInterno?.key == null) {
+        Get.snackbar('Error', 'No se ha seleccionado personal interno',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
+      }
+
+      // Validar campos requeridos
+      if (!_validarCamposRequeridos()) {
+        Get.snackbar('Error', 'Por favor complete todos los campos requeridos',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
+      }
+
+      // Validar fechas
+      if (fechaInicio == null || fechaTermino == null) {
+        Get.snackbar('Error', 'Las fechas son requeridas',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
+      }
+
+      // Crear el modelo de capacitación
+      entrenamientoModulo = EntrenamientoModulo()
+        ..inTipoActividad = TipoActividad.CAPACITACION
+        ..inCapacitacion = 25
+        ..inModulo = 0
+        ..modulo = OptionValue(key: 0, nombre: '')
+        ..tipoPersona = tipoPersona.isEmpty ? 'I' : tipoPersona
+        ..inPersona = personalInterno!.key
+        ..inActividadEntrenamiento = personalInterno!.key
+        ..inCategoria =
+            dropdownController.getSelectedValue('categoria')?.key ?? 0
+        ..inEquipo = 0
+        ..equipo = OptionValue(key: 0, nombre: '')
+        ..inEntrenador =
+            dropdownController.getSelectedValue('entrenador')?.key ?? 0
+        ..entrenador = OptionValue(
+            key: dropdownController.getSelectedValue('entrenador')?.key ?? 0,
+            nombre:
+                dropdownController.getSelectedValue('entrenador')?.nombre ?? '')
+        ..inEmpresaCapacitadora =
+            dropdownController.getSelectedValue('empresaCapacitacion')?.key ?? 0
+        ..inCondicion = 0
+        ..condicion = OptionValue(key: 0, nombre: '')
+        ..inEstado = 0
+        ..estadoEntrenamiento = OptionValue(key: 0, nombre: '')
+        ..fechaInicio = fechaInicio
+        ..fechaTermino = fechaTermino;
+
+      // Manejo seguro de conversiones numéricas
+      try {
+        entrenamientoModulo!
+          ..inTotalHoras = int.parse(horasController.text)
+          ..inNotaTeorica = int.parse(notaTeoriaController.text)
+          ..inNotaPractica = int.parse(notaPracticaController.text);
+      } catch (e) {
+        log('Error al convertir valores numéricos: $e');
+        Get.snackbar(
+            'Error', 'Los valores de horas y notas deben ser números válidos',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
+      }
+
+      // Validar que las notas estén en el rango correcto (0-99)
+      if (!_validarRangoNotas()) {
+        Get.snackbar('Error', 'Las notas deben estar entre 0 y 99',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
+      }
+
+      log('Enviando datos de registro: ${entrenamientoModulo!.toJson()}');
+
       final response =
           await capacitacionService.registrarCapacitacion(entrenamientoModulo!);
+
       if (response.success) {
-        log('Capacitación registrada con éxito');
+        log('Capacitación registrada exitosamente');
+        _mostrarMensajeGuardado(Get.context!);
+        capacitacionController.buscarCapacitaciones(
+            pageNumber: capacitacionController.currentPage.value,
+            pageSize: capacitacionController.rowsPerPage.value);
+        return true;
       } else {
         log('Error al registrar la capacitación: ${response.message}');
+        Get.snackbar('Error',
+            'No se pudo registrar la capacitación: ${response.message}',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
       }
     } catch (e) {
       log('Error al registrar la capacitación: $e');
+      Get.snackbar(
+          'Error', 'Ocurrió un error inesperado al registrar la capacitación',
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return false;
     }
   }
 
-  Future<void> actualizarCapacitacion() async {
-    entrenamientoModulo!.inCategoria =
-        dropdownController.getSelectedValue('categoria')?.key;
-    entrenamientoModulo!.inEmpresaCapacitadora =
-        dropdownController.getSelectedValue('empresaCapacitacion')?.key;
-    entrenamientoModulo!.inEntrenador =
-        dropdownController.getSelectedValue('entrenador')?.key;
-    entrenamientoModulo!.fechaInicio =
-        DateFormat('dd/MM/yyyy').parse(fechaInicioController.text);
-    entrenamientoModulo!.fechaTermino =
-        DateFormat('dd/MM/yyyy').parse(fechaTerminoController.text);
-    entrenamientoModulo!.inHorasAcumuladas = int.parse(horasController.text);
-    entrenamientoModulo!.inCapacitacion = 25;
-    entrenamientoModulo!.inNotaTeorica = int.parse(notaTeoriaController.text);
-    entrenamientoModulo!.inNotaPractica =
-        int.parse(notaPracticaController.text);
+  Future<bool?> actualizarCapacitacion() async {
+    if (entrenamientoModulo == null) {
+      log('Error: entrenamientoModulo es null');
+      return false;
+    }
+
     try {
-      log('capacitacion: ${entrenamientoModulo!.toJson()}');
+      // Validar campos requeridos
+      if (!_validarCamposRequeridos()) {
+        log('Error: campos requeridos incompletos');
+        Get.snackbar('Error', 'Por favor complete todos los campos requeridos',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
+      }
+
+      // Crear una copia del modelo para actualizarlo
+      final capacitacionActualizada = EntrenamientoModulo()
+        ..key = entrenamientoModulo!.key
+        ..inTipoActividad = TipoActividad.CAPACITACION
+        ..inCapacitacion = 25
+        ..inModulo = 0
+        ..modulo = OptionValue(key: 0, nombre: '')
+        ..tipoPersona = tipoPersona.isEmpty ? 'I' : tipoPersona
+        ..inPersona = personalInterno!.key
+        ..inActividadEntrenamiento = personalInterno!.key
+        ..inCategoria = dropdownController.getSelectedValue('categoria')?.key
+        ..inEquipo = 0
+        ..equipo = OptionValue(key: 0, nombre: '')
+        ..inEntrenador = dropdownController.getSelectedValue('entrenador')?.key
+        ..entrenador = OptionValue(
+            key: dropdownController.getSelectedValue('entrenador')?.key ?? 0,
+            nombre:
+                dropdownController.getSelectedValue('entrenador')?.nombre ?? '')
+        ..inEmpresaCapacitadora =
+            dropdownController.getSelectedValue('empresaCapacitacion')?.key
+        ..inCondicion = 0
+        ..condicion = OptionValue(key: 0, nombre: '')
+        ..inEstado = 0
+        ..estadoEntrenamiento = OptionValue(key: 0, nombre: '')
+        ..fechaInicio = _parseFecha(fechaInicioController.text)
+        ..fechaTermino = _parseFecha(fechaTerminoController.text)
+        ..inTotalHoras = int.tryParse(horasController.text) ?? 0
+        ..inNotaTeorica = int.tryParse(notaTeoriaController.text) ?? 0
+        ..inNotaPractica = int.tryParse(notaPracticaController.text) ?? 0;
+
+      log('Enviando actualización: ${capacitacionActualizada.toJson()}');
+
       final response = await capacitacionService
-          .actualizarCapacitacion(entrenamientoModulo!);
-      log('response: ${response.data}');
+          .actualizarCapacitacion(capacitacionActualizada);
+
       if (response.success) {
-        log('Capacitación actualizada con éxito');
+        log('Capacitación actualizada exitosamente');
+        _mostrarMensajeGuardado(Get.context!);
+        return true;
       } else {
-        log('Error al actualizar la capacitación: ${response.message}');
+        log('Error en la respuesta del servidor: ${response.message}');
+        Get.snackbar('Error',
+            'No se pudo actualizar la capacitación: ${response.message}',
+            backgroundColor: Colors.red, colorText: Colors.white);
+        return false;
       }
     } catch (e) {
       log('Error al actualizar la capacitación: $e');
+      Get.snackbar('Error', 'Ocurrió un error al actualizar la capacitación',
+          backgroundColor: Colors.red, colorText: Colors.white);
+      return false;
     }
+  }
+
+  DateTime? _parseFecha(String fecha) {
+    try {
+      return DateFormat('dd/MM/yyyy').parse(fecha);
+    } catch (e) {
+      log('Error al parsear fecha: $e');
+      return null;
+    }
+  }
+
+  bool _validarRangoNotas() {
+    try {
+      final notaTeorica = int.parse(notaTeoriaController.text);
+      final notaPractica = int.parse(notaPracticaController.text);
+
+      return notaTeorica >= 0 &&
+          notaTeorica <= 99 &&
+          notaPractica >= 0 &&
+          notaPractica <= 99;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  bool _validarCamposRequeridos() {
+    return fechaInicioController.text.isNotEmpty &&
+        fechaTerminoController.text.isNotEmpty &&
+        horasController.text.isNotEmpty &&
+        notaTeoriaController.text.isNotEmpty &&
+        notaPracticaController.text.isNotEmpty &&
+        dropdownController.getSelectedValue('categoria') != null &&
+        dropdownController.getSelectedValue('entrenador') != null &&
+        dropdownController.getSelectedValue('empresaCapacitacion') != null;
+  }
+
+  void _mostrarMensajeGuardado(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MensajeGuardadoWidget();
+      },
+    );
   }
 
   Future<void> adjuntarDocumentos() async {

@@ -26,7 +26,7 @@ class Personal implements DropdownElement {
   String? primerNombre;
   String? segundoNombre;
   DateTime? fechaIngreso;
-  String? licenciaCategoria;
+  String? licenciaCategoria=' ';
   DateTime? licenciaVencimiento;
   String? gerencia;
   String? area;
@@ -67,34 +67,14 @@ class Personal implements DropdownElement {
     this.area,
   });
 
-  static DateTime? parseDate(dynamic rawDate) {
-    if (rawDate == null) {
-      return null;
-    }
-    if (rawDate is String) {
-      final regExp = RegExp(r'\/Date\((\d+)\)\/');
-      final match = regExp.firstMatch(rawDate);
-      if (match != null) {
-        final timestamp = int.parse(match.group(1)!);
-        return DateTime.fromMillisecondsSinceEpoch(timestamp);
-      }
-      try {
-        return DateTime.parse(rawDate);
-      } catch (e) {
-        return null;
-      }
-    } else if (rawDate is int) {
-      return DateTime.fromMillisecondsSinceEpoch(rawDate);
-    }
-    return null;
-  }
-
   factory Personal.fromJson(Map<String, dynamic> json) {
     return Personal(
       key: json['Key'] ?? 0,
       tipoPersona: json['TipoPersona'] ?? "",
       inPersonalOrigen: json['InPersonalOrigen'] ?? 0,
-      fechaIngresoMina: parseDate(json['FechaIngresoMina']),
+      fechaIngresoMina: json['FechaIngresoMina'] != null
+          ? _fromDotNetDate(json['FechaIngresoMina'])
+          : null,
       licenciaConducir: json['LicenciaConducir'] ?? "",
       operacionMina: json['OperacionMina'] ?? "S",
       zonaPlataforma: json['ZonaPlataforma'] ?? "S",
@@ -114,9 +94,13 @@ class Personal implements DropdownElement {
       apellidoMaterno: json['ApellidoMaterno'] ?? "",
       primerNombre: json['PrimerNombre'] ?? "",
       segundoNombre: json['SegundoNombre'] ?? "",
-      fechaIngreso: parseDate(json['FechaIngreso']),
+      fechaIngreso: json['FechaIngreso'] != null
+          ? _fromDotNetDate(json['FechaIngreso'])
+          : null,
       licenciaCategoria: json['LicenciaCategoria'] ?? "",
-      licenciaVencimiento: parseDate(json['LicenciaVencimiento']),
+      licenciaVencimiento: json['LicenciaVencimiento'] != null
+          ? _fromDotNetDate(json['LicenciaVencimiento'])
+          : null,
       gerencia: json['Gerencia'] ?? "",
       area: json['Area'] ?? "",
     );
@@ -127,7 +111,7 @@ class Personal implements DropdownElement {
       'Key': key,
       'TipoPersona': tipoPersona,
       'InPersonalOrigen': inPersonalOrigen,
-      'FechaIngresoMina': fechaIngresoMina?.toIso8601String(),
+      'FechaIngresoMina': _toDotNetDate(fechaIngresoMina),
       'LicenciaConducir': licenciaConducir,
       'OperacionMina': operacionMina,
       'ZonaPlataforma': zonaPlataforma,
@@ -147,61 +131,21 @@ class Personal implements DropdownElement {
       'ApellidoMaterno': apellidoMaterno,
       'PrimerNombre': primerNombre,
       'SegundoNombre': segundoNombre,
-      'FechaIngreso': fechaIngreso?.toIso8601String(),
+      'FechaIngreso': _toDotNetDate(fechaIngreso),
       'LicenciaCategoria': licenciaCategoria,
-      'LicenciaVencimiento': licenciaVencimiento?.toIso8601String(),
+      'LicenciaVencimiento': _toDotNetDate(licenciaVencimiento),
       'Gerencia': gerencia,
       'Area': area,
     };
   }
-}
-/*
-class Guardia {
-  int? key;
-  String? nombre;
 
-  Guardia({
-    this.key,
-    this.nombre,
-  });
-
-  factory Guardia.fromJson(Map<String, dynamic> json) {
-    return Guardia(
-      key: json['Key'] ?? 0,
-      nombre: json['Nombre'] ?? "",
-    );
+  static DateTime _fromDotNetDate(String dotNetDate) {
+    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
+    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'Key': key,
-      'Nombre': nombre,
-    };
+  static String _toDotNetDate(DateTime? date) {
+    if (date == null) return '';
+    return "/Date(${date.millisecondsSinceEpoch})/";
   }
 }
-
-class Estado {
-  int? key;
-  String? nombre;
-
-  Estado({
-    this.key,
-    this.nombre,
-  });
-
-  factory Estado.fromJson(Map<String, dynamic> json) {
-    return Estado(
-      key: json['Key'] ?? 0,
-      nombre: json['Nombre'] ?? "",
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'Key': key,
-      'Nombre': nombre,
-    };
-  }
-  
-}
-*/

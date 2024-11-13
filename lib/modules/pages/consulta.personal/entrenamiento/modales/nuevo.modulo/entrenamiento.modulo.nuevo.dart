@@ -29,48 +29,52 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.isEdit = isEdit;
     if (inEntrenamientoModulo != null) {
-      controller.obtenerModuloPorId(inEntrenamientoModulo!);
+      controller.obtenerModuloPorId(inEntrenamiento!, inEntrenamientoModulo!);
     } else {
       controller.nuevoModulo(inEntrenamiento!);
     }
 
-    return Align(
-      alignment: const AlignmentDirectional(0, 0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Container(
-          width: 800,
-          height: 600,
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: const [
-                BoxShadow(
-                    blurRadius: 3,
-                    color: Color(0x33000000),
-                    offset: Offset(0, 1))
-              ]),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildModalTitulo(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildPrimeraFila(),
-                    _buildSegundaFila(context),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    _buildTerceraFila(context),
-                    _buildBotones(context)
-                  ],
-                ),
-              )
-            ],
+    return Material(
+      color: Colors.transparent,
+      child: Align(
+        alignment: const AlignmentDirectional(0, 0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Container(
+            width: 800,
+            height: 600,
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(
+                      blurRadius: 3,
+                      color: Color(0x33000000),
+                      offset: Offset(0, 1))
+                ]),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildModalTitulo(),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildPrimeraFila(),
+                      _buildSegundaFila(context),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _buildTerceraFila(context),
+                      _buildBotones(context)
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

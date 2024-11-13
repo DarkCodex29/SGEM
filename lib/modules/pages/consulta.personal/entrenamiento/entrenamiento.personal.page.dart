@@ -430,20 +430,17 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   color: AppTheme.primaryColor,
                 ),
                 onPressed: () async {
-                  final bool? success = await showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    enableDrag: false,
+                  final bool? success = await showDialog(
                     context: Get.context!,
                     builder: (context) {
                       return GestureDetector(
-                        onTap: () => FocusScope.of(context).unfocus(),
                         child: Padding(
                           padding: MediaQuery.of(context).viewInsets,
                           child: EntrenamientoModuloNuevo(
                             entrenamiento: modulo,
                             inPersona: modulo.inPersona,
                             inEntrenamientoModulo: modulo.key,
+                            inEntrenamiento: modulo.inActividadEntrenamiento,
                             isEdit: true,
                             onCancel: () {
                               Navigator.pop(context);
@@ -555,7 +552,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     Get.put(EntrenamientoNuevoController());
                 await controllerModal.getEquiposAndConditions();
                 final EntrenamientoModulo? updatedTraining = await showDialog(
-                  context: context,
+                  context: Get.context!,
                   builder: (context) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
@@ -577,7 +574,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   bool success =
                       await controller.actualizarEntrenamiento(updatedTraining);
                   if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(Get.context!).showSnackBar(
                       const SnackBar(
                         content:
                             Text("Entrenamiento actualizado correctamente"),
@@ -620,7 +617,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
 
                 bool confirmarEliminar = false;
                 await showDialog(
-                  context: context,
+                  context: Get.context!,
                   builder: (context) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
@@ -648,13 +645,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       await controller.eliminarEntrenamiento(training);
                   if (success) {
                     await showDialog(
-                      context: context,
+                      context: Get.context!,
                       builder: (context) {
                         return const SuccessDeleteWidget();
                       },
                     );
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    ScaffoldMessenger.of(Get.context!).showSnackBar(
                       const SnackBar(
                         content: Text("Error al eliminar el entrenamiento."),
                         backgroundColor: Colors.red,
@@ -663,7 +660,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   }
                 } catch (e) {
                   log('Error eliminando el entrenamiento: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(Get.context!).showSnackBar(
                     SnackBar(
                       content: Text("Error eliminando el entrenamiento: $e"),
                       backgroundColor: Colors.red,
@@ -677,32 +674,40 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   color: AppTheme.primaryColor),
               tooltip: 'Nuevo modulo',
               onPressed: () async {
-                final bool? success = await showModalBottomSheet(
-                  isScrollControlled: true,
-                  backgroundColor: Colors.transparent,
-                  enableDrag: false,
-                  context: Get.context!,
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Padding(
-                        padding: MediaQuery.of(context).viewInsets,
-                        child: EntrenamientoModuloNuevo(
-                          entrenamiento: training,
-                          isEdit: false,
-                          inEntrenamiento: training.key,
-                          inPersona: training.inPersona,
-                          onCancel: () {
-                            Navigator.pop(context);
-                          },
+                var response = await controller.entrenamientoService
+                    .obtenerUltimoModuloPorEntrenamiento(training.key!);
+
+                if (response.data!.inModulo != 4) {
+                  final bool? success = await showDialog(
+                    context: Get.context!,
+                    builder: (context) {
+                      return GestureDetector(
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: EntrenamientoModuloNuevo(
+                            entrenamiento: training,
+                            isEdit: false,
+                            inEntrenamiento: training.key,
+                            inPersona: training.inPersona,
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-                if (success != null && success) {
-                  controller.fetchTrainings(
-                      controllerPersonal.selectedPersonal.value!.key!);
+                      );
+                    },
+                  );
+                  if (success != null && success) {
+                    controller.fetchTrainings(
+                        controllerPersonal.selectedPersonal.value!.key!);
+                  }
+                } else {
+                  Get.snackbar(
+                    "Alerta",
+                    "No se puede agregar más módulos",
+                    backgroundColor: Colors.red,
+                    colorText: Colors.white,
+                  );
                 }
               },
             ),

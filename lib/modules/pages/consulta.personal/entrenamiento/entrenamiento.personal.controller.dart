@@ -9,15 +9,16 @@ import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.controller.dart';
 
 class EntrenamientoPersonalController extends GetxController {
   var trainingList = <EntrenamientoModulo>[].obs;
-  final EntrenamientoService trainingService = EntrenamientoService();
+  final EntrenamientoService entrenamientoService = EntrenamientoService();
   final ModuloMaestroService moduloMaestroService = ModuloMaestroService();
 
   var modulosPorEntrenamiento = <int, RxList<EntrenamientoModulo>>{}.obs;
 
+
   Future<void> fetchTrainings(int personId) async {
     try {
       final response =
-          await trainingService.listarEntrenamientoPorPersona(personId);
+          await entrenamientoService.listarEntrenamientoPorPersona(personId);
       if (response.success) {
         trainingList.value = response.data!
             .map((json) => EntrenamientoModulo.fromJson(json))
@@ -37,7 +38,7 @@ class EntrenamientoPersonalController extends GetxController {
   Future<void> _fetchAndCombineUltimoModulo(
       EntrenamientoModulo training) async {
     try {
-      final response = await trainingService
+      final response = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(training.key!);
       if (response.success && response.data != null) {
         EntrenamientoModulo ultimoModulo = response.data!;
@@ -75,7 +76,7 @@ class EntrenamientoPersonalController extends GetxController {
 
   Future<bool> actualizarEntrenamiento(EntrenamientoModulo training) async {
     try {
-      final response = await trainingService.actualizarEntrenamiento(training);
+      final response = await entrenamientoService.actualizarEntrenamiento(training);
       if (response.success) {
         int index = trainingList.indexWhere((t) => t.key == training.key);
         if (index != -1) {
@@ -120,7 +121,7 @@ class EntrenamientoPersonalController extends GetxController {
 
   Future<bool> eliminarEntrenamiento(EntrenamientoModulo training) async {
     try {
-      final response = await trainingService.eliminarEntrenamiento(training);
+      final response = await entrenamientoService.eliminarEntrenamiento(training);
       if (response.success) {
         trainingList.remove(training);
         return true;

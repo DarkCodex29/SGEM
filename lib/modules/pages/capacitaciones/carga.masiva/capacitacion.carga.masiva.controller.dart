@@ -12,7 +12,7 @@ import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
 import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 
 class CapacitacionCargaMasivaController extends GetxController {
-  TextEditingController archivoController = TextEditingController();
+  TextEditingController archivoController = TextEditingController(text: "Seleccione un archivo");
 
   var cargaMasivaExcel = <CapacitacionCargaMasivaExcel>[].obs;
   var cargaMasivaResultadosValidados = <CapacitacionCargaMasivaValidado>[].obs;
@@ -34,6 +34,12 @@ class CapacitacionCargaMasivaController extends GetxController {
   Future<void> cargarArchivo() async {
     cargaMasivaResultadosPaginados.clear();
     cargaMasivaResultadosValidados.clear();
+
+    archivoController.clear();
+    totalRecords.value=0;
+    correctRecords.value=0;
+    errorRecords.value=0;
+
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,

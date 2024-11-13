@@ -1,41 +1,35 @@
 import 'package:flutter/material.dart';
 
-class Responsive {
-  final BuildContext context;
-  late double _width;
-  late double _height;
+class Responsive extends StatelessWidget {
+  final Widget mobile;
+  final Widget? tablet;
+  final Widget desktop;
 
-  Responsive(this.context) {
-    final size = MediaQuery.of(context).size;
-    _width = size.width;
-    _height = size.height;
+  const Responsive({
+    super.key,
+    required this.mobile,
+    this.tablet,
+    required this.desktop,
+  });
+
+  static bool isMobile(BuildContext context) =>
+      MediaQuery.of(context).size.width < 904;
+  static bool isTablet(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 904 &&
+      MediaQuery.of(context).size.width < 1280;
+
+  static bool isDesktop(BuildContext context) =>
+      MediaQuery.of(context).size.width >= 1280;
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    if (size.width >= 1280) {
+      return desktop;
+    } else if (size.width >= 904 && tablet != null) {
+      return tablet!;
+    } else {
+      return mobile;
+    }
   }
-
-  double widthPercent(double percent) {
-    return _width * percent / 100;
-  }
-
-  double heightPercent(double percent) {
-    return _height * percent / 100;
-  }
-
-  double fontSize(double fontSize) {
-    return fontSize * (_width / 375);
-  }
-
-  EdgeInsets marginHorizontal(double percent) {
-    return EdgeInsets.symmetric(horizontal: widthPercent(percent));
-  }
-
-  EdgeInsets marginVertical(double percent) {
-    return EdgeInsets.symmetric(vertical: heightPercent(percent));
-  }
-
-  EdgeInsets paddingAll(double percent) {
-    return EdgeInsets.all(widthPercent(percent));
-  }
-
-  bool isMobile() => _width < 600;
-  bool isTablet() => _width >= 600 && _width <= 900;
-  bool isDesktop() => _width > 900;
 }

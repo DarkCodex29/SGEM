@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
@@ -44,89 +43,27 @@ class EntrenamientoModuloNuevoController extends GetxController {
   RxBool isSaving = false.obs;
 
   EntrenamientoModulo? entrenamiento;
+  int entrenamientoId = 0;
+  int entrenamientoModuloId = 0;
   int? siguienteModulo;
   bool isEdit = false;
   RxString tituloModal = ''.obs;
   RxInt inModulo = 1.obs;
   RxBool isLoadingModulo = false.obs;
 
-  //int? inEntrenamiento;
-
   EntrenamientoModulo? entrenamientoModulo;
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
 
-  Future<void> setDatosEntrenamiento(
-      EntrenamientoModulo entrenamiento, bool isEdit) async {
-    //this.entrenamiento = entrenamiento;
-    this.isEdit = isEdit;
-
-    if (entrenamiento.fechaInicio != null) {
-      fechaInicio = entrenamiento.fechaInicio;
-      fechaInicioController.text =
-          DateFormat('dd/MM/yyyy').format(entrenamiento.fechaInicio!);
-    }
-
-    if (entrenamiento.fechaTermino != null) {
-      fechaTermino = entrenamiento.fechaTermino;
-      fechaTerminoController.text =
-          DateFormat('dd/MM/yyyy').format(entrenamiento.fechaTermino!);
-    }
-
-    if (!isEdit) {
-      await obtenerSiguienteModulo();
-
-      if (siguienteModulo == null) {
-        return;
-      }
-
-      int moduloNumero = siguienteModulo ?? 1;
-      //tituloModal = 'Nuevo Módulo - Módulo ${convertirARomano(moduloNumero)}';
-      //tituloModal = 'Nuevo Módulo - ${}';
-      // await obtenerDatosModuloMaestro(moduloNumero);
-    } else {
-      int moduloNumero = entrenamiento.inModulo ?? 1;
-      //tituloModal = 'Editar Módulo - Módulo ${convertirARomano(moduloNumero)}';
-      // await obtenerDatosModuloMaestro(moduloNumero);
-    }
-    update();
-  }
-
-  Future<void> obtenerSiguienteModulo() async {
-    isLoadingModulo.value = true;
-    try {
-      final modulos = await entrenamientoService
-          .obtenerUltimoModuloPorEntrenamiento(entrenamiento!.key!);
-      if (modulos.success && modulos.data != null) {
-        int ultimosModulos = modulos.data!.inModulo!;
-
-        int maxModulosPermitidos =
-            entrenamiento!.condicion!.nombre! == "Experiencia" ? 2 : 4;
-
-        if (ultimosModulos >= maxModulosPermitidos) {
-          siguienteModulo = null;
-        } else {
-          siguienteModulo = ultimosModulos + 1;
-        }
-      } else {
-        siguienteModulo = 1;
-      }
-    } catch (e) {
-      siguienteModulo = 1;
-      log('Error obteniendo el siguiente módulo: $e');
-    } finally {
-      isLoadingModulo.value = false;
-      update();
-    }
-  }
-
   Future<void> obtenerDatosModuloMaestro(int moduloNumero) async {
+    log('Maestro: $moduloNumero');
     try {
       final response =
           await moduloMaestroService.obtenerModuloMaestroPorId(moduloNumero);
       if (response.success && response.data != null) {
         ModuloMaestro moduloMaestro = response.data!;
+        log('horas: ${moduloMaestro.inHoras}');
         totalHorasModuloController.value.text =
             moduloMaestro.inHoras.toString();
       } else {
@@ -138,15 +75,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
-    if (!validar(context)) {
-      _mostrarErroresValidacion(context, errores);
-      return false;
-    }
-
-   // int moduloNumero = isEdit ? entrenamiento!.inModulo! : siguienteModulo!;
-
     EntrenamientoModulo modulo = EntrenamientoModulo(
-      key: isEdit ? entrenamiento!.key : 0,
+      key: isEdit ? entrenamientoModuloId : 0,
       inTipoActividad: entrenamiento!.inTipoActividad,
       inActividadEntrenamiento: entrenamiento!.key,
       inPersona: entrenamiento!.inPersona,
@@ -178,12 +108,19 @@ class EntrenamientoModuloNuevoController extends GetxController {
       observaciones: entrenamiento!.observaciones,
     );
 
+    if (!isEdit) {
+      if (!validar(context, modulo)) {
+        _mostrarErroresValidacion(context, errores);
+        return false;
+      }
+    }
+
     try {
       final response = isEdit
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
                 "Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
@@ -192,13 +129,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
         );
 
         EntrenamientoPersonalController controller =
-            Get.find<EntrenamientoPersonalController>();
-        controller.fetchModulosPorEntrenamiento(entrenamiento!.key!);
+            Get.put(EntrenamientoPersonalController());
+        controller
+            .fetchModulosPorEntrenamiento(modulo.inActividadEntrenamiento!);
+        controller.fetchTrainings(modulo.inPersona!);
 
         return true;
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
-        ScaffoldMessenger.of(context).showSnackBar(
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
                 "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
@@ -208,7 +147,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return false;
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
         SnackBar(
           content: Text(
               "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
@@ -219,7 +158,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-  bool validar(BuildContext context) {
+  bool validar(BuildContext context, EntrenamientoModulo modulo) {
     bool respuesta = true;
     errores.clear();
 
@@ -228,25 +167,28 @@ class EntrenamientoModuloNuevoController extends GetxController {
       errores.add("Debe seleccionar un entrenador responsable.");
     }
 
-    if (entrenamiento?.inModulo == 1) {
-      if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento!.fechaInicio!)) {
+    if (modulo.inModulo == 1) {
+      if (modulo.fechaInicio == null ||
+          modulo.fechaInicio!.isBefore(modulo.fechaInicio!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del Módulo I no puede ser anterior a la fecha de inicio del entrenamiento.");
       }
     }
-
-    if (entrenamiento!.inModulo! > 1) {
-      if (fechaInicio == null ||
-          fechaInicio!.isBefore(entrenamiento!.fechaTermino!)) {
+    log("Modulo: $modulo");
+    log("Modulo: ${modulo.inModulo!}");
+    /*
+    if (modulo.inModulo! >= 1) {
+      if (modulo.fechaInicio == null ||
+          modulo.fechaInicio!.isBefore(modulo.fechaTermino!)) {
         respuesta = false;
         errores.add(
             "La fecha de inicio del módulo no puede ser igual o antes a la fecha de término del módulo anterior.");
       }
     }
-
-    if (fechaTermino == null || fechaTermino!.isBefore(fechaInicio!)) {
+*/
+    if (modulo.fechaTermino == null ||
+        modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
       respuesta = false;
       errores.add(
           "La fecha de término no puede ser anterior a la fecha de inicio.");
@@ -299,8 +241,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   Future<void> nuevoModulo(int inEntrenamiento) async {
     tituloModal.value = 'Nuevo Modulo';
-    //EntrenamientoModulo? entrenamiento2 = EntrenamientoModulo();
-    //TODO: Obtener el Entrenamiento
+
     var response =
         await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
 
@@ -310,16 +251,29 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Entrenamiento: ${entrenamiento!.condicion!.nombre!}');
     }
     // Experiencia
-    // Entrenamiento (Sin experiencia)
     if (entrenamiento?.condicion?.nombre!.toLowerCase() == "experiencia") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
+
       if (responseModulo.success) {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
         var ultimoModulo = responseModulo.data;
+
         log('Ultimo modulo: $ultimoModulo');
+        if (ultimoModulo!.inModulo == null) {
+          obtenerDatosModuloMaestro(1);
+          tituloModal.value = 'Nuevo Modulo - Modulo I';
+          inModulo.value = 1;
+        }
+        if (ultimoModulo.inModulo == 1) {
+          obtenerDatosModuloMaestro(4);
+          tituloModal.value = 'Nuevo Modulo - Modulo IV';
+          inModulo.value = 4;
+        }
       }
-    } else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
+    } //Condicion: Entrenamiento (Sin Experiencia)
+
+    else if (entrenamiento!.condicion?.nombre!.toLowerCase() ==
         "entrenamiento (sin experiencia)") {
       var responseModulo = await entrenamientoService
           .obtenerUltimoModuloPorEntrenamiento(inEntrenamiento);
@@ -327,29 +281,53 @@ class EntrenamientoModuloNuevoController extends GetxController {
         log('Obteniendo Ultimo modulo por entrenamiento: $inEntrenamiento');
         var ultimoModulo = responseModulo.data;
         log('Ultimo modulo: ${ultimoModulo == null ? 'NUll' : ultimoModulo.key}');
-        if (ultimoModulo!.key == null) {
+        if (ultimoModulo!.inModulo == null) {
+          obtenerDatosModuloMaestro(1);
           tituloModal.value = 'Nuevo Modulo - Modulo I';
-          inModulo.value=1;
+          inModulo.value = 1;
+        }
+        if (ultimoModulo.inModulo == 1) {
+          obtenerDatosModuloMaestro(2);
+          tituloModal.value = 'Nuevo Modulo - Modulo II';
+          inModulo.value = 2;
+        }
+        if (ultimoModulo.inModulo == 2) {
+          obtenerDatosModuloMaestro(3);
+          tituloModal.value = 'Nuevo Modulo - Modulo III';
+          inModulo.value = 3;
+        }
+        if (ultimoModulo.inModulo == 3) {
+          obtenerDatosModuloMaestro(4);
+          tituloModal.value = 'Nuevo Modulo - Modulo IV';
+          inModulo.value = 4;
         }
       }
     }
-
-    //TODO : Obtener la condicion del entrenamiento (Experiencia / sin experiencia)
-
-    //TODO: Validar el modulo que corresponde; I y IV / I, II, II , IV
-
-    // COnsultar ultimo modulo por entrenamiento
   }
 
-  Future<void> obtenerModuloPorId(int inEntrenamientoModulo) async {
+  Future<void> obtenerModuloPorId(
+      int inEntrenamiento, int inEntrenamientoModulo) async {
+    var responseEntrenamiento =
+        await entrenamientoService.obtenerEntrenamientoPorId(inEntrenamiento);
+
+    if (responseEntrenamiento.success) {
+      log('Obteniendo entrenamiento por id: $inEntrenamiento');
+      entrenamiento = responseEntrenamiento.data;
+      entrenamientoId = inEntrenamiento;
+      entrenamientoModuloId = inEntrenamientoModulo;
+      log('Entrenamiento: ${entrenamiento!.condicion!.nombre!}');
+    }
+
     try {
       log('Obteniendo modulo por id: $inEntrenamientoModulo');
       final response =
           await moduloMaestroService.obtenerModuloPorId(inEntrenamientoModulo);
+
       log('Obteniendo modulo por id: ${response.success}');
       if (response.success) {
         log('Modulo obtenido: ${response.data}');
         entrenamientoModulo = response.data!;
+        obtenerDatosModuloMaestro(entrenamientoModulo!.inModulo!);
         llenarDatos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar el módulo');
@@ -380,5 +358,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
+    inModulo.value = entrenamientoModulo!.inModulo!;
   }
 }

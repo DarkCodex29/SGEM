@@ -102,7 +102,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Documento de identidad",
-            controller: controller.codigoMcpController,
+            controller: controller.numeroDocumentoController,
           ),
         ),
         const SizedBox(
@@ -127,7 +127,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Nombres Personal",
-            controller: controller.codigoMcpController,
+            controller: controller.nombresController,
           ),
         ),
         const SizedBox(
@@ -136,7 +136,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomTextField(
             label: "Apellidos Personal",
-            controller: controller.codigoMcpController,
+            controller: controller.apellidosController,
           ),
         ),
         const SizedBox(
@@ -381,20 +381,16 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                       Icons.edit,
                       AppTheme.primaryColor,
                       () async {
-                        final bool? success = await showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          enableDrag: false,
+                        await showDialog(
                           context: Get.context!,
                           builder: (context) {
                             return GestureDetector(
-                              onTap: () => FocusScope.of(context).unfocus(),
                               child: Padding(
                                 padding: MediaQuery.of(context).viewInsets,
                                 child: EntrenamientoModuloNuevo(
                                   isEdit: true,
                                   inEntrenamientoModulo: fila.key,
-                                  //inEntrenamientoModulo: 20,
+                                  inEntrenamiento: fila.inEntrenamiento,
                                   onCancel: () {
                                     Navigator.pop(context);
                                   },
@@ -403,7 +399,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                             );
                           },
                         );
-                        //controller.showEditPersonal(personal);
+                        controller.buscarActualizacionMasiva();
                       },
                     ),
                   ),

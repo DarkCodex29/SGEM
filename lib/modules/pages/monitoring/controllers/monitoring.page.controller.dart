@@ -109,7 +109,6 @@ class MonitoringSearchController extends GetxController {
     rangoFechaController = TextEditingController();
     fechaInicio = null;
     fechaTermino = null;
-    searchMonitoring(pageNumber: 1, pageSize: 10);
   }
 
   Future<void> searchMonitoring({int pageNumber = 1, int pageSize = 10}) async {

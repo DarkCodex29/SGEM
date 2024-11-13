@@ -30,7 +30,7 @@ class DetailTableMonitoring extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            actionsWidgets(),
+            actionsWidgets(createMonitoringController),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -283,7 +283,8 @@ class DetailTableMonitoring extends StatelessWidget {
     );
   }
 
-  SizedBox actionsWidgets() {
+  SizedBox actionsWidgets(
+      CreateMonitoringController createMonitoringController) {
     return SizedBox(
       width: double.infinity,
       height: 60,
@@ -324,6 +325,8 @@ class DetailTableMonitoring extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () async {
                 controller.screen.value = MonitoringSearchScreen.newMonitoring;
+                controller.clearFilter();
+                createMonitoringController.clearModel();
               },
               icon: const Icon(
                 Icons.add,

@@ -223,6 +223,7 @@ class MonitoringPage extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () {
                         controller.clearFilter();
+                        controller.searchMonitoring();
                       },
                       icon: const Icon(
                         Icons.cleaning_services,
@@ -250,6 +251,7 @@ class MonitoringPage extends StatelessWidget {
                     ElevatedButton.icon(
                       onPressed: () async {
                         controller.isExpanded.value = false;
+                        controller.searchMonitoring();
                       },
                       icon: const Icon(
                         Icons.search,

@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
@@ -29,8 +27,8 @@ class CreateMonitoringController extends GetxController {
   final guardController = TextEditingController();
   final stateTrainingController = TextEditingController();
   final moduleController = TextEditingController();
-  final fechaProximoMonitoreoController = TextEditingController();
-  final fechaRealMonitoreoController = TextEditingController();
+  DateTime? fechaProximoMonitoreoController;
+  DateTime? fechaRealMonitoreoController;
   final horasController = TextEditingController();
   final modelMonitoring = MonitoingSave(
       inTipoActividad: 0,
@@ -79,8 +77,8 @@ class CreateMonitoringController extends GetxController {
     selectedEntrenadorKey.value = null;
     selectedCondicionKey.value = null;
     selectedEstadoEntrenamientoKey.value = null;
-    fechaProximoMonitoreoController.text = "";
-    fechaRealMonitoreoController.text = "";
+    fechaProximoMonitoreoController = null;
+    fechaRealMonitoreoController = null;
     horasController.text = "";
     modelMonitoring.key = null;
     codigoMCP2Controller.text = "";
@@ -106,10 +104,8 @@ class CreateMonitoringController extends GetxController {
       modelMonitoring.inCondicion = selectedCondicionKey.value;
       modelMonitoring.estadoEntrenamiento =
           OptionValue(key: selectedEstadoEntrenamientoKey.value, nombre: "");
-      modelMonitoring.fechaProximoMonitoreo =
-          DateTime.parse(fechaProximoMonitoreoController.text);
-      modelMonitoring.fechaRealMonitoreo =
-          DateTime.parse(fechaRealMonitoreoController.text);
+      modelMonitoring.fechaProximoMonitoreo = fechaProximoMonitoreoController;
+      modelMonitoring.fechaRealMonitoreo = fechaRealMonitoreoController;
       modelMonitoring.inTotalHoras = int.parse(horasController.text);
       ResponseHandler<bool> response;
       if (modelMonitoring.key == null || modelMonitoring.key == 0) {
@@ -238,11 +234,13 @@ class CreateMonitoringController extends GetxController {
       log('Error al obtener archivos: $e');
     }
   }
+
   void eliminarArchivo(String nombreArchivo) {
     archivosAdjuntos.removeWhere((archivo) =>
         archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
     log('Archivo $nombreArchivo eliminado');
   }
+
   Future<void> descargarArchivo(Map<String, dynamic> archivo) async {
     try {
       String nombreArchivo = archivo['nombre'];
@@ -369,12 +367,10 @@ class CreateMonitoringController extends GetxController {
       selectedCondicionKey.value = monitoring.condicion?.key;
       selectedEstadoEntrenamientoKey.value =
           monitoring.estadoEntrenamiento?.key;
-      fechaProximoMonitoreoController.text =
-          FnDateTime.fromDotNetDate(monitoring.fechaProximoMonitoreo ?? "")
-              .toString();
-      fechaRealMonitoreoController.text =
-          FnDateTime.fromDotNetDate(monitoring.fechaRealMonitoreo ?? "")
-              .toString();
+      fechaProximoMonitoreoController =
+          FnDateTime.fromDotNetDate(monitoring.fechaProximoMonitoreo ?? "");
+      fechaRealMonitoreoController =
+          FnDateTime.fromDotNetDate(monitoring.fechaRealMonitoreo ?? "");
       horasController.text = monitoring.inTotalHoras.toString();
       modelMonitoring.key = monitoring.key;
       final personalInfo = await personalService

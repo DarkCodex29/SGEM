@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.controller.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
@@ -62,22 +63,44 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                         CustomTextFormField(
                           label: "Fecha real de monitoreo",
                           isReadOnly: true,
-                          controller: widget.createMonitoringController
-                              .fechaRealMonitoreoController,
+                          controller: TextEditingController(
+                            text: widget.createMonitoringController
+                                        .fechaRealMonitoreoController ==
+                                    null
+                                ? ""
+                                : DateFormat('dd/MM/yyyy').format(
+                                    widget.createMonitoringController
+                                        .fechaRealMonitoreoController!,
+                                  ),
+                          ),
                           icon: const Icon(Icons.calendar_month),
-                          onIconPressed: () {
-                            _chooseDate(context);
+                          onIconPressed: () async {
+                            final date = await _chooseDate(context);
+                            widget.createMonitoringController
+                                .fechaRealMonitoreoController = date;
+                            setState(() {});
                           },
                         ),
                         const SizedBox(height: 10),
                         CustomTextFormField(
                           label: "Fecha Apróximada de monitoreo",
                           isReadOnly: true,
-                          controller: widget.createMonitoringController
-                              .fechaProximoMonitoreoController,
+                          controller: TextEditingController(
+                            text: widget.createMonitoringController
+                                        .fechaProximoMonitoreoController ==
+                                    null
+                                ? ""
+                                : DateFormat('dd/MM/yyyy').format(
+                                    widget.createMonitoringController
+                                        .fechaProximoMonitoreoController!,
+                                  ),
+                          ),
                           icon: const Icon(Icons.calendar_month),
-                          onIconPressed: () {
-                            _chooseDate(context);
+                          onIconPressed: () async {
+                            final date = await _chooseDate(context);
+                            widget.createMonitoringController
+                                .fechaProximoMonitoreoController = date;
+                            setState(() {});
                           },
                         ),
                         const SizedBox(height: 10),
@@ -121,15 +144,22 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                               child: CustomTextFormField(
                                 label: "Fecha real de monitoreo",
                                 isReadOnly: true,
-                                controller: widget.createMonitoringController
-                                    .fechaRealMonitoreoController,
+                                controller: TextEditingController(
+                                  text: widget.createMonitoringController
+                                              .fechaRealMonitoreoController ==
+                                          null
+                                      ? ""
+                                      : DateFormat('dd/MM/yyyy').format(
+                                          widget.createMonitoringController
+                                              .fechaRealMonitoreoController!,
+                                        ),
+                                ),
                                 icon: const Icon(Icons.calendar_month),
                                 onIconPressed: () async {
                                   final date = await _chooseDate(context);
-                                  widget
-                                      .createMonitoringController
-                                      .fechaRealMonitoreoController
-                                      .text = date.toString();
+                                  widget.createMonitoringController
+                                      .fechaRealMonitoreoController = date;
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -138,15 +168,22 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                               child: CustomTextFormField(
                                 label: "Fecha Apróximada de monitoreo",
                                 isReadOnly: true,
-                                controller: widget.createMonitoringController
-                                    .fechaProximoMonitoreoController,
+                                controller: TextEditingController(
+                                  text: widget.createMonitoringController
+                                              .fechaProximoMonitoreoController ==
+                                          null
+                                      ? ""
+                                      : DateFormat('dd/MM/yyyy').format(
+                                          widget.createMonitoringController
+                                              .fechaProximoMonitoreoController!,
+                                        ),
+                                ),
                                 icon: const Icon(Icons.calendar_month),
                                 onIconPressed: () async {
                                   final date = await _chooseDate(context);
-                                  widget
-                                      .createMonitoringController
-                                      .fechaProximoMonitoreoController
-                                      .text = date.toString();
+                                  widget.createMonitoringController
+                                      .fechaProximoMonitoreoController = date;
+                                  setState(() {});
                                 },
                               ),
                             ),
@@ -496,13 +533,14 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                     final state = await widget.createMonitoringController
                         .saveMonitoring(context);
                     if (state) {
-                      MonitoringSearchScreen.none;
                       if (widget.isEditing) {
                         widget.createMonitoringController.uploadArchive();
                       } else {
                         widget.monitoringSearchController.screen.value =
-                            widget.monitoringSearchController.clearFilter();
-                        widget.createMonitoringController.clearModel();
+                            MonitoringSearchScreen.none;
+                        // widget.monitoringSearchController.screen.value =
+                        //     widget.monitoringSearchController.clearFilter();
+                        // widget.createMonitoringController.clearModel();
                         widget.monitoringSearchController
                             .searchMonitoring(pageNumber: 1, pageSize: 10);
                       }

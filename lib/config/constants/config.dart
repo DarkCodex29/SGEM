@@ -1,8 +1,4 @@
 class ConfigFile {
-  //static const String apiUrl =  'https://chinalco-dev-sgm-backend-g0bdc2cze6afhzg8.canadaeast-01.azurewebsites.net/api';
-  //static const String apiUrl =  'http://localhost:80/api';
-  //static const String apiUrl = 'http://localhost/chinalcoApiEntrenamiento/api/';
-  //static const String apiUrl = 'https://localhost:44348/api';
   static const String apiUrl = 'http://13.90.57.44:8080/SgemApi/api';
 
   static const String apiUsername = "perucopper.local\\svcsyd01";

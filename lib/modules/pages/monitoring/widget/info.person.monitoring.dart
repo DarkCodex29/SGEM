@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.controller.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
@@ -24,11 +25,7 @@ class InfoPersonMonitoringWidegt extends StatelessWidget {
         child: isSmallScreen
             ? Column(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: getImage(),
-                    radius: 40,
-                  ),
+                  getImage(),
                   const SizedBox(width: 5),
                   const Text(
                     "Datos del Personal",
@@ -72,11 +69,7 @@ class InfoPersonMonitoringWidegt extends StatelessWidget {
               )
             : Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey,
-                    backgroundImage: getImage(),
-                    radius: 40,
-                  ),
+                  getImage(),
                   const SizedBox(width: 5),
                   Expanded(
                     child: Column(
@@ -145,10 +138,21 @@ class InfoPersonMonitoringWidegt extends StatelessWidget {
     );
   }
 
-  ImageProvider getImage() {
-    if (createMonitoringController.personalPhoto.value == null) {
-      return const AssetImage('assets/images/user_avatar.png');
-    }
-    return MemoryImage(createMonitoringController.personalPhoto.value!);
+  Widget getImage() {
+    return Obx(() {
+      if (createMonitoringController.personalPhoto.value == null) {
+        return const CircleAvatar(
+          backgroundColor: Colors.grey,
+          backgroundImage: AssetImage('assets/images/user_avatar.png'),
+          radius: 40,
+        );
+      }
+      return CircleAvatar(
+        backgroundColor: Colors.grey,
+        backgroundImage:
+            MemoryImage(createMonitoringController.personalPhoto.value!),
+        radius: 40,
+      );
+    });
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
 import 'package:sgem/modules/pages/monitoring/view/create.monitoring.dart';
 import 'package:sgem/modules/pages/monitoring/widget/detail.table.monitoring.dart';
@@ -12,7 +13,7 @@ import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
 
 class MonitoringPage extends StatelessWidget {
-  const MonitoringPage({super.key});
+  MonitoringPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class MonitoringPage extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              _buildFormSection(controller, isSmallScreen),
+              _buildFormSection(controller, isSmallScreen, context),
               const SizedBox(height: 20),
               DetailTableMonitoring(
                   controller: controller, isSmallScreen: isSmallScreen)
@@ -63,8 +64,8 @@ class MonitoringPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFormSection(
-      MonitoringSearchController controller, bool isSmallScreen) {
+  Widget _buildFormSection(MonitoringSearchController controller,
+      bool isSmallScreen, BuildContext context) {
     return Obx(() {
       return ExpansionTile(
         shape: RoundedRectangleBorder(
@@ -114,16 +115,25 @@ class MonitoringPage extends StatelessWidget {
                       label: "Apellidos Materno",
                       controller: controller.apellidosMaternoController,
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
                     _buildDropdownGuardia(controller),
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
                     _buildDropdownEstadoEntrenamiento(controller),
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
                     _buildDropdownEquipo(controller),
-                    const SizedBox(width: 10),
+                    const SizedBox(height: 10),
                     _buildDropdownEntrenadorResponsable(controller),
-                    const SizedBox(width: 10),
-                    _buildDropdownCondicionMonitoreo(controller)
+                    const SizedBox(height: 10),
+                    _buildDropdownCondicionMonitoreo(controller),
+                    const SizedBox(height: 10),
+                    CustomTextField(
+                      label: 'Rango de fecha',
+                      controller: controller.rangoFechaController,
+                      icon: const Icon(Icons.calendar_month),
+                      onIconPressed: () {
+                        _selectDateRange(context, controller);
+                      },
+                    )
                   ])
                 else
                   Column(
@@ -183,7 +193,15 @@ class MonitoringPage extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          Expanded(child: _buildDropdownEquipo(controller)),
+                          Expanded(
+                              child: CustomTextField(
+                            label: 'Rango de fecha',
+                            controller: controller.rangoFechaController,
+                            icon: const Icon(Icons.calendar_month),
+                            onIconPressed: () {
+                              _selectDateRange(context, controller);
+                            },
+                          )),
                           const SizedBox(width: 10),
                           const Expanded(
                               child: SizedBox(
@@ -203,7 +221,9 @@ class MonitoringPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        controller.clearFilter();
+                      },
                       icon: const Icon(
                         Icons.cleaning_services,
                         size: 18,
@@ -397,17 +417,55 @@ class MonitoringPage extends StatelessWidget {
 
   Widget _buildDropdownCondicionMonitoreo(
       MonitoringSearchController controller) {
-    // return Obx(() {
-    List<String> options = ["Prueba"];
-    String? selectDp;
-    return CustomDropdown(
-      hintText: 'Selecciona Condición del monitoreo',
-      options: options.map((option) => option).toList(),
-      selectedValue: selectDp,
-      isSearchable: false,
-      isRequired: false,
-      onChanged: (value) {},
+    return Obx(() {
+      if (controller.condicionOpciones.isEmpty) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+      List<MaestroDetalle> options = controller.condicionOpciones;
+      return CustomDropdown(
+        hintText: 'Selecciona condicion',
+        options: options.map((option) => option.valor!).toList(),
+        selectedValue: controller.selectedCondicionKey.value != null
+            ? options
+                .firstWhere((option) =>
+                    option.key == controller.selectedCondicionKey.value)
+                .valor
+            : null,
+        isSearchable: false,
+        isRequired: false,
+        onChanged: (value) {
+          final selectedOption = options.firstWhere(
+            (option) => option.valor == value,
+          );
+          controller.selectedCondicionKey.value = selectedOption.key;
+        },
+      );
+    });
+  }
+
+  final DateTime today = DateTime.now();
+  Future<void> _selectDateRange(
+      BuildContext context, MonitoringSearchController controller) async {
+    DateTimeRange selectedDateRange = DateTimeRange(
+      start: today.subtract(const Duration(days: 30)),
+      end: today,
     );
-    // });
+
+    DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: selectedDateRange,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      initialEntryMode: DatePickerEntryMode.calendar,
+    );
+    if (picked != null && picked != selectedDateRange) {
+      controller.rangoFechaController.text =
+          '${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
+      controller.fechaInicio = picked.start;
+      controller.fechaTermino = picked.end;
+    }
   }
 }

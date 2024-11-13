@@ -55,11 +55,15 @@ class MonitoringSearchController extends GetxController {
   final maestroDetalleService = MaestroDetalleService();
   final moduloService = ModuloMaestroService();
   final monitoringService = MonitoringService();
-  final codigoMCPController = TextEditingController();
-  final documentoIdentidadController = TextEditingController();
-  final nombresController = TextEditingController();
-  final apellidosMaternoController = TextEditingController();
-  final apellidosPaternoController = TextEditingController();
+  TextEditingController codigoMCPController = TextEditingController();
+  TextEditingController documentoIdentidadController = TextEditingController();
+  TextEditingController nombresController = TextEditingController();
+  TextEditingController apellidosMaternoController = TextEditingController();
+  TextEditingController apellidosPaternoController = TextEditingController();
+  TextEditingController rangoFechaController = TextEditingController();
+
+  DateTime? fechaInicio;
+  DateTime? fechaTermino;
   var screen = MonitoringSearchScreen.none.obs;
   var isExpanded = true.obs;
   var rowsPerPage = 10.obs;
@@ -96,6 +100,18 @@ class MonitoringSearchController extends GetxController {
     super.onInit();
   }
 
+  clearFilter() {
+    codigoMCPController = TextEditingController();
+    documentoIdentidadController = TextEditingController();
+    nombresController = TextEditingController();
+    apellidosMaternoController = TextEditingController();
+    apellidosPaternoController = TextEditingController();
+    rangoFechaController = TextEditingController();
+    fechaInicio = null;
+    fechaTermino = null;
+    searchMonitoring(pageNumber: 1, pageSize: 10);
+  }
+
   Future<void> searchMonitoring({int pageNumber = 1, int pageSize = 10}) async {
     String? codigoMcp =
         codigoMCPController.text.isEmpty ? null : codigoMCPController.text;
@@ -121,8 +137,8 @@ class MonitoringSearchController extends GetxController {
           inGuardia: selectedGuardiaKey.value,
           pageNumber: pageNumber,
           pageSize: pageSize,
-          fechaInicio: null,
-          fechaTermino: null);
+          fechaInicio: fechaInicio,
+          fechaTermino: fechaTermino);
 
       if (response.success && response.data != null) {
         var result = response.data as Map<String, dynamic>;
@@ -172,7 +188,7 @@ class MonitoringSearchController extends GetxController {
   Future<void> cargarCondicion() async {
     try {
       var response = await maestroDetalleService.listarMaestroDetallePorMaestro(
-          3); //Catalogo de condicion de entrenamiento
+          6); //Catalogo de condicion de entrenamiento
 
       if (response.success && response.data != null) {
         condicionOpciones.assignAll(response.data!);

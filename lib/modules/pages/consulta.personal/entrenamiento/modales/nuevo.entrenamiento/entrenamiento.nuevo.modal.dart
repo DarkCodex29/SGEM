@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -60,6 +61,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           if (isEdit) ...[
             const SizedBox(height: 10),
             _buildStateAndObservationsRow(),
+            const SizedBox(height: 10),
+            _buildObservationsRow(),
             const SizedBox(height: 10),
             adjuntarArchivoText(),
             adjuntarDocumentoPDF(controller),
@@ -144,8 +147,23 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 20),
+        Expanded(child: SizedBox.shrink()),
+        // Expanded(
+        //   child: CustomTextField(
+        //     label: "Observaciones",
+        //     controller: controller.observacionesEntrenamiento,
+        //   ),
+        // ),
+      ],
+    );
+  }
+
+  Widget _buildObservationsRow() {
+    return Row(
+      children: [
         Expanded(
           child: CustomTextField(
+maxLines: 2,
             label: "Observaciones",
             controller: controller.observacionesEntrenamiento,
           ),

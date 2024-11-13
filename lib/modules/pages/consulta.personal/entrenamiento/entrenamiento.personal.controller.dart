@@ -74,6 +74,7 @@ class EntrenamientoPersonalController extends GetxController {
     return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
 
+
   Future<bool> actualizarEntrenamiento(EntrenamientoModulo training) async {
     try {
       final response = await entrenamientoService.actualizarEntrenamiento(training);

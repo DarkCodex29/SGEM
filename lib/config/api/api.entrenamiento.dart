@@ -337,4 +337,29 @@ class EntrenamientoService {
       return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
     }
   }
+
+  Future<ResponseHandler<EntrenamientoModulo>> obtenerUltimoEntrenamientoPorPersona(
+      int personaId) async {
+    log('Api Entrenamiento: Obteniendo entrenamiento maestro por ID: $personaId');
+    final url =
+        '${ConfigFile.apiUrl}/Entrenamiento/ObtenerUltimoEntrenamientoPorPersona?inPersona=$personaId';
+
+    try {
+      final response = await dio.get(
+        url,
+        options: Options(followRedirects: false),
+      );
+      log('Response: ${response.data}');
+      if (response.statusCode == 200 && response.data != null) {
+        return ResponseHandler.handleSuccess<EntrenamientoModulo>(response.data);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al obtener el ultimo entrenamiento por persona',
+        );
+      }
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure<EntrenamientoModulo>(e);
+    }
+  }
 }

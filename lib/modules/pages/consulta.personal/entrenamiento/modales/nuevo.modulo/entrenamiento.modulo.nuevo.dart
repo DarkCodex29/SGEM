@@ -136,6 +136,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     return Row(
       children: [
         Expanded(
+          flex: 1,
           child: CustomDropdownGlobal(
             dropdownKey: 'entrenador',
             hintText: "Responsable",
@@ -144,10 +145,20 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 20),
-        const Expanded(
-          flex: 1,
-          child: SizedBox.shrink(),
-        ),
+        isEdit
+            ? Expanded(
+                flex: 1,
+                child: CustomDropdownGlobal(
+                  dropdownKey: 'estadoModulo',
+                  hintText: "Estado",
+                  noDataHintText: 'No se encontraron estados',
+                  controller: controller.dropdownController,
+                ),
+              )
+            : const Expanded(
+                flex: 1,
+                child: SizedBox.shrink(),
+              ),
       ],
     );
   }

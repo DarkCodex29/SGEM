@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final Function()? onIconPressed;
   final bool isReadOnly;
   final Function(String)? onChanged;
+  final int maxLines;
   //final FocusNode? focusNode;
 
   const CustomTextField({
@@ -24,6 +25,7 @@ class CustomTextField extends StatelessWidget {
     this.onIconPressed,
     this.isReadOnly = false,
     this.onChanged,
+    this.maxLines=1,
     //this.focusNode,
   });
 
@@ -41,6 +43,7 @@ class CustomTextField extends StatelessWidget {
               readOnly: isReadOnly,
               onChanged: onChanged,
               //focusNode: focusNode,
+              maxLines: maxLines,
               decoration: InputDecoration(
                 labelText: label,
                 labelStyle: const TextStyle(

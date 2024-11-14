@@ -340,6 +340,7 @@ class NuevoPersonalPage extends StatelessWidget {
               const SizedBox(width: 10),
               Expanded(
                 child: CustomDropdownGlobal(
+                  labelText: "Guardia",
                   dropdownKey: 'guardia',
                   hintText: 'Selecciona guardia',
                   noDataHintText: 'No se encontraron guardias',

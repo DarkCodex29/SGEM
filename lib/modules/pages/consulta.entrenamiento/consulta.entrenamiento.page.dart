@@ -96,9 +96,10 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Equipo',
             dropdownKey: 'equipo',
             hintText: 'Selecciona equipo',
-            noDataHintText: 'No se encontraron capacitaciones',
+            noDataHintText: 'No se encontraron equipos',
             controller: controller.dropdownController,
           ),
         ),
@@ -107,9 +108,10 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Modulo',
             dropdownKey: 'modulo',
             hintText: 'Selecciona modulo',
-            noDataHintText: 'No se encontraron capacitaciones',
+            noDataHintText: 'No se encontraron módulos',
             controller: controller.dropdownController,
           ),
         ),
@@ -123,9 +125,10 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Guardia',
             dropdownKey: 'guardia',
             hintText: 'Selecciona guardia',
-            noDataHintText: 'No se encontraron capacitaciones',
+            noDataHintText: 'No se encontraron guardias',
             controller: controller.dropdownController,
           ),
         ),
@@ -134,6 +137,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Estado de entrenamiento',
             dropdownKey: 'estadoEntrenamiento',
             hintText: 'Selecciona estado de entrenamiento',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -145,6 +149,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Condicion',
             dropdownKey: 'condicion',
             hintText: 'Selecciona condicion',
             noDataHintText: 'No se encontraron capacitaciones',

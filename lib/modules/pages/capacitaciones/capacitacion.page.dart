@@ -180,6 +180,7 @@ class CapacitacionPage extends StatelessWidget {
         ),
         Expanded(
             child: CustomDropdownGlobal(
+          labelText: 'Guardia',
           dropdownKey: 'guardia',
           hintText: 'Selecciona guardia',
           noDataHintText: 'No se encontraron guardias',
@@ -229,6 +230,7 @@ class CapacitacionPage extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Capacitación',
             dropdownKey: 'capacitacion',
             hintText: 'Selecciona capacitación',
             noDataHintText: 'No se encontraron capacitaciones',
@@ -243,6 +245,7 @@ class CapacitacionPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Categoría',
             dropdownKey: 'categoria',
             hintText: 'Selecciona categoría',
             noDataHintText: 'No se encontraron categorías',
@@ -257,6 +260,7 @@ class CapacitacionPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Empresa de capacitación',
             dropdownKey: 'empresaCapacitacion',
             hintText: 'Selecciona empresa de capacitación',
             noDataHintText: 'No se encontraron empresas',
@@ -278,6 +282,7 @@ class CapacitacionPage extends StatelessWidget {
         Expanded(
           flex: 1,
           child: CustomDropdownGlobal(
+            labelText: 'Entrenador',
             dropdownKey: 'entrenador',
             hintText: 'Selecciona entrenador',
             noDataHintText: 'No se encontraron entrenadores',

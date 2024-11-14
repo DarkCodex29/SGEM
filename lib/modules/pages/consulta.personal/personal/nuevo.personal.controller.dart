@@ -427,26 +427,20 @@ class NuevoPersonalController extends GetxController {
   Future<void> descargarArchivo(Map<String, dynamic> archivo) async {
     try {
       String nombreArchivo = archivo['nombre'];
-      Uint8List archivoBytes = archivo['bytes'];
-      String extension = nombreArchivo.split('.').last;
+      String extension = archivo['extension'];
+      String datosBase64 = archivo['datos'];
+      Uint8List archivoBytes = base64Decode(datosBase64);
+      
       if (nombreArchivo.endsWith('.$extension')) {
         nombreArchivo = nombreArchivo.substring(
             0, nombreArchivo.length - extension.length - 1);
       }
-
       MimeType mimeType = _determinarMimeType2(extension);
-
       await FileSaver.instance.saveFile(
         name: nombreArchivo,
         bytes: archivoBytes,
         ext: extension,
         mimeType: mimeType,
-      );
-
-      Get.snackbar(
-        'Descarga exitosa',
-        'El archivo $nombreArchivo.$extension se descargó correctamente',
-        snackPosition: SnackPosition.BOTTOM,
       );
     } catch (e) {
       log('Error al descargar el archivo $e');

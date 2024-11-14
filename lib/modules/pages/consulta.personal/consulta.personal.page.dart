@@ -173,6 +173,7 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           CustomDropdownGlobal(
+                            labelText: 'Guardia',
                             dropdownKey: 'guardia',
                             hintText: 'Selecciona guardia',
                             noDataHintText: 'No se encontraron guardias',
@@ -190,6 +191,7 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           CustomDropdownGlobal(
+                            labelText: 'Estado',
                             dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
                             noDataHintText: "No hay datos de estado",
@@ -232,6 +234,7 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomDropdownGlobal(
+                              labelText: 'Guardia',
                               dropdownKey: 'guardia',
                               hintText: 'Selecciona guardia',
                               noDataHintText: 'No se encontraron guardias',
@@ -255,6 +258,7 @@ class PersonalSearchPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
                           CustomDropdownGlobal(
+                            labelText: 'Estado',
                             dropdownKey: 'estadoDropdown',
                             hintText: "Estado",
                             noDataHintText: "No hay datos de estado",
@@ -296,6 +300,7 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomDropdownGlobal(
+                              labelText: 'Estado',
                               dropdownKey: 'estadoDropdown',
                               hintText: "Estado",
                               noDataHintText: "No hay datos de estado",

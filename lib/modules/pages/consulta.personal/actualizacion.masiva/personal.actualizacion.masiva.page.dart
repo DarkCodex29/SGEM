@@ -110,6 +110,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Guardia',
             dropdownKey: 'guardia',
             hintText: 'Selecciona guardia',
             noDataHintText: 'No se encontraron guardias',
@@ -144,6 +145,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Equipo',
             dropdownKey: 'equipo',
             hintText: 'Selecciona equipo',
             noDataHintText: 'No se encontraron equipos',
@@ -160,6 +162,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: CustomDropdownGlobal(
+            labelText: 'Estado de avance',
             dropdownKey: 'modulo',
             hintText: 'Selecciona estado de avance',
             noDataHintText: 'No se encontraron estados de avance',

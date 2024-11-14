@@ -6,6 +6,7 @@ import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 class CustomDropdownGlobal extends StatelessWidget {
   final String dropdownKey;
+  final String labelText;
   final String hintText;
   final String noDataHintText;
   final bool isSearchable;
@@ -18,6 +19,7 @@ class CustomDropdownGlobal extends StatelessWidget {
 
   const CustomDropdownGlobal({
     required this.dropdownKey,
+    required this.labelText,
     required this.hintText,
     required this.noDataHintText,
     this.controller,
@@ -84,7 +86,7 @@ class CustomDropdownGlobal extends StatelessWidget {
 
   Widget _buildDropdown(List<OptionValue> options) {
     return SizedBox(
-      height: 50,
+      height: 60,
       child: DropdownButtonFormField<OptionValue>(
         value: initialValue ?? controller?.getSelectedValue(dropdownKey),
         isExpanded: true,
@@ -96,6 +98,9 @@ class CustomDropdownGlobal extends StatelessWidget {
           ),
         ),
         decoration: InputDecoration(
+          labelText:
+              options.isNotEmpty && initialValue != null ? labelText : null,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(

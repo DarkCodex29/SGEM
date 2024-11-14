@@ -138,6 +138,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         Expanded(
           flex: 1,
           child: CustomDropdownGlobal(
+            labelText: 'Entrenador',
             dropdownKey: 'entrenador',
             hintText: "Responsable",
             noDataHintText: 'No se encontraron entrenadores',
@@ -149,9 +150,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             ? Expanded(
                 flex: 1,
                 child: CustomDropdownGlobal(
+                  labelText: 'Estado de módulo',
                   dropdownKey: 'estadoModulo',
                   hintText: "Estado",
-                  noDataHintText: 'No se encontraron estados',
+                  noDataHintText: 'No se encontraron estados de módulos',
                   controller: controller.dropdownController,
                 ),
               )

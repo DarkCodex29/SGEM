@@ -120,6 +120,7 @@ class MaestroPage extends StatelessWidget {
         );
       }
       return CustomDropdownGlobal(
+        labelText: 'Maestro',
         dropdownKey: 'maestro',
         noDataHintText: 'No se encontraron maestros',
         isReadOnly: controller.maestroOpciones.isEmpty ? true : false,
@@ -150,6 +151,7 @@ class MaestroPage extends StatelessWidget {
 
       List options = [];
       return CustomDropdownGlobal(
+        labelText: 'Estado',
         dropdownKey: 'estado',
         noDataHintText: 'No se encontraron estados',
         isReadOnly: controller.estadoOpciones.isEmpty ? true : false,

@@ -741,28 +741,28 @@ class PersonalSearchPage extends StatelessWidget {
                                             accion: 'eliminar',
                                             motivoEliminacion:
                                                 motivoEliminacion,
-                                            context: context,
+                                            context: Get.context!,
                                           );
                                           if (success) {
                                             await showDialog(
-                                              context: context,
+                                              context: Get.context!,
                                               builder: (context) {
                                                 return const SuccessDeleteWidget();
                                               },
                                             );
                                             controller.searchPersonal();
-
-                                            ScaffoldMessenger.of(context)
+                                            /*
+                                            ScaffoldMessenger.of(Get.context!)
                                                 .showSnackBar(
                                               const SnackBar(
                                                 content: Text(
                                                     "Persona eliminada exitosamente."),
                                                 backgroundColor: Colors.green,
                                               ),
-                                            );
-                                            Get.toNamed('/buscarEntrenamiento');
+                                            );*/
+                                            //Get.toNamed('/buscarEntrenamiento');
                                           } else {
-                                            ScaffoldMessenger.of(context)
+                                            ScaffoldMessenger.of(Get.context!)
                                                 .showSnackBar(
                                               const SnackBar(
                                                 content: Text(
@@ -773,7 +773,7 @@ class PersonalSearchPage extends StatelessWidget {
                                           }
                                         } catch (e) {
                                           log('Error eliminando la persona: $e');
-                                          ScaffoldMessenger.of(context)
+                                          ScaffoldMessenger.of(Get.context!)
                                               .showSnackBar(
                                             SnackBar(
                                               content: Text(

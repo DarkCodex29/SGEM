@@ -9,6 +9,7 @@ import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/modules/pages/consulta.personal/consulta.personal.controller.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
@@ -38,6 +39,9 @@ class NuevoPersonalController extends GetxController {
   final TextEditingController restriccionesController = TextEditingController();
 
   final PersonalService personalService = PersonalService();
+
+  final PersonalSearchController personalSearchController =
+      Get.find<PersonalSearchController>();
 
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
@@ -100,6 +104,13 @@ class NuevoPersonalController extends GetxController {
       }
 
       final responseBuscar = await personalService.buscarPersonalPorDni(dni);
+      Personal personalData1 = responseBuscar.data!;
+      if (personalData1.estado!.key == 96) {
+        _mostrarErroresValidacion(
+            Get.context!, ['Personal cesado no puede ser registrado.']);
+        resetControllers();
+        return;
+      }
       if (responseBuscar.success && responseBuscar.data != null) {
         personalData = responseBuscar.data;
         llenarControladores(personalData!);
@@ -227,9 +238,9 @@ class NuevoPersonalController extends GetxController {
         log('Acción $accion realizada exitosamente');
         await registrarArchivos(dniController.text);
         if (accion == 'registrar' || accion == 'actualizar') {
-          _mostrarMensajeGuardado(context);
+          _mostrarMensajeGuardado(Get.context!);
+          personalSearchController.searchPersonal();
         }
-
         return true;
       } else {
         log('Acción $accion fallida: ${response.message}');
@@ -509,7 +520,6 @@ class NuevoPersonalController extends GetxController {
     documentoAdjuntoNombre.value = '';
     documentoAdjuntoBytes.value = null;
     personalData = null;
-
     dropdownController.resetAllSelections();
   }
 }

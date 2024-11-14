@@ -46,6 +46,7 @@ class NuevoPersonalController extends GetxController {
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   RxInt estadoPersonalKey = 0.obs;
+  String estadoPersonalNombre = '';
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
 
@@ -117,7 +118,7 @@ class NuevoPersonalController extends GetxController {
       } else {
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           const SnackBar(
-            content: Text('Personal no encontrado'),
+            content: Text('Personal no encontrado.'),
             backgroundColor: Colors.red,
           ),
         );
@@ -153,7 +154,6 @@ class NuevoPersonalController extends GetxController {
     apellidoPaternoController.text = personal.apellidoPaterno!;
     apellidoMaternoController.text = personal.apellidoMaterno!;
     gerenciaController.text = personal.gerencia!;
-
     fechaIngreso = personal.fechaIngreso;
     fechaIngresoController.text =
         DateFormat('dd/MM/yyyy').format(fechaIngreso!);
@@ -163,7 +163,6 @@ class NuevoPersonalController extends GetxController {
     fechaRevalidacion = personal.licenciaVencimiento;
     fechaRevalidacionController.text =
         DateFormat('dd/MM/yyyy').format(fechaRevalidacion!);
-
     areaController.text = personal.area!;
     categoriaLicenciaController.text = personal.licenciaCategoria!;
     codigoLicenciaController.text = personal.licenciaConducir!;
@@ -175,8 +174,9 @@ class NuevoPersonalController extends GetxController {
     }
     isOperacionMina.value = personal.operacionMina == 'S';
     isZonaPlataforma.value = personal.zonaPlataforma == 'S';
-    //estadoPersonal.value = personal.estado.nombre;
     estadoPersonalKey.value = personal.estado!.key!;
+    estadoPersonalNombre = personal.estado!.nombre!;
+    log('estadoPersonal: ${personal.estado!.nombre}');
     obtenerArchivosRegistrados(1, personal.key!);
   }
 
@@ -194,7 +194,6 @@ class NuevoPersonalController extends GetxController {
     }
     try {
       isSaving.value = true;
-
       String obtenerPrimerNombre(String nombres) {
         List<String> nombresSplit = nombres.split(' ');
         return nombresSplit.isNotEmpty ? nombresSplit.first : '';
@@ -516,7 +515,7 @@ class NuevoPersonalController extends GetxController {
     isOperacionMina.value = false;
     isZonaPlataforma.value = false;
     estadoPersonalKey.value = 0;
-    //estadoPersonal.value = '';
+    estadoPersonalNombre = '';
     documentoAdjuntoNombre.value = '';
     documentoAdjuntoBytes.value = null;
     personalData = null;

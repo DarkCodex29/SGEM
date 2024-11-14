@@ -41,7 +41,6 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.fechaIngreso = personal.fechaIngreso;
       controller.fechaIngresoController.text =
           DateFormat('dd/MM/yyyy').format(controller.fechaIngreso!);
-
       controller.areaController.text = personal.area!;
       controller.categoriaLicenciaController.text = personal.licenciaCategoria!;
       controller.codigoLicenciaController.text = personal.licenciaConducir!;
@@ -61,12 +60,10 @@ class NuevoPersonalPage extends StatelessWidget {
           controller.fechaRevalidacion != null
               ? DateFormat('dd/MM/yyyy').format(controller.fechaRevalidacion!)
               : ' ';
-
       controller.isOperacionMina.value = personal.operacionMina == 'S';
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
-      //controller.estadoPersonal.value =
-      //  personal.estado.nombre == 'Activo' ? 'Activo' : 'Cesado';
       controller.estadoPersonalKey.value = personal.estado!.key!;
+      controller.estadoPersonalNombre = personal.estado!.nombre!;
       controller.obtenerArchivosRegistrados(1, personal.key!);
     }
   }
@@ -135,6 +132,7 @@ class NuevoPersonalPage extends StatelessWidget {
               const SizedBox(height: 10),
               Obx(() {
                 int estado = controller.estadoPersonalKey.value;
+                String estadoNombre = controller.estadoPersonalNombre;
                 Color estadoColor;
                 switch (estado) {
                   case 95:
@@ -151,8 +149,7 @@ class NuevoPersonalPage extends StatelessWidget {
                   children: [
                     Icon(Icons.circle, color: estadoColor, size: 12),
                     const SizedBox(width: 10),
-                    Text(estado.toString(),
-                        style: const TextStyle(fontSize: 14)),
+                    Text(estadoNombre, style: const TextStyle(fontSize: 14)),
                   ],
                 );
               }),

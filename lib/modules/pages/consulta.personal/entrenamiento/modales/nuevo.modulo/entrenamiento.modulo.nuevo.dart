@@ -44,7 +44,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Container(
             width: 800,
-            height: 600,
+            height: isEdit ? 800 : 600,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -69,7 +69,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                         height: 10,
                       ),
                       _buildTerceraFila(context),
-                      _buildBotones(context)
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      if (isEdit) _buildSeccionAdjuntos(),
+                      _buildBotones(context),
                     ],
                   ),
                 )
@@ -306,6 +310,65 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSeccionAdjuntos() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Icon(Icons.attach_file, color: Colors.grey),
+            SizedBox(width: 10),
+            Text(
+              "Archivos adjuntos:",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              "(Archivos adjuntos peso máx: 8MB c/u)",
+              style: TextStyle(color: Colors.grey),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        _buildAdjuntoRow('Control de horas', '', () {}),
+        _buildAdjuntoRow('Examen Teórico', '', () {}),
+        _buildAdjuntoRow('Examen Práctico', '', () {}),
+        _buildAdjuntoRow('Otros', '', () {}),
+        // Obx((){
+        //
+        //   return Column(crossAxisAlignment: CrossAxisAlignment.start,
+        //   children: [
+        //
+        //   ],
+        //   );
+        // }),
+      ],
+    );
+  }
+
+  Widget _buildAdjuntoRow(
+      String titulo, String nombreArchivo, VoidCallback onRemove) {
+    return Row(
+      children: [
+        Text(titulo),
+        const SizedBox(width: 10),
+        const Icon(Icons.attach_file, color: Colors.grey),
+        const SizedBox(width: 10),
+        // TODO: Aquí puedes mostrar el nombre del archivo subido si está disponible
+        Text(nombreArchivo,style: TextStyle(fontWeight: FontWeight.bold),),
+        const SizedBox(width: 10),
+        IconButton(
+          icon: const Icon(Icons.close, color: Colors.red),
+          onPressed: onRemove,
+        ),
+      ],
     );
   }
 

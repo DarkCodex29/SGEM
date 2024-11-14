@@ -21,6 +21,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       TextEditingController(text: '0');
   TextEditingController fechaExamenController = TextEditingController();
 
+
   // Cambiado a Rx
   Rx<TextEditingController> totalHorasModuloController =
       TextEditingController(text: '0').obs;

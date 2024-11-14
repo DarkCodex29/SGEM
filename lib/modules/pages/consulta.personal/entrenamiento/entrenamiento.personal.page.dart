@@ -724,10 +724,8 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 }
               },
             ),
-            if (training.estadoEntrenamiento!.nombre!.toLowerCase() !=
+            if (training.estadoEntrenamiento!.nombre!.toLowerCase() ==
                 "entrenando")
-              Icon(Icons.add_circle_outline)
-            else
               IconButton(
                 icon: const Icon(Icons.add_circle_outline,
                     color: AppTheme.primaryColor),
@@ -774,23 +772,27 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               ),
           ],
         ),
-        Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.stars_sharp, color: AppTheme.primaryColor),
-              onPressed: () {
-                controllerPersonal.showDiploma();
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.file_copy_sharp,
-                  color: AppTheme.primaryColor),
-              onPressed: () {
-                controllerPersonal.showCertificado();
-              },
-            ),
-          ],
-        ),
+        if (training.estadoEntrenamiento!.nombre!.toLowerCase() == "autorizado")
+          Row(
+            children: [
+              IconButton(
+                tooltip: 'Ver diplomada',
+                icon:
+                    const Icon(Icons.stars_sharp, color: AppTheme.primaryColor),
+                onPressed: () {
+                  controllerPersonal.showDiploma();
+                },
+              ),
+              IconButton(
+                tooltip: 'Ver certificado',
+                icon: const Icon(Icons.file_copy_sharp,
+                    color: AppTheme.primaryColor),
+                onPressed: () {
+                  controllerPersonal.showCertificado();
+                },
+              ),
+            ],
+          )
       ],
     );
   }

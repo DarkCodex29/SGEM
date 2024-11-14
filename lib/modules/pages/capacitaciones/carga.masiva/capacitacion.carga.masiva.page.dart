@@ -40,7 +40,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _buildRegresarButton(context,controller)
+              _buildRegresarButton(context, controller)
             ],
           ),
         );
@@ -96,10 +96,11 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           width: 10,
         ),
         Expanded(
-            child: CustomTextField(
-          label: "Archivo",
-          controller: controller.archivoController,
-        )),
+          child: CustomTextField(
+            label: "Archivo",
+            controller: controller.archivoController,
+          ),
+        ),
         const SizedBox(
           width: 20,
         ),
@@ -112,8 +113,8 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
   Widget _buildSeccionResultadoContador(
       CapacitacionCargaMasivaController controller) {
-    return Obx(
-      () {return Row(
+    return Obx(() {
+      return Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
@@ -122,7 +123,8 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 child: Text(
                   "Cantidad de registros: ${controller.totalRecords}",
                   style: TextStyle(color: Colors.blue.shade700),
@@ -137,7 +139,8 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 child: Text(
                   "Correctos: ${controller.correctRecords}",
                   style: TextStyle(color: Colors.blueAccent.shade400),
@@ -152,15 +155,16 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 child: Text(
                   "Con errores: ${controller.errorRecords}",
                   style: const TextStyle(color: Colors.red),
                 ),
               )),
         ],
-      );}
-    );
+      );
+    });
   }
 
   Widget _buildEtiquetas(String label) {
@@ -420,7 +424,8 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
     );
   }
 
-  Widget _buildRegresarButton(BuildContext context, CapacitacionCargaMasivaController controller) {
+  Widget _buildRegresarButton(
+      BuildContext context, CapacitacionCargaMasivaController controller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -451,7 +456,6 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 colorText: Colors.white,
                 isDismissible: true,
               );
-
             } else {
               // Mostrar un mensaje de advertencia si las condiciones no se cumplen
               Get.snackbar(

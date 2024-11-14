@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
@@ -336,7 +337,7 @@ class NuevoPersonalController extends GetxController {
     }
   }
 
-  void eliminarArchivo(String nombreArchivo) {
+  void removerArchivo(String nombreArchivo) {
     archivosAdjuntos.removeWhere((archivo) =>
         archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
     log('Archivo $nombreArchivo eliminado');
@@ -404,8 +405,13 @@ class NuevoPersonalController extends GetxController {
           Uint8List archivoBytes = Uint8List.fromList(datos);
 
           archivosAdjuntos.add({
+            'key': archivo['Key'],
             'nombre': archivo['Nombre'],
-            'bytes': archivoBytes,
+            'extension': archivo['Extension'],
+            'mime': archivo['Mime'],
+            'datos': base64Encode(archivoBytes),
+            'inOrigenKey': idOrigenKey,
+            'nuevo': false,
           });
 
           log('Archivo ${archivo['Nombre']} obtenido con éxito');
@@ -447,6 +453,48 @@ class NuevoPersonalController extends GetxController {
       Get.snackbar(
         'Error',
         'No se pudo descargar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> eliminarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      final response = await archivoService.eliminarArchivo(
+        key: archivo['key'],
+        nombre: archivo['nombre'],
+        extension: archivo['extension'],
+        mime: archivo['mime'],
+        datos: archivo['datos'],
+        inTipoArchivo: 1,
+        inOrigen: 1,
+        inOrigenKey: archivo['inOrigenKey'],
+      );
+
+      if (response.success) {
+        Get.snackbar(
+          'Archivo eliminado',
+          'El archivo ${archivo['nombre']} se eliminó correctamente',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        obtenerArchivosRegistrados(1, archivo['inOrigenKey']);
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el archivo: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      log('Error al eliminar el archivo: $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo eliminar el archivo: $e',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red,
         colorText: Colors.white,

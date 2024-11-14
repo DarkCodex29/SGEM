@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import '../consulta.personal.controller.dart';
@@ -431,7 +432,7 @@ class NuevoPersonalPage extends StatelessWidget {
                   children: [
                     TextButton.icon(
                       onPressed: () {
-                        controller.eliminarArchivo(archivo['nombre']);
+                        controller.removerArchivo(archivo['nombre']);
                       },
                       icon: const Icon(Icons.close, color: Colors.red),
                       label: Text(
@@ -449,6 +450,29 @@ class NuevoPersonalPage extends StatelessWidget {
                         controller.descargarArchivo(archivo);
                       },
                     ),
+                    archivo['nuevo'] == false
+                        ? IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return ConfirmDeleteWidget(
+                                    itemName: archivo['nombre'],
+                                    entityType: 'archivo',
+                                    onConfirm: () {
+                                      controller.eliminarArchivo(archivo);
+                                      Navigator.pop(context);
+                                    },
+                                    onCancel: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                            },
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                          )
+                        : const SizedBox(),
                   ],
                 );
               }).toList(),

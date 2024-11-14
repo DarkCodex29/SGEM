@@ -97,4 +97,51 @@ class ArchivoService {
       return ResponseHandler.handleFailure(e);
     }
   }
+
+  Future<ResponseHandler<bool>> eliminarArchivo({
+    required int key,
+    required String nombre,
+    required String extension,
+    required String mime,
+    required String datos,
+    required int inTipoArchivo,
+    required int inOrigen,
+    required int inOrigenKey,
+  }) async {
+    const url = '${ConfigFile.apiUrl}/Archivo/EliminarArchivo';
+
+    Map<String, dynamic> requestBody = {
+      "Key": key,
+      "Nombre": nombre,
+      "Extension": extension,
+      "Mime": mime,
+      "Datos": datos,
+      "InTipoArchivo": inTipoArchivo,
+      "InOrigen": inOrigen,
+      "InOrigenKey": inOrigenKey,
+    };
+
+    try {
+      log('Eliminando archivo: $requestBody');
+      final response = await dio.delete(
+        url,
+        data: jsonEncode(requestBody),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        return ResponseHandler.handleSuccess<bool>(true);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al eliminar archivo',
+        );
+      }
+    } on DioException catch (e) {
+      log('Error al eliminar archivo. Datos: $requestBody, Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
 }

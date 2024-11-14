@@ -624,7 +624,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     );
                   },
                 );
-                log("Entrenamiento: ${updatedTraining}");
+                log("Entrenamiento: $updatedTraining");
                 if (updatedTraining != null) {
                   bool success =
                       await controller.actualizarEntrenamiento(updatedTraining);
@@ -733,31 +733,36 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 onPressed: () async {
                   var response = await controller.entrenamientoService
                       .obtenerUltimoModuloPorEntrenamiento(training.key!);
-
-                  if (response.data!.inModulo != 4) {
-                    final bool? success = await showDialog(
-                      context: Get.context!,
-                      builder: (context) {
-                        return GestureDetector(
-                          child: Padding(
-                            padding: MediaQuery.of(context).viewInsets,
-                            child: EntrenamientoModuloNuevo(
-                              entrenamiento: training,
-                              isEdit: false,
-                              inEntrenamiento: training.key,
-                              inPersona: training.inPersona,
-                              onCancel: () {
-                                Navigator.pop(context);
-                              },
+                  var ultimoModulo = response.data!;
+                  if (ultimoModulo.inModulo != 4) {
+                    log("Estado de Ultimo modulo: ${ultimoModulo.estadoModulo!.nombre}");
+                    //if(ultimoModulo.inModulo ) {
+                      final bool? success = await showDialog(
+                        context: Get.context!,
+                        builder: (context) {
+                          return GestureDetector(
+                            child: Padding(
+                              padding: MediaQuery
+                                  .of(context)
+                                  .viewInsets,
+                              child: EntrenamientoModuloNuevo(
+                                entrenamiento: training,
+                                isEdit: false,
+                                inEntrenamiento: training.key,
+                                inPersona: training.inPersona,
+                                onCancel: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    );
-                    if (success != null && success) {
-                      await controller.fetchTrainings(
-                          controllerPersonal.selectedPersonal.value!.key!);
-                    }
+                          );
+                        },
+                      );
+                      if (success != null && success) {
+                        await controller.fetchTrainings(
+                            controllerPersonal.selectedPersonal.value!.key!);
+                      }
+                    //}
                   } else {
                     showDialog(
                         context: Get.context!,
@@ -766,7 +771,6 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                             "No se puede agregar más módulos",
                           ]);
                         });
-                    // MensajeValidacionWidget(errores: ["No se puede agregar más módulos",]);
                   }
                 },
               ),

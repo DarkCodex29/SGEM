@@ -434,7 +434,9 @@ class NuevoPersonalPage extends StatelessWidget {
                       onPressed: () {
                         controller.removerArchivo(archivo['nombre']);
                       },
-                      icon: const Icon(Icons.close, color: Colors.red),
+                      icon: archivo['nuevo'] == true
+                          ? const Icon(Icons.cancel, color: Colors.red)
+                          : const SizedBox(),
                       label: Text(
                         archivo['nombre'] ?? '',
                         style: TextStyle(
@@ -445,7 +447,9 @@ class NuevoPersonalPage extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.download, color: Colors.blue),
+                      icon: archivo['nuevo'] == false
+                          ? const Icon(Icons.download, color: Colors.blue)
+                          : const SizedBox(),
                       onPressed: () {
                         controller.descargarArchivo(archivo);
                       },

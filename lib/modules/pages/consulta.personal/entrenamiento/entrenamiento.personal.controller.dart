@@ -17,6 +17,7 @@ class EntrenamientoPersonalController extends GetxController {
 
   Future<void> fetchTrainings(int personId) async {
     try {
+      log("Entrenamiento Controller: $personId");
       final response =
           await entrenamientoService.listarEntrenamientoPorPersona(personId);
       if (response.success) {

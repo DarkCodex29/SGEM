@@ -607,7 +607,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     Get.put(EntrenamientoNuevoController());
                 await controllerModal.getEquiposAndConditions();
                 final EntrenamientoModulo? updatedTraining = await showDialog(
-                  context: Get.context!,
+                  context: context,
                   builder: (context) {
                     return GestureDetector(
                       onTap: () => FocusScope.of(context).unfocus(),
@@ -615,7 +615,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         child: EntrenamientoNuevoModal(
                           data: controllerPersonal.selectedPersonal.value!,
                           isEdit: true,
-                          training: training,
+                          entrenamiento: training,
                           close: () {
                             Navigator.pop(context);
                           },
@@ -624,7 +624,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     );
                   },
                 );
-
+                log("Entrenamiento: ${updatedTraining}");
                 if (updatedTraining != null) {
                   bool success =
                       await controller.actualizarEntrenamiento(updatedTraining);
@@ -724,46 +724,54 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 }
               },
             ),
-            if (training.estadoEntrenamiento!.nombre!.toLowerCase() != "entrenando") Icon(Icons.add_circle_outline) else IconButton(
-                    icon: const Icon(Icons.add_circle_outline,
-                        color: AppTheme.primaryColor),
-                    tooltip: 'Nuevo modulo',
-                    onPressed: () async {
-                      var response = await controller.entrenamientoService
-                          .obtenerUltimoModuloPorEntrenamiento(training.key!);
+            if (training.estadoEntrenamiento!.nombre!.toLowerCase() !=
+                "entrenando")
+              Icon(Icons.add_circle_outline)
+            else
+              IconButton(
+                icon: const Icon(Icons.add_circle_outline,
+                    color: AppTheme.primaryColor),
+                tooltip: 'Nuevo modulo',
+                onPressed: () async {
+                  var response = await controller.entrenamientoService
+                      .obtenerUltimoModuloPorEntrenamiento(training.key!);
 
-                      if (response.data!.inModulo != 4) {
-                        final bool? success = await showDialog(
-                          context: Get.context!,
-                          builder: (context) {
-                            return GestureDetector(
-                              child: Padding(
-                                padding: MediaQuery.of(context).viewInsets,
-                                child: EntrenamientoModuloNuevo(
-                                  entrenamiento: training,
-                                  isEdit: false,
-                                  inEntrenamiento: training.key,
-                                  inPersona: training.inPersona,
-                                  onCancel: () {
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                              ),
-                            );
-                          },
+                  if (response.data!.inModulo != 4) {
+                    final bool? success = await showDialog(
+                      context: Get.context!,
+                      builder: (context) {
+                        return GestureDetector(
+                          child: Padding(
+                            padding: MediaQuery.of(context).viewInsets,
+                            child: EntrenamientoModuloNuevo(
+                              entrenamiento: training,
+                              isEdit: false,
+                              inEntrenamiento: training.key,
+                              inPersona: training.inPersona,
+                              onCancel: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
                         );
-                        if (success != null && success) {
-                          controller.fetchTrainings(
-                              controllerPersonal.selectedPersonal.value!.key!);
-                        }
-                      } else {
-                        showDialog(context: Get.context!, builder: (context){
-                          return const MensajeValidacionWidget(errores: ["No se puede agregar más módulos",]);
+                      },
+                    );
+                    if (success != null && success) {
+                      await controller.fetchTrainings(
+                          controllerPersonal.selectedPersonal.value!.key!);
+                    }
+                  } else {
+                    showDialog(
+                        context: Get.context!,
+                        builder: (context) {
+                          return const MensajeValidacionWidget(errores: [
+                            "No se puede agregar más módulos",
+                          ]);
                         });
-                        // MensajeValidacionWidget(errores: ["No se puede agregar más módulos",]);
-                      }
-                    },
-                  ),
+                    // MensajeValidacionWidget(errores: ["No se puede agregar más módulos",]);
+                  }
+                },
+              ),
           ],
         ),
         Row(

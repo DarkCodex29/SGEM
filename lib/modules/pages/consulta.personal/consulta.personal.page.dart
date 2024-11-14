@@ -694,7 +694,7 @@ class PersonalSearchPage extends StatelessWidget {
                                               .value!
                                               .nombreCompleto;
                                           await showDialog(
-                                            context: context,
+                                            context: Get.context!,
                                             builder: (context) {
                                               return GestureDetector(
                                                 onTap: () =>

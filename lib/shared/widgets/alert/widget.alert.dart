@@ -38,7 +38,7 @@ class MensajeValidacionWidget extends StatelessWidget {
                         ),
                       ),
                       const Text(
-                       "Errores de validación",
+                        "Errores de validación",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Calibri',

@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -19,32 +20,41 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final double paddingVertical = 20;
   final VoidCallback close;
   final bool isEdit;
-  final EntrenamientoModulo? training;
+  final EntrenamientoModulo? entrenamiento;
 
   EntrenamientoNuevoModal({
     super.key,
     required this.data,
     required this.close,
     this.isEdit = false,
-    this.training,
+    this.entrenamiento,
   }) {
-    if (isEdit && training != null && controller.equipoDetalle.isNotEmpty) {
+    if (isEdit &&
+        entrenamiento != null &&
+        controller.equipoDetalle.isNotEmpty) {
       controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
-          (element) => element.key == training!.inEquipo,
+          (element) => element.key == entrenamiento!.inEquipo,
           orElse: () => controller.equipoDetalle.first);
       controller.condicionSelected.value = controller.condicionDetalle
-          .firstWhere((element) => element.key == training!.inCondicion,
+          .firstWhere((element) => element.key == entrenamiento!.inCondicion,
               orElse: () => controller.condicionDetalle.first);
       controller.estadoEntrenamientoSelected.value = controller.estadoDetalle
-          .firstWhere((element) => element.key == training!.inEstado,
+          .firstWhere((element) => element.key == entrenamiento!.inEstado,
               orElse: () => controller.estadoDetalle.first);
 
-      controller.fechaInicioController.text = DateFormat('dd/MM/yyyy')
-          .format(DateTime.parse(training!.fechaInicio.toString()));
-      controller.fechaTerminoController.text = DateFormat('dd/MM/yyyy')
-          .format(DateTime.parse(training!.fechaTermino.toString()));
-      controller.observacionesEntrenamiento.text = training?.comentarios ?? ' ';
-      controller.obtenerArchivosRegistrados(training!.key!);
+      log("Fecha Inicio: ${entrenamiento!.fechaInicio}");
+      controller.fechaInicioController.text = entrenamiento!.fechaInicio == null
+          ? ''
+          : DateFormat('dd/MM/yyyy')
+              .format(DateTime.parse(entrenamiento!.fechaInicio.toString()));
+      controller.fechaTerminoController.text = entrenamiento!.fechaTermino ==
+              null
+          ? ''
+          : DateFormat('dd/MM/yyyy')
+              .format(DateTime.parse(entrenamiento!.fechaTermino.toString()));
+      controller.observacionesEntrenamiento.text =
+          entrenamiento?.comentarios ?? ' ';
+      controller.obtenerArchivosRegistrados(entrenamiento!.key!);
     }
   }
 
@@ -95,8 +105,10 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             icon: const Icon(Icons.calendar_month),
             onIconPressed: () async {
               controller.fechaInicio = await _selectDate(Get.context!);
-              controller.fechaInicioController.text =
-                  DateFormat('dd/MM/yyyy').format(controller.fechaInicio!);
+              controller.fechaInicioController.text = controller.fechaInicio ==
+                      null
+                  ? ' '
+                  : DateFormat('dd/MM/yyyy').format(controller.fechaInicio!);
             },
           ),
         ),
@@ -125,8 +137,11 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             icon: const Icon(Icons.calendar_month),
             onIconPressed: () async {
               controller.fechaTermino = await _selectDate(Get.context!);
-              controller.fechaTerminoController.text =
-                  DateFormat('dd/MM/yyyy').format(controller.fechaTermino!);
+              controller.fechaTerminoController.text = controller
+                  .fechaTerminoController.text = controller.fechaTermino ==
+                      null
+                  ? ' '
+                  : DateFormat('dd/MM/yyyy').format(controller.fechaTermino!);
             },
           ),
         ),
@@ -163,7 +178,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       children: [
         Expanded(
           child: CustomTextField(
-maxLines: 2,
+            maxLines: 2,
             label: "Observaciones",
             controller: controller.observacionesEntrenamiento,
           ),
@@ -186,7 +201,8 @@ maxLines: 2,
             maxWidth: 600,
             minWidth: 300,
             minHeight: 200,
-            maxHeight: MediaQuery.of(context).size.height * 0.5,
+            //maxHeight: MediaQuery.of(context).size.height * 0.5,
+            maxHeight: isEdit ? 600 : 350,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -266,7 +282,9 @@ maxLines: 2,
         : '';
 
     EntrenamientoModulo newTraining = EntrenamientoModulo(
-      key: isEdit ? training!.key : 0, // Usar la key existente si es edición
+      key: isEdit
+          ? entrenamiento!.key
+          : 0, // Usar la key existente si es edición
       inTipoActividad: 1,
       inCapacitacion: 0,
       inModulo: 0,
@@ -412,27 +430,6 @@ Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
   });
 }
 
-/*
-Widget customTextFieldDate(
-    String label,
-    TextEditingController fechaIngresoMinaController,
-    bool isEditing,
-    bool isViewing,
-    BuildContext context) {
-  return CustomTextField(
-    label: label,
-    controller: fechaIngresoMinaController,
-    icon: const Icon(Icons.calendar_today),
-    isReadOnly: isViewing,
-    isRequired: !isViewing,
-    onIconPressed: () {
-      if (!isViewing) {
-        _selectDate(context, fechaIngresoMinaController);
-      }
-    },
-  );
-}
-*/
 Future<DateTime?> _selectDate(BuildContext context) async {
   DateTime? picked = await showDatePicker(
     context: context,

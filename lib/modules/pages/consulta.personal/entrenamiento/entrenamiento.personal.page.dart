@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
@@ -156,20 +157,32 @@ class EntrenamientoPersonalPage extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(20, 0, 0, 0),
           child: ElevatedButton.icon(
             onPressed: () async {
+              var ultimoEntrenamiento =
+                  await controller.ObtenerUltimoEntrenamientoPorPersona(
+                      controllerPersonal.selectedPersonal.value!.id);
+
               await showDialog(
                 context: context,
                 builder: (context) {
                   if (controllerPersonal.selectedPersonal.value != null) {
-
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Center(
-                          child: EntrenamientoNuevoModal(
-                              data: controllerPersonal.selectedPersonal.value!,
-                              close: () {
-                                Navigator.pop(context);
-                              })),
-                    );
+                    if (ultimoEntrenamiento?.estadoEntrenamiento!.nombre!
+                            .toLowerCase() !=
+                        "entrenando") {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Center(
+                            child: EntrenamientoNuevoModal(
+                                data:
+                                    controllerPersonal.selectedPersonal.value!,
+                                close: () {
+                                  Navigator.pop(context);
+                                })),
+                      );
+                    } else {
+                      return const MensajeValidacionWidget(errores: [
+                        "No puede agregar un nuevo entrenamiento, mientras el modulo anterior no ha sido completado o paralizado"
+                      ]);
+                    }
                   } else {
                     return const Text("Null person");
                   }
@@ -711,9 +724,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 }
               },
             ),
-            training.estadoEntrenamiento!.nombre!.toLowerCase() == "paralizado"
-                ? Icon(Icons.add_circle_outline)
-                : IconButton(
+            if (training.estadoEntrenamiento!.nombre!.toLowerCase() != "entrenando") Icon(Icons.add_circle_outline) else IconButton(
                     icon: const Icon(Icons.add_circle_outline,
                         color: AppTheme.primaryColor),
                     tooltip: 'Nuevo modulo',
@@ -746,12 +757,10 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                               controllerPersonal.selectedPersonal.value!.key!);
                         }
                       } else {
-                        Get.snackbar(
-                          "Alerta",
-                          "No se puede agregar más módulos",
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
-                        );
+                        showDialog(context: Get.context!, builder: (context){
+                          return const MensajeValidacionWidget(errores: ["No se puede agregar más módulos",]);
+                        });
+                        // MensajeValidacionWidget(errores: ["No se puede agregar más módulos",]);
                       }
                     },
                   ),

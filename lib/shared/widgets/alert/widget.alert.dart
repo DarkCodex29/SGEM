@@ -58,7 +58,7 @@ class MensajeValidacionWidget extends StatelessWidget {
                   const SizedBox(height: 10),
                   // Change to a SizedBox to avoid ListView error
                   SizedBox(
-                    height: 200, // Set a fixed height for the ListView
+                    //height: 200, // Set a fixed height for the ListView
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: errores.length,

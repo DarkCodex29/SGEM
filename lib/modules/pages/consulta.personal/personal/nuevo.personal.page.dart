@@ -63,7 +63,7 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.isOperacionMina.value = personal.operacionMina == 'S';
       controller.isZonaPlataforma.value = personal.zonaPlataforma == 'S';
       controller.estadoPersonalKey.value = personal.estado!.key!;
-      controller.estadoPersonalNombre = personal.estado!.nombre!;
+      controller.estadoPersonalNombre.value = personal.estado!.nombre!;
       controller.obtenerArchivosRegistrados(1, personal.key!);
     }
   }
@@ -130,29 +130,35 @@ class NuevoPersonalPage extends StatelessWidget {
                 }
               }),
               const SizedBox(height: 10),
-              Obx(() {
-                int estado = controller.estadoPersonalKey.value;
-                String estadoNombre = controller.estadoPersonalNombre;
-                Color estadoColor;
-                switch (estado) {
-                  case 95:
-                    estadoColor = Colors.green;
-                    break;
-                  case 96:
-                    estadoColor = Colors.red;
-                    break;
-                  default:
-                    estadoColor = Colors.grey;
-                    break;
-                }
-                return Row(
-                  children: [
-                    Icon(Icons.circle, color: estadoColor, size: 12),
-                    const SizedBox(width: 10),
-                    Text(estadoNombre, style: const TextStyle(fontSize: 14)),
-                  ],
-                );
-              }),
+              Row(
+                children: [
+                  Obx(
+                    () {
+                      int estado = controller.estadoPersonalKey.value;
+                      Color estadoColor;
+                      switch (estado) {
+                        case 95:
+                          estadoColor = Colors.green;
+                          break;
+                        case 96:
+                          estadoColor = Colors.red;
+                          break;
+                        default:
+                          estadoColor = Colors.grey;
+                          break;
+                      }
+                      return Icon(Icons.circle, color: estadoColor, size: 12);
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  Obx(
+                    () => Text(
+                      controller.estadoPersonalNombre.value,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           const SizedBox(width: 30),

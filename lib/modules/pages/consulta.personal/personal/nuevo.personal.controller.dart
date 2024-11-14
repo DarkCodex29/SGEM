@@ -46,7 +46,7 @@ class NuevoPersonalController extends GetxController {
   Personal? personalData;
   Rxn<Uint8List?> personalPhoto = Rxn<Uint8List?>();
   RxInt estadoPersonalKey = 0.obs;
-  String estadoPersonalNombre = '';
+  RxString estadoPersonalNombre = ''.obs;
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
 
@@ -144,40 +144,45 @@ class NuevoPersonalController extends GetxController {
     }
   }
 
-  void llenarControladores(Personal personal) {
-    loadPersonalPhoto(personal.inPersonalOrigen!);
-    dniController.text = personal.numeroDocumento!;
+  void llenarControladores(Personal personalData) {
+    loadPersonalPhoto(personalData.inPersonalOrigen!);
+    dniController.text = personalData.numeroDocumento ?? '';
     nombresController.text =
-        '${personal.primerNombre} ${personal.segundoNombre}';
-    puestoTrabajoController.text = personal.cargo!;
-    codigoController.text = personal.codigoMcp!;
-    apellidoPaternoController.text = personal.apellidoPaterno!;
-    apellidoMaternoController.text = personal.apellidoMaterno!;
-    gerenciaController.text = personal.gerencia!;
-    fechaIngreso = personal.fechaIngreso;
-    fechaIngresoController.text =
-        DateFormat('dd/MM/yyyy').format(fechaIngreso!);
-    fechaIngresoMina = personal.fechaIngresoMina;
-    fechaIngresoMinaController.text =
-        DateFormat('dd/MM/yyyy').format(fechaIngresoMina!);
-    fechaRevalidacion = personal.licenciaVencimiento;
-    fechaRevalidacionController.text =
-        DateFormat('dd/MM/yyyy').format(fechaRevalidacion!);
-    areaController.text = personal.area!;
-    categoriaLicenciaController.text = personal.licenciaCategoria!;
-    codigoLicenciaController.text = personal.licenciaConducir!;
-    restriccionesController.text = personal.restricciones!;
-    if (personal.guardia!.key != 0) {
-      dropdownController.selectValueKey('guardia', personal.guardia!.key);
+        '${personalData.primerNombre ?? ''} ${personalData.segundoNombre ?? ''}';
+    puestoTrabajoController.text = personalData.cargo ?? '';
+    codigoController.text = personalData.codigoMcp ?? '';
+    apellidoPaternoController.text = personalData.apellidoPaterno ?? '';
+    apellidoMaternoController.text = personalData.apellidoMaterno ?? '';
+    gerenciaController.text = personalData.gerencia ?? '';
+    areaController.text = personalData.area ?? '';
+    categoriaLicenciaController.text = personalData.licenciaCategoria ?? '';
+    codigoLicenciaController.text = personalData.licenciaConducir ?? '';
+    restriccionesController.text = personalData.restricciones ?? '';
+    fechaIngreso = personalData.fechaIngreso;
+    fechaIngresoController.text = fechaIngreso != null
+        ? DateFormat('dd/MM/yyyy').format(fechaIngreso!)
+        : '';
+
+    fechaIngresoMina = personalData.fechaIngresoMina;
+    fechaIngresoMinaController.text = fechaIngresoMina != null
+        ? DateFormat('dd/MM/yyyy').format(fechaIngresoMina!)
+        : '';
+
+    fechaRevalidacion = personalData.licenciaVencimiento;
+    fechaRevalidacionController.text = fechaRevalidacion != null
+        ? DateFormat('dd/MM/yyyy').format(fechaRevalidacion!)
+        : '';
+
+    if (personalData.guardia != null && personalData.guardia!.key != 0) {
+      dropdownController.selectValueKey('guardia', personalData.guardia!.key);
     } else {
       dropdownController.selectValueKey('guardia', null);
     }
-    isOperacionMina.value = personal.operacionMina == 'S';
-    isZonaPlataforma.value = personal.zonaPlataforma == 'S';
-    estadoPersonalKey.value = personal.estado!.key!;
-    estadoPersonalNombre = personal.estado!.nombre!;
-    log('estadoPersonal: ${personal.estado!.nombre}');
-    obtenerArchivosRegistrados(1, personal.key!);
+    isOperacionMina.value = personalData.operacionMina == 'S';
+    isZonaPlataforma.value = personalData.zonaPlataforma == 'S';
+    estadoPersonalKey.value = personalData.estado?.key ?? 0;
+    estadoPersonalNombre.value = personalData.estado?.nombre ?? 'Sin estado';
+    obtenerArchivosRegistrados(1, personalData.key!);
   }
 
   Future<bool> gestionarPersona({
@@ -515,7 +520,7 @@ class NuevoPersonalController extends GetxController {
     isOperacionMina.value = false;
     isZonaPlataforma.value = false;
     estadoPersonalKey.value = 0;
-    estadoPersonalNombre = '';
+    estadoPersonalNombre.value = '';
     documentoAdjuntoNombre.value = '';
     documentoAdjuntoBytes.value = null;
     personalData = null;

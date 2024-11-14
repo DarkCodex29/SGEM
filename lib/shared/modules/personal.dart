@@ -26,7 +26,7 @@ class Personal implements DropdownElement {
   String? primerNombre;
   String? segundoNombre;
   DateTime? fechaIngreso;
-  String? licenciaCategoria=' ';
+  String? licenciaCategoria = ' ';
   DateTime? licenciaVencimiento;
   String? gerencia;
   String? area;

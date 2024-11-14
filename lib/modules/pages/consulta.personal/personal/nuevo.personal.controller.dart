@@ -239,10 +239,10 @@ class NuevoPersonalController extends GetxController {
       final response = await _accionPersona(accion);
 
       if (response.success) {
-        log('Acción $accion realizada exitosamente');
         await registrarArchivos(dniController.text);
         if (accion == 'registrar' || accion == 'actualizar') {
           _mostrarMensajeGuardado(Get.context!);
+          resetControllers();
           personalSearchController.searchPersonal();
         }
         return true;

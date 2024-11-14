@@ -751,16 +751,6 @@ class PersonalSearchPage extends StatelessWidget {
                                               },
                                             );
                                             controller.searchPersonal();
-                                            /*
-                                            ScaffoldMessenger.of(Get.context!)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                    "Persona eliminada exitosamente."),
-                                                backgroundColor: Colors.green,
-                                              ),
-                                            );*/
-                                            //Get.toNamed('/buscarEntrenamiento');
                                           } else {
                                             ScaffoldMessenger.of(Get.context!)
                                                 .showSnackBar(

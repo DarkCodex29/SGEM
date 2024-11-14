@@ -70,10 +70,10 @@ class NuevoPersonalController extends GetxController {
   final maestroDetalleService = MaestroDetalleService();
 
   Future<void> loadPersonalPhoto(int idOrigen) async {
+    personalPhoto.value = null;
     try {
       final photoResponse =
           await personalService.obtenerFotoPorCodigoOrigen(idOrigen);
-
       if (photoResponse.success && photoResponse.data != null) {
         personalPhoto.value = photoResponse.data;
       } else {
@@ -430,7 +430,7 @@ class NuevoPersonalController extends GetxController {
       String extension = archivo['extension'];
       String datosBase64 = archivo['datos'];
       Uint8List archivoBytes = base64Decode(datosBase64);
-      
+
       if (nombreArchivo.endsWith('.$extension')) {
         nombreArchivo = nombreArchivo.substring(
             0, nombreArchivo.length - extension.length - 1);

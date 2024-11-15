@@ -37,7 +37,7 @@ class EntrenamientoModulo {
   int? inHorasMinestar;
   int? inEstado;
   OptionValue? estadoEntrenamiento;
-  OptionValue? estadoModulo;
+  //OptionValue? estadoModulo;
   String? comentarios;
   String? eliminado;
   String? motivoEliminado;
@@ -72,7 +72,7 @@ class EntrenamientoModulo {
     this.inHorasMinestar,
     this.inEstado,
     this.estadoEntrenamiento,
-    this.estadoModulo,
+    //this.estadoModulo,
     this.comentarios,
     this.eliminado,
     this.motivoEliminado,

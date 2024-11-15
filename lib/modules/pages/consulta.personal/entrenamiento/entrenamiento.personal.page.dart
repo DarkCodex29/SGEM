@@ -734,8 +734,10 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   var response = await controller.entrenamientoService
                       .obtenerUltimoModuloPorEntrenamiento(training.key!);
                   var ultimoModulo = response.data!;
+                  //log("Ultimo modulo: ${response.data!.inModulo}");
                   if (ultimoModulo.inModulo != 4) {
-                    //log("Estado de Ultimo modulo: ${ultimoModulo.estadoModulo!.nombre}");
+                    log("Ultimo modulo: ${response.data!.inModulo}");
+                    //log("Estado de Ultimo modulo: ${response.data!.estadoEntrenamiento!.nombre ?? 'Nulo'}");
                     //if(ultimoModulo.inModulo ) {
                       final bool? success = await showDialog(
                         context: Get.context!,

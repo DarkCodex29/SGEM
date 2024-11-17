@@ -19,9 +19,22 @@ class MaestroDetalleService {
     followRedirects: false,
   );
 
-  Future<ResponseHandler<List<MaestroDetalle>>> getMaestroDetalles() async {
+  Future<ResponseHandler<List<MaestroDetalle>>> getMaestroDetalles({
+    int? maestroKey,
+    String? value,
+    int? status,
+  }) async {
     try {
-      final response = await _dio.get<List<dynamic>>('/ListarMaestrosDetalle');
+      final params = <String, dynamic>{
+        'maestro': maestroKey,
+        'valor': value,
+        'estado': status,
+      };
+
+      final response = await _dio.get<List<dynamic>>(
+        '/ListarMaestrosDetalle',
+        queryParameters: params,
+      );
 
       return ResponseHandler.handleSuccess(
         response.data

@@ -44,21 +44,29 @@ class MaestroService {
 
   @Deprecated('Usar getMaestros')
   Future<ResponseHandler<List<MaestroCompleto>>> listarMaestros() async {
-    try {
-      final response =
-          await _dio.get<List<Map<String, dynamic>>>('ListarMaestros');
+    const url = '${ConfigFile.apiUrl}/Maestro/ListarMaestros';
 
-      return ResponseHandler.handleSuccess<List<MaestroCompleto>>(
-        response.data?.map(MaestroCompleto.fromJson).toList() ?? const [],
+    try {
+      final response = await _dio.get(
+        url,
+        options: Options(
+          followRedirects: false,
+        ),
       );
+
+      if (response.statusCode == 200 && response.data != null) {
+        List<MaestroCompleto> maestros = List<MaestroCompleto>.from(
+          response.data.map((json) => MaestroCompleto.fromJson(json)),
+        );
+        return ResponseHandler.handleSuccess<List<MaestroCompleto>>(maestros);
+      } else {
+        return ResponseHandler(
+          success: false,
+          message: 'Error al listar maestros',
+        );
+      }
     } on DioException catch (e) {
       return ResponseHandler.handleFailure<List<MaestroCompleto>>(e);
-    } catch (error) {
-      debugPrint('Error al listar maestros: $error');
-      return ResponseHandler(
-        success: false,
-        message: 'Error al listar maestros',
-      );
     }
   }
 

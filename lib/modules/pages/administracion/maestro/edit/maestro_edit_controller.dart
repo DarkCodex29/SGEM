@@ -2,12 +2,11 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.maestro.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-class MaestroController extends GetxController {
-  MaestroController({
+class MaestroEditController extends GetxController {
+  MaestroEditController({
     MaestroService? maestroService,
     MaestroDetalleService? maestroDetalleService,
   })  : _maestroService = maestroService ?? MaestroService(),
@@ -17,7 +16,6 @@ class MaestroController extends GetxController {
   @override
   Future<void> onInit() async {
     initializeDropdown();
-    await search();
     super.onInit();
   }
 
@@ -27,32 +25,24 @@ class MaestroController extends GetxController {
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
 
-  final maestros = <OptionValue>[].obs;
   void initializeDropdown() {
     dropdownController
-      ..initializeDropdown('maestro')
       ..loadOptions('maestro', getMaestros)
-      ..initializeDropdown('estado')
-      ..loadOptions('estado', () async {
-        return [
-          OptionValue(key: 0, nombre: 'Activo'),
-          OptionValue(key: 1, nombre: 'Inactivo'),
-        ];
-      });
+      ..resetSelection('maestro')
+      ..resetSelection('estado');
   }
 
   final TextEditingController valorController = TextEditingController();
+  final TextEditingController descripcionController = TextEditingController();
 
   void clearFilter() {
     valorController.clear();
+    descripcionController.clear();
     dropdownController
       ..resetSelection('maestro')
       ..selectValueKey('maestro', 0)
       ..resetSelection('estado');
   }
-
-  final result = <MaestroDetalle>[].obs;
-  final rowsPerPage = 10.obs;
 
   Future<List<OptionValue>?> getMaestros() async {
     final response = await _maestroService.getMaestros();
@@ -63,36 +53,30 @@ class MaestroController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-
-    if (response.data != null) {
-      maestros
-        ..assignAll(response.data!)
-        ..add(OptionValue(key: 0, nombre: 'Todos'));
-    }
-
     return response.data;
   }
 
-  Future<void> search() async {
-    final maestroKey = dropdownController.getSelectedValue('maestro')?.key;
-    final estado = dropdownController.getSelectedValue('estado')?.key;
-    final valor = valorController.text;
-
-    final response = await _maestroDetalleService.getMaestroDetalles(
-      maestroKey: maestroKey,
-      value: valor.isEmpty ? null : valor,
-      status: estado,
-    );
-
-    if (response.success) {
-      result.assignAll(response.data!);
-      clearFilter();
-    } else {
-      Get.snackbar(
-        'Error',
-        'Error al cargar los maestros',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
+  Future<void> save() async {
+    // final response = await _maestroDetalleService.save(
+    //   valor: valorController.text,
+    //   descripcion: descripcionController.text,
+    //   estado: dropdownController.getValueKey('estado'),
+    //   maestro: dropdownController.getValueKey('maestro'),
+    // );
+    //
+    // if (response.success) {
+    //   Get.back<void>();
+    //   Get.snackbar(
+    //     'Guardado',
+    //     'Registro guardado correctamente',
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // } else {
+    //   Get.snackbar(
+    //     'Error',
+    //     'Error al guardar el registro',
+    //     snackPosition: SnackPosition.BOTTOM,
+    //   );
+    // }
   }
 }

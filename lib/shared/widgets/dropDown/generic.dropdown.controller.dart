@@ -3,11 +3,13 @@ import 'package:get/get.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 
 class GenericDropdownController extends GetxController {
-  var isLoadingControl = true.obs;
+  final isLoadingControl = true.obs;
+
   final isLoadingMap = <String, RxBool>{};
   final optionsMap = <String, RxList<OptionValue>>{};
   final selectedValueMap = <String, Rxn<OptionValue>>{};
-  RxInt selectedValueKey = 0.obs;
+
+  final selectedValueKey = 0.obs;
 
   /// Inicializa los campos del dropdown para una clave específica.
   void initializeDropdown(String key) {

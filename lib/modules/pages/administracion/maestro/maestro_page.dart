@@ -35,7 +35,7 @@ class MaestroPage extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        //controller.showNewPersonal();
+                        const MaestroEditView().show();
                       },
                       icon: const Icon(
                         Icons.add,
@@ -98,6 +98,7 @@ class MaestroPage extends StatelessWidget {
                               IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
+                                  const MaestroEditView().show();
                                   //controller.showEditPersonal(mdetalle);
                                 },
                               ),
@@ -107,7 +108,6 @@ class MaestroPage extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
                 ],
               ),
             ),
@@ -131,15 +131,6 @@ class MaestroPage extends StatelessWidget {
   }
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
 class FilterTile extends StatelessWidget {
   const FilterTile({super.key});
 
@@ -149,7 +140,6 @@ class FilterTile extends StatelessWidget {
     return ExpansionTile(
       title: const Text('Filtros'),
       initiallyExpanded: true,
-
       children: [
         Container(
           padding: const EdgeInsets.all(16),
@@ -163,12 +153,23 @@ class FilterTile extends StatelessWidget {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: CustomDropdownGlobal(
-                      labelText: 'Maestro',
-                      dropdownKey: 'maestro',
-                      noDataHintText: 'No se encontraron maestros',
-                      hintText: 'Maestro',
-                      controller: ctr.dropdownController,
+                    child: Obx(
+                      () {
+                        if (ctr.maestros.isEmpty) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return CustomDropdownGlobal(
+                          labelText: 'Maestro',
+                          dropdownKey: 'maestro',
+                          noDataHintText: 'No se encontraron maestros',
+                          hintText: 'Maestro',
+                          staticOptions: ctr.maestros,
+                          key: const Key('maestro_dropdown_maestro'),
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(width: 20),
@@ -250,89 +251,6 @@ class FilterTile extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class Table extends StatelessWidget {
-  const Table({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<MaestroController>();
-    const boldTextStyle = TextStyle(fontWeight: FontWeight.bold);
-
-    return Obx(
-      () {
-        if (controller.result.isEmpty) {
-          return const Center(child: Text('No se encontraron resultados'));
-        }
-
-        final rowsToShow =
-            controller.result.take(controller.rowsPerPage.value).toList();
-
-        return Column(
-          children: [
-            Container(
-              color: Colors.grey[200],
-              padding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 16,
-              ),
-              child: const Row(
-                children: [
-                  Expanded(child: Text('Código', style: boldTextStyle)),
-                  Expanded(child: Text('Maestro', style: boldTextStyle)),
-                  Expanded(child: Text('Valor', style: boldTextStyle)),
-                  Expanded(
-                    child: Text('Usuario registro', style: boldTextStyle),
-                  ),
-                  Expanded(child: Text('Fecha registro', style: boldTextStyle)),
-                  Expanded(child: Text('Estado', style: boldTextStyle)),
-                  Expanded(child: Text('Acción', style: boldTextStyle)),
-                ],
-              ),
-            ),
-            // Expanded(
-            //   child: SingleChildScrollView(
-            //     child: Column(
-            //       children: rowsToShow.map(
-            //         (entrenamiento) {
-            //           return Padding(
-            //             padding: const EdgeInsets.all(16),
-            //             child: Row(
-            //               children: [
-            //                 const Expanded(child: Text('Código')),
-            //                 const Expanded(child: Text('Maestro')),
-            //                 const Expanded(child: Text('Valor')),
-            //                 const Expanded(child: Text('Usuario registro')),
-            //                 const Expanded(child: Text('Fecha registro')),
-            //                 const Expanded(child: Text('Estado')),
-            //                 Expanded(
-            //                   child: Row(
-            //                     children: [
-            //                       IconButton(
-            //                         icon: const Icon(Icons.edit),
-            //                         onPressed: () {},
-            //                       ),
-            //                       IconButton(
-            //                         icon: const Icon(Icons.delete),
-            //                         onPressed: () {},
-            //                       ),
-            //                     ],
-            //                   ),
-            //                 ),
-            //               ],
-            //             ),
-            //           );
-            //         },
-            //       ).toList(),
-            //     ),
-            //   ),
-            // ),
-          ],
-        );
-      },
     );
   }
 }

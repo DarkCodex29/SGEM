@@ -5,18 +5,6 @@ import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 class CustomDropdownGlobal extends StatelessWidget {
-  final String dropdownKey;
-  final String labelText;
-  final String hintText;
-  final String noDataHintText;
-  final bool isSearchable;
-  final bool isRequired;
-  final bool isReadOnly;
-  final GenericDropdownController? controller;
-  final List<OptionValue>? staticOptions;
-  final OptionValue? initialValue;
-  final void Function(OptionValue?)? onChanged;
-
   const CustomDropdownGlobal({
     required this.dropdownKey,
     required this.labelText,
@@ -29,24 +17,38 @@ class CustomDropdownGlobal extends StatelessWidget {
     this.isSearchable = false,
     this.isRequired = false,
     this.isReadOnly = false,
+    this.textFieldKey,
     super.key,
   });
+  final String dropdownKey;
+  final String labelText;
+  final String hintText;
+  final String noDataHintText;
+  final bool isSearchable;
+  final bool isRequired;
+  final bool isReadOnly;
+  final GenericDropdownController? controller;
+  final List<OptionValue>? staticOptions;
+  final OptionValue? initialValue;
+  final void Function(OptionValue?)? onChanged;
+  final Key? textFieldKey;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Si controller está presente y staticOptions es null, usamos Obx
+                // Si controller está presente y staticOptions es null,
+                /// usamos Obx
                 if (controller != null && staticOptions == null)
                   Obx(() {
-                    var options = controller!.getOptions(dropdownKey);
-                    var isLoading = controller!.isLoading(dropdownKey);
+                    final options = controller!.getOptions(dropdownKey);
+                    final isLoading = controller!.isLoading(dropdownKey);
 
                     if (isLoading) {
                       return const Center(
@@ -63,7 +65,7 @@ class CustomDropdownGlobal extends StatelessWidget {
                 else if (staticOptions != null)
                   _buildDropdown(staticOptions!)
                 else
-                  const Text("Error: No controller or static options provided"),
+                  const Text('Error: No controller or static options provided'),
                 if (isSearchable && !isReadOnly) _buildSearchBar(),
               ],
             ),
@@ -85,9 +87,78 @@ class CustomDropdownGlobal extends StatelessWidget {
   }
 
   Widget _buildDropdown(List<OptionValue> options) {
+    return _Dropdown(
+      options: options,
+      textFieldKey: textFieldKey,
+      initialValue: initialValue,
+      controller: controller,
+      dropdownKey: dropdownKey,
+      noDataHintText: noDataHintText,
+      hintText: hintText,
+      labelText: labelText,
+      isReadOnly: isReadOnly,
+      onChanged: onChanged,
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: TextField(
+        decoration: const InputDecoration(
+          hintText: 'Buscar...',
+          border: OutlineInputBorder(),
+        ),
+        onChanged: (query) {
+          final options = (staticOptions ?? controller!.getOptions(dropdownKey))
+              .where(
+                (option) =>
+                    option.nombre
+                        ?.toLowerCase()
+                        .contains(query.toLowerCase()) ??
+                    false,
+              )
+              .toList();
+          if (controller != null && staticOptions == null) {
+            controller!.optionsMap[dropdownKey]?.assignAll(options);
+          }
+        },
+      ),
+    );
+  }
+}
+
+class _Dropdown extends StatelessWidget {
+  const _Dropdown({
+    required this.options,
+    required this.textFieldKey,
+    required this.initialValue,
+    required this.controller,
+    required this.dropdownKey,
+    required this.noDataHintText,
+    required this.hintText,
+    required this.labelText,
+    required this.isReadOnly,
+    required this.onChanged,
+  });
+
+  final List<OptionValue> options;
+  final Key? textFieldKey;
+  final OptionValue? initialValue;
+  final GenericDropdownController? controller;
+  final String dropdownKey;
+  final String noDataHintText;
+  final String hintText;
+  final String labelText;
+  final bool isReadOnly;
+  final void Function(OptionValue? p1)? onChanged;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
       height: 60,
       child: DropdownButtonFormField<OptionValue>(
+        key: textFieldKey,
         value: initialValue ?? controller?.getSelectedValue(dropdownKey),
         isExpanded: true,
         hint: Text(
@@ -111,12 +182,12 @@ class CustomDropdownGlobal extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             borderSide: const BorderSide(
               color: AppTheme.alternateColor,
-              width: 2.0,
+              width: 2,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(
-            vertical: 14.0,
-            horizontal: 12.0,
+            vertical: 14,
+            horizontal: 12,
           ),
         ),
         onChanged: isReadOnly || options.isEmpty
@@ -126,7 +197,7 @@ class CustomDropdownGlobal extends StatelessWidget {
                   controller!.selectValue(dropdownKey, value);
                 }
                 if (onChanged != null) {
-                  onChanged!(value);
+                  onChanged!.call(value);
                 }
               },
         items: options.map((option) {
@@ -139,28 +210,6 @@ class CustomDropdownGlobal extends StatelessWidget {
           initialValue?.nombre ?? hintText,
           style: const TextStyle(color: Colors.grey),
         ),
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: TextField(
-        decoration: const InputDecoration(
-          hintText: 'Buscar...',
-          border: OutlineInputBorder(),
-        ),
-        onChanged: (query) {
-          var options = (staticOptions ?? controller!.getOptions(dropdownKey))
-              .where((option) =>
-                  option.nombre?.toLowerCase().contains(query.toLowerCase()) ??
-                  false)
-              .toList();
-          if (controller != null && staticOptions == null) {
-            controller!.optionsMap[dropdownKey]?.assignAll(options);
-          }
-        },
       ),
     );
   }
@@ -179,21 +228,13 @@ abstract class DropdownElement {
 }
 
 class Binding<T> {
+  const Binding({required this.set, required this.get});
   final void Function(T?) set;
   final T? Function() get;
-
-  const Binding({required this.set, required this.get});
 }
 
 class CustomGenericDropdown<Element extends DropdownElement>
     extends StatefulWidget {
-  final String hintText;
-  final List<Element> options;
-  final bool isSearchable;
-  final Binding<Element> selectedValue;
-  final bool isRequired;
-  final bool isReadOnly;
-
   const CustomGenericDropdown({
     required this.hintText,
     required this.options,
@@ -203,6 +244,12 @@ class CustomGenericDropdown<Element extends DropdownElement>
     this.isReadOnly = false,
     super.key,
   });
+  final String hintText;
+  final List<Element> options;
+  final bool isSearchable;
+  final Binding<Element> selectedValue;
+  final bool isRequired;
+  final bool isReadOnly;
 
   @override
   CustomGenericDropdownState createState() => CustomGenericDropdownState();
@@ -221,7 +268,7 @@ class CustomGenericDropdownState<Element extends DropdownElement>
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
           Expanded(
@@ -251,12 +298,12 @@ class CustomGenericDropdownState<Element extends DropdownElement>
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
                           color: AppTheme.alternateColor,
-                          width: 2.0,
+                          width: 2,
                         ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14.0,
-                        horizontal: 12.0,
+                        vertical: 14,
+                        horizontal: 12,
                       ),
                     ),
                     onChanged: (option) => {widget.selectedValue.set(option)},
@@ -304,8 +351,10 @@ class CustomGenericDropdownState<Element extends DropdownElement>
         onChanged: (query) {
           setState(() {
             filteredOptions = widget.options
-                .where((option) =>
-                    option.value.toLowerCase().contains(query.toLowerCase()))
+                .where(
+                  (option) =>
+                      option.value.toLowerCase().contains(query.toLowerCase()),
+                )
                 .toList();
           });
         },

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/administracion/administracion.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.page.dart';
 import 'package:sgem/modules/pages/monitoring/view/monitoring.page.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
-import '../administracion/administracion.page.dart';
 import '../consulta.entrenamiento/consulta.entrenamiento.page.dart';
 import '../consulta.personal/consulta.personal.page.dart';
 

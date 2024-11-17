@@ -89,12 +89,7 @@ class MaestroPage extends StatelessWidget {
                               Text(mdetalle.maestro.nombre ?? 'N/A'),
                               Text(mdetalle.value),
                               Text(mdetalle.usuarioRegistro ?? 'N/A'),
-                              Text(
-                                mdetalle.fechaRegistro != null
-                                    ? DateFormat('dd/MM/yyyy')
-                                        .format(mdetalle.fechaRegistro!)
-                                    : 'N/A',
-                              ),
+                              Text(mdetalle.fechaRegistro?.toString() ?? 'N/A'),
                               Text(mdetalle.activo ?? 'N/A'),
                             ];
                           },
@@ -104,12 +99,6 @@ class MaestroPage extends StatelessWidget {
                                 icon: const Icon(Icons.edit),
                                 onPressed: () {
                                   //controller.showEditPersonal(mdetalle);
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  //controller.showDeletePersonal(mdetalle);
                                 },
                               ),
                             ];
@@ -157,103 +146,110 @@ class FilterTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ctr = Get.find<MaestroController>();
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        children: [
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: CustomDropdownGlobal(
-                  labelText: 'Maestro',
-                  dropdownKey: 'maestro',
-                  noDataHintText: 'No se encontraron maestros',
-                  hintText: 'Maestro',
-                  controller: ctr.dropdownController,
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: CustomTextField(
-                  label: 'Valor',
-                  controller: ctr.valorController,
-                ),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                child: CustomDropdownGlobal(
-                  labelText: 'Estado',
-                  dropdownKey: 'estado',
-                  noDataHintText: 'No se encontraron estados',
-                  controller: ctr.dropdownController,
-                  hintText: 'Estado',
-                ),
-              ),
-            ],
+    return ExpansionTile(
+      title: const Text('Filtros'),
+      initiallyExpanded: true,
+
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          child: Column(
             children: [
-              ElevatedButton.icon(
-                onPressed: ctr.clearFilter,
-                icon: const Icon(
-                  Icons.cleaning_services,
-                  size: 18,
-                  color: AppTheme.primaryText,
-                ),
-                label: const Text(
-                  'Limpiar',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: AppTheme.primaryText,
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: CustomDropdownGlobal(
+                      labelText: 'Maestro',
+                      dropdownKey: 'maestro',
+                      noDataHintText: 'No se encontraron maestros',
+                      hintText: 'Maestro',
+                      controller: ctr.dropdownController,
+                    ),
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 49,
-                    vertical: 18,
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: CustomTextField(
+                      label: 'Valor',
+                      controller: ctr.valorController,
+                    ),
                   ),
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    side: const BorderSide(color: AppTheme.alternateColor),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: CustomDropdownGlobal(
+                      labelText: 'Estado',
+                      dropdownKey: 'estado',
+                      noDataHintText: 'No se encontraron estados',
+                      controller: ctr.dropdownController,
+                      hintText: 'Estado',
+                    ),
                   ),
-                  elevation: 2,
-                ),
+                ],
               ),
-              const SizedBox(width: 10),
-              ElevatedButton.icon(
-                onPressed: () async {},
-                icon: const Icon(
-                  Icons.search,
-                  size: 18,
-                  color: Colors.white,
-                ),
-                label: const Text(
-                  'Buscar',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 49,
-                    vertical: 18,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: ctr.clearFilter,
+                    icon: const Icon(
+                      Icons.cleaning_services,
+                      size: 18,
+                      color: AppTheme.primaryText,
+                    ),
+                    label: const Text(
+                      'Limpiar',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppTheme.primaryText,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 49,
+                        vertical: 18,
+                      ),
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(color: AppTheme.alternateColor),
+                      ),
+                      elevation: 2,
+                    ),
                   ),
-                  backgroundColor: AppTheme.primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  const SizedBox(width: 10),
+                  ElevatedButton.icon(
+                    onPressed: ctr.search,
+                    icon: const Icon(
+                      Icons.search,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      'Buscar',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 49,
+                        vertical: 18,
+                      ),
+                      backgroundColor: AppTheme.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      elevation: 2,
+                    ),
                   ),
-                  elevation: 2,
-                ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

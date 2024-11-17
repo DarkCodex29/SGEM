@@ -30,6 +30,7 @@ class CustomTable<T> extends StatelessWidget {
           children: [
             Expanded(
               child: CustomScrollView(
+                primary: false,
                 slivers: [
                   SliverAppBar(
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -78,11 +79,13 @@ class CustomTable<T> extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final item = ctr.data[index];
                         return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ...builder(item).map((e) => Expanded(child: e)),
                             if (actions != null)
                               Expanded(
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: actions!(item),
                                 ),
                               ),

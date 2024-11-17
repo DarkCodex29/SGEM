@@ -17,7 +17,7 @@ class MaestroController extends GetxController {
   @override
   Future<void> onInit() async {
     initializeDropdown();
-    await buscarMaestroDetalle();
+    await search();
     super.onInit();
   }
 
@@ -57,6 +57,7 @@ class MaestroController extends GetxController {
     valorController.clear();
     dropdownController
       ..resetSelection('maestro')
+      ..selectValueKey('maestro', 0)
       ..resetSelection('estado');
   }
 
@@ -68,6 +69,29 @@ class MaestroController extends GetxController {
 
     if (response.success) {
       result.assignAll(response.data!);
+    } else {
+      Get.snackbar(
+        'Error',
+        'Error al cargar los maestros',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> search() async {
+    final maestroKey = dropdownController.getSelectedValue('maestro')?.key;
+    final estado = dropdownController.getSelectedValue('estado')?.key;
+    final valor = valorController.text;
+
+    final response = await _maestroDetalleService.getMaestroDetalles(
+      maestroKey: maestroKey,
+      value: valor.isEmpty ? null : valor,
+      status: estado,
+    );
+
+    if (response.success) {
+      result.assignAll(response.data!);
+      clearFilter();
     } else {
       Get.snackbar(
         'Error',

@@ -25,7 +25,7 @@ class MaestroEditView extends StatelessWidget {
         builder: (context, constraints) {
           return ConstrainedBox(
             constraints: BoxConstraints(
-              maxWidth: constraints.maxWidth > 400 ? 400 : constraints.maxWidth,
+              maxWidth: constraints.maxWidth > 500 ? 500 : constraints.maxWidth,
               maxHeight:
                   constraints.maxHeight > 800 ? 800 : constraints.maxHeight,
             ),
@@ -64,11 +64,13 @@ class MaestroEditView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
                   child: Column(
                     children: [
                       CustomDropdownGlobal(
                         labelText: 'Maestro',
+                        isRequired: true,
                         dropdownKey: 'maestro',
                         noDataHintText: 'No se encontraron maestros',
                         hintText: 'Maestro',
@@ -78,6 +80,7 @@ class MaestroEditView extends StatelessWidget {
                       ),
                       CustomTextField(
                         label: 'Valor',
+                        isRequired: true,
                         controller: ctr.valorController,
                       ),
                       CustomTextField(
@@ -87,6 +90,7 @@ class MaestroEditView extends StatelessWidget {
                       ),
                       CustomDropdownGlobal(
                         labelText: 'Estado',
+                        isRequired: true,
                         dropdownKey: 'estado',
                         noDataHintText: 'No se encontraron estados',
                         controller: ctr.dropdownController,

@@ -9,7 +9,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
     Personal? personal, String imageFromAssets, Uint8List? photoPerfil) async {
   final fondoImageBytes = await loadImage(imageFromAssets);
   final imageLogo = await loadImage('logo.png');
-  String fechaIngreso = "";
+  String fechaEmision = DateTime.now().toString();
   String nombreCompleto = "";
   String cargo = "";
   String zonaPlataforma = "";
@@ -25,7 +25,6 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
       "Área": personal.area,
       "Restricción": personal.restricciones,
     };
-    fechaIngreso = personal.fechaIngreso.toString();
     nombreCompleto = personal.nombreCompleto!;
     cargo = personal.cargo!;
     zonaPlataforma = personal.zonaPlataforma!;
@@ -79,7 +78,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
               ),
               pw.SizedBox(height: 10),
               pw.Text(
-                'Fecha de emision: $fechaIngreso',
+                'Fecha de emision: $fechaEmision',
                 style:
                     pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold),
               ),

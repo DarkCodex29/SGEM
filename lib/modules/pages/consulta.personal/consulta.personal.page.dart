@@ -608,23 +608,26 @@ class PersonalSearchPage extends StatelessWidget {
                             child: Row(
                               children: estado == 'Cesado'
                                   ? [
-                                      _buildIconButton(Icons.remove_red_eye,
+                                      _buildIconButton(
+                                          'Visualizar',
+                                          Icons.remove_red_eye,
                                           AppTheme.primaryColor, () {
                                         controller.showViewPersonal(personal);
                                       }),
                                       _buildIconButton(
+                                          'Entrenamientos',
                                           Icons.model_training_sharp,
                                           AppTheme.warningColor, () {
                                         controller.showTraining(personal);
                                       }),
                                     ]
                                   : [
-                                      _buildIconButton(
-                                          Icons.edit, AppTheme.primaryColor,
-                                          () {
+                                      _buildIconButton('Editar', Icons.edit,
+                                          AppTheme.primaryColor, () {
                                         controller.showEditPersonal(personal);
                                       }),
                                       _buildIconButton(
+                                        'Eliminar',
                                         Icons.delete,
                                         AppTheme.errorColor,
                                         () async {
@@ -752,11 +755,13 @@ class PersonalSearchPage extends StatelessWidget {
                                         },
                                       ),
                                       _buildIconButton(
+                                          'Entrenamientos',
                                           Icons.model_training_sharp,
                                           AppTheme.warningColor, () {
                                         controller.showTraining(personal);
                                       }),
                                       _buildIconButton(
+                                          'Carnet',
                                           Icons.credit_card_rounded,
                                           AppTheme.greenColor, () {
                                         controller.showCarnet(personal);
@@ -777,8 +782,10 @@ class PersonalSearchPage extends StatelessWidget {
     );
   }
 
-  Widget _buildIconButton(IconData icon, Color color, VoidCallback onPressed) {
+  Widget _buildIconButton(
+      String toolTip, IconData icon, Color color, VoidCallback onPressed) {
     return IconButton(
+      tooltip: toolTip,
       icon: Icon(
         icon,
         color: color,

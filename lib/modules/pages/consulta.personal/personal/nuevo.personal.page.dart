@@ -422,6 +422,17 @@ class NuevoPersonalPage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Obx(() {
+          if (controller.archivosAdjuntos.isEmpty) {
+            return isViewing
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 10, left: 20),
+                    child: Text(
+                      "No hay archivos adjuntos.",
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  )
+                : const SizedBox();
+          }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: controller.archivosAdjuntos.map((archivo) {
@@ -451,51 +462,52 @@ class NuevoPersonalPage extends StatelessWidget {
                         maxLines: 1,
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        archivo['nuevo'] == false
-                            ? IconButton(
-                                icon: const Icon(Icons.download,
-                                    color: Colors.blue, size: 20),
-                                onPressed: () {
-                                  controller.descargarArchivo(archivo);
-                                },
-                              )
-                            : const SizedBox(),
-                        IconButton(
-                          icon: Icon(
-                            archivo['nuevo'] == true
-                                ? Icons.cancel
-                                : Icons.delete,
-                            color: Colors.red,
-                            size: 20,
+                    if (!isViewing)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          archivo['nuevo'] == false
+                              ? IconButton(
+                                  icon: const Icon(Icons.download,
+                                      color: Colors.blue, size: 20),
+                                  onPressed: () {
+                                    controller.descargarArchivo(archivo);
+                                  },
+                                )
+                              : const SizedBox(),
+                          IconButton(
+                            icon: Icon(
+                              archivo['nuevo'] == true
+                                  ? Icons.cancel
+                                  : Icons.delete,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (archivo['nuevo'] == true) {
+                                controller.removerArchivo(archivo['nombre']);
+                              } else {
+                                showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return ConfirmDeleteWidget(
+                                      itemName: archivo['nombre'],
+                                      entityType: 'archivo',
+                                      onConfirm: () {
+                                        controller.eliminarArchivo(archivo);
+                                        Navigator.pop(context);
+                                      },
+                                      onCancel: () {
+                                        Navigator.pop(context);
+                                      },
+                                    );
+                                  },
+                                );
+                              }
+                            },
                           ),
-                          onPressed: () {
-                            if (archivo['nuevo'] == true) {
-                              controller.removerArchivo(archivo['nombre']);
-                            } else {
-                              showDialog(
-                                context: Get.context!,
-                                builder: (BuildContext context) {
-                                  return ConfirmDeleteWidget(
-                                    itemName: archivo['nombre'],
-                                    entityType: 'archivo',
-                                    onConfirm: () {
-                                      controller.eliminarArchivo(archivo);
-                                      Navigator.pop(context);
-                                    },
-                                    onCancel: () {
-                                      Navigator.pop(context);
-                                    },
-                                  );
-                                },
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                   ],
                 ),
               );
@@ -503,16 +515,17 @@ class NuevoPersonalPage extends StatelessWidget {
           );
         }),
         const SizedBox(height: 10),
-        TextButton.icon(
-          onPressed: () {
-            controller.adjuntarDocumentos();
-          },
-          icon: const Icon(Icons.attach_file, color: Colors.blue),
-          label: const Text(
-            "Adjuntar Documentos",
-            style: TextStyle(color: Colors.blue),
+        if (!isViewing)
+          TextButton.icon(
+            onPressed: () {
+              controller.adjuntarDocumentos();
+            },
+            icon: const Icon(Icons.attach_file, color: Colors.blue),
+            label: const Text(
+              "Adjuntar documentos",
+              style: TextStyle(color: Colors.blue),
+            ),
           ),
-        ),
       ],
     );
   }

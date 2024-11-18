@@ -15,86 +15,75 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: Align(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      child: SizedBox(
+        width: 350,
+        height: 220,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-          child: Container(
-            width: 350,
-            height: 220,
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              boxShadow: const [
-                BoxShadow(
-                  blurRadius: 3,
-                  color: Color(0x33000000),
-                  offset: Offset(0, 1),
-                ),
-              ],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: Image.asset(
-                            'assets/images/guardar.png',
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () => Get.back<bool>(result: false),
-                          child: Icon(
-                            Icons.close,
-                            color: Theme.of(context).textTheme.bodyMedium?.color,
-                            size: 24,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    child: Text(
-                      title,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontFamily: 'Calibri',
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/images/guardar.png',
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 4),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AppButton.white(
-                          text: 'No',
-                          onPressed: () => Get.back<bool>(result: false),
-                        ),
-                        const SizedBox(width: 12),
-                        AppButton.green(
-                          text: 'Si',
-                          onPressed: () => Get.back<bool>(result: true),
-                        ),
-                      ],
+                    InkWell(
+                      onTap: () => Get.back<bool>(result: false),
+                      child: Icon(
+                        Icons.close,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                        size: 24,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              Align(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: 'Calibri',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 4),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppButton.white(
+                      text: 'No',
+                      onPressed: () => Get.back<bool>(result: false),
+                    ),
+                    const SizedBox(width: 12),
+                    AppButton.green(
+                      text: 'Si',
+                      onPressed: () => Get.back<bool>(result: true),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

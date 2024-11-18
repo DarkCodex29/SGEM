@@ -737,18 +737,29 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       .obtenerUltimoModuloPorEntrenamiento(training.key!);
                   var ultimoModulo = response.data!;
                   //log("Ultimo modulo: ${response.data!.inModulo}");
-                  if (ultimoModulo == null && ultimoModulo.inModulo != 4 ) {
+                  if (ultimoModulo.inModulo != 4) {
                     log("Ultimo modulo: ${response.data!.inModulo}");
                     //log("Estado de Ultimo modulo: ${response.data!.estadoEntrenamiento!.nombre ?? 'Nulo'}");
                     //if(ultimoModulo.inModulo ) {
+                    if (ultimoModulo.inModulo != null &&
+                        ultimoModulo.inModulo! >= 1) {
+                      log('Estado ultimo modulo: ${ultimoModulo.estadoEntrenamiento!.nombre}');
+                      showDialog(
+                          context: Get.context!,
+                          builder: (context) {
+                            return const MensajeValidacionWidget(errores: [
+                              "No se puede agregar un nuevo modulo mientras en modulo anterior no se haya completado."
+                            ]);
+                          });
+                      //MensajeValidacionWidget(errores: ["No se puede agregar un nuevo modulo mientras en modulo anterior no se haya completado."]));
+                      //ultimoModulo.estadoEntrenamiento!.nombre!.toLowerCase()=='completo';
+                    } else {
                       final bool? success = await showDialog(
                         context: Get.context!,
                         builder: (context) {
                           return GestureDetector(
                             child: Padding(
-                              padding: MediaQuery
-                                  .of(context)
-                                  .viewInsets,
+                              padding: MediaQuery.of(context).viewInsets,
                               child: EntrenamientoModuloNuevo(
                                 entrenamiento: training,
                                 isEdit: false,
@@ -766,7 +777,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         await controller.fetchTrainings(
                             controllerPersonal.selectedPersonal.value!.key!);
                       }
-                    //}
+                    }
                   } else {
                     showDialog(
                         context: Get.context!,

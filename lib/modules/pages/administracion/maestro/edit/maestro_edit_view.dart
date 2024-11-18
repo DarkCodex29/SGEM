@@ -6,22 +6,23 @@ import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/utils/Extensions/format_extension.dart';
 import 'package:sgem/shared/widgets/app_button.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class MaestroEditView extends StatelessWidget {
   const MaestroEditView({
     super.key,
-    this.maestro,
+    this.detalle,
   });
 
-  final MaestroDetalle? maestro;
+  final MaestroDetalle? detalle;
 
   void show() => Get.dialog<void>(this);
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.put(MaestroEditController(maestro: maestro));
-    final isEdit = maestro != null;
+    final ctr = Get.put(MaestroEditController(detalle));
+    final isEdit = detalle != null;
 
     return Dialog(
       backgroundColor: Colors.white,
@@ -74,49 +75,47 @@ class MaestroEditView extends StatelessWidget {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
-                  child: Column(
-                    children: [
-                      if (isEdit)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Código: ${maestro!.key!.format}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                  child: Obx(
+                    () {
+                      return Column(
+                        children: [
+                          if (isEdit)
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Código: ${detalle!.key!.format}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
+                          const AppDropdownField(
+                            dropdownKey: 'maestro',
+                            label: 'Maestro',
                           ),
-                        ),
-                      CustomDropdownGlobal(
-                        labelText: 'Maestro',
-                        isRequired: true,
-                        dropdownKey: 'maestro',
-                        noDataHintText: 'No se encontraron maestros',
-                        hintText: 'Maestro',
-                        controller: ctr.dropdownController,
-                        textFieldKey:
-                            const Key('maestro_edit_dropdown_maestro'),
-                      ),
-                      CustomTextField(
-                        label: 'Valor',
-                        isRequired: true,
-                        controller: ctr.valorController,
-                      ),
-                      CustomTextField(
-                        label: 'Descripción',
-                        controller: ctr.descripcionController,
-                        maxLines: 3,
-                      ),
-                      CustomDropdownGlobal(
-                        labelText: 'Estado',
-                        isRequired: true,
-                        dropdownKey: 'estado',
-                        noDataHintText: 'No se encontraron estados',
-                        controller: ctr.dropdownController,
-                        hintText: 'Estado',
-                        textFieldKey: const Key('maestro_edit_dropdown_estado'),
-                      ),
-                    ],
+                          CustomTextField(
+                            label: 'Valor',
+                            isRequired: true,
+                            controller: ctr.valorController,
+                          ),
+                          CustomTextField(
+                            label: 'Descripción',
+                            controller: ctr.descripcionController,
+                            maxLines: 3,
+                          ),
+                          const AppDropdownField(
+                            label: 'Estado',
+                            isRequired: true,
+                            dropdownKey: 'estado',
+                            // noDataHintText: 'No se encontraron estados',
+                            // controller: ctr.dropdownController,
+                            // hintText: 'Estado',
+                            key: const Key('maestro_edit_dropdown_estado'),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 10),

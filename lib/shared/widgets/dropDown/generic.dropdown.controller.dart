@@ -15,7 +15,7 @@ class GenericDropdownController extends GetxController {
   void initializeDropdown(String key) {
     isLoadingMap.putIfAbsent(key, () => false.obs);
     optionsMap.putIfAbsent(key, () => <OptionValue>[].obs);
-    selectedValueMap.putIfAbsent(key, () => Rxn<OptionValue>());
+    selectedValueMap.putIfAbsent(key, Rxn<OptionValue>.new);
   }
 
   /// Carga las opciones para el dropdown, evitando duplicaciones.
@@ -26,7 +26,7 @@ class GenericDropdownController extends GetxController {
 
     isLoadingMap[key]!.value = true;
     try {
-      var loadedOptions = await getOptions() ?? [];
+      final loadedOptions = await getOptions() ?? [];
       optionsMap[key]?.assignAll(loadedOptions);
     } catch (e) {
       log('Error al cargar opciones para $key: $e');
@@ -47,11 +47,6 @@ class GenericDropdownController extends GetxController {
   void selectValueKey(String key, int? valueKey) {
     initializeDropdown(key);
 
-    if (valueKey == null) {
-      selectedValueKey.value = 0;
-      selectedValueMap[key]?.value = null;
-    }
-
     if (valueKey != null) {
       selectedValueKey.value = valueKey;
       final matchingOption = optionsMap[key]?.firstWhere(
@@ -71,23 +66,22 @@ class GenericDropdownController extends GetxController {
     required String options,
     required int optionKey,
   }) {
-    final optionList = optionsMap[options];
-
-    if (optionList == null) {
+    if (!optionsMap.containsKey(options)) {
       throw Exception('No se encontraron opciones para $options');
     }
 
-    final matchingOption = optionList.firstWhere(
+    final matchingOption = optionsMap[options]!.firstWhere(
       (option) => option.key == optionKey,
       orElse: () => throw Exception(
         '''
       No se encontró la opción con la clave $optionKey
-      Con los valores: $optionList
+      Con los valores: ${optionsMap[options]}
       ''',
       ),
     );
 
     selectedValueMap[options]!.value = matchingOption;
+    selectedValueKey.value = optionKey;
   }
 
   /// Restablece la selección para una clave de dropdown específica.
@@ -105,7 +99,10 @@ class GenericDropdownController extends GetxController {
   bool isLoading(String key) => isLoadingMap[key]?.value ?? false;
 
   /// Obtiene la lista de opciones para un dropdown específico.
+  @Deprecated('Use getOptionsFromKey() instead.')
   List<OptionValue> getOptions(String key) => optionsMap[key]?.toList() ?? [];
+
+  List<OptionValue> getOptionsFromKey(String key) => optionsMap[key] ?? [];
 
   /// Obtiene el `OptionValue` actualmente seleccionado para una clave de dropdown.
   OptionValue? getSelectedValue(String key) => selectedValueMap[key]?.value;

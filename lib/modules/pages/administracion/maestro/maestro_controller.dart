@@ -35,22 +35,22 @@ class MaestroController extends GetxController {
       ..initializeDropdown('estado')
       ..loadOptions(
         'estado',
-        () async => const [
+        () async => [
           OptionValue(key: 0, nombre: 'Activo'),
           OptionValue(key: 1, nombre: 'Inactivo'),
         ],
       );
+
   }
 
   final TextEditingController valorController = TextEditingController();
-  static const _allMaestro = OptionValue(key: 0, nombre: 'Todos');
+  static final _allMaestro = OptionValue(key: 0, nombre: 'Todos');
 
   void clearFilter() {
     debugPrint('Clear filter');
     valorController.clear();
     dropdownController
       ..resetSelection('maestro')
-      // ..selectValue('maestro', _allMaestro)
       ..resetSelection('estado');
   }
 
@@ -68,9 +68,7 @@ class MaestroController extends GetxController {
     }
 
     if (response.data != null) {
-      maestros
-        ..assignAll(response.data!)
-        ..insert(0, _allMaestro);
+      maestros.value = [_allMaestro, ...response.data!];
     }
 
     return response.data;

@@ -10,7 +10,8 @@ import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 class MaestroEditController extends GetxController {
-  MaestroEditController({
+  MaestroEditController(
+    this.detalle, {
     MaestroService? maestroService,
     MaestroDetalleService? maestroDetalleService,
   })  : _maestroService = maestroService ?? MaestroService(),
@@ -25,6 +26,7 @@ class MaestroEditController extends GetxController {
 
   final MaestroService _maestroService;
   final MaestroDetalleService _maestroDetalleService;
+  final MaestroDetalle? detalle;
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
@@ -34,6 +36,13 @@ class MaestroEditController extends GetxController {
       ..loadOptions('maestro', getMaestros)
       ..resetSelection('maestro')
       ..resetSelection('estado');
+
+    if (detalle != null) {
+      dropdownController.selectValueByKey(
+        options: 'estado',
+        optionKey: detalle!.activo == 'S' ? 0 : 1,
+      );
+    }
   }
 
   final TextEditingController valorController = TextEditingController();

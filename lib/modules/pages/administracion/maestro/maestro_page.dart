@@ -5,6 +5,7 @@ import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/administracion.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/custom_table/custom_table.dart';
+import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class MaestroPage extends StatelessWidget {
@@ -97,7 +98,7 @@ class MaestroPage extends StatelessWidget {
                             IconButton(
                               icon: const Icon(Icons.edit),
                               onPressed:
-                                  MaestroEditView(maestro: mdetalle).show,
+                                  MaestroEditView(detalle: mdetalle).show,
                             ),
                           ],
                         );
@@ -157,12 +158,10 @@ class FilterTile extends StatelessWidget {
                           );
                         }
 
-                        return CustomDropdownGlobal(
-                          labelText: 'Maestro',
+                        return AppDropdownField(
                           dropdownKey: 'maestro',
-                          noDataHintText: 'No se encontraron maestros',
-                          hintText: 'Maestro',
-                          staticOptions: ctr.maestros,
+                          label: 'Maestro',
+                          options: ctr.maestros,
                           key: const Key('maestro_dropdown_maestro'),
                         );
                       },
@@ -176,13 +175,13 @@ class FilterTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 20),
-                  Expanded(
-                    child: CustomDropdownGlobal(
-                      labelText: 'Estado',
+                  const Expanded(
+                    child: AppDropdownField(
+                      label: 'Estado',
                       dropdownKey: 'estado',
-                      noDataHintText: 'No se encontraron estados',
-                      controller: ctr.dropdownController,
-                      hintText: 'Estado',
+                      // noDataHintText: 'No se encontraron estados',
+                      // controller: ctr.dropdownController,
+                      // hintText: 'Estado',
                     ),
                   ),
                 ],

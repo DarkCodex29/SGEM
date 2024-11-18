@@ -37,6 +37,7 @@ class EntrenamientoModulo {
   int? inHorasMinestar;
   int? inEstado;
   OptionValue? estadoEntrenamiento;
+  //OptionValue? estadoModulo;
   String? comentarios;
   String? eliminado;
   String? motivoEliminado;
@@ -71,6 +72,7 @@ class EntrenamientoModulo {
     this.inHorasMinestar,
     this.inEstado,
     this.estadoEntrenamiento,
+    //this.estadoModulo,
     this.comentarios,
     this.eliminado,
     this.motivoEliminado,
@@ -132,6 +134,8 @@ class EntrenamientoModulo {
         inEstado: json["InEstado"] ?? 0,
         estadoEntrenamiento:
             OptionValue.fromJson(json["EstadoEntrenamiento"] ?? {}),
+        // estadoModulo:
+        // OptionValue.fromJson(json["EstadoModulo"] ?? {}),
         comentarios: json["Comentarios"] ?? '',
         eliminado: json["Eliminado"] ?? '',
         motivoEliminado: json["MotivoEliminado"] ?? '',
@@ -167,6 +171,7 @@ class EntrenamientoModulo {
         "InHorasMinestar": inHorasMinestar,
         "InEstado": inEstado,
         "EstadoEntrenamiento": estadoEntrenamiento!.toJson(),
+        //"EstadoModulo": estadoModulo!.toJson(),
         "Comentarios": comentarios,
         "Eliminado": eliminado,
         "MotivoEliminado": motivoEliminado,

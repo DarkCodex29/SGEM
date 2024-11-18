@@ -4,7 +4,7 @@ import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-class AppDropdownField extends StatefulWidget {
+class AppDropdownField extends StatelessWidget {
   const AppDropdownField({
     required this.dropdownKey,
     required this.label,
@@ -28,22 +28,9 @@ class AppDropdownField extends StatefulWidget {
   final int? initialValue;
 
   @override
-  State<AppDropdownField> createState() => _AppDropdownFieldState();
-}
-
-class _AppDropdownFieldState extends State<AppDropdownField> {
-  late final GenericDropdownController controller;
-
-  @override
-  void initState() {
-    controller = Get.find<GenericDropdownController>();
-    controller.initializeDropdown(widget.dropdownKey);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final cached = widget.options == null;
+    final controller = Get.find<GenericDropdownController>();
+    final cached = options == null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -55,15 +42,10 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
               children: [
                 Obx(
                   () {
-                    final value = widget.initialValue ??
-                        controller.getSelectedValue(widget.dropdownKey)?.key;
-                    var options = this.widget.options;
-
+                    var options = this.options;
                     if (cached) {
-                      options =
-                          controller.getOptionsFromKey(widget.dropdownKey);
-                      final isLoading =
-                          controller.isLoading(widget.dropdownKey);
+                      options = controller.getOptionsFromKey(dropdownKey);
+                      final isLoading = controller.isLoading(dropdownKey);
 
                       if (isLoading) {
                         return const Center(
@@ -75,33 +57,35 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
                         );
                       }
                     }
+                    final value = initialValue ??
+                        controller.getSelectedValue(dropdownKey)?.key;
 
                     return _Dropdown(
                       options: options!,
-                      dropdownKey: widget.dropdownKey,
+                      dropdownKey: dropdownKey,
                       value: value,
-                      label: widget.label,
-                      readOnly: widget.readOnly,
-                      hint: widget.hint,
-                      disabledHint: widget.disabledHint,
+                      label: label,
+                      readOnly: readOnly,
+                      hint: hint,
+                      disabledHint: disabledHint,
                       // onChanged: (_) {},
                       onChanged: cached
                           ? (value) {
                               if (value == null) {
-                                controller.resetSelection(widget.dropdownKey);
+                                controller.resetSelection(dropdownKey);
                               } else {
                                 controller.selectValueByKey(
-                                  options: widget.dropdownKey,
+                                  options: dropdownKey,
                                   optionKey: value,
                                 );
                               }
                             }
                           : (value) {
                               if (value == null) {
-                                controller.resetSelection(widget.dropdownKey);
+                                controller.resetSelection(dropdownKey);
                               } else {
                                 controller.selectValue(
-                                  widget.dropdownKey,
+                                  dropdownKey,
                                   options!.firstWhere((e) => e.key == value),
                                 );
                               }
@@ -114,7 +98,7 @@ class _AppDropdownFieldState extends State<AppDropdownField> {
               ],
             ),
           ),
-          if (widget.isRequired)
+          if (isRequired)
             const Padding(
               padding: EdgeInsets.only(left: 6, bottom: 16),
               child: Text(

@@ -198,7 +198,7 @@ class MaestroEditController extends GetxController {
         key: maestro!.key!,
         nombre: maestro.nombre,
       ),
-      key: null,
+      key: detalle!.key,
       usuarioModifica: 'ldolorier',
       fechaRegistro: DateTime.now(),
     );

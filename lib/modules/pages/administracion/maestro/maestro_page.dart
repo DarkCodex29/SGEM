@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/administracion.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/custom_table/custom_table.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
@@ -177,10 +178,14 @@ class FilterTile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 20),
-                  const Expanded(
+                  Expanded(
                     child: AppDropdownField(
                       label: 'Estado',
                       dropdownKey: 'estado',
+                      options: [
+                        OptionValue(key: 1, nombre: 'Activo'),
+                        OptionValue(key: 0, nombre: 'Inactivo'),
+                      ],
                       // noDataHintText: 'No se encontraron estados',
                       // controller: ctr.dropdownController,
                       // hintText: 'Estado',

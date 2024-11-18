@@ -32,15 +32,7 @@ class MaestroController extends GetxController {
     dropdownController
       ..initializeDropdown('maestro')
       ..loadOptions('maestro', getMaestros)
-      ..initializeDropdown('estado')
-      ..loadOptions(
-        'estado',
-        () async => [
-          OptionValue(key: 1, nombre: 'Activo'),
-          OptionValue(key: 0, nombre: 'Inactivo'),
-        ],
-      );
-
+      ..initializeDropdown('estado');
   }
 
   final TextEditingController valorController = TextEditingController();

@@ -192,26 +192,16 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomDropdownGlobal(
                             labelText: 'Estado',
-                            dropdownKey: 'estadoDropdown',
-                            hintText: "Estado",
+                            dropdownKey: 'estado',
+                            hintText: "Selecciona estado",
                             noDataHintText: "No hay datos de estado",
-                            staticOptions: [
-                              OptionValue(key: 95, nombre: "Activo"),
-                              OptionValue(key: 96, nombre: "Cesado"),
-                              OptionValue(key: null, nombre: "Todos")
-                            ],
                             isSearchable: false,
                             isRequired: false,
-                            onChanged: (value) {
-                              if (value == "Activo") {
-                                controller.searchPersonalEstado(95);
-                              } else if (value == "Cesado") {
-                                controller.searchPersonalEstado(96);
-                              } else {
-                                controller.searchPersonalEstado(null);
-                              }
+                            onChanged: (OptionValue? value) {
+                              controller.dropdownController
+                                  .selectValue('estado', value);
                             },
-                            controller: null,
+                            controller: controller.dropdownController,
                           ),
                         ],
                       )
@@ -259,26 +249,16 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomDropdownGlobal(
                             labelText: 'Estado',
-                            dropdownKey: 'estadoDropdown',
-                            hintText: "Estado",
+                            dropdownKey: 'estado',
+                            hintText: "Selecciona estado",
                             noDataHintText: "No hay datos de estado",
-                            staticOptions: [
-                              OptionValue(key: 95, nombre: "Activo"),
-                              OptionValue(key: 96, nombre: "Cesado"),
-                              OptionValue(key: null, nombre: "Todos")
-                            ],
                             isSearchable: false,
                             isRequired: false,
-                            onChanged: (value) {
-                              if (value == "Activo") {
-                                controller.searchPersonalEstado(95);
-                              } else if (value == "Cesado") {
-                                controller.searchPersonalEstado(96);
-                              } else {
-                                controller.searchPersonalEstado(null);
-                              }
+                            onChanged: (OptionValue? value) {
+                              controller.dropdownController
+                                  .selectValue('estadoDropdown', value);
                             },
-                            controller: null,
+                            controller: controller.dropdownController,
                           ),
                         ],
                       )
@@ -301,26 +281,16 @@ class PersonalSearchPage extends StatelessWidget {
                           Expanded(
                             child: CustomDropdownGlobal(
                               labelText: 'Estado',
-                              dropdownKey: 'estadoDropdown',
-                              hintText: "Estado",
+                              dropdownKey: 'estado',
+                              hintText: "Selecciona estado",
                               noDataHintText: "No hay datos de estado",
-                              staticOptions: [
-                                OptionValue(key: 95, nombre: "Activo"),
-                                OptionValue(key: 96, nombre: "Cesado"),
-                                OptionValue(key: null, nombre: "Todos")
-                              ],
                               isSearchable: false,
                               isRequired: false,
-                              onChanged: (value) {
-                                if (value == "Activo") {
-                                  controller.searchPersonalEstado(95);
-                                } else if (value == "Cesado") {
-                                  controller.searchPersonalEstado(96);
-                                } else {
-                                  controller.searchPersonalEstado(null);
-                                }
+                              onChanged: (OptionValue? value) {
+                                controller.dropdownController
+                                    .selectValue('estado', value);
                               },
-                              controller: null,
+                              controller: controller.dropdownController,
                             ),
                           ),
                         ],

@@ -61,7 +61,6 @@ class PersonalSearchController extends GetxController {
 
   var personalResults = <Personal>[].obs;
   var selectedPersonal = Rxn<Personal>();
-  var selectedEstadoKey = RxnInt(95);
 
   var rowsPerPage = 10.obs;
   var currentPage = 1.obs;
@@ -90,10 +89,6 @@ class PersonalSearchController extends GetxController {
     } catch (e) {
       return null;
     }
-  }
-
-  void searchPersonalEstado(int? estadoKey) {
-    selectedEstadoKey.value = estadoKey;
   }
 
   Future<void> searchPersonal({int pageNumber = 1, int pageSize = 10}) async {
@@ -255,7 +250,7 @@ class PersonalSearchController extends GetxController {
     dropdownController.resetAllSelections();
     nombresController.clear();
     apellidosController.clear();
-    selectedEstadoKey.value = null;
+    //selectedEstadoKey.value = null;
   }
 
   void showNewPersonal() {

@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
-  int selectedIndex = 5;
+  int selectedIndex = 0;
 
   OverlayEntry? _overlayEntry;
 

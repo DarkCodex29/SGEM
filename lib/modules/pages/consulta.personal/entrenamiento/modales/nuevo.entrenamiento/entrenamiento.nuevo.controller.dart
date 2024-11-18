@@ -104,7 +104,42 @@ class EntrenamientoNuevoController extends GetxController {
     archivosAdjuntos.removeWhere((archivo) =>
         archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
     documentoAdjuntoNombre.value = '';
-    log('Archivo $nombreArchivo eliminado');
+  }
+
+  Future<void> eliminarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      final response = await archivoService.eliminarArchivo(
+        key: archivo['key'],
+        nombre: archivo['nombre'],
+        extension: archivo['extension'],
+        mime: archivo['mime'],
+        datos: archivo['datos'],
+        inTipoArchivo: 1,
+        inOrigen: 1,
+        inOrigenKey: archivo['inOrigenKey'],
+      );
+
+      if (response.success) {
+        obtenerArchivosRegistrados(2, archivo['inOrigenKey']);
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el archivo: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      log('Error al eliminar el archivo: $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo eliminar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   Future<void> adjuntarDocumentos() async {
@@ -199,44 +234,9 @@ class EntrenamientoNuevoController extends GetxController {
     }
   }
 
-  Future<void> eliminarArchivo(Map<String, dynamic> archivo) async {
-    try {
-      final response = await archivoService.eliminarArchivo(
-        key: archivo['key'],
-        nombre: archivo['nombre'],
-        extension: archivo['extension'],
-        mime: archivo['mime'],
-        datos: archivo['datos'],
-        inTipoArchivo: 1,
-        inOrigen: 1,
-        inOrigenKey: archivo['inOrigenKey'],
-      );
-
-      if (response.success) {
-        obtenerArchivosRegistrados(2, archivo['inOrigenKey']);
-      } else {
-        Get.snackbar(
-          'Error',
-          'No se pudo eliminar el archivo: ${response.message}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
-    } catch (e) {
-      log('Error al eliminar el archivo: $e');
-      Get.snackbar(
-        'Error',
-        'No se pudo eliminar el archivo: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
-  }
-
   Future<void> obtenerArchivosRegistrados(int idOrigen, int inOrigenKey) async {
     log('Obteniendo archivos registrados');
+    log('idOrigen: $idOrigen');
     log('inOrigenKey: $inOrigenKey');
     try {
       isLoadingFiles.value = true;

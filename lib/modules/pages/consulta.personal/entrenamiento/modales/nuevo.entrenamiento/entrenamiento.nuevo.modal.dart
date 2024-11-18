@@ -55,7 +55,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
               .format(DateTime.parse(entrenamiento!.fechaTermino.toString()));
       controller.observacionesEntrenamiento.text =
           entrenamiento?.comentarios ?? ' ';
-      controller.obtenerArchivosRegistrados(entrenamiento!.key!, 2);
+      controller.obtenerArchivosRegistrados(2, entrenamiento!.key!);
     }
   }
 

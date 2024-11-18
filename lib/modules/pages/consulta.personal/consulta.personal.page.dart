@@ -625,51 +625,15 @@ class PersonalSearchPage extends StatelessWidget {
                                         controller.showEditPersonal(personal);
                                       }),
                                       _buildIconButton(
-                                          Icons.delete, AppTheme.errorColor,
-                                          () async {
-                                        controller.selectedPersonal.value =
-                                            personal;
-                                        String motivoEliminacion = '';
+                                        Icons.delete,
+                                        AppTheme.errorColor,
+                                        () async {
+                                          controller.selectedPersonal.value =
+                                              personal;
+                                          String motivoEliminacion = '';
 
-                                        await showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return GestureDetector(
-                                              onTap: () =>
-                                                  FocusScope.of(context)
-                                                      .unfocus(),
-                                              child: Padding(
-                                                padding: MediaQuery.of(context)
-                                                    .viewInsets,
-                                                child: DeleteReasonWidget(
-                                                  entityType: 'personal',
-                                                  onCancel: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  onConfirm: (motivo) {
-                                                    motivoEliminacion = motivo;
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-
-                                        if (motivoEliminacion.isEmpty) {
-                                          return;
-                                        }
-
-                                        bool confirmarEliminar = false;
-
-                                        if (controller.selectedPersonal.value !=
-                                            null) {
-                                          String? nombreCompleto = controller
-                                              .selectedPersonal
-                                              .value!
-                                              .nombreCompleto;
                                           await showDialog(
-                                            context: Get.context!,
+                                            context: context,
                                             builder: (context) {
                                               return GestureDetector(
                                                 onTap: () =>
@@ -679,14 +643,14 @@ class PersonalSearchPage extends StatelessWidget {
                                                   padding:
                                                       MediaQuery.of(context)
                                                           .viewInsets,
-                                                  child: ConfirmDeleteWidget(
-                                                    itemName: nombreCompleto!,
+                                                  child: DeleteReasonWidget(
                                                     entityType: 'personal',
                                                     onCancel: () {
                                                       Navigator.pop(context);
                                                     },
-                                                    onConfirm: () {
-                                                      confirmarEliminar = true;
+                                                    onConfirm: (motivo) {
+                                                      motivoEliminacion =
+                                                          motivo;
                                                       Navigator.pop(context);
                                                     },
                                                   ),
@@ -694,55 +658,98 @@ class PersonalSearchPage extends StatelessWidget {
                                               );
                                             },
                                           );
-                                        } else {
-                                          log('Error: No hay personal seleccionado');
-                                          return;
-                                        }
-                                        if (!confirmarEliminar) {
-                                          return;
-                                        }
-                                        NuevoPersonalController controllerNew =
-                                            Get.put(NuevoPersonalController());
-                                        controllerNew.personalData =
-                                            controller.selectedPersonal.value;
-                                        try {
-                                          bool success = await controllerNew
-                                              .gestionarPersona(
-                                            accion: 'eliminar',
-                                            motivoEliminacion:
-                                                motivoEliminacion,
-                                            context: Get.context!,
-                                          );
-                                          if (success) {
+
+                                          if (motivoEliminacion.isEmpty) {
+                                            return;
+                                          }
+
+                                          bool confirmarEliminar = false;
+
+                                          if (controller
+                                                  .selectedPersonal.value !=
+                                              null) {
+                                            String? nombreCompleto = controller
+                                                .selectedPersonal
+                                                .value!
+                                                .nombreCompleto;
                                             await showDialog(
                                               context: Get.context!,
                                               builder: (context) {
-                                                return const SuccessDeleteWidget();
+                                                return GestureDetector(
+                                                  onTap: () =>
+                                                      FocusScope.of(context)
+                                                          .unfocus(),
+                                                  child: Padding(
+                                                    padding:
+                                                        MediaQuery.of(context)
+                                                            .viewInsets,
+                                                    child: ConfirmDeleteWidget(
+                                                      itemName: nombreCompleto!,
+                                                      entityType: 'personal',
+                                                      onCancel: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      onConfirm: () {
+                                                        confirmarEliminar =
+                                                            true;
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ),
+                                                );
                                               },
                                             );
-                                            controller.searchPersonal();
                                           } else {
+                                            log('Error: No hay personal seleccionado');
+                                            return;
+                                          }
+                                          if (!confirmarEliminar) {
+                                            return;
+                                          }
+                                          NuevoPersonalController
+                                              controllerNew = Get.put(
+                                                  NuevoPersonalController());
+                                          controllerNew.personalData =
+                                              controller.selectedPersonal.value;
+                                          try {
+                                            bool success = await controllerNew
+                                                .gestionarPersona(
+                                              accion: 'eliminar',
+                                              motivoEliminacion:
+                                                  motivoEliminacion,
+                                              context: Get.context!,
+                                            );
+                                            if (success) {
+                                              await showDialog(
+                                                context: Get.context!,
+                                                builder: (context) {
+                                                  return const SuccessDeleteWidget();
+                                                },
+                                              );
+                                              controller.searchPersonal();
+                                            } else {
+                                              ScaffoldMessenger.of(Get.context!)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                      "Error al eliminar la persona. Intenta nuevamente."),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            }
+                                          } catch (e) {
+                                            log('Error eliminando la persona: $e');
                                             ScaffoldMessenger.of(Get.context!)
                                                 .showSnackBar(
-                                              const SnackBar(
+                                              SnackBar(
                                                 content: Text(
-                                                    "Error al eliminar la persona. Intenta nuevamente."),
+                                                    "Error eliminando la persona: $e"),
                                                 backgroundColor: Colors.red,
                                               ),
                                             );
                                           }
-                                        } catch (e) {
-                                          log('Error eliminando la persona: $e');
-                                          ScaffoldMessenger.of(Get.context!)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  "Error eliminando la persona: $e"),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                        }
-                                      }),
+                                        },
+                                      ),
                                       _buildIconButton(
                                           Icons.model_training_sharp,
                                           AppTheme.warningColor, () {

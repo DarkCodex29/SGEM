@@ -422,91 +422,85 @@ class NuevoPersonalPage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Obx(() {
-          if (controller.archivosAdjuntos.isEmpty) {
-            return const Text("No hay archivos adjuntos.",
-                style:
-                    TextStyle(color: Colors.grey, fontStyle: FontStyle.italic));
-          } else {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: controller.archivosAdjuntos.map((archivo) {
-                return Container(
-                  width: 400,
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: archivo['nuevo'] == true
-                        ? Colors.red.shade50
-                        : Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          archivo['nombre'] ?? '',
-                          style: TextStyle(
-                            color: archivo['nuevo'] == true
-                                ? Colors.red
-                                : Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: controller.archivosAdjuntos.map((archivo) {
+              return Container(
+                width: 400,
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: archivo['nuevo'] == true
+                      ? Colors.red.shade50
+                      : Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        archivo['nombre'] ?? '',
+                        style: TextStyle(
+                          color: archivo['nuevo'] == true
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          archivo['nuevo'] == false
-                              ? IconButton(
-                                  icon: const Icon(Icons.download,
-                                      color: Colors.blue, size: 20),
-                                  onPressed: () {
-                                    controller.descargarArchivo(archivo);
-                                  },
-                                )
-                              : const SizedBox(),
-                          IconButton(
-                            icon: Icon(
-                              archivo['nuevo'] == true
-                                  ? Icons.cancel
-                                  : Icons.delete,
-                              color: Colors.red,
-                              size: 20,
-                            ),
-                            onPressed: () {
-                              if (archivo['nuevo'] == true) {
-                                controller.removerArchivo(archivo['nombre']);
-                              } else {
-                                showDialog(
-                                  context: Get.context!,
-                                  builder: (BuildContext context) {
-                                    return ConfirmDeleteWidget(
-                                      itemName: archivo['nombre'],
-                                      entityType: 'archivo',
-                                      onConfirm: () {
-                                        controller.eliminarArchivo(archivo);
-                                        Navigator.pop(context);
-                                      },
-                                      onCancel: () {
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  },
-                                );
-                              }
-                            },
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        archivo['nuevo'] == false
+                            ? IconButton(
+                                icon: const Icon(Icons.download,
+                                    color: Colors.blue, size: 20),
+                                onPressed: () {
+                                  controller.descargarArchivo(archivo);
+                                },
+                              )
+                            : const SizedBox(),
+                        IconButton(
+                          icon: Icon(
+                            archivo['nuevo'] == true
+                                ? Icons.cancel
+                                : Icons.delete,
+                            color: Colors.red,
+                            size: 20,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            );
-          }
+                          onPressed: () {
+                            if (archivo['nuevo'] == true) {
+                              controller.removerArchivo(archivo['nombre']);
+                            } else {
+                              showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return ConfirmDeleteWidget(
+                                    itemName: archivo['nombre'],
+                                    entityType: 'archivo',
+                                    onConfirm: () {
+                                      controller.eliminarArchivo(archivo);
+                                      Navigator.pop(context);
+                                    },
+                                    onCancel: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          );
         }),
         const SizedBox(height: 10),
         TextButton.icon(

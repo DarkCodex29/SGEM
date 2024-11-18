@@ -645,6 +645,7 @@ class PersonalSearchPage extends StatelessWidget {
                                                           .viewInsets,
                                                   child: DeleteReasonWidget(
                                                     entityType: 'personal',
+                                                    isMotivoRequired: true,
                                                     onCancel: () {
                                                       Navigator.pop(context);
                                                     },

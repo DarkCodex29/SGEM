@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 
 class DeleteReasonWidget extends StatelessWidget {
   final TextEditingController motivoController = TextEditingController();
   final String entityType;
+  final bool isMotivoRequired;
   final VoidCallback onCancel;
   final Function(String) onConfirm;
 
   DeleteReasonWidget({
     super.key,
     required this.entityType,
+    required this.isMotivoRequired,
     required this.onCancel,
     required this.onConfirm,
   });
@@ -117,6 +120,19 @@ class DeleteReasonWidget extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
+                          if (isMotivoRequired &&
+                              motivoController.text.isEmpty) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const MensajeValidacionWidget(
+                                  errores: ['Ingrese el motivo de eliminación'],
+                                );
+                              },
+                            );
+                            return;
+                          }
+
                           onConfirm(motivoController.text.isEmpty
                               ? 'Sin motivo'
                               : motivoController.text);

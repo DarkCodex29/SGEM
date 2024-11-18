@@ -115,7 +115,7 @@ class EntrenamientoNuevoController extends GetxController {
         mime: archivo['mime'],
         datos: archivo['datos'],
         inTipoArchivo: 1,
-        inOrigen: 1,
+        inOrigen: 2,
         inOrigenKey: archivo['inOrigenKey'],
       );
 

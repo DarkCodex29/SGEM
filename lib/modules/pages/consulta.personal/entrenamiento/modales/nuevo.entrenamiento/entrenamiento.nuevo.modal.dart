@@ -400,108 +400,113 @@ Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
           ),
         ],
       ),
-      Obx(
-        () {
-          if (controller.isLoadingFiles.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.archivosAdjuntos.isNotEmpty) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: controller.archivosAdjuntos.map((archivo) {
-                return Container(
-                  width: 400,
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: archivo['nuevo'] == true
-                        ? Colors.red.shade50
-                        : Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          archivo['nombre'],
-                          style: TextStyle(
-                            color: archivo['nuevo'] == true
-                                ? Colors.red
-                                : Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+      const SizedBox(height: 10),
+      Obx(() {
+        if (controller.isLoadingFiles.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.archivosAdjuntos.isNotEmpty) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: controller.archivosAdjuntos.map((archivo) {
+              return Container(
+                width: 400,
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: archivo['nuevo'] == true
+                      ? Colors.red.shade50
+                      : Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        archivo['nombre'],
+                        style: TextStyle(
+                          color: archivo['nuevo'] == true
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                      Row(
-                        children: [
-                          archivo['nuevo'] == false
-                              ? IconButton(
-                                  icon: const Icon(Icons.download,
-                                      color: Colors.blue, size: 20),
-                                  onPressed: () {
-                                    controller.descargarArchivo(archivo);
-                                  },
-                                )
-                              : const SizedBox(),
+                    ),
+                    Row(
+                      children: [
+                        if (archivo['nuevo'] == false)
                           IconButton(
-                            icon: Icon(
-                              archivo['nuevo'] == true
-                                  ? Icons.cancel
-                                  : Icons.delete,
-                              color: Colors.red,
-                              size: 20,
-                            ),
+                            icon: const Icon(Icons.download,
+                                color: Colors.blue, size: 20),
                             onPressed: () {
-                              if (archivo['nuevo'] == true) {
-                                controller.removerArchivo(archivo['nombre']);
-                              } else {
-                                showDialog(
-                                  context: Get.context!,
-                                  builder: (BuildContext context) {
-                                    return ConfirmDeleteWidget(
-                                      itemName: archivo['nombre'],
-                                      entityType: 'archivo',
-                                      onConfirm: () {
-                                        controller
-                                            .removerArchivo(archivo['nombre']);
-                                        Navigator.pop(context);
-                                      },
-                                      onCancel: () {
-                                        Navigator.pop(context);
-                                      },
-                                    );
-                                  },
-                                );
-                              }
+                              controller.descargarArchivo(archivo);
                             },
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            );
-          } else {
-            return Row(
-              children: [
-                TextButton.icon(
-                  onPressed: () {
-                    controller.adjuntarDocumentos();
-                  },
-                  icon: const Icon(Icons.attach_file, color: Colors.blue),
-                  label: const Text("Adjuntar Documento",
-                      style: TextStyle(color: Colors.blue)),
+                        IconButton(
+                          icon: Icon(
+                            archivo['nuevo'] == true
+                                ? Icons.cancel
+                                : Icons.delete,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          onPressed: () {
+                            if (archivo['nuevo'] == true) {
+                              // Remover archivo adjuntado recientemente
+                              controller.removerArchivo(archivo['nombre']);
+                            } else {
+                              // Confirmar eliminación de archivo obtenido del servidor
+                              showDialog(
+                                context: Get.context!,
+                                builder: (BuildContext context) {
+                                  return ConfirmDeleteWidget(
+                                    itemName: archivo['nombre'],
+                                    entityType: 'archivo',
+                                    onConfirm: () {
+                                      controller.eliminarArchivo(archivo);
+                                      Navigator.pop(context);
+                                    },
+                                    onCancel: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            );
-          }
+              );
+            }).toList(),
+          );
+        } else {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              "No hay archivos adjuntos.",
+              style: TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+          );
+        }
+      }),
+      const SizedBox(height: 10),
+      TextButton.icon(
+        onPressed: () {
+          controller.adjuntarDocumentos();
         },
-      )
+        icon: const Icon(Icons.attach_file, color: Colors.blue),
+        label: const Text(
+          "Adjuntar Documento",
+          style: TextStyle(color: Colors.blue),
+        ),
+      ),
     ],
   );
 }

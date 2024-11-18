@@ -362,7 +362,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         const Icon(Icons.attach_file, color: Colors.grey),
         const SizedBox(width: 10),
         // TODO: Aquí puedes mostrar el nombre del archivo subido si está disponible
-        Text(nombreArchivo,style: TextStyle(fontWeight: FontWeight.bold),),
+        Text(nombreArchivo,style: const TextStyle(fontWeight: FontWeight.bold),),
         const SizedBox(width: 10),
         IconButton(
           icon: const Icon(Icons.close, color: Colors.red),

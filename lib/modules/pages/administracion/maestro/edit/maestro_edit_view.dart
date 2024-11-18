@@ -2,18 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/maestro/edit/maestro_edit.dart';
+import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/utils/Extensions/format_extension.dart';
 import 'package:sgem/shared/widgets/app_button.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class MaestroEditView extends StatelessWidget {
-  const MaestroEditView({super.key});
+  const MaestroEditView({
+    super.key,
+    this.maestro,
+  });
+
+  final MaestroDetalle? maestro;
 
   void show() => Get.dialog<void>(this);
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.put(MaestroEditController());
+    final ctr = Get.put(MaestroEditController(maestro: maestro));
+    final isEdit = maestro != null;
 
     return Dialog(
       backgroundColor: Colors.white,
@@ -44,12 +52,12 @@ class MaestroEditView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'Registro de Maestro',
+                      Text(
+                        isEdit ? 'Editar Maestro' : 'Registro de Maestro',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 24,
                         ),
                       ),
                       Align(
@@ -68,6 +76,17 @@ class MaestroEditView extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
                   child: Column(
                     children: [
+                      if (isEdit)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Código: ${maestro!.key!.format}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       CustomDropdownGlobal(
                         labelText: 'Maestro',
                         isRequired: true,
@@ -109,12 +128,12 @@ class MaestroEditView extends StatelessWidget {
                       text: 'Cerrar',
                     ),
                     AppButton.blue(
-                      onPressed: ctr.clearFilter,
+                      onPressed: ctr.save,
                       text: 'Guardar',
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
               ],
             ),
           );

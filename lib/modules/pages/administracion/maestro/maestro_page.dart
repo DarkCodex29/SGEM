@@ -93,17 +93,13 @@ class MaestroPage extends StatelessWidget {
                               Text(mdetalle.activo ?? 'N/A'),
                             ];
                           },
-                          actions: (mdetalle) {
-                            return [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () {
-                                  const MaestroEditView().show();
-                                  //controller.showEditPersonal(mdetalle);
-                                },
-                              ),
-                            ];
-                          },
+                          actions: (mdetalle) => [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed:
+                                  MaestroEditView(maestro: mdetalle).show,
+                            ),
+                          ],
                         );
                       },
                     ),

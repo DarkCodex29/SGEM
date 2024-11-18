@@ -43,16 +43,51 @@ class GenericDropdownController extends GetxController {
   }
 
   /// Busca y selecciona una opción mediante su `key`, actualizando el valor seleccionado.
+  @Deprecated('Use selectValueByKey() instead.')
   void selectValueKey(String key, int? valueKey) {
     initializeDropdown(key);
+
+    if (valueKey == null) {
+      selectedValueKey.value = 0;
+      selectedValueMap[key]?.value = null;
+    }
+
     if (valueKey != null) {
       selectedValueKey.value = valueKey;
-      var matchingOption = optionsMap[key]?.firstWhere(
+      final matchingOption = optionsMap[key]?.firstWhere(
         (option) => option.key == valueKey,
-        orElse: () => OptionValue(key: valueKey, nombre: "No encontrado"),
+        orElse: () => OptionValue(key: valueKey, nombre: 'No encontrado'),
       );
       selectedValueMap[key]?.value = matchingOption;
     }
+  }
+
+  /// Busca las opciones del dropdown indicado por `options` y
+  /// luego selecciona el valor que coincida con la `key` proporcionada.
+  ///
+  /// Throws an exception if no options are found for the specified `options`.
+  /// Or if the option with the specified `key` is not found.
+  void selectValueByKey({
+    required String options,
+    required int optionKey,
+  }) {
+    final optionList = optionsMap[options];
+
+    if (optionList == null) {
+      throw Exception('No se encontraron opciones para $options');
+    }
+
+    final matchingOption = optionList.firstWhere(
+      (option) => option.key == optionKey,
+      orElse: () => throw Exception(
+        '''
+      No se encontró la opción con la clave $optionKey
+      Con los valores: $optionList
+      ''',
+      ),
+    );
+
+    selectedValueMap[options]!.value = matchingOption;
   }
 
   /// Restablece la selección para una clave de dropdown específica.
@@ -80,7 +115,7 @@ class GenericDropdownController extends GetxController {
     initializeDropdown(key);
     return optionsMap[key]?.firstWhere(
       (option) => option.key == keyToFind,
-      orElse: () => OptionValue(key: keyToFind, nombre: "No encontrado"),
+      orElse: () => OptionValue(key: keyToFind, nombre: 'No encontrado'),
     );
   }
 

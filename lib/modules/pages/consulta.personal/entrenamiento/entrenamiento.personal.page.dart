@@ -525,6 +525,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                           padding: MediaQuery.of(context).viewInsets,
                           child: DeleteReasonWidget(
                             entityType: 'módulo',
+                            isMotivoRequired: false,
                             onCancel: () {
                               Navigator.pop(context);
                             },
@@ -655,6 +656,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         padding: MediaQuery.of(context).viewInsets,
                         child: DeleteReasonWidget(
                           entityType: 'entrenamiento',
+                          isMotivoRequired: false,
                           onCancel: () {
                             Navigator.pop(context);
                           },

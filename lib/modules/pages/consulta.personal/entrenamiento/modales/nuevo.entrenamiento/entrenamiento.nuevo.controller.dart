@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.archivo.dart';
+import 'package:sgem/config/constants/tipo.archivo.entrenamiento.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
@@ -99,7 +100,7 @@ class EntrenamientoNuevoController extends GetxController {
     }
   }
 
-  void eliminarArchivo(String nombreArchivo) {
+  void removerArchivo(String nombreArchivo) {
     archivosAdjuntos.removeWhere((archivo) =>
         archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
     documentoAdjuntoNombre.value = '';
@@ -152,7 +153,7 @@ class EntrenamientoNuevoController extends GetxController {
             extension: extension,
             mime: mimeType,
             datos: datosBase64,
-            inTipoArchivo: 1,
+            inTipoArchivo: TipoArchivoEntrenamiento.OTROS,
             inOrigen: 2, // TABLA Entrenamiento
             inOrigenKey: inOrigenKey,
           );
@@ -168,13 +169,79 @@ class EntrenamientoNuevoController extends GetxController {
     }
   }
 
-  Future<void> obtenerArchivosRegistrados(int inOrigenKey) async {
+  Future<void> descargarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      String nombreArchivo = archivo['nombre'];
+      String extension = archivo['extension'];
+      String datosBase64 = archivo['datos'];
+      Uint8List archivoBytes = base64Decode(datosBase64);
+
+      if (nombreArchivo.endsWith('.$extension')) {
+        nombreArchivo = nombreArchivo.substring(
+            0, nombreArchivo.length - extension.length - 1);
+      }
+      MimeType mimeType = _determinarMimeType2(extension);
+      await FileSaver.instance.saveFile(
+        name: nombreArchivo,
+        bytes: archivoBytes,
+        ext: extension,
+        mimeType: mimeType,
+      );
+    } catch (e) {
+      log('Error al descargar el archivo $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo descargar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> eliminarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      final response = await archivoService.eliminarArchivo(
+        key: archivo['key'],
+        nombre: archivo['nombre'],
+        extension: archivo['extension'],
+        mime: archivo['mime'],
+        datos: archivo['datos'],
+        inTipoArchivo: 1,
+        inOrigen: 1,
+        inOrigenKey: archivo['inOrigenKey'],
+      );
+
+      if (response.success) {
+        obtenerArchivosRegistrados(2, archivo['inOrigenKey']);
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el archivo: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      log('Error al eliminar el archivo: $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo eliminar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> obtenerArchivosRegistrados(int idOrigen, int inOrigenKey) async {
     log('Obteniendo archivos registrados');
     log('inOrigenKey: $inOrigenKey');
     try {
       isLoadingFiles.value = true;
       final response = await archivoService.obtenerArchivosPorOrigen(
-        idOrigen: 2, // TABLA Entrenamiento
+        idOrigen: idOrigen, // TABLA Entrenamiento
         idOrigenKey: inOrigenKey,
       );
       log('Response: ${response.data}');
@@ -213,6 +280,20 @@ class EntrenamientoNuevoController extends GetxController {
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
       default:
         return 'application/octet-stream';
+    }
+  }
+
+  MimeType _determinarMimeType2(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return MimeType.pdf;
+      case 'doc':
+      case 'docx':
+        return MimeType.microsoftWord;
+      case 'xlsx':
+        return MimeType.microsoftExcel;
+      default:
+        return MimeType.other;
     }
   }
 

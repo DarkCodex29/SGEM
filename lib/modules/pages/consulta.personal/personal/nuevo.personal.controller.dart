@@ -109,7 +109,7 @@ class NuevoPersonalController extends GetxController {
       Personal personalData1 = responseBuscar.data!;
       if (personalData1.estado!.key == 96) {
         _mostrarErroresValidacion(
-            Get.context!, ['Personal cesado no puede ser registrado.']);
+            Get.context!, ['La persona se encuentra cesada.']);
         resetControllers();
         return;
       }
@@ -468,12 +468,6 @@ class NuevoPersonalController extends GetxController {
       );
 
       if (response.success) {
-        Get.snackbar(
-          'Archivo eliminado',
-          'El archivo ${archivo['nombre']} se eliminó correctamente',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-
         obtenerArchivosRegistrados(1, archivo['inOrigenKey']);
       } else {
         Get.snackbar(

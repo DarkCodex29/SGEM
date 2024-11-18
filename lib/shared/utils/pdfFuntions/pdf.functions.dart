@@ -7,15 +7,14 @@ import 'package:pdfx/pdfx.dart' as pdf;
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
 
-Future<Uint8List> _generatePdfAndConvertToImages(List<Future<pw.Page>> pages) async {
+Future<Uint8List> _generatePdfAndConvertToImages(
+    List<Future<pw.Page>> pages) async {
   final pdf = pw.Document();
   final resolvedPages = await Future.wait(pages);
   for (var page in resolvedPages) {
     pdf.addPage(page);
   }
-
-  final pdfData = await pdf.save();
-  return pdfData;
+  return pdf.save();
 }
 
 // Future<Uint8List> _generatePdfAndConvertToImage(Future<pw.Page> page) async {
@@ -28,22 +27,21 @@ Future<Uint8List> _generatePdfAndConvertToImages(List<Future<pw.Page>> pages) as
 // }
 
 Future<List<pdf.PdfPageImage?>> getImages(List<Future<pw.Page>> pages) async {
-  List<pdf.PdfPageImage?> listaImagens = [];
-  final document = await pdf.PdfDocument.openData(_generatePdfAndConvertToImages(pages));
-  final totalPages = document.pagesCount;
+  final List<pdf.PdfPageImage?> images = [];
+  final pdfData = await _generatePdfAndConvertToImages(pages);
+  final document = await pdf.PdfDocument.openData(pdfData);
 
-  for(int i = 1; totalPages >= i; i++) {
-    var size = 1.6;
+  for (int i = 1; i <= document.pagesCount; i++) {
     final page = await document.getPage(i);
     final image = await page.render(
-      width: page.width / size,
-      height: page.height / size,
+      width: page.width / 1.6,
+      height: page.height / 1.6,
       format: pdf.PdfPageImageFormat.jpeg,
       backgroundColor: '#ffffff',
     );
-    listaImagens.add(image);
+    images.add(image);
   }
-  return listaImagens;
+  return images;
 }
 
 Future<pdf.PdfPageImage?> getImage(Future<pw.Page> page, double size) async {
@@ -57,6 +55,7 @@ Future<pdf.PdfPageImage?> getImage(Future<pw.Page> page, double size) async {
   );
   return image;
 }
+
 Future<Uint8List> loadImage(String path) async {
   final ByteData data = await rootBundle.load('assets/images/$path');
   return data.buffer.asUint8List();
@@ -67,33 +66,30 @@ Future<Uint8List> loadImageSVG(BuildContext context, String path) async {
     'assets/images/$path',
     colorFilter: const ColorFilter.mode(Colors.red, BlendMode.srcIn),
   ).bytesLoader.loadBytes(context);
-   
+
   return data.buffer.asUint8List();
 }
 
 pw.Widget userFirm(String label) {
-  return  pw.Column(
-    children: [
-      pw.SizedBox(
-        width: 150,
-        child: pw.Divider(color: PdfColors.black),
-      ),
-      pw.Container(
-        width: 150,
-        child: pw.Text(
-          label,
-          textAlign: pw.TextAlign.center)
-      )
-    ]
-  );
+  return pw.Column(children: [
+    pw.SizedBox(
+      width: 150,
+      child: pw.Divider(color: PdfColors.black),
+    ),
+    pw.Container(
+        width: 150, child: pw.Text(label, textAlign: pw.TextAlign.center))
+  ]);
 }
 
-Future<pw.MemoryImage> generatePdfWithSvg2(String path, double width, double height) async {
-
+Future<pw.MemoryImage> generatePdfWithSvg2(
+    String path, double width, double height) async {
   String svgString = await rootBundle.loadString('assets/images/$path');
-  final PictureInfo pictureInfo = await vg.loadPicture(SvgStringLoader(svgString), null);
-  final ui.Image image = await pictureInfo.picture.toImage(width.toInt(), height.toInt());
-  final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+  final PictureInfo pictureInfo =
+      await vg.loadPicture(SvgStringLoader(svgString), null);
+  final ui.Image image =
+      await pictureInfo.picture.toImage(width.toInt(), height.toInt());
+  final ByteData? byteData =
+      await image.toByteData(format: ui.ImageByteFormat.png);
   if (byteData == null) {
     throw Exception('Failed to convert image to ByteData');
   }
@@ -103,10 +99,7 @@ Future<pw.MemoryImage> generatePdfWithSvg2(String path, double width, double hei
 }
 
 pw.Widget textFirma(String text) {
-  return pw.Container(
-    width: 150,
-    child: pw.Text(text)
-  );
+  return pw.Container(width: 150, child: pw.Text(text));
 }
 
 Future<ui.Image> getImageDimensions(Uint8List fondoImageBytes) async {
@@ -123,16 +116,14 @@ Future<ui.Image> _loadImage(Uint8List bytes) async {
 }
 
 pw.Widget cardCustom(pw.Widget childCustom) {
-  return 
-    pw.Container(
+  return pw.Container(
       width: double.infinity,
       padding: const pw.EdgeInsets.all(16),
       decoration: pw.BoxDecoration(
         border: pw.Border.all(color: PdfColors.black),
         borderRadius: pw.BorderRadius.circular(8),
       ),
-      child: childCustom
-  );
+      child: childCustom);
 }
 
 pw.Widget userDetail(String label, String value) {
@@ -141,7 +132,11 @@ pw.Widget userDetail(String label, String value) {
     child: pw.Row(
       mainAxisAlignment: pw.MainAxisAlignment.start,
       children: [
-        pw.SizedBox(width: 120, child: pw.Text(label, style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 18))),
+        pw.SizedBox(
+            width: 120,
+            child: pw.Text(label,
+                style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold, fontSize: 18))),
         pw.Text(": $value"),
       ],
     ),

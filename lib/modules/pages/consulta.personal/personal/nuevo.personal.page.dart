@@ -423,39 +423,46 @@ class NuevoPersonalPage extends StatelessWidget {
         const SizedBox(height: 10),
         Obx(() {
           if (controller.archivosAdjuntos.isEmpty) {
-            return const Text("No hay archivos adjuntos.",
-                style:
-                    TextStyle(color: Colors.grey, fontStyle: FontStyle.italic));
-          } else {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: controller.archivosAdjuntos.map((archivo) {
-                return Container(
-                  width: 400,
-                  margin: const EdgeInsets.symmetric(vertical: 5),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: archivo['nuevo'] == true
-                        ? Colors.red.shade50
-                        : Colors.green.shade50,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          archivo['nombre'] ?? '',
-                          style: TextStyle(
-                            color: archivo['nuevo'] == true
-                                ? Colors.red
-                                : Colors.green,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+            return isViewing
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 10, left: 20),
+                    child: Text(
+                      "No hay archivos adjuntos.",
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  )
+                : const SizedBox();
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: controller.archivosAdjuntos.map((archivo) {
+              return Container(
+                width: 400,
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: archivo['nuevo'] == true
+                      ? Colors.red.shade50
+                      : Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        archivo['nombre'] ?? '',
+                        style: TextStyle(
+                          color: archivo['nuevo'] == true
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
+                    ),
+                    if (!isViewing)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -501,24 +508,24 @@ class NuevoPersonalPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            );
-          }
+                  ],
+                ),
+              );
+            }).toList(),
+          );
         }),
         const SizedBox(height: 10),
-        TextButton.icon(
-          onPressed: () {
-            controller.adjuntarDocumentos();
-          },
-          icon: const Icon(Icons.attach_file, color: Colors.blue),
-          label: const Text(
-            "Adjuntar Documentos",
-            style: TextStyle(color: Colors.blue),
+        if (!isViewing)
+          TextButton.icon(
+            onPressed: () {
+              controller.adjuntarDocumentos();
+            },
+            icon: const Icon(Icons.attach_file, color: Colors.blue),
+            label: const Text(
+              "Adjuntar documentos",
+              style: TextStyle(color: Colors.blue),
+            ),
           ),
-        ),
       ],
     );
   }

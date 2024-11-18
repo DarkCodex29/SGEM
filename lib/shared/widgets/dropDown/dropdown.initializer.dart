@@ -23,6 +23,7 @@ class DropdownDataInitializer {
   /// Método que inicializa la carga de todos los dropdowns
   Future<void> initializeAllDropdowns() async {
     await Future.wait([
+      _loadEstado(),
       _loadGuardia(),
       _loadEquipo(),
       _loadModulo(),
@@ -68,7 +69,18 @@ class DropdownDataInitializer {
     return <OptionValue>[];
   }
 
+  Future<void> _loadEstado() async {
+    dropdownController.initializeDropdown('estado');
+    dropdownController.optionsMap['estado']?.addAll([
+      OptionValue(key: 95, nombre: 'Activo'),
+      OptionValue(key: 96, nombre: 'Cesado'),
+      OptionValue(key: null, nombre: 'Todos'),
+    ]);
+    log('Estado cargado');
+  }
+
   /// Métodos de carga específicos para cada dropdown, utilizando el servicio correcto
+
   Future<void> _loadGuardia() async {
     await dropdownController.loadOptions('guardia', () async {
       return await _handleResponse(

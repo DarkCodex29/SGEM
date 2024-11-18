@@ -2,14 +2,16 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.certificado.dart';
+import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
 
 import '../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 class PdfToCertificadoScreen extends StatefulWidget {
-  PersonalSearchController controller;
-  PdfToCertificadoScreen({super.key, required this.controller});
+  final PersonalSearchController controller;
+
+  const PdfToCertificadoScreen({super.key, required this.controller});
 
   @override
   State<PdfToCertificadoScreen> createState() => _PdfToCertificadoScreenState();
@@ -24,14 +26,23 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
     _getdata = getData();
   }
 
-  Future<List<PdfPageImage?>> getData () async {
-    List<Future<pw.Page>> listPagues = [];
-    listPagues.add(generateCertificado());
-    return getImages(listPagues);
+  Future<List<PdfPageImage?>> getData() async {
+    List<Future<pw.Page>> listPages = [];
+    listPages.add(generateCertificado());
+    return getImages(listPages);
   }
 
   @override
   Widget build(BuildContext context) {
-    return futureViewPdf(context, _getdata, 0, widget.controller);
+    return PdfViewer(
+      futurePdf: _getdata,
+      angleRotation: 0,
+      onCancel: () {
+        widget.controller.hideForms();
+      },
+      onPrint: (pages) {
+        descargarPaginasComoPdf(pages);
+      },
+    );
   }
 }

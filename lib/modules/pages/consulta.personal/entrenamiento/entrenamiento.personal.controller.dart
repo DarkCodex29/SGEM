@@ -14,7 +14,6 @@ class EntrenamientoPersonalController extends GetxController {
 
   var modulosPorEntrenamiento = <int, RxList<EntrenamientoModulo>>{}.obs;
 
-
   Future<void> fetchTrainings(int personId) async {
     try {
       log("Entrenamiento Controller: $personId");
@@ -74,27 +73,31 @@ class EntrenamientoPersonalController extends GetxController {
   List<EntrenamientoModulo> obtenerModulosPorEntrenamiento(int trainingKey) {
     return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
-  Future<EntrenamientoModulo?> ObtenerUltimoEntrenamientoPorPersona(int personaId) async {
-      try {
-        final response = await entrenamientoService.obtenerUltimoEntrenamientoPorPersona(personaId);
 
-        log('Entrenamiento: ${response.data}');
-        if (response.success) {
-          var entrenamientoModulo = response.data as EntrenamientoModulo;
+  Future<EntrenamientoModulo?> ObtenerUltimoEntrenamientoPorPersona(
+      int personaId) async {
+    try {
+      final response = await entrenamientoService
+          .obtenerUltimoEntrenamientoPorPersona(personaId);
 
-          return entrenamientoModulo;
-        }
-      } catch (e) {
-        log('Error al cargar los módulos: $e');
-        Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos, $e');
-        return null;
+      log('Entrenamiento: ${response.data}');
+      if (response.success) {
+        var entrenamientoModulo = response.data as EntrenamientoModulo;
+
+        return entrenamientoModulo;
       }
+    } catch (e) {
+      log('Error al cargar los módulos: $e');
+      Get.snackbar('Error', 'Ocurrió un problema al cargar los módulos, $e');
       return null;
+    }
+    return null;
   }
 
   Future<bool> actualizarEntrenamiento(EntrenamientoModulo training) async {
     try {
-      final response = await entrenamientoService.actualizarEntrenamiento(training);
+      final response =
+          await entrenamientoService.actualizarEntrenamiento(training);
       if (response.success) {
         int index = trainingList.indexWhere((t) => t.key == training.key);
         if (index != -1) {
@@ -139,7 +142,8 @@ class EntrenamientoPersonalController extends GetxController {
 
   Future<bool> eliminarEntrenamiento(EntrenamientoModulo training) async {
     try {
-      final response = await entrenamientoService.eliminarEntrenamiento(training);
+      final response =
+          await entrenamientoService.eliminarEntrenamiento(training);
       if (response.success) {
         trainingList.remove(training);
         return true;

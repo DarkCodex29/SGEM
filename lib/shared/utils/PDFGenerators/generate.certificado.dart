@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:sgem/shared/utils/Extensions/pdf.extensions.dart';

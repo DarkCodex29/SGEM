@@ -8,6 +8,7 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import '../../entrenamiento.personal.controller.dart';
@@ -54,7 +55,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
               .format(DateTime.parse(entrenamiento!.fechaTermino.toString()));
       controller.observacionesEntrenamiento.text =
           entrenamiento?.comentarios ?? ' ';
-      controller.obtenerArchivosRegistrados(entrenamiento!.key!);
+      controller.obtenerArchivosRegistrados(entrenamiento!.key!, 2);
     }
   }
 
@@ -74,7 +75,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             const SizedBox(height: 10),
             _buildObservationsRow(),
             const SizedBox(height: 10),
-            adjuntarArchivoText(),
+            //adjuntarArchivoText(),
             adjuntarDocumentoPDF(controller),
           ],
           const SizedBox(height: 20),
@@ -162,13 +163,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 20),
-        Expanded(child: SizedBox.shrink()),
-        // Expanded(
-        //   child: CustomTextField(
-        //     label: "Observaciones",
-        //     controller: controller.observacionesEntrenamiento,
-        //   ),
-        // ),
+        const Expanded(child: SizedBox.shrink()),
       ],
     );
   }
@@ -201,7 +196,6 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             maxWidth: 600,
             minWidth: 300,
             minHeight: 200,
-            //maxHeight: MediaQuery.of(context).size.height * 0.5,
             maxHeight: isEdit ? 600 : 350,
           ),
           child: Column(
@@ -341,6 +335,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     }
   }
 
+/*
   Widget adjuntarArchivoText() {
     return const Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -356,7 +351,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       ],
     );
   }
-
+*/
   Widget customButtonsCancelAndAcept(
       VoidCallback onCancel, VoidCallback onSave) {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -390,44 +385,125 @@ class EntrenamientoNuevoModal extends StatelessWidget {
 }
 
 Widget adjuntarDocumentoPDF(EntrenamientoNuevoController controller) {
-  return Obx(() {
-    if (controller.isLoadingFiles.value) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    if (controller.archivosAdjuntos.isNotEmpty) {
-      return Column(
-        children: controller.archivosAdjuntos.map((archivo) {
-          return Row(
-            children: [
-              TextButton.icon(
-                onPressed: () {
-                  controller.eliminarArchivo(archivo['nombre']);
-                },
-                icon: const Icon(Icons.close, color: Colors.red),
-                label: Text(
-                  archivo['nombre'],
-                  style: const TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          );
-        }).toList(),
-      );
-    } else {
-      return Row(
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Row(
         children: [
-          TextButton.icon(
-            onPressed: () {
-              controller.adjuntarDocumentos();
-            },
-            icon: const Icon(Icons.attach_file, color: Colors.grey),
-            label: const Text("Adjuntar Documento",
-                style: TextStyle(color: Colors.grey)),
+          Icon(Icons.attach_file, color: Colors.grey),
+          SizedBox(width: 10),
+          Text("Archivos adjuntos:"),
+          SizedBox(width: 10),
+          Text(
+            "(Archivos adjuntos peso máx: 8MB c/u)",
+            style: TextStyle(color: Colors.grey, fontSize: 12),
           ),
         ],
-      );
-    }
-  });
+      ),
+      Obx(
+        () {
+          if (controller.isLoadingFiles.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (controller.archivosAdjuntos.isNotEmpty) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: controller.archivosAdjuntos.map((archivo) {
+                return Container(
+                  width: 400,
+                  margin: const EdgeInsets.symmetric(vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: archivo['nuevo'] == true
+                        ? Colors.red.shade50
+                        : Colors.green.shade50,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          archivo['nombre'],
+                          style: TextStyle(
+                            color: archivo['nuevo'] == true
+                                ? Colors.red
+                                : Colors.green,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          archivo['nuevo'] == false
+                              ? IconButton(
+                                  icon: const Icon(Icons.download,
+                                      color: Colors.blue, size: 20),
+                                  onPressed: () {
+                                    controller.descargarArchivo(archivo);
+                                  },
+                                )
+                              : const SizedBox(),
+                          IconButton(
+                            icon: Icon(
+                              archivo['nuevo'] == true
+                                  ? Icons.cancel
+                                  : Icons.delete,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (archivo['nuevo'] == true) {
+                                controller.removerArchivo(archivo['nombre']);
+                              } else {
+                                showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return ConfirmDeleteWidget(
+                                      itemName: archivo['nombre'],
+                                      entityType: 'archivo',
+                                      onConfirm: () {
+                                        controller
+                                            .removerArchivo(archivo['nombre']);
+                                        Navigator.pop(context);
+                                      },
+                                      onCancel: () {
+                                        Navigator.pop(context);
+                                      },
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            );
+          } else {
+            return Row(
+              children: [
+                TextButton.icon(
+                  onPressed: () {
+                    controller.adjuntarDocumentos();
+                  },
+                  icon: const Icon(Icons.attach_file, color: Colors.blue),
+                  label: const Text("Adjuntar Documento",
+                      style: TextStyle(color: Colors.blue)),
+                ),
+              ],
+            );
+          }
+        },
+      )
+    ],
+  );
 }
 
 Future<DateTime?> _selectDate(BuildContext context) async {

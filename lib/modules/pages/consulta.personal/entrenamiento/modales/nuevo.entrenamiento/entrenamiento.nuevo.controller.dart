@@ -58,8 +58,8 @@ class EntrenamientoNuevoController extends GetxController {
 
   var isLoading = false.obs;
 
-  var documentoAdjuntoNombre = ''.obs;
-  var documentoAdjuntoBytes = Rxn<Uint8List>();
+  //var documentoAdjuntoNombre = ''.obs;
+  //var documentoAdjuntoBytes = Rxn<Uint8List>();
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
   var isLoadingFiles = false.obs;
 
@@ -103,7 +103,7 @@ class EntrenamientoNuevoController extends GetxController {
   void removerArchivo(String nombreArchivo) {
     archivosAdjuntos.removeWhere((archivo) =>
         archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
-    documentoAdjuntoNombre.value = '';
+    //documentoAdjuntoNombre.value = '';
   }
 
   Future<void> eliminarArchivo(Map<String, dynamic> archivo) async {
@@ -160,7 +160,7 @@ class EntrenamientoNuevoController extends GetxController {
               'bytes': fileBytes,
               'nuevo': true,
             });
-            documentoAdjuntoNombre.value = fileName;
+            //documentoAdjuntoNombre.value = fileName;
             log('Documento adjuntado correctamente: $fileName');
           }
         }

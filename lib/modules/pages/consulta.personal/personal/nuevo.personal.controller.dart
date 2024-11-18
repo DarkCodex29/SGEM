@@ -51,8 +51,8 @@ class NuevoPersonalController extends GetxController {
   RxBool isOperacionMina = false.obs;
   RxBool isZonaPlataforma = false.obs;
 
-  var documentoAdjuntoNombre = ''.obs;
-  var documentoAdjuntoBytes = Rxn<Uint8List>();
+  //var documentoAdjuntoNombre = ''.obs;
+  //var documentoAdjuntoBytes = Rxn<Uint8List>();
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
 
   DateTime? fechaIngreso;
@@ -557,8 +557,8 @@ class NuevoPersonalController extends GetxController {
     isZonaPlataforma.value = false;
     estadoPersonalKey.value = 0;
     estadoPersonalNombre.value = '';
-    documentoAdjuntoNombre.value = '';
-    documentoAdjuntoBytes.value = null;
+    //documentoAdjuntoNombre.value = '';
+    //documentoAdjuntoBytes.value = null;
     personalData = null;
     dropdownController.resetAllSelections();
   }

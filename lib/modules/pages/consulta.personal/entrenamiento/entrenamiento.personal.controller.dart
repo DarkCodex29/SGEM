@@ -108,8 +108,8 @@ class EntrenamientoPersonalController extends GetxController {
             Get.put(EntrenamientoNuevoController());
         await controller.registrarArchivos(training.key!);
         controller.archivosAdjuntos.clear();
-        controller.documentoAdjuntoNombre.value = '';
-        controller.documentoAdjuntoBytes.value = null;
+        //controller.documentoAdjuntoNombre.value = '';
+        //controller.documentoAdjuntoBytes.value = null;
         Get.snackbar(
           'Éxito',
           'Entrenamiento actualizado correctamente',

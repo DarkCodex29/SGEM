@@ -30,9 +30,10 @@ class MaestroDetalleService {
         'valor': value,
         'estado': status,
       };
+      debugPrint('Params: $params');
 
       final response = await _dio.get<List<dynamic>>(
-        '/ListarMaestrosDetalle',
+        '/BuscarMaestrosDetalle',
         queryParameters: params,
       );
 
@@ -92,6 +93,34 @@ class MaestroDetalleService {
     }
   }
 
+  Future<ResponseHandler<bool>> registrateMaestroDetalle(
+      MaestroDetalle data) async {
+    try {
+      await _dio.post<dynamic>(
+        '/RegistrarMaestroDetalle',
+        data: data.toJson(),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } on DioException catch (e) {
+      if (e.response?.data != null && e.response?.data['Message'] != null) {
+        var errorMessage = e.response!.data['Message'];
+        log('Error al registrar: $errorMessage');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al registrar maestro detalle: $errorMessage',
+        );
+      } else {
+        return ResponseHandler.handleFailure<bool>(e);
+      }
+
+      return ResponseHandler.handleFailure<bool>(e);
+    }
+  }
+
   Future<ResponseHandler<bool>> registrarMaestroDetalle(
       MaestroDetalle data) async {
     const url = '${ConfigFile.apiUrl}/MaestroDetalle/RegistrarMaestroDetalle';
@@ -123,6 +152,31 @@ class MaestroDetalleService {
       }
     } on DioException catch (e) {
       return ResponseHandler.handleFailure<bool>(e);
+    }
+  }
+
+  Future<ResponseHandler<bool>> updateMaestroDetalle(
+    MaestroDetalle data,
+  ) async {
+    try {
+      debugPrint('Data: ${data.toJson()}');
+      await _dio.put<dynamic>(
+        '/ActualizarMaestroDetalle',
+        data: data.toJson(),
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } on DioException catch (e) {
+      if (e.response?.data != null && e.response?.data['Message'] != null) {
+        var errorMessage = e.response!.data['Message'];
+        log('Error al actualizar: $errorMessage');
+        return ResponseHandler(
+          success: false,
+          message: 'Error al actualizar maestro detalle: $errorMessage',
+        );
+      } else {
+        return ResponseHandler.handleFailure<bool>(e);
+      }
     }
   }
 

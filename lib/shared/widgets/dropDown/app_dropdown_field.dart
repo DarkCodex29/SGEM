@@ -4,7 +4,7 @@ import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-class AppDropdownField extends GetView<GenericDropdownController> {
+class AppDropdownField extends StatefulWidget {
   const AppDropdownField({
     required this.dropdownKey,
     required this.label,
@@ -13,6 +13,7 @@ class AppDropdownField extends GetView<GenericDropdownController> {
     this.readOnly = false,
     this.hint,
     this.disabledHint,
+    this.initialValue,
     super.key,
   });
 
@@ -24,10 +25,25 @@ class AppDropdownField extends GetView<GenericDropdownController> {
   final String? disabledHint;
   final bool readOnly;
 
+  final int? initialValue;
+
+  @override
+  State<AppDropdownField> createState() => _AppDropdownFieldState();
+}
+
+class _AppDropdownFieldState extends State<AppDropdownField> {
+  late final GenericDropdownController controller;
+
+  @override
+  void initState() {
+    controller = Get.find<GenericDropdownController>();
+    controller.initializeDropdown(widget.dropdownKey);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    controller.initializeDropdown(dropdownKey);
-    final cached = options == null;
+    final cached = widget.options == null;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -39,12 +55,15 @@ class AppDropdownField extends GetView<GenericDropdownController> {
               children: [
                 Obx(
                   () {
-                    final value = controller.getSelectedValue(dropdownKey);
-                    var options = this.options;
+                    final value = widget.initialValue ??
+                        controller.getSelectedValue(widget.dropdownKey)?.key;
+                    var options = this.widget.options;
 
                     if (cached) {
-                      options = controller.getOptionsFromKey(dropdownKey);
-                      final isLoading = controller.isLoading(dropdownKey);
+                      options =
+                          controller.getOptionsFromKey(widget.dropdownKey);
+                      final isLoading =
+                          controller.isLoading(widget.dropdownKey);
 
                       if (isLoading) {
                         return const Center(
@@ -59,29 +78,30 @@ class AppDropdownField extends GetView<GenericDropdownController> {
 
                     return _Dropdown(
                       options: options!,
-                      dropdownKey: dropdownKey,
-                      value: value?.key,
-                      label: label,
-                      readOnly: readOnly,
-                      hint: hint,
-                      disabledHint: disabledHint,
+                      dropdownKey: widget.dropdownKey,
+                      value: value,
+                      label: widget.label,
+                      readOnly: widget.readOnly,
+                      hint: widget.hint,
+                      disabledHint: widget.disabledHint,
+                      // onChanged: (_) {},
                       onChanged: cached
                           ? (value) {
                               if (value == null) {
-                                controller.resetSelection(dropdownKey);
+                                controller.resetSelection(widget.dropdownKey);
                               } else {
                                 controller.selectValueByKey(
-                                  options: dropdownKey,
+                                  options: widget.dropdownKey,
                                   optionKey: value,
                                 );
                               }
                             }
                           : (value) {
                               if (value == null) {
-                                controller.resetSelection(dropdownKey);
+                                controller.resetSelection(widget.dropdownKey);
                               } else {
                                 controller.selectValue(
-                                  dropdownKey,
+                                  widget.dropdownKey,
                                   options!.firstWhere((e) => e.key == value),
                                 );
                               }
@@ -94,7 +114,7 @@ class AppDropdownField extends GetView<GenericDropdownController> {
               ],
             ),
           ),
-          if (isRequired)
+          if (widget.isRequired)
             const Padding(
               padding: EdgeInsets.only(left: 6, bottom: 16),
               child: Text(
@@ -104,37 +124,13 @@ class AppDropdownField extends GetView<GenericDropdownController> {
                   fontSize: 16,
                 ),
               ),
-            ),
+            )
+          else
+            const SizedBox(width: 12),
         ],
       ),
     );
   }
-
-  // Widget _buildSearchBar() {
-  //   return Padding(
-  //     padding: const EdgeInsets.only(top: 10),
-  //     child: TextField(
-  //       decoration: const InputDecoration(
-  //         hintText: 'Buscar...',
-  //         border: OutlineInputBorder(),
-  //       ),
-  //       onChanged: (query) {
-  //         final options = (staticOptions ?? controller!.getOptions(dropdownKey))
-  //             .where(
-  //               (option) =>
-  //                   option.nombre
-  //                       ?.toLowerCase()
-  //                       .contains(query.toLowerCase()) ??
-  //                   false,
-  //             )
-  //             .toList();
-  //         if (controller != null && staticOptions == null) {
-  //           controller!.optionsMap[dropdownKey]?.assignAll(options);
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
 }
 
 class _Dropdown extends StatelessWidget {
@@ -161,6 +157,8 @@ class _Dropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('Building Dropdown $dropdownKey');
+
     return DropdownButtonFormField<int>(
       value: value,
       isExpanded: true,

@@ -36,8 +36,8 @@ class MaestroController extends GetxController {
       ..loadOptions(
         'estado',
         () async => [
-          OptionValue(key: 0, nombre: 'Activo'),
-          OptionValue(key: 1, nombre: 'Inactivo'),
+          OptionValue(key: 1, nombre: 'Activo'),
+          OptionValue(key: 0, nombre: 'Inactivo'),
         ],
       );
 
@@ -86,12 +86,12 @@ class MaestroController extends GetxController {
     );
 
     if (response.success) {
+      debugPrint('Result: ${response.data!.length}');
       result.assignAll(response.data!);
-      clearFilter();
     } else {
       Get.snackbar(
         'Error',
-        'Error al cargar los maestros',
+        response.message ?? 'Error al cargar los maestros',
         snackPosition: SnackPosition.BOTTOM,
       );
     }

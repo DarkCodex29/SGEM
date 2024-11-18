@@ -54,7 +54,7 @@ class MaestroDetalle implements DropdownElement {
       'Key': key,
       'Maestro': maestro.toJson(),
       'Valor': valor,
-      'Descripcion': descripcion,
+      'Descripcion': descripcion ?? '',
       'UsuarioRegistro': usuarioRegistro,
       'FechaRegistro': MaestroCompleto.toJsonDateNullable(fechaRegistro),
       'UsuarioModifica': usuarioModifica,

@@ -67,7 +67,9 @@ class MaestroPage extends StatelessWidget {
                   Expanded(
                     child: Obx(
                       () {
+                        debugPrint('Result: ${ctr.result.length}');
                         final result = ctr.result;
+
                         if (result.isEmpty) {
                           return const Center(
                             child: Text('No se encontraron resultados'),

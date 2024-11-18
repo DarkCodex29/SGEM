@@ -14,6 +14,7 @@ class CustomTableController<T> extends GetxController {
       )
       .take(rowsPerPage.value)
       .toList();
+  set data(List<T> value) => _data.assignAll(value);
 
   int get totalPages => (totalRecords / rowsPerPage.value).ceil();
   int get totalRecords => _totalRecords ?? _data.length;

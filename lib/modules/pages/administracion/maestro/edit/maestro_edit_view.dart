@@ -75,47 +75,40 @@ class MaestroEditView extends StatelessWidget {
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
-                  child: Obx(
-                    () {
-                      return Column(
-                        children: [
-                          if (isEdit)
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'Código: ${detalle!.key!.format}',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                  child: Column(
+                    children: [
+                      if (isEdit)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Código: ${detalle!.key!.format}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                          const AppDropdownField(
-                            dropdownKey: 'maestro',
-                            label: 'Maestro',
                           ),
-                          CustomTextField(
-                            label: 'Valor',
-                            isRequired: true,
-                            controller: ctr.valorController,
-                          ),
-                          CustomTextField(
-                            label: 'Descripción',
-                            controller: ctr.descripcionController,
-                            maxLines: 3,
-                          ),
-                          const AppDropdownField(
-                            label: 'Estado',
-                            isRequired: true,
-                            dropdownKey: 'estado',
-                            // noDataHintText: 'No se encontraron estados',
-                            // controller: ctr.dropdownController,
-                            // hintText: 'Estado',
-                            key: const Key('maestro_edit_dropdown_estado'),
-                          ),
-                        ],
-                      );
-                    },
+                        ),
+                      const AppDropdownField(
+                        dropdownKey: 'maestro_2',
+                        isRequired: true,
+                        label: 'Maestro',
+                      ),
+                      CustomTextField(
+                        label: 'Valor',
+                        isRequired: true,
+                        controller: ctr.valorController,
+                      ),
+                      CustomTextField(
+                        label: 'Descripción',
+                        controller: ctr.descripcionController,
+                        maxLines: 3,
+                      ),
+                      const AppDropdownField(
+                        label: 'Estado',
+                        isRequired: true,
+                        dropdownKey: 'estado_2',
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -127,7 +120,7 @@ class MaestroEditView extends StatelessWidget {
                       text: 'Cerrar',
                     ),
                     AppButton.blue(
-                      onPressed: ctr.save,
+                      onPressed: isEdit ? ctr.updateDetalle : ctr.saveDetalle,
                       text: 'Guardar',
                     ),
                   ],

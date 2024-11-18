@@ -235,9 +235,6 @@ class EntrenamientoNuevoController extends GetxController {
   }
 
   Future<void> obtenerArchivosRegistrados(int idOrigen, int inOrigenKey) async {
-    log('Obteniendo archivos registrados');
-    log('idOrigen: $idOrigen');
-    log('inOrigenKey: $inOrigenKey');
     try {
       isLoadingFiles.value = true;
       final response = await archivoService.obtenerArchivosPorOrigen(
@@ -252,10 +249,14 @@ class EntrenamientoNuevoController extends GetxController {
           Uint8List archivoBytes = Uint8List.fromList(datos);
 
           archivosAdjuntos.add({
+            'key': archivo['Key'],
             'nombre': archivo['Nombre'],
-            'bytes': archivoBytes,
+            'extension': archivo['Extension'],
+            'mime': archivo['Mime'],
+            'datos': base64Encode(archivoBytes),
+            'inOrigenKey': archivo['inOrigenKey'],
+            'nuevo': false,
           });
-
           log('Archivo ${archivo['Nombre']} obtenido con éxito');
         }
       } else {

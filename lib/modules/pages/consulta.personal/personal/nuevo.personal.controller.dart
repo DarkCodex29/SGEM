@@ -390,11 +390,9 @@ class NuevoPersonalController extends GetxController {
   }
 
   Future<void> obtenerArchivosRegistrados(int idOrigen, int idOrigenKey) async {
-    log('Obteniendo archivos registrados');
-    log('idOrigen: $idOrigen, idOrigenKey: $idOrigenKey');
     try {
       final response = await archivoService.obtenerArchivosPorOrigen(
-        idOrigen: idOrigen,
+        idOrigen: idOrigen, // 1: TABLA Personal
         idOrigenKey: idOrigenKey,
       );
       log('Response: ${response.data}');

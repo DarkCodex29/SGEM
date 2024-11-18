@@ -238,7 +238,7 @@ class EntrenamientoNuevoController extends GetxController {
     try {
       isLoadingFiles.value = true;
       final response = await archivoService.obtenerArchivosPorOrigen(
-        idOrigen: idOrigen, // TABLA Entrenamiento
+        idOrigen: idOrigen, // 2: TABLA Entrenamiento
         idOrigenKey: inOrigenKey,
       );
       log('Response: ${response.data}');
@@ -254,7 +254,7 @@ class EntrenamientoNuevoController extends GetxController {
             'extension': archivo['Extension'],
             'mime': archivo['Mime'],
             'datos': base64Encode(archivoBytes),
-            'inOrigenKey': archivo['inOrigenKey'],
+            'inOrigenKey': inOrigenKey,
             'nuevo': false,
           });
           log('Archivo ${archivo['Nombre']} obtenido con éxito');

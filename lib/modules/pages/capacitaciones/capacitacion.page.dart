@@ -610,6 +610,7 @@ class CapacitacionPage extends StatelessWidget {
                                                 .viewInsets,
                                             child: DeleteReasonWidget(
                                               entityType: 'capacitacion',
+                                              isMotivoRequired: false,
                                               onCancel: () {
                                                 Navigator.pop(context);
                                               },

@@ -262,6 +262,7 @@ class DetailTableMonitoring extends StatelessWidget {
             padding: MediaQuery.of(context).viewInsets,
             child: DeleteReasonWidget(
               entityType: 'módulo',
+              isMotivoRequired: false,
               onCancel: () {
                 Navigator.pop(context);
               },

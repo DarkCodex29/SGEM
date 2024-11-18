@@ -73,8 +73,8 @@ class PersonalSearchController extends GetxController {
 
   @override
   void onInit() {
-    searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();
+    searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
   }
 
   Future<Uint8List?> loadPersonalPhoto(int idOrigen) async {

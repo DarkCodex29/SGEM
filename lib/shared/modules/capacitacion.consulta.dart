@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 List<CapacitacionConsulta> capacitacionConsultaFromJson(String str) =>
     List<CapacitacionConsulta>.from(
@@ -50,8 +51,8 @@ class CapacitacionConsulta {
         entrenador: OptionValue.fromJson(json["Entrenador"]),
         categoria: OptionValue.fromJson(json["Categoria"]),
         empresaCapacitadora: OptionValue.fromJson(json["EmpresaCapacitadora"]),
-        fechaInicio: _fromDotNetDate(json["FechaInicio"]),
-        fechaTermino: _fromDotNetDate(json["FechaTermino"]),
+        fechaInicio: FnDateTime.fromDotNetDate(json["FechaInicio"]),
+        fechaTermino: FnDateTime.fromDotNetDate(json["FechaTermino"]),
         inTotalHoras: json["InTotalHoras"],
         inNotaTeorica: json["InNotaTeorica"],
         inNotaPractica: json["InNotaPractica"],
@@ -66,20 +67,10 @@ class CapacitacionConsulta {
         "Entrenador": entrenador.toJson(),
         "Categoria": categoria.toJson(),
         "EmpresaCapacitadora": empresaCapacitadora.toJson(),
-        "FechaInicio": _toDotNetDate(fechaInicio!),
-        "FechaTermino": _toDotNetDate(fechaTermino!),
+        "FechaInicio": FnDateTime.toDotNetDate(fechaInicio!),
+        "FechaTermino": FnDateTime.toDotNetDate(fechaTermino!),
         "InTotalHoras": inTotalHoras,
         "InNotaTeorica": inNotaTeorica,
         "InNotaPractica": inNotaPractica,
       };
-  // Método para deserializar la fecha en formato .NET
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  // Método para serializar la fecha de vuelta al formato .NET
-  static String _toDotNetDate(DateTime date) {
-    return '/Date(${date.millisecondsSinceEpoch})/';
-  }
 }

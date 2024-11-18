@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 List<EntrenamientoConsulta> entrenamientoConsultaFromJson(String str) =>
     List<EntrenamientoConsulta>.from(
@@ -60,8 +61,8 @@ class EntrenamientoConsulta {
         horasAcumuladas: json["HorasAcumuladas"],
         condicion: OptionValue.fromJson(json["Condicion"]),
         equipo: OptionValue.fromJson(json["Equipo"]),
-        fechaInicio: _fromDotNetDate(json["FechaInicio"]),
-        fechaTermino: _fromDotNetDate(json["FechaTermino"]),
+        fechaInicio:  FnDateTime.fromDotNetDate(json["FechaInicio"]),
+        fechaTermino: FnDateTime.fromDotNetDate(json["FechaTermino"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -78,18 +79,7 @@ class EntrenamientoConsulta {
         "HorasAcumuladas": horasAcumuladas,
         "Condicion": condicion.toJson(),
         "Equipo": equipo.toJson(),
-        "FechaInicio": _toDotNetDate(fechaInicio!),
-        "FechaTermino": _toDotNetDate(fechaTermino!),
+        "FechaInicio": FnDateTime.toDotNetDate(fechaInicio!),
+        "FechaTermino": FnDateTime.toDotNetDate(fechaTermino!),
       };
-
-  // Método para deserializar la fecha en formato .NET
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  // Método para serializar la fecha de vuelta al formato .NET
-  static String _toDotNetDate(DateTime date) {
-    return '/Date(${date.millisecondsSinceEpoch})/';
-  }
 }

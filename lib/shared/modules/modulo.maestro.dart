@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 List<ModuloMaestro> moduloMaestroFromJson(String str) =>
@@ -47,7 +48,7 @@ class ModuloMaestro implements DropdownElement {
         inEstado: json["InEstado"],
         usuarioModificacion: json["UsuarioModificacion"],
         fechaModificacion: json["FechaModificacion"] != null
-            ? _fromDotNetDate(json["FechaModificacion"])
+            ? FnDateTime.fromDotNetDate(json["FechaModificacion"])
             : null,
         orden: json["Orden"],
       );
@@ -61,19 +62,8 @@ class ModuloMaestro implements DropdownElement {
         "InEstado": inEstado,
         "UsuarioModificacion": usuarioModificacion,
         "FechaModificacion": fechaModificacion != null
-            ? _toDotNetDate(fechaModificacion!)
+            ? FnDateTime.toDotNetDate(fechaModificacion!)
             : null,
         "Orden": orden,
       };
-
-  // Método para deserializar la fecha en formato .NET
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  // Método para serializar la fecha de vuelta al formato .NET
-  static String _toDotNetDate(DateTime date) {
-    return '/Date(${date.millisecondsSinceEpoch})/';
-  }
 }

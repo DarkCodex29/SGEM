@@ -1,4 +1,5 @@
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class Personal implements DropdownElement {
@@ -73,7 +74,7 @@ class Personal implements DropdownElement {
       tipoPersona: json['TipoPersona'] ?? "",
       inPersonalOrigen: json['InPersonalOrigen'] ?? 0,
       fechaIngresoMina: json['FechaIngresoMina'] != null
-          ? _fromDotNetDate(json['FechaIngresoMina'])
+          ? FnDateTime.fromDotNetDate(json['FechaIngresoMina'])
           : null,
       licenciaConducir: json['LicenciaConducir'] ?? "",
       operacionMina: json['OperacionMina'] ?? "S",
@@ -95,11 +96,11 @@ class Personal implements DropdownElement {
       primerNombre: json['PrimerNombre'] ?? "",
       segundoNombre: json['SegundoNombre'] ?? "",
       fechaIngreso: json['FechaIngreso'] != null
-          ? _fromDotNetDate(json['FechaIngreso'])
+          ? FnDateTime.fromDotNetDate(json['FechaIngreso'])
           : null,
       licenciaCategoria: json['LicenciaCategoria'] ?? "",
       licenciaVencimiento: json['LicenciaVencimiento'] != null
-          ? _fromDotNetDate(json['LicenciaVencimiento'])
+          ? FnDateTime.fromDotNetDate(json['LicenciaVencimiento'])
           : null,
       gerencia: json['Gerencia'] ?? "",
       area: json['Area'] ?? "",
@@ -111,7 +112,9 @@ class Personal implements DropdownElement {
       'Key': key,
       'TipoPersona': tipoPersona,
       'InPersonalOrigen': inPersonalOrigen,
-      'FechaIngresoMina': _toDotNetDate(fechaIngresoMina),
+      'FechaIngresoMina': fechaIngresoMina != null
+          ? FnDateTime.toDotNetDate(fechaIngresoMina!)
+          : null,
       'LicenciaConducir': licenciaConducir,
       'OperacionMina': operacionMina,
       'ZonaPlataforma': zonaPlataforma,
@@ -131,21 +134,14 @@ class Personal implements DropdownElement {
       'ApellidoMaterno': apellidoMaterno,
       'PrimerNombre': primerNombre,
       'SegundoNombre': segundoNombre,
-      'FechaIngreso': _toDotNetDate(fechaIngreso),
+      'FechaIngreso':
+          fechaIngreso != null ? FnDateTime.toDotNetDate(fechaIngreso!) : null,
       'LicenciaCategoria': licenciaCategoria,
-      'LicenciaVencimiento': _toDotNetDate(licenciaVencimiento),
+      'LicenciaVencimiento': licenciaVencimiento != null
+          ? FnDateTime.toDotNetDate(licenciaVencimiento!)
+          : null,
       'Gerencia': gerencia,
       'Area': area,
     };
-  }
-
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  static String _toDotNetDate(DateTime? date) {
-    if (date == null) return '';
-    return "/Date(${date.millisecondsSinceEpoch})/";
   }
 }

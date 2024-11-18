@@ -5,6 +5,7 @@ import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/entrenamiento.actualizacion.masiva.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 import '../../shared/modules/entrenamiento.consulta.dart';
 
@@ -193,6 +194,7 @@ class EntrenamientoService {
     int? pageSize,
     int? pageNumber,
   }) async {
+    log("Llamando al endpoint entrenamiento paginado");
     const url =
         '${ConfigFile.apiUrl}/Entrenamiento/EntrenamientoConsultarPaginado';
     Map<String, dynamic> queryParams = {
@@ -212,8 +214,8 @@ class EntrenamientoService {
       log('Listando personal de entrenamiento paginado con parámetros: $queryParams');
       final response = await dio.get(
         url,
-        queryParameters: queryParams
-          ..removeWhere((key, value) => value == null),
+        queryParameters: queryParams,
+          //..removeWhere((key, value) => value == null),
         options: Options(
           followRedirects: false,
         ),
@@ -338,8 +340,8 @@ class EntrenamientoService {
     }
   }
 
-  Future<ResponseHandler<EntrenamientoModulo>> obtenerUltimoEntrenamientoPorPersona(
-      int personaId) async {
+  Future<ResponseHandler<EntrenamientoModulo>>
+      obtenerUltimoEntrenamientoPorPersona(int personaId) async {
     log('Api Entrenamiento: Obteniendo entrenamiento maestro por ID: $personaId');
     final url =
         '${ConfigFile.apiUrl}/Entrenamiento/ObtenerUltimoEntrenamientoPorPersona?inPersona=$personaId';
@@ -351,7 +353,8 @@ class EntrenamientoService {
       );
       log('Response: ${response.data}');
       if (response.statusCode == 200 && response.data != null) {
-        return ResponseHandler.handleSuccess<EntrenamientoModulo>(response.data);
+        return ResponseHandler.handleSuccess<EntrenamientoModulo>(
+            response.data);
       } else {
         return ResponseHandler(
           success: false,

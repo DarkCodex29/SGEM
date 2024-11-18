@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
+
 List<CapacitacionCargaMasivaValidado> capacitacionCargaMasivaValidadoFromJson(
         String str) =>
     List<CapacitacionCargaMasivaValidado>.from(json
@@ -112,8 +114,8 @@ class CapacitacionCargaMasivaValidado {
         nombreCapacitacion: json["NombreCapacitacion"],
         categoria: json["Categoria"],
         empresa: json["Empresa"],
-        fechaInicio: _fromDotNetDate(json["FechaInicio"]),
-        fechaTermino: _fromDotNetDate(json["FechaTermino"]),
+        fechaInicio: FnDateTime.fromDotNetDate(json["FechaInicio"]),
+        fechaTermino: FnDateTime.fromDotNetDate(json["FechaTermino"]),
         horas: json["Horas"],
         notaTeorica: json["NotaTeorica"],
         notaPractica: json["NotaPractica"],
@@ -158,8 +160,8 @@ class CapacitacionCargaMasivaValidado {
         "NombreCapacitacion": nombreCapacitacion,
         "Categoria": categoria,
         "Empresa": empresa,
-        "FechaInicio": _toDotNetDate(fechaInicio!),
-        "FechaTermino": _toDotNetDate(fechaTermino!),
+        "FechaInicio": FnDateTime.toDotNetDate(fechaInicio!),
+        "FechaTermino": FnDateTime.toDotNetDate(fechaTermino!),
         "Horas": horas,
         "NotaTeorica": notaTeorica,
         "NotaPractica": notaPractica,
@@ -193,15 +195,4 @@ class CapacitacionCargaMasivaValidado {
         "EsCorrectoNotaPractica": esCorrectoNotaPractica,
         "EsValido": esValido,
       };
-
-  // Método para deserializar la fecha en formato .NET
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds).toUtc();
-  }
-
-  // Método para serializar la fecha de vuelta al formato .NET
-  static String _toDotNetDate(DateTime date) {
-    return '/Date(${date.millisecondsSinceEpoch})/';
-  }
 }

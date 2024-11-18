@@ -735,7 +735,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       .obtenerUltimoModuloPorEntrenamiento(training.key!);
                   var ultimoModulo = response.data!;
                   //log("Ultimo modulo: ${response.data!.inModulo}");
-                  if (ultimoModulo.inModulo != 4) {
+                  if (ultimoModulo == null && ultimoModulo.inModulo != 4 ) {
                     log("Ultimo modulo: ${response.data!.inModulo}");
                     //log("Estado de Ultimo modulo: ${response.data!.estadoEntrenamiento!.nombre ?? 'Nulo'}");
                     //if(ultimoModulo.inModulo ) {

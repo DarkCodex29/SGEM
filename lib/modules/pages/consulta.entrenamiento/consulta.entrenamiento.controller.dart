@@ -45,6 +45,8 @@ class ConsultaEntrenamientoController extends GetxController {
     String? nombres =
         nombresController.text.isEmpty ? null : nombresController.text;
     try {
+      // log("Fecha inicio: ${fechaInicio}");
+      // log("Fecha termino: ${fechaTermino}");
       var response = await entrenamientoService.consultarEntrenamientoPaginado(
         codigoMcp: codigoMcp,
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,
@@ -198,3 +200,4 @@ class ConsultaEntrenamientoController extends GetxController {
     dropdownController.resetAllSelections();
   }
 }
+

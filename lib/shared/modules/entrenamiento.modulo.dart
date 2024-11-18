@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 EntrenamientoModulo entrenamientoModuloFromJson(String str) =>
     EntrenamientoModulo.fromJson(json.decode(str));
@@ -112,19 +113,19 @@ class EntrenamientoModulo {
         inCondicion: json["InCondicion"] ?? 0,
         condicion: OptionValue.fromJson(json["Condicion"] ?? {}),
         fechaInicio: json["FechaInicio"] != null
-            ? _fromDotNetDate(json["FechaInicio"])
+            ? FnDateTime.fromDotNetDate(json["FechaInicio"])
             : null,
         fechaTermino: json["FechaTermino"] != null
-            ? _fromDotNetDate(json["FechaTermino"])
+            ? FnDateTime.fromDotNetDate(json["FechaTermino"])
             : null,
         fechaExamen: json["FechaExamen"] != null
-            ? _fromDotNetDate(json["FechaExamen"])
+            ? FnDateTime.fromDotNetDate(json["FechaExamen"])
             : null,
         fechaRealMonitoreo: json["FechaRealMonitoreo"] != null
-            ? _fromDotNetDate(json["FechaRealMonitoreo"])
+            ? FnDateTime.fromDotNetDate(json["FechaRealMonitoreo"])
             : null,
         fechaProximoMonitoreo: json["FechaProximoMonitoreo"] != null
-            ? _fromDotNetDate(json["FechaProximoMonitoreo"])
+            ? FnDateTime.fromDotNetDate(json["FechaProximoMonitoreo"])
             : null,
         inNotaTeorica: json["InNotaTeorica"] ?? 0,
         inNotaPractica: json["InNotaPractica"] ?? 0,
@@ -159,11 +160,19 @@ class EntrenamientoModulo {
         "InEmpresaCapacitadora": inEmpresaCapacitadora,
         "InCondicion": inCondicion,
         "Condicion": condicion!.toJson(),
-        "FechaInicio": _toDotNetDate(fechaInicio),
-        "FechaTermino": _toDotNetDate(fechaTermino),
-        "FechaExamen": _toDotNetDate(fechaExamen),
-        "FechaRealMonitoreo": _toDotNetDate(fechaRealMonitoreo),
-        "FechaProximoMonitoreo": _toDotNetDate(fechaProximoMonitoreo),
+        "FechaInicio":
+            fechaInicio != null ? FnDateTime.toDotNetDate(fechaInicio!) : null,
+        "FechaTermino": fechaTermino != null
+            ? FnDateTime.toDotNetDate(fechaTermino!)
+            : null,
+        "FechaExamen":
+            fechaExamen != null ? FnDateTime.toDotNetDate(fechaExamen!) : null,
+        "FechaRealMonitoreo": fechaRealMonitoreo != null
+            ? FnDateTime.toDotNetDate(fechaRealMonitoreo!)
+            : null,
+        "FechaProximoMonitoreo": fechaProximoMonitoreo != null
+            ? FnDateTime.toDotNetDate(fechaProximoMonitoreo!)
+            : null,
         "InNotaTeorica": inNotaTeorica,
         "InNotaPractica": inNotaPractica,
         "InTotalHoras": inTotalHoras,
@@ -177,14 +186,4 @@ class EntrenamientoModulo {
         "MotivoEliminado": motivoEliminado,
         "ObservacionesEntrenamiento": observaciones,
       };
-
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  static String _toDotNetDate(DateTime? date) {
-    if (date == null) return '';
-    return "/Date(${date.millisecondsSinceEpoch})/";
-  }
 }

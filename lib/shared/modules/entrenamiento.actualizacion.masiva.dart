@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 List<EntrenamientoActualizacionMasiva> entrenamientoActualizacionMasivaFromJson(String str) => List<EntrenamientoActualizacionMasiva>.from(json.decode(str).map((x) => EntrenamientoActualizacionMasiva.fromJson(x)));
 
@@ -54,10 +55,10 @@ class EntrenamientoActualizacionMasiva {
     modulo: json["Modulo"] == null ? null : OptionValue.fromJson(json["Modulo"]),
     inNotaPractica: json["InNotaPractica"],
     inNotaTeorica: json["InNotaTeorica"],
-    fechaExamen: _fromDotNetDate(json["FechaExamen"]),
+    fechaExamen: FnDateTime.fromDotNetDate(json["FechaExamen"]),
     inHorasAcumuladas: json["InHorasAcumuladas"],
-    fechaInicio: _fromDotNetDate(json["FechaInicio"]),
-    fechaTermino: _fromDotNetDate(json["FechaTermino"]),
+    fechaInicio: FnDateTime.fromDotNetDate(json["FechaInicio"]),
+    fechaTermino: FnDateTime.fromDotNetDate(json["FechaTermino"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -71,22 +72,10 @@ class EntrenamientoActualizacionMasiva {
     "Modulo": modulo?.toJson(),
     "InNotaPractica": inNotaPractica,
     "InNotaTeorica": inNotaTeorica,
-    "FechaExamen": _toDotNetDate(fechaExamen!),
+    "FechaExamen": FnDateTime.toDotNetDate(fechaExamen!),
     "InHorasAcumuladas": inHorasAcumuladas,
-    "FechaInicio": _toDotNetDate(fechaInicio!),
-    "FechaTermino": _toDotNetDate(fechaTermino!),
+    "FechaInicio":FnDateTime.toDotNetDate(fechaInicio!),
+    "FechaTermino": FnDateTime.toDotNetDate(fechaTermino!),
   };
-
-
-  // Método para deserializar la fecha en formato .NET
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  // Método para serializar la fecha de vuelta al formato .NET
-  static String _toDotNetDate(DateTime date) {
-    return '/Date(${date.millisecondsSinceEpoch})/';
-  }
 }
 

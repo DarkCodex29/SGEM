@@ -1,4 +1,5 @@
 import 'package:excel/excel.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 class CapacitacionCargaMasivaExcel {
   String codigo;
@@ -83,22 +84,11 @@ class CapacitacionCargaMasivaExcel {
         "NombreCapacitacion": nombreCapacitacion,
         "Categoria": categoria,
         "Empresa": empresa,
-        "FechaInicio": _toDotNetDate(fechaInicio!),
-        "FechaTermino": _toDotNetDate(fechaTermino!),
+        "FechaInicio": FnDateTime.toDotNetDate(fechaInicio!),
+        "FechaTermino": FnDateTime.toDotNetDate(fechaTermino!),
         "Horas": horas,
         "NotaTeorica": notaTeorica,
         "NotaPractica": notaPractica,
       };
 
-  // Método para deserializar la fecha en formato .NET
-  static DateTime _fromDotNetDate(String dotNetDate) {
-    final milliseconds = int.parse(dotNetDate.replaceAll(RegExp(r'[^\d]'), ''));
-    return DateTime.fromMillisecondsSinceEpoch(milliseconds);
-  }
-
-  // Método para serializar la fecha de vuelta al formato .NET
-  static String _toDotNetDate(DateTime date) {
-    final utcDate = date.toUtc();
-    return '/Date(${utcDate.millisecondsSinceEpoch})/';
-  }
 }

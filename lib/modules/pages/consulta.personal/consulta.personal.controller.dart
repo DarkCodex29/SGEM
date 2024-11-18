@@ -250,7 +250,6 @@ class PersonalSearchController extends GetxController {
     dropdownController.resetAllSelections();
     nombresController.clear();
     apellidosController.clear();
-    //selectedEstadoKey.value = null;
   }
 
   void showNewPersonal() {

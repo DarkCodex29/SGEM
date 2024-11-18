@@ -5,7 +5,6 @@ import 'package:sgem/shared/utils/PDFGenerators/generate.diploma.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
 class PDFGeneratoController extends GetxController {
-
   var certificate = <PdfPageImage?>[].obs;
 
   void getCertoficateImage() async {
@@ -13,5 +12,4 @@ class PDFGeneratoController extends GetxController {
     listPagues.add(generateDiploma());
     certificate.value = await getImages(listPagues);
   }
-
 }

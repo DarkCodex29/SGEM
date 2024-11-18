@@ -14,9 +14,7 @@ Future<Uint8List> _generatePdfAndConvertToImages(
   for (var page in resolvedPages) {
     pdf.addPage(page);
   }
-
-  final pdfData = await pdf.save();
-  return pdfData;
+  return pdf.save();
 }
 
 // Future<Uint8List> _generatePdfAndConvertToImage(Future<pw.Page> page) async {
@@ -29,23 +27,21 @@ Future<Uint8List> _generatePdfAndConvertToImages(
 // }
 
 Future<List<pdf.PdfPageImage?>> getImages(List<Future<pw.Page>> pages) async {
-  List<pdf.PdfPageImage?> listaImagens = [];
-  final document =
-      await pdf.PdfDocument.openData(_generatePdfAndConvertToImages(pages));
-  final totalPages = document.pagesCount;
+  final List<pdf.PdfPageImage?> images = [];
+  final pdfData = await _generatePdfAndConvertToImages(pages);
+  final document = await pdf.PdfDocument.openData(pdfData);
 
-  for (int i = 1; totalPages >= i; i++) {
-    var size = 1.6;
+  for (int i = 1; i <= document.pagesCount; i++) {
     final page = await document.getPage(i);
     final image = await page.render(
-      width: page.width / size,
-      height: page.height / size,
+      width: page.width / 1.6,
+      height: page.height / 1.6,
       format: pdf.PdfPageImageFormat.jpeg,
       backgroundColor: '#ffffff',
     );
-    listaImagens.add(image);
+    images.add(image);
   }
-  return listaImagens;
+  return images;
 }
 
 Future<pdf.PdfPageImage?> getImage(Future<pw.Page> page, double size) async {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
+import 'package:sgem/modules/pages/administracion/administracion.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.page.dart';
 import 'package:sgem/modules/pages/monitoring/view/monitoring.page.dart';
 import 'package:sgem/shared/widgets/widget.perfil.dart';
-import '../administracion/administracion.page.dart';
 import '../consulta.entrenamiento/consulta.entrenamiento.page.dart';
 import '../consulta.personal/consulta.personal.page.dart';
 
@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
-  int selectedIndex = 0;
+  int selectedIndex = 5;
 
   OverlayEntry? _overlayEntry;
 

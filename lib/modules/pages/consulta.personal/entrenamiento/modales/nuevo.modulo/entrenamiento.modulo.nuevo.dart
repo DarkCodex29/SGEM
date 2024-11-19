@@ -16,7 +16,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   final int? inEntrenamientoModulo;
   final int? inEntrenamiento;
   final int? inPersona;
-
+  final bool isView;
   EntrenamientoModuloNuevo({
     super.key,
     required this.onCancel,
@@ -25,12 +25,14 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     this.inEntrenamientoModulo,
     this.inEntrenamiento,
     this.inPersona,
+    this.isView = false,
   });
 
   @override
   Widget build(BuildContext context) {
     controller.isEdit = isEdit;
-    if (inEntrenamientoModulo != null) {
+    controller.isView = isView;
+    if (inEntrenamientoModulo != null ) {
       controller.obtenerModuloPorId(inEntrenamiento!, inEntrenamientoModulo!);
     } else {
       controller.nuevoModulo(inEntrenamiento!);
@@ -44,7 +46,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Container(
             width: 800,
-            height: isEdit ? 800 : 600,
+            height: isEdit == false ? 600 : 800,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -147,6 +149,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             hintText: "Responsable",
             noDataHintText: 'No se encontraron entrenadores',
             controller: controller.dropdownController,
+            isReadOnly: isView,
           ),
         ),
         const SizedBox(width: 20),
@@ -159,6 +162,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                   hintText: "Estado",
                   noDataHintText: 'No se encontraron estados de módulos',
                   controller: controller.dropdownController,
+                  isReadOnly: isView,
                 ),
               )
             : const Expanded(
@@ -183,6 +187,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller.fechaInicioController.text =
                   DateFormat('dd/MM/yyyy').format(controller.fechaInicio!);
             },
+            isReadOnly: isView,
           ),
         ),
         const SizedBox(
@@ -198,6 +203,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller.fechaTerminoController.text =
                   DateFormat('dd/MM/yyyy').format(controller.fechaTermino!);
             },
+            isReadOnly: isView,
           ),
         ),
       ],
@@ -246,10 +252,12 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             CustomTextField(
               label: 'Teórico',
               controller: controller.notaTeoricaController,
+              isReadOnly: isView,
             ),
             CustomTextField(
               label: 'Práctico',
               controller: controller.notaPracticaController,
+              isReadOnly: isView,
             ),
             CustomTextField(
               label: 'Fecha de examen:',
@@ -260,6 +268,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                 controller.fechaExamenController.text =
                     DateFormat('dd/MM/yyyy').format(controller.fechaExamen!);
               },
+              isReadOnly: isView,
             ),
           ],
         ),
@@ -301,11 +310,13 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               label: 'Horas acumuladas',
               controller: controller.horasAcumuladasController,
               icon: const Icon(Icons.more_time),
+              isReadOnly: isView,
             ),
             CustomTextField(
               label: 'Horas minestar',
               controller: controller.horasMinestarController,
               icon: const Icon(Icons.lock_clock_outlined),
+              isReadOnly: isView,
             ),
           ],
         ),
@@ -415,3 +426,4 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 }
+

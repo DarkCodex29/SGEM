@@ -47,6 +47,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   int entrenamientoModuloId = 0;
   int? siguienteModulo;
   bool isEdit = false;
+  bool isView = false;
   RxString tituloModal = ''.obs;
   RxInt inModulo = 1.obs;
   RxBool isLoadingModulo = false.obs;

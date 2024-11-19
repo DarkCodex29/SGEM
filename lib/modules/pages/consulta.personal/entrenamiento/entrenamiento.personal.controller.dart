@@ -74,7 +74,7 @@ class EntrenamientoPersonalController extends GetxController {
     return modulosPorEntrenamiento[trainingKey]?.toList() ?? [];
   }
 
-  Future<EntrenamientoModulo?> ObtenerUltimoEntrenamientoPorPersona(
+  Future<EntrenamientoModulo?> obtenerUltimoEntrenamientoPorPersona(
       int personaId) async {
     try {
       final response = await entrenamientoService

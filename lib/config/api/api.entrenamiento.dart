@@ -5,7 +5,6 @@ import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/entrenamiento.actualizacion.masiva.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 import '../../shared/modules/entrenamiento.consulta.dart';
 
@@ -246,7 +245,7 @@ class EntrenamientoService {
     }
   }
 
-  Future<ResponseHandler<Map<String, dynamic>>> ActualizacionMasivaPaginado({
+  Future<ResponseHandler<Map<String, dynamic>>> actualizacionMasivaPaginado({
     String? codigoMcp,
     String? numeroDocumento,
     int? inGuardia,

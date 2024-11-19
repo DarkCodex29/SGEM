@@ -158,7 +158,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
           child: ElevatedButton.icon(
             onPressed: () async {
               var ultimoEntrenamiento =
-                  await controller.ObtenerUltimoEntrenamientoPorPersona(
+                  await controller.obtenerUltimoEntrenamientoPorPersona(
                       controllerPersonal.selectedPersonal.value!.id);
 
               await showDialog(

@@ -46,7 +46,7 @@ class ActualizacionMasivaController extends GetxController {
     String? apellidos =
         apellidosController.text.isEmpty ? null : apellidosController.text;
     try {
-      var response = await entrenamientoService.ActualizacionMasivaPaginado(
+      var response = await entrenamientoService.actualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
         inGuardia: dropdownController.getSelectedValue('guardia')?.key,

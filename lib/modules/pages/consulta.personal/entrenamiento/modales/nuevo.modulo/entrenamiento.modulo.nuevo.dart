@@ -149,7 +149,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             hintText: "Responsable",
             noDataHintText: 'No se encontraron entrenadores',
             controller: controller.dropdownController,
-            isReadOnly: isView,
+            //isReadOnly: isView,
           ),
         ),
         const SizedBox(width: 20),

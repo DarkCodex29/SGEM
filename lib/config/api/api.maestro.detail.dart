@@ -116,8 +116,6 @@ class MaestroDetalleService {
       } else {
         return ResponseHandler.handleFailure<bool>(e);
       }
-
-      return ResponseHandler.handleFailure<bool>(e);
     }
   }
 

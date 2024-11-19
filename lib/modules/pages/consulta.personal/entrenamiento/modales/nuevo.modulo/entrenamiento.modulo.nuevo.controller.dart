@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
@@ -30,6 +32,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController horasMinestarController =
       TextEditingController(text: '0');
 
+
   DateTime? fechaInicio;
   DateTime? fechaTermino;
   DateTime? fechaExamen;
@@ -39,6 +42,16 @@ class EntrenamientoModuloNuevoController extends GetxController {
   EntrenamientoService entrenamientoService = EntrenamientoService();
 
   List<String> errores = [];
+
+  TextEditingController aaControlHorasController = TextEditingController();
+  TextEditingController aaExamenTeoricoController = TextEditingController();
+  TextEditingController aaExamenPracticoController = TextEditingController();
+  TextEditingController aaOtrosController = TextEditingController();
+
+  var aaControlHorasSeleccionado = false.obs;
+  var aaExamenTeoricoSeleccionado = false.obs;
+  var aaExamenPracticoSeleccionado = false.obs;
+  var aaOtrosSeleccionado = false.obs;
 
   RxBool isSaving = false.obs;
 

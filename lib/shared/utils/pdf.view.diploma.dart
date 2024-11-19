@@ -47,9 +47,9 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
         widget.controller.hideForms();
       },
       onPrint: (pages) {
-        descargarPaginasComoPdf(pages);
+        descargarPaginasComoPdf(pages,
+            nombreArchivo: 'DIPLOMA_${widget.data!.codigoMcp}');
       },
-     // scaleFactor: 0.7,
     );
   }
 }

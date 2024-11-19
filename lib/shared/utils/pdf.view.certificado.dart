@@ -44,9 +44,9 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
         widget.controller.hideForms();
       },
       onPrint: (pages) {
-        descargarPaginasComoPdf(pages);
+        descargarPaginasComoPdf(pages,
+            nombreArchivo: 'CERTIFICADO_${widget.data!.codigoMcp}');
       },
-      //scaleFactor: 0.7,
     );
   }
 }

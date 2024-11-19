@@ -5,15 +5,16 @@ import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
 class ResponseHandler<T> {
-  final T? data;
-  final bool success;
-  final String? message;
-
   ResponseHandler({
     required this.success,
     this.data,
     this.message,
   });
+
+  final T? data;
+  final bool success;
+  final String? message;
+
 
   static ResponseHandler<T> handleSuccess<T>(dynamic response) {
     log('Response Handler Caso 1');

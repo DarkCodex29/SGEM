@@ -75,7 +75,7 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
       onPrint: (pages) {
         descargarPaginasComoPdf(pages);
       },
-      scaleFactor: 0.4,
+      //scaleFactor: 0.4,
     );
   }
 }

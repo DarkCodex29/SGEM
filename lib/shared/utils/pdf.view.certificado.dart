@@ -46,7 +46,7 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
       onPrint: (pages) {
         descargarPaginasComoPdf(pages);
       },
-      scaleFactor: 0.7,
+      //scaleFactor: 0.7,
     );
   }
 }

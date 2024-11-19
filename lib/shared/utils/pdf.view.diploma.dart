@@ -49,7 +49,7 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
       onPrint: (pages) {
         descargarPaginasComoPdf(pages);
       },
-      scaleFactor: 0.7,
+     // scaleFactor: 0.7,
     );
   }
 }

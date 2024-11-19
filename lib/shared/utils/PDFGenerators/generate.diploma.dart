@@ -35,19 +35,22 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
               children: [
                 pw.Spacer(),
                 pw.Container(
-                    padding: const pw.EdgeInsets.only(left: 80),
-                    child: pw.Column(children: [
+                  padding: const pw.EdgeInsets.only(left: 80),
+                  child: pw.Column(
+                    children: [
                       pw.SizedBox(height: dimensionsImage.height / 3.1),
                       pw.Text(nombreCompleto,
-                          style: const pw.TextStyle(fontSize: 20)),
+                          style: const pw.TextStyle(fontSize: 16)),
                       pw.SizedBox(height: dimensionsImage.height / 14),
-                      pw.Text(cargo, style: const pw.TextStyle(fontSize: 20)),
+                      pw.Text(cargo, style: const pw.TextStyle(fontSize: 16)),
                       pw.SizedBox(height: dimensionsImage.height / 16),
                       pw.Container(
-                          padding: const pw.EdgeInsets.only(left: 60),
-                          alignment: pw.Alignment.center,
-                          width: 500,
-                          child: pw.Column(children: [
+                        padding: const pw.EdgeInsets.only(left: 60),
+                        alignment: pw.Alignment.center,
+                        width: 500,
+                        child: pw.Column(
+                          children: [
+                            pw.SizedBox(height: 10),
                             pw.Row(
                                 mainAxisAlignment:
                                     pw.MainAxisAlignment.spaceAround,
@@ -58,8 +61,12 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
                                 ]),
                             pw.SizedBox(height: dimensionsImage.height / 40),
                             textFirma("SUPERINTENDENCIA OPERACIONES MINA"),
-                          ])),
-                    ]))
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ],
             )
           ],

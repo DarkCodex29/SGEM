@@ -6,6 +6,7 @@ class PdfViewer extends StatelessWidget {
   final double angleRotation;
   final VoidCallback onCancel;
   final Function(List<PdfPageImage?>) onPrint;
+  final double scaleFactor;
 
   const PdfViewer({
     super.key,
@@ -13,6 +14,7 @@ class PdfViewer extends StatelessWidget {
     required this.angleRotation,
     required this.onCancel,
     required this.onPrint,
+    required this.scaleFactor,
   });
 
   List<List<PdfPageImage?>> _groupImagesInPairs(List<PdfPageImage?> images) {
@@ -105,7 +107,9 @@ class PdfViewer extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final rows = _groupImagesInPairs(snapshot.data!);
+        final rows = snapshot.data!.length == 1
+            ? [snapshot.data!]
+            : _groupImagesInPairs(snapshot.data!);
 
         return Column(
           children: [
@@ -122,8 +126,10 @@ class PdfViewer extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: row.map((page) {
                           return SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            height: MediaQuery.of(context).size.height * 0.4,
+                            width:
+                                MediaQuery.of(context).size.width * scaleFactor,
+                            height: MediaQuery.of(context).size.height *
+                                scaleFactor,
                             child: _buildPdfPage(page),
                           );
                         }).toList(),

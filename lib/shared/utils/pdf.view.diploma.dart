@@ -21,7 +21,6 @@ class PdfToDiplomaScreen extends StatefulWidget {
 }
 
 class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
-  //List<Future<pw.Page>> listPages = [];
   Future<List<PdfPageImage?>>? _getdata;
 
   @override
@@ -50,6 +49,7 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
       onPrint: (pages) {
         descargarPaginasComoPdf(pages);
       },
+      scaleFactor: 0.7,
     );
   }
 }

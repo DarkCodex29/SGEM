@@ -79,7 +79,7 @@ class PersonalService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == 'OK') {
           return ResponseHandler.handleSuccess<bool>(true);
         } else {
           return ResponseHandler(

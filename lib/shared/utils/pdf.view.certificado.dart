@@ -1,6 +1,7 @@
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.certificado.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
@@ -10,8 +11,10 @@ import '../../modules/pages/consulta.personal/consulta.personal.controller.dart'
 
 class PdfToCertificadoScreen extends StatefulWidget {
   final PersonalSearchController controller;
+  final Personal? data;
 
-  const PdfToCertificadoScreen({super.key, required this.controller});
+  const PdfToCertificadoScreen(
+      {super.key, required this.data, required this.controller});
 
   @override
   State<PdfToCertificadoScreen> createState() => _PdfToCertificadoScreenState();

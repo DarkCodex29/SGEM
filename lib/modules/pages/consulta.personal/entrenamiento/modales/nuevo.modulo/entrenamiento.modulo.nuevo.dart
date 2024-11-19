@@ -32,7 +32,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   Widget build(BuildContext context) {
     controller.isEdit = isEdit;
     controller.isView = isView;
-    if (inEntrenamientoModulo != null ) {
+    if (inEntrenamientoModulo != null) {
       controller.obtenerModuloPorId(inEntrenamiento!, inEntrenamientoModulo!);
     } else {
       controller.nuevoModulo(inEntrenamiento!);
@@ -348,10 +348,18 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        _buildAdjuntoRow('Control de horas', '', () {}),
-        _buildAdjuntoRow('Examen Teórico', '', () {}),
-        _buildAdjuntoRow('Examen Práctico', '', () {}),
-        _buildAdjuntoRow('Otros', '', () {}),
+        _buildAdjuntoRow('Control de horas', '', () async {
+          controller.cargarArchivoControlHoras();
+        }, () {}),
+        _buildAdjuntoRow('Examen Teórico', '', () async {
+          controller.cargarArchivoExamenTeorico();
+        }, () {}),
+        _buildAdjuntoRow('Examen Práctico', '', () async {
+          controller.cargarArchivoExamenPractico();
+        }, () {}),
+        _buildAdjuntoRow('Otros', '', () async {
+          controller.cargarArchivoOtros();
+        }, () {}),
         // Obx((){
         //
         //   return Column(crossAxisAlignment: CrossAxisAlignment.start,
@@ -365,15 +373,24 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   }
 
   Widget _buildAdjuntoRow(
-      String titulo, String nombreArchivo, VoidCallback onRemove) {
+    String titulo,
+    String nombreArchivo,
+    VoidCallback onPressed,
+    VoidCallback onRemove,
+  ) {
     return Row(
       children: [
         Text(titulo),
         const SizedBox(width: 10),
-        const Icon(Icons.attach_file, color: Colors.grey),
+        IconButton(
+            onPressed: onPressed,
+            icon: const Icon(Icons.attach_file, color: Colors.grey)),
         const SizedBox(width: 10),
         // TODO: Aquí puedes mostrar el nombre del archivo subido si está disponible
-        Text(nombreArchivo,style: const TextStyle(fontWeight: FontWeight.bold),),
+        Text(
+          nombreArchivo,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
         const SizedBox(width: 10),
         IconButton(
           icon: const Icon(Icons.close, color: Colors.red),
@@ -426,4 +443,3 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 }
-

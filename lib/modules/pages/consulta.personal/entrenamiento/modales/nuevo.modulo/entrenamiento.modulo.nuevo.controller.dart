@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'dart:typed_data';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -379,5 +381,142 @@ class EntrenamientoModuloNuevoController extends GetxController {
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
     inModulo.value = entrenamientoModulo!.inModulo!;
+  }
+
+  Future<void> cargarArchivoControlHoras() async {
+    // cargaMasivaResultadosPaginados.clear();
+    // cargaMasivaResultadosValidados.clear();
+    //
+    // archivoController.clear();
+    // totalRecords.value=0;
+    // correctRecords.value=0;
+    // errorRecords.value=0;
+
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['xlsx'],
+      );
+
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        if (file.bytes != null) {
+          Uint8List fileBytes = file.bytes!;
+          String fileName = file.name;
+
+          aaControlHorasController.text = fileName; // Muestra el nombre del archivo
+          log('Documento adjuntado correctamente: $fileName');
+
+          aaControlHorasSeleccionado.value = true;
+        }
+      } else {
+        log('No se seleccionaron archivos');
+      }
+    } catch (e) {
+      log('Error al adjuntar documentos: $e');
+    }
+  }
+  Future<void> cargarArchivoExamenTeorico() async {
+    // cargaMasivaResultadosPaginados.clear();
+    // cargaMasivaResultadosValidados.clear();
+    //
+    // archivoController.clear();
+    // totalRecords.value=0;
+    // correctRecords.value=0;
+    // errorRecords.value=0;
+
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['*.*'],
+      );
+
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        if (file.bytes != null) {
+          Uint8List fileBytes = file.bytes!;
+          String fileName = file.name;
+
+          aaExamenTeoricoController.text = fileName; // Muestra el nombre del archivo
+          log('Documento adjuntado correctamente: $fileName');
+
+          aaExamenTeoricoSeleccionado.value = true;
+        }
+      } else {
+        log('No se seleccionaron archivos');
+      }
+    } catch (e) {
+      log('Error al adjuntar documentos: $e');
+    }
+  }
+  Future<void> cargarArchivoExamenPractico() async {
+    // cargaMasivaResultadosPaginados.clear();
+    // cargaMasivaResultadosValidados.clear();
+    //
+    // archivoController.clear();
+    // totalRecords.value=0;
+    // correctRecords.value=0;
+    // errorRecords.value=0;
+
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['xlsx'],
+      );
+
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        if (file.bytes != null) {
+          Uint8List fileBytes = file.bytes!;
+          String fileName = file.name;
+
+          aaExamenPracticoController.text = fileName; // Muestra el nombre del archivo
+          log('Documento adjuntado correctamente: $fileName');
+
+          aaExamenPracticoSeleccionado.value = true;
+        }
+      } else {
+        log('No se seleccionaron archivos');
+      }
+    } catch (e) {
+      log('Error al adjuntar documentos: $e');
+    }
+  }
+  Future<void> cargarArchivoOtros() async {
+    // cargaMasivaResultadosPaginados.clear();
+    // cargaMasivaResultadosValidados.clear();
+    //
+    // archivoController.clear();
+    // totalRecords.value=0;
+    // correctRecords.value=0;
+    // errorRecords.value=0;
+
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: false,
+        type: FileType.custom,
+        allowedExtensions: ['xlsx'],
+      );
+
+      if (result != null) {
+        PlatformFile file = result.files.first;
+        if (file.bytes != null) {
+          Uint8List fileBytes = file.bytes!;
+          String fileName = file.name;
+
+          aaOtrosController.text = fileName; // Muestra el nombre del archivo
+          log('Documento adjuntado correctamente: $fileName');
+
+          aaOtrosSeleccionado.value = true;
+        }
+      } else {
+        log('No se seleccionaron archivos');
+      }
+    } catch (e) {
+      log('Error al adjuntar documentos: $e');
+    }
   }
 }

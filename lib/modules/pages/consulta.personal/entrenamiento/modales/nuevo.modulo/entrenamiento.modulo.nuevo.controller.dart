@@ -31,7 +31,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
   TextEditingController horasMinestarController =
       TextEditingController(text: '0');
 
-
   DateTime? fechaInicio;
   DateTime? fechaTermino;
   DateTime? fechaExamen;
@@ -88,7 +87,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
-   // log('${dropdownController.getSelectedValue('estadoModulo')!}');
+    // log('${dropdownController.getSelectedValue('estadoModulo')!}');
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: isEdit ? entrenamientoModuloId : 0,
       inTipoActividad: entrenamiento!.inTipoActividad,
@@ -136,13 +135,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-        // ScaffoldMessenger.of(Get.context!).showSnackBar(
-        //   SnackBar(
-        //     content: Text("Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
-
+        /*
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          SnackBar(
+            content: Text(
+                "Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
+            backgroundColor: Colors.green,
+          ),
+        );
+*/
         EntrenamientoPersonalController controller =
             Get.put(EntrenamientoPersonalController());
         controller
@@ -152,23 +153,27 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return true;
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
-        // ScaffoldMessenger.of(Get.context!).showSnackBar(
-        //   SnackBar(
-        //     content: Text(
-        //         "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
-        //     backgroundColor: Colors.red,
-        //   ),
-        // );
+        /*
+        
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          SnackBar(
+            content: Text(
+                "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
+            backgroundColor: Colors.red,
+          ),
+        );
+        */
         return false;
       }
     } catch (e) {
-      // ScaffoldMessenger.of(Get.context!).showSnackBar(
-      //   SnackBar(
-      //     content: Text(
-      //         "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
-      //     backgroundColor: Colors.red,
-      //   ),
-      // );
+      /*
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        SnackBar(
+          content: Text(
+              "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );*/
       return false;
     }
   }

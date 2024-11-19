@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
@@ -69,6 +71,8 @@ class Personal implements DropdownElement {
   });
 
   factory Personal.fromJson(Map<String, dynamic> json) {
+    log('Key: ${json['Key'] ?? 0}');
+    log('Tipo Persona: ${json['TipoPersona'] ?? ""}');
     return Personal(
       key: json['Key'] ?? 0,
       tipoPersona: json['TipoPersona'] ?? "",

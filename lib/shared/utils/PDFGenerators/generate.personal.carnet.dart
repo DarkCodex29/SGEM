@@ -43,7 +43,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
         decoration: pw.BoxDecoration(
           image: pw.DecorationImage(
             image: pw.MemoryImage(fondoImageBytes),
-            fit: pw.BoxFit.cover,
+            fit: pw.BoxFit.contain,
           ),
         ),
         child: pw.Padding(

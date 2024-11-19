@@ -3,7 +3,8 @@ import 'package:pdfx/pdfx.dart';
 import 'dart:typed_data';
 import 'dart:html' as html;
 
-Future<pw.Page> generatePdfPageFromImages(Future<List<PdfPageImage?>> imagess) async {
+Future<pw.Page> generatePdfPageFromImages(
+    Future<List<PdfPageImage?>> imagess) async {
   var images = await imagess;
   // Crea la página del PDF
   return generatePdfPagesFromImages(images);
@@ -59,7 +60,8 @@ Future<void> descargarPaginasComoPdf(List<PdfPageImage?> imagess) async {
   html.Url.revokeObjectUrl(url);
 }
 
-pw.Widget _columnCarnet(List<PdfPageImage?> images, int position1, int position2) {
+pw.Widget _columnCarnet(
+    List<PdfPageImage?> images, int position1, int position2) {
   return pw.Column(
     children: [
       // Mostrar las últimas dos imágenes

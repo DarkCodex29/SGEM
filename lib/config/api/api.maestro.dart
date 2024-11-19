@@ -1,30 +1,53 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/maestro.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 
 class MaestroService {
-  final Dio dio = Dio();
+  MaestroService({
+    Dio? dio,
+  }) : _dio = dio ?? Dio(_options);
 
-  MaestroService() {
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        options.headers['Content-Type'] = 'application/json';
-        return handler.next(options);
-      },
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
-    ));
+  final Dio _dio;
+
+  static final BaseOptions _options = BaseOptions(
+    baseUrl: '${ConfigFile.apiUrl}/Maestro',
+    contentType: Headers.jsonContentType,
+    followRedirects: false,
+  );
+
+  Future<ResponseHandler<List<OptionValue>>> getMaestros() async {
+    try {
+      final response = await _dio.get<List<dynamic>>('/ListarMaestros');
+
+      return ResponseHandler.handleSuccess(
+        response.data
+                ?.map((e) => OptionValue.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+      );
+    } on DioException catch (e) {
+      return ResponseHandler.handleFailure(e);
+    } catch (error) {
+      debugPrint('Error al listar maestros: $error');
+
+      return ResponseHandler(
+        success: false,
+        message: 'Error al listar maestros',
+      );
+    }
   }
 
+  @Deprecated('Usar getMaestros')
   Future<ResponseHandler<List<MaestroCompleto>>> listarMaestros() async {
     const url = '${ConfigFile.apiUrl}/Maestro/ListarMaestros';
 
     try {
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(
           followRedirects: false,
@@ -48,11 +71,12 @@ class MaestroService {
   }
 
   Future<ResponseHandler<bool>> registrarMaestro(
-      MaestroCompleto maestro) async {
+    MaestroCompleto maestro,
+  ) async {
     const url = '${ConfigFile.apiUrl}/Maestro/RegistrarMaestro';
 
     try {
-      final response = await dio.post(
+      final response = await _dio.post(
         url,
         data: jsonEncode(maestro.toJson()),
         options: Options(
@@ -61,7 +85,7 @@ class MaestroService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == 'OK') {
           return ResponseHandler.handleSuccess<bool>(true);
         } else {
           return ResponseHandler(
@@ -81,11 +105,12 @@ class MaestroService {
   }
 
   Future<ResponseHandler<bool>> actualizarMaestro(
-      MaestroCompleto maestro) async {
+    MaestroCompleto maestro,
+  ) async {
     const url = '${ConfigFile.apiUrl}/Maestro/ActualizarMaestro';
 
     try {
-      final response = await dio.put(
+      final response = await _dio.put(
         url,
         data: jsonEncode(maestro.toJson()),
         options: Options(
@@ -94,7 +119,7 @@ class MaestroService {
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        if (response.data['Codigo'] == 200 && response.data['Valor'] == "OK") {
+        if (response.data['Codigo'] == 200 && response.data['Valor'] == 'OK') {
           return ResponseHandler.handleSuccess<bool>(true);
         } else {
           return ResponseHandler(
@@ -110,7 +135,7 @@ class MaestroService {
       }
     } on DioException catch (e) {
       if (e.response?.data != null && e.response?.data['Message'] != null) {
-        var errorMessage = e.response!.data['Message'];
+        final errorMessage = e.response!.data['Message'];
         log('Error al actualizar: $errorMessage');
         return ResponseHandler(
           success: false,

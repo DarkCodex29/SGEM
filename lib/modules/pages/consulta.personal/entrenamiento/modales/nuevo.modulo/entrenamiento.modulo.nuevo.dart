@@ -348,16 +348,22 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
         const SizedBox(
           height: 10,
         ),
-        _buildAdjuntoRow('Control de horas', '', () async {
+        _buildAdjuntoRow(
+            'Control de horas', controller.aaControlHorasController.text,
+            () async {
           controller.cargarArchivoControlHoras();
         }, () {}),
-        _buildAdjuntoRow('Examen Teórico', '', () async {
+        _buildAdjuntoRow(
+            'Examen Teórico', controller.aaExamenTeoricoController.text,
+            () async {
           controller.cargarArchivoExamenTeorico();
         }, () {}),
-        _buildAdjuntoRow('Examen Práctico', '', () async {
+        _buildAdjuntoRow(
+            'Examen Práctico', controller.aaExamenPracticoController.text,
+            () async {
           controller.cargarArchivoExamenPractico();
         }, () {}),
-        _buildAdjuntoRow('Otros', '', () async {
+        _buildAdjuntoRow('Otros', controller.aaOtrosController.text, () async {
           controller.cargarArchivoOtros();
         }, () {}),
         // Obx((){

@@ -379,6 +379,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
+
+    dropdownController.selectValueKey(
+        'estadoModulo', entrenamientoModulo!.inEstado);
+
     inModulo.value = entrenamientoModulo!.inModulo!;
   }
 

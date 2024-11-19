@@ -135,7 +135,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-<<<<<<< HEAD
         /*
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
@@ -145,15 +144,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ),
         );
 */
-=======
-        // ScaffoldMessenger.of(Get.context!).showSnackBar(
-        //   SnackBar(
-        //     content: Text("Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
-        //     backgroundColor: Colors.green,
-        //   ),
-        // );
-
->>>>>>> 1c58c07712744045c0082f944b1a996553b3f44d
         EntrenamientoPersonalController controller =
             Get.put(EntrenamientoPersonalController());
         controller
@@ -163,7 +153,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return true;
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
-<<<<<<< HEAD
         /*
         
         ScaffoldMessenger.of(Get.context!).showSnackBar(
@@ -185,25 +174,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           backgroundColor: Colors.red,
         ),
       );*/
-=======
-        // ScaffoldMessenger.of(Get.context!).showSnackBar(
-        //   SnackBar(
-        //     content: Text(
-        //         "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
-        //     backgroundColor: Colors.red,
-        //   ),
-        // );
-        return false;
-      }
-    } catch (e) {
-      // ScaffoldMessenger.of(Get.context!).showSnackBar(
-      //   SnackBar(
-      //     content: Text(
-      //         "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
-      //     backgroundColor: Colors.red,
-      //   ),
-      // );
->>>>>>> 1c58c07712744045c0082f944b1a996553b3f44d
       return false;
     }
   }

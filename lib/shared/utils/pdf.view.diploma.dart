@@ -1,6 +1,7 @@
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.diploma.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
@@ -10,8 +11,10 @@ import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
 import '../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 class PdfToDiplomaScreen extends StatefulWidget {
+  final Personal? data;
   final PersonalSearchController controller;
-  const PdfToDiplomaScreen({super.key, required this.controller});
+  const PdfToDiplomaScreen(
+      {super.key, required this.data, required this.controller});
 
   @override
   State<PdfToDiplomaScreen> createState() => _PdfToDiplomaScreenState();
@@ -28,7 +31,8 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
   }
 
   Future<List<PdfPageImage?>> getData() async {
-    listPages.add(generateDiploma());
+    final personalData = widget.data;
+    listPages.add(generateDiploma(personalData));
     return getImages(listPages);
   }
 

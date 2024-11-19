@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
@@ -87,17 +88,62 @@ class CustomDropdownGlobal extends StatelessWidget {
   }
 
   Widget _buildDropdown(List<OptionValue> options) {
-    return _Dropdown(
-      options: options,
-      textFieldKey: textFieldKey,
-      initialValue: initialValue,
-      controller: controller,
-      dropdownKey: dropdownKey,
-      noDataHintText: noDataHintText,
-      hintText: hintText,
-      labelText: labelText,
-      isReadOnly: isReadOnly,
-      onChanged: onChanged,
+    return SizedBox(
+      height: 60,
+      child: DropdownButtonFormField<OptionValue>(
+        key: textFieldKey,
+        value: initialValue ?? controller?.getSelectedValue(dropdownKey),
+        isExpanded: true,
+        hint: Text(
+          options.isEmpty ? noDataHintText : hintText,
+          style: const TextStyle(
+            color: AppTheme.primaryText,
+            fontSize: 16,
+          ),
+        ),
+        decoration: InputDecoration(
+          labelText:
+              options.isNotEmpty && initialValue != null ? labelText : null,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: AppTheme.alternateColor,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: AppTheme.alternateColor,
+              width: 2,
+            ),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 14,
+            horizontal: 12,
+          ),
+        ),
+        onChanged: isReadOnly || options.isEmpty
+            ? null
+            : (value) {
+                if (controller != null) {
+                  controller!.selectValue(dropdownKey, value);
+                }
+                if (onChanged != null) {
+                  onChanged!.call(value);
+                }
+              },
+        items: options.map((option) {
+          return DropdownMenuItem<OptionValue>(
+            value: option,
+            child: Text(option.nombre ?? ''),
+          );
+        }).toList(),
+        disabledHint: Text(
+          initialValue?.nombre ?? hintText,
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ),
     );
   }
 
@@ -154,7 +200,6 @@ class _Dropdown extends StatelessWidget {
   final void Function(OptionValue? p1)? onChanged;
 
   @override
-
   Widget build(BuildContext context) {
     return SizedBox(
       height: 60,

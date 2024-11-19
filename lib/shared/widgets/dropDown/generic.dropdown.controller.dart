@@ -43,7 +43,7 @@ class GenericDropdownController extends GetxController {
   }
 
   /// Busca y selecciona una opción mediante su `key`, actualizando el valor seleccionado.
-  @Deprecated('Use selectValueByKey() instead.')
+  //@Deprecated('Use selectValueByKey() instead.')
   void selectValueKey(String key, int? valueKey) {
     initializeDropdown(key);
 
@@ -99,7 +99,7 @@ class GenericDropdownController extends GetxController {
   bool isLoading(String key) => isLoadingMap[key]?.value ?? false;
 
   /// Obtiene la lista de opciones para un dropdown específico.
-  @Deprecated('Use getOptionsFromKey() instead.')
+  //@Deprecated('Use getOptionsFromKey() instead.')
   List<OptionValue> getOptions(String key) => optionsMap[key]?.toList() ?? [];
 
   List<OptionValue> getOptionsFromKey(String key) => optionsMap[key] ?? [];

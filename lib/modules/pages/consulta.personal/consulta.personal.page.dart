@@ -67,7 +67,9 @@ class PersonalSearchPage extends StatelessWidget {
                 data: controller.selectedPersonal.value,
                 controller: controller);
           case PersonalSearchScreen.diplomaPersonal:
-            return PdfToDiplomaScreen(controller: controller);
+            return PdfToDiplomaScreen(
+                data: controller.selectedPersonal.value,
+                controller: controller);
           case PersonalSearchScreen.certificadoPersonal:
             return PdfToCertificadoScreen(controller: controller);
         }

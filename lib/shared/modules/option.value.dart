@@ -8,8 +8,8 @@ class OptionValue {
   String? nombre;
 
   factory OptionValue.fromJson(Map<String, dynamic> json) => OptionValue(
-        key: json['Key'] as int,
-        nombre: json['Nombre'] as String,
+        key: json['Key'] as int?,
+        nombre: json['Nombre'] as String?,
       );
 
   Map<String, dynamic> toJson() => {

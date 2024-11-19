@@ -339,8 +339,12 @@ class PersonalService {
           .toList();
 
       return ResponseHandler.handleSuccess<List<Personal>>(entrenadoresList);
-    } on DioException catch (e) {
+    } on DioException catch (e, stackTrace) {
+      log('stackTrace: $stackTrace');
       log('Error al listar entrenadores: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    } catch (e) {
+      log('Error al listar entrenadores: $e');
       return ResponseHandler.handleFailure(e);
     }
   }

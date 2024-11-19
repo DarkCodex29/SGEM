@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +30,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       TextEditingController(text: '0');
   TextEditingController horasMinestarController =
       TextEditingController(text: '0');
-
 
   DateTime? fechaInicio;
   DateTime? fechaTermino;
@@ -89,7 +87,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
-   // log('${dropdownController.getSelectedValue('estadoModulo')!}');
+    // log('${dropdownController.getSelectedValue('estadoModulo')!}');
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: isEdit ? entrenamientoModuloId : 0,
       inTipoActividad: entrenamiento!.inTipoActividad,
@@ -137,6 +135,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
+        /*
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
@@ -144,7 +143,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
             backgroundColor: Colors.green,
           ),
         );
-
+*/
         EntrenamientoPersonalController controller =
             Get.put(EntrenamientoPersonalController());
         controller
@@ -154,6 +153,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return true;
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
+        /*
+        
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
@@ -161,16 +162,18 @@ class EntrenamientoModuloNuevoController extends GetxController {
             backgroundColor: Colors.red,
           ),
         );
+        */
         return false;
       }
     } catch (e) {
+      /*
       ScaffoldMessenger.of(Get.context!).showSnackBar(
         SnackBar(
           content: Text(
               "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
           backgroundColor: Colors.red,
         ),
-      );
+      );*/
       return false;
     }
   }

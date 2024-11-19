@@ -32,7 +32,13 @@ class MaestroController extends GetxController {
     dropdownController
       ..initializeDropdown('maestro')
       ..loadOptions('maestro', getMaestros)
-      ..initializeDropdown('estado');
+      ..initializeDropdown('estado_m')
+      ..loadOptions('estado_m', () async {
+        return [
+          OptionValue(key: 1, nombre: 'Activo'),
+          OptionValue(key: 2, nombre: 'Inactivo'),
+        ];
+      });
   }
 
   final TextEditingController valorController = TextEditingController();
@@ -43,7 +49,7 @@ class MaestroController extends GetxController {
     valorController.clear();
     dropdownController
       ..resetSelection('maestro')
-      ..resetSelection('estado');
+      ..resetSelection('estado_m');
   }
 
   final result = <MaestroDetalle>[].obs;
@@ -68,7 +74,7 @@ class MaestroController extends GetxController {
 
   Future<void> search() async {
     final maestroKey = dropdownController.getSelectedValue('maestro')?.key;
-    final estado = dropdownController.getSelectedValue('estado')?.key;
+    final estado = dropdownController.getSelectedValue('estado_m')?.key;
     final valor = valorController.text;
 
     final response = await _maestroDetalleService.getMaestroDetalles(

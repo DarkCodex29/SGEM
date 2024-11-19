@@ -21,7 +21,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       TextEditingController(text: '0');
   TextEditingController fechaExamenController = TextEditingController();
 
-
   // Cambiado a Rx
   Rx<TextEditingController> totalHorasModuloController =
       TextEditingController(text: '0').obs;
@@ -76,6 +75,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   }
 
   Future<bool> registrarModulo(BuildContext context) async {
+   // log('${dropdownController.getSelectedValue('estadoModulo')!}');
     EntrenamientoModulo modulo = EntrenamientoModulo(
       key: isEdit ? entrenamientoModuloId : 0,
       inTipoActividad: entrenamiento!.inTipoActividad,
@@ -102,7 +102,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
       inEmpresaCapacitadora: entrenamiento!.inEmpresaCapacitadora,
       inCondicion: entrenamiento!.inCondicion,
       condicion: entrenamiento!.condicion,
-      inEstado: 0,
+      inEstado: isEdit == true
+          ? dropdownController.getSelectedValue('estadoModulo')!.key
+          : 0,
       estadoEntrenamiento: OptionValue(key: 0, nombre: 'Pendiente'),
       comentarios: '',
       inCapacitacion: 0,

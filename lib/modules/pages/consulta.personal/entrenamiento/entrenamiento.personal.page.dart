@@ -255,7 +255,10 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     ),
                     _buildCustomTextField(
                       'Estado de avance actual',
-                      training.modulo!.nombre!,
+                      training.estadoEntrenamiento!.nombre!.toLowerCase() ==
+                              'autorizado'
+                          ? 'Finalizado'
+                          : training.modulo!.nombre!,
                     ),
                   ],
                 ),
@@ -641,91 +644,93 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 }
               },
             ),
-            IconButton(
-              tooltip: 'Eliminar entrenamiento',
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: () async {
-                String motivoEliminacion = '';
+            if (training.estadoEntrenamiento!.nombre!.toLowerCase() !=
+                'autorizado')
+              IconButton(
+                tooltip: 'Eliminar entrenamiento',
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () async {
+                  String motivoEliminacion = '';
 
-                await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Padding(
-                        padding: MediaQuery.of(context).viewInsets,
-                        child: DeleteReasonWidget(
-                          entityType: 'entrenamiento',
-                          isMotivoRequired: false,
-                          onCancel: () {
-                            Navigator.pop(context);
-                          },
-                          onConfirm: (motivo) {
-                            motivoEliminacion = motivo;
-                            Navigator.pop(context);
-                          },
+                  await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: DeleteReasonWidget(
+                            entityType: 'entrenamiento',
+                            isMotivoRequired: false,
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                            onConfirm: (motivo) {
+                              motivoEliminacion = motivo;
+                              Navigator.pop(context);
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
+                      );
+                    },
+                  );
 
-                if (motivoEliminacion.isEmpty) return;
+                  if (motivoEliminacion.isEmpty) return;
 
-                bool confirmarEliminar = false;
-                await showDialog(
-                  context: Get.context!,
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Padding(
-                        padding: MediaQuery.of(context).viewInsets,
-                        child: ConfirmDeleteWidget(
-                          itemName: 'entrenamiento',
-                          entityType: '',
-                          onCancel: () {
-                            Navigator.pop(context);
-                          },
-                          onConfirm: () {
-                            confirmarEliminar = true;
-                            Navigator.pop(context);
-                          },
+                  bool confirmarEliminar = false;
+                  await showDialog(
+                    context: Get.context!,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Padding(
+                          padding: MediaQuery.of(context).viewInsets,
+                          child: ConfirmDeleteWidget(
+                            itemName: 'entrenamiento',
+                            entityType: '',
+                            onCancel: () {
+                              Navigator.pop(context);
+                            },
+                            onConfirm: () {
+                              confirmarEliminar = true;
+                              Navigator.pop(context);
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
+                      );
+                    },
+                  );
 
-                if (!confirmarEliminar) return;
-                try {
-                  bool success =
-                      await controller.eliminarEntrenamiento(training);
-                  if (success) {
-                    await showDialog(
-                      context: Get.context!,
-                      builder: (context) {
-                        return const SuccessDeleteWidget();
-                      },
-                    );
-                  } else {
+                  if (!confirmarEliminar) return;
+                  try {
+                    bool success =
+                        await controller.eliminarEntrenamiento(training);
+                    if (success) {
+                      await showDialog(
+                        context: Get.context!,
+                        builder: (context) {
+                          return const SuccessDeleteWidget();
+                        },
+                      );
+                    } else {
+                      ScaffoldMessenger.of(Get.context!).showSnackBar(
+                        const SnackBar(
+                          content: Text("Error al eliminar el entrenamiento."),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    log('Error eliminando el entrenamiento: $e');
                     ScaffoldMessenger.of(Get.context!).showSnackBar(
-                      const SnackBar(
-                        content: Text("Error al eliminar el entrenamiento."),
+                      SnackBar(
+                        content: Text("Error eliminando el entrenamiento: $e"),
                         backgroundColor: Colors.red,
                       ),
                     );
                   }
-                } catch (e) {
-                  log('Error eliminando el entrenamiento: $e');
-                  ScaffoldMessenger.of(Get.context!).showSnackBar(
-                    SnackBar(
-                      content: Text("Error eliminando el entrenamiento: $e"),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-            ),
+                },
+              ),
             if (training.estadoEntrenamiento!.nombre!.toLowerCase() ==
                 "entrenando")
               IconButton(
@@ -736,13 +741,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   var response = await controller.entrenamientoService
                       .obtenerUltimoModuloPorEntrenamiento(training.key!);
                   var ultimoModulo = response.data!;
-                  //log("Ultimo modulo: ${response.data!.inModulo}");
                   if (ultimoModulo.inModulo != 4) {
                     log("Ultimo modulo: ${response.data!.inModulo}");
-                    //log("Estado de Ultimo modulo: ${response.data!.estadoEntrenamiento!.nombre ?? 'Nulo'}");
-                    //if(ultimoModulo.inModulo ) {
                     if (ultimoModulo.inModulo != null &&
-                        ultimoModulo.inModulo! >= 1) {
+                        ultimoModulo.inModulo! >= 1 &&
+                        ultimoModulo.estadoEntrenamiento!.nombre!
+                                .toLowerCase() ==
+                            'incompleto') {
                       log('Estado ultimo modulo: ${ultimoModulo.estadoEntrenamiento!.nombre}');
                       showDialog(
                           context: Get.context!,
@@ -751,8 +756,6 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                               "No se puede agregar un nuevo modulo mientras en modulo anterior no se haya completado."
                             ]);
                           });
-                      //MensajeValidacionWidget(errores: ["No se puede agregar un nuevo modulo mientras en modulo anterior no se haya completado."]));
-                      //ultimoModulo.estadoEntrenamiento!.nombre!.toLowerCase()=='completo';
                     } else {
                       final bool? success = await showDialog(
                         context: Get.context!,

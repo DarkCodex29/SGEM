@@ -396,7 +396,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
         type: FileType.custom,
-        allowedExtensions: ['xlsx'],
+        allowedExtensions: ['*.*'],
       );
 
       if (result != null) {
@@ -498,7 +498,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
         type: FileType.custom,
-        allowedExtensions: ['xlsx'],
+        allowedExtensions: ['*.*'],
       );
 
       if (result != null) {

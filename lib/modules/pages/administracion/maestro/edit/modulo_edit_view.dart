@@ -5,7 +5,7 @@ import 'package:sgem/modules/pages/administracion/maestro/edit/maestro_edit.dart
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/utils/Extensions/format_extension.dart';
 import 'package:sgem/shared/widgets/app_button.dart';
-import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/app_text_field.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 
 class MaestroEditView extends StatelessWidget {
@@ -92,12 +92,12 @@ class MaestroEditView extends StatelessWidget {
                         isRequired: true,
                         label: 'Maestro',
                       ),
-                      CustomTextField(
+                      AppTextField(
                         label: 'Valor',
                         isRequired: true,
                         controller: ctr.valorController,
                       ),
-                      CustomTextField(
+                      AppTextField(
                         label: 'Descripción',
                         controller: ctr.descripcionController,
                         maxLines: 3,

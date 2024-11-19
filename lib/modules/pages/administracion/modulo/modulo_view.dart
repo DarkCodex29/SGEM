@@ -10,12 +10,12 @@ import 'package:sgem/shared/widgets/app_text_field.dart';
 import 'package:sgem/shared/widgets/custom_table/custom_table.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 
-class MaestroPage extends StatelessWidget {
-  const MaestroPage({super.key});
+class ModuloPage extends StatelessWidget {
+  const ModuloPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.put(MaestroController());
+    final ctr = Get.put(ModuloController());
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -38,7 +38,7 @@ class MaestroPage extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        const MaestroEditView().show();
+                        const ModuloEditView().show();
                       },
                       icon: const Icon(
                         Icons.add,
@@ -81,7 +81,7 @@ class MaestroPage extends StatelessWidget {
                         return CustomTable(
                           headers: const [
                             'Código',
-                            'Maestro',
+                            'Modulo',
                             'Valor',
                             'Usuario registro',
                             'Fecha registro',
@@ -91,7 +91,7 @@ class MaestroPage extends StatelessWidget {
                           builder: (mdetalle) {
                             return [
                               Text(NumberFormat('000').format(mdetalle.key)),
-                              Text(mdetalle.maestro.nombre ?? 'N/A'),
+                              Text(mdetalle.modulo.nombre ?? 'N/A'),
                               Text(mdetalle.value),
                               Text(mdetalle.usuarioRegistro ?? 'N/A'),
                               Text(mdetalle.fechaRegistro?.formatExtended ?? 'N/A'),
@@ -109,7 +109,7 @@ class MaestroPage extends StatelessWidget {
                             IconButton(
                               icon: const Icon(Icons.edit),
                               onPressed:
-                                  MaestroEditView(detalle: mdetalle).show,
+                                  ModuloEditView(detalle: mdetalle).show,
                             ),
                           ],
                         );
@@ -144,7 +144,7 @@ class FilterTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.find<MaestroController>();
+    final ctr = Get.find<ModuloController>();
     return ExpansionTile(
       title: const Text('Filtros'),
       initiallyExpanded: true,
@@ -163,17 +163,17 @@ class FilterTile extends StatelessWidget {
                   Expanded(
                     child: Obx(
                       () {
-                        if (ctr.maestros.isEmpty) {
+                        if (ctr.modulos.isEmpty) {
                           return const Center(
                             child: CircularProgressIndicator(),
                           );
                         }
 
                         return AppDropdownField(
-                          dropdownKey: 'maestro',
-                          label: 'Maestro',
-                          options: ctr.maestros,
-                          key: const Key('maestro_dropdown_maestro'),
+                          dropdownKey: 'modulo',
+                          label: 'Modulo',
+                          options: ctr.modulos,
+                          key: const Key('modulo_dropdown_modulo'),
                         );
                       },
                     ),

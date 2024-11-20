@@ -46,6 +46,7 @@ class CustomTextFormField extends StatelessWidget {
               onChanged: onChanged,
               focusNode: focusNode,
               enabled: enabled,
+
               validator: (value) {
                 if (!isRequired) {
                   return null;

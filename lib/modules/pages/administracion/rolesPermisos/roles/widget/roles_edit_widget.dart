@@ -3,18 +3,19 @@ import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/maestro/edit/maestro_edit.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/utils/Extensions/format_extension.dart';
 import 'package:sgem/shared/widgets/app_button.dart';
-import 'package:sgem/shared/widgets/app_text_field.dart';
+import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 
-class MaestroEditView extends StatelessWidget {
-  const MaestroEditView({
+class RolesEditWidget extends StatelessWidget {
+  const RolesEditWidget({
     super.key,
     this.detalle,
+    this.edit = false,
   });
 
   final MaestroDetalle? detalle;
+  final bool ? edit;
 
   void show() => Get.dialog<void>(this); 
 
@@ -53,7 +54,7 @@ class MaestroEditView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        isEdit ? 'Editar Maestro' : 'Registro de Maestro',
+                        edit??false ? 'Editar rol' : 'Nuevo rol',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
@@ -72,41 +73,46 @@ class MaestroEditView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
+                  padding:const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
                   child: Column(
                     children: [
-                      if (isEdit)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Código: ${detalle!.key!.format}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      const AppDropdownField(
-                        dropdownKey: 'maestro_2',
-                        isRequired: true,
-                        label: 'Maestro',
-                      ),
-                      AppTextField(
-                        label: 'Valor',
-                        isRequired: true,
-                        controller: ctr.valorController,
-                      ),
-                      AppTextField(
-                        label: 'Descripción',
-                        controller: ctr.descripcionController,
-                        maxLines: 3,
-                      ),
-                      const AppDropdownField(
-                        label: 'Estado',
-                        isRequired: true,
-                        dropdownKey: 'estado_2',
-                      ),
+                      (edit??false)?
+                        SizedBox(
+                        width: 400,
+                         child: Column(
+                           children: [
+                              CustomTextField(
+                                 label: 'Rol',
+                                 isRequired: true,
+                                 controller: ctr.valorController,
+                             ),
+                             const AppDropdownField(
+                               dropdownKey: 'maestro_2',
+                               isRequired: true,
+                               label: 'Estado',
+                             ),
+                           ],
+                         ),
+                       )
+                        :
+                       SizedBox(
+                        width: 400,
+                         child: Column(
+                           children: [
+                              CustomTextField(
+                                 label: 'Rol',
+                                 isRequired: true,
+                                 controller: ctr.valorController,
+                             ),
+                             const AppDropdownField(
+                               dropdownKey: 'maestro_2',
+                               isRequired: true,
+                               label: 'Estado',
+                             ),
+                           ],
+                         ),
+                       ),
+                     
                     ],
                   ),
                 ),

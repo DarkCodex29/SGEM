@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/administracion.dart';
+import 'package:sgem/modules/pages/administracion/rolesPermisos/roles_permisos.dart';
 
 class AdministracionPage extends StatelessWidget {
   const AdministracionPage({super.key});
@@ -81,6 +82,7 @@ class AdministracionView extends StatelessWidget {
               _Button(
                 icon: Icons.security,
                 label: 'Roles y Permisos',
+                 toPage: AdministracionScreen.rolesPermisos,
               ),
               _Button(
                 icon: Icons.person,

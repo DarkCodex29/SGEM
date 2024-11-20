@@ -365,7 +365,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                 controller.aaControlHorasSeleccionado.value = false;
               }
             },
-            controller.aaControlHorasSeleccionado.value,
+            controller.aaControlHorasSeleccionado,
             () async {
               if (controller.aaControlHorasExiste.value) {
                 showDialog(
@@ -410,7 +410,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                 );
               }
             },
-            controller.aaControlHorasExiste.value),
+            controller.aaControlHorasExiste),
         _buildAdjuntoRow(
           'Examen Teórico',
           controller.aaExamenTeoricoController,
@@ -423,7 +423,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller.aaExamenTeoricoSeleccionado.value = false;
             }
           },
-          controller.aaExamenTeoricoSeleccionado.value,
+          controller.aaExamenTeoricoSeleccionado,
           () async {
             if (controller.aaExamenTeoricoExiste.value) {
               showDialog(
@@ -468,7 +468,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               );
             }
           },
-          controller.aaExamenTeoricoExiste.value,
+          controller.aaExamenTeoricoExiste,
         ),
         _buildAdjuntoRow(
           'Examen Práctico',
@@ -482,7 +482,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller.aaExamenPracticoSeleccionado.value = false;
             }
           },
-          controller.aaExamenPracticoSeleccionado.value,
+          controller.aaExamenPracticoSeleccionado,
           () async {
             if (controller.aaExamenPracticoExiste.value) {
               showDialog(
@@ -527,7 +527,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               );
             }
           },
-          controller.aaExamenPracticoExiste.value,
+          controller.aaExamenPracticoExiste,
         ),
 
         _buildAdjuntoRow(
@@ -542,7 +542,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               controller.aaOtrosSeleccionado.value = false;
             }
           },
-          controller.aaOtrosSeleccionado.value,
+          controller.aaOtrosSeleccionado,
           () async {
             if (controller.aaOtrosExiste.value) {
               showDialog(
@@ -587,7 +587,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               );
             }
           },
-          controller.aaOtrosExiste.value,
+          controller.aaOtrosExiste,
         ),
         // Obx((){
         //
@@ -606,10 +606,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     TextEditingController controller,
     VoidCallback onPressed,
     VoidCallback onRemove,
-    bool archivoSeleccionado,
+    RxBool archivoSeleccionado,
     VoidCallback onUpload,
     VoidCallback onDelete,
-bool archivoExiste,
+    RxBool archivoExiste,
   ) {
     return Row(
       children: [
@@ -627,48 +627,77 @@ bool archivoExiste,
             controller: controller,
             isReadOnly: true,
             isRequired: false,
-            textStyle: archivoSeleccionado
-                ? const TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.blueAccent)
-                : const TextStyle(),
+            // textStyle: archivoSeleccionado
+            //     ? const TextStyle(
+            //         fontWeight: FontWeight.bold, color: Colors.blueAccent)
+            //     : const TextStyle(),
             //nombreArchivo,
             //style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 10),
+        Obx(() {
+          if (archivoSeleccionado.value) {
+            return IconButton(
+              tooltip: 'Quitar archivo',
+              icon: const Icon(Icons.close, color: Colors.red),
+              onPressed: onRemove,
+            );
+          }
+          return const SizedBox(
+            width: 0,
+          );
+        }),
+
         //if (archivoSeleccionado)
-          IconButton(
-            tooltip: 'Quitar archivo',
-            icon: const Icon(Icons.close, color: Colors.red),
-            onPressed: onRemove,
-          ),
+        //   IconButton(
+        //     tooltip: 'Quitar archivo',
+        //     icon: const Icon(Icons.close, color: Colors.red),
+        //     onPressed: onRemove,
+        //   ),
         const SizedBox(width: 10),
         //if (archivoSeleccionado)
-          IconButton(
-            tooltip: 'Subir archivo',
-            icon: const Icon(Icons.upload_rounded, color: Colors.blueAccent),
-            onPressed: onUpload,
-          ),
-        const SizedBox(width: 10),
-        /*
-        Obx((){
-          if(archivoExiste) {
+        Obx(() {
+          if (!archivoExiste.value && archivoSeleccionado.value) {
+            return IconButton(
+              tooltip: 'Subir archivo',
+              icon: const Icon(Icons.upload_rounded, color: Colors.blueAccent),
+              onPressed: onUpload,
+            );
+          }
+          ;
+          return const SizedBox(
+            width: 0,
+          );
+        }),
+
+        // IconButton(
+        //   tooltip: 'Subir archivo',
+        //   icon: const Icon(Icons.upload_rounded, color: Colors.blueAccent),
+        //   onPressed: onUpload,
+        // ),
+        //const SizedBox(width: 10),
+
+        Obx(() {
+          if (archivoExiste.value) {
             return IconButton(
               tooltip: 'Elimnar archivo',
               icon: const Icon(Icons.delete, color: Colors.red),
               onPressed: onDelete,
             );
-          };
-          return SizedBox(width: 10,);
-        } ),
-        */
+          }
+          ;
+          return SizedBox(
+            width: 0,
+          );
+        }),
 
-        //if (archivoExiste)
-          IconButton(
-            tooltip: 'Elimnar archivo',
-            icon: const Icon(Icons.delete, color: Colors.red),
-            onPressed: onDelete,
-          ),
+        // //if (archivoExiste)
+        //   IconButton(
+        //     tooltip: 'Elimnar archivo',
+        //     icon: const Icon(Icons.delete, color: Colors.red),
+        //     onPressed: onDelete,
+        //   ),
       ],
     );
   }
@@ -693,25 +722,27 @@ bool archivoExiste,
           ElevatedButton(
             onPressed: () async {
               bool success = false;
-              var pendientes = controller.validarArchivosPorSubir();
-              log('pendientes: ${pendientes}');
-              if (pendientes) {
-                showDialog(
-                  context: Get.context!,
-                  builder: (context) {
-                    return const MensajeValidacionWidget(
-                      errores: [
-                        "Hay archivos selecionados pendientes por subir. Confirmelos o eliminelos."
-                      ],
-                    );
-                  },
-                );
-              } else {
-                success = await controller.registrarModulo(context);
-                if (success) {
-                  onCancel();
-                }
+              //var pendientes = controller.validarArchivosPorSubir();
+              //log('pendientes: ${pendientes}');
+              // if (pendientes) {
+              //   showDialog(
+              //     context: Get.context!,
+              //     builder: (context) {
+              //       return const MensajeValidacionWidget(
+              //         errores: [
+              //           "Hay archivos selecionados pendientes por subir. Confirmelos o eliminelos."
+              //         ],
+              //       );
+              //     },
+              //   );
+              // }
+              //else {
+              success = await controller.registrarModulo(context);
+              if (success) {
+                await controller.subirArchivos();
+                onCancel();
               }
+              //}
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,

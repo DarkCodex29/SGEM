@@ -748,9 +748,27 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Examen Teorico existe ${aaExamenTeoricoSeleccionado.value}');
       log('Examen Practico existe ${aaExamenPracticoSeleccionado.value}');
       log('Otros existe ${aaOtrosSeleccionado.value}');
+
+
+
       return true;
     }
     return false;
+
+  }
+  Future<void> subirArchivos() async{
+    if (aaControlHorasSeleccionado.value){
+      await registrarArchivoControlHoras();
+    }
+    if (aaExamenTeoricoSeleccionado.value){
+      await registrarArchivoExamenTeorico();
+    }
+    if (aaExamenPracticoSeleccionado.value){
+      await registrarArchivoExamenPractico();
+    }
+    if (aaOtrosSeleccionado.value){
+      await registrarArchivoOtros();
+    }
   }
 
   Future<void> eliminarArchivo(int archivoId) async {

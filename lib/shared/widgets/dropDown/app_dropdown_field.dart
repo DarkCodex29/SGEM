@@ -111,9 +111,9 @@ class AppDropdownField extends StatelessWidget {
             ),
           ),
           if (isRequired)
-            const Padding(
-              padding: EdgeInsets.only(left: 6, bottom: 16),
-              child: Text(
+             Padding(
+              padding: EdgeInsets.only(left: paddingLeft??6 , bottom: 16),
+              child: const  Text(
                 '*',
                 style: TextStyle(
                   color: Colors.red,

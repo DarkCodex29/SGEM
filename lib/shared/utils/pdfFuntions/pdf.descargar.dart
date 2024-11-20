@@ -21,7 +21,7 @@ Future<pw.Page> generatePdfPagesFromImages(List<PdfPageImage?> imagess) async {
 
   return pw.Page(
     orientation: pw.PageOrientation.portrait, // Ajusta según necesidades
-    margin: pw.EdgeInsets.all(10), // Reducir márgenes para usar espacio
+    margin: const pw.EdgeInsets.all(10), // Reducir márgenes para usar espacio
     build: (pw.Context context) {
       return pw.Row(
         mainAxisAlignment: pw.MainAxisAlignment.center,
@@ -92,7 +92,7 @@ Future<void> descargarPaginasComoPdf(List<PdfPageImage?> imagess,
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.all(10),
+        margin: const pw.EdgeInsets.all(10),
         build: (pw.Context context) {
           return pw.GridView(
             crossAxisCount: 2, // Dos columnas por página
@@ -103,7 +103,7 @@ Future<void> descargarPaginasComoPdf(List<PdfPageImage?> imagess,
                   : compressImage(image!.bytes);
 
               return pw.Container(
-                padding: pw.EdgeInsets.all(5), // Espaciado entre imágenes
+                padding: const pw.EdgeInsets.all(5), // Espaciado entre imágenes
                 child: pw.Image(
                   pw.MemoryImage(optimizedImage),
                   fit: pw.BoxFit.contain,

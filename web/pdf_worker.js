@@ -17,12 +17,11 @@ self.onmessage = async function (event) {
 
       // Agrega texto si está disponible
       if (pageContent.text) {
-        const font = await pdfDoc.embedStandardFont(PDFLib.StandardFonts.Helvetica);
+       // const font = await pdfDoc.embedStandardFont(PDFLib.StandardFonts.Helvetica);
         const { height } = pageToAdd.getSize();
         pageToAdd.drawText(pageContent.text, {
           x: 50,
           y: height - 50,
-          font,
           size: 12,
         });
       }

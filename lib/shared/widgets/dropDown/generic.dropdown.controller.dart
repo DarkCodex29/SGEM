@@ -108,7 +108,7 @@ class GenericDropdownController extends GetxController {
   OptionValue? getSelectedValue(String key) => selectedValueMap[key]?.value;
 
   /// Método utilitario para obtener `OptionValue` por su `key` si es necesario.
-  OptionValue? getSelectedValueByKey(String key, int keyToFind) {
+  OptionValue? getSelectedValueByKey(String key, int? keyToFind) {
     initializeDropdown(key);
     return optionsMap[key]?.firstWhere(
       (option) => option.key == keyToFind,

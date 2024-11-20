@@ -92,7 +92,7 @@ class CustomDropdownGlobal extends StatelessWidget {
       child: DropdownButtonFormField<OptionValue>(
         key: textFieldKey,
         value: initialValue ?? controller?.getSelectedValue(dropdownKey),
-        isExpanded: true,
+        isExpanded: true,    
         hint: Text(
           options.isEmpty ? noDataHintText : hintText,
           style: const TextStyle(

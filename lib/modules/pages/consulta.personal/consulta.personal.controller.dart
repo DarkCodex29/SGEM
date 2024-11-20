@@ -74,6 +74,8 @@ class PersonalSearchController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    dropdownController.selectValueKey('estado', 0);
+    dropdownController.selectValueKey('guardia', 0);
     searchPersonal(pageNumber: currentPage.value, pageSize: rowsPerPage.value);
   }
 
@@ -108,8 +110,12 @@ class PersonalSearchController extends GetxController {
         numeroDocumento: numeroDocumento,
         nombres: nombres,
         apellidos: apellidos,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
-        inEstado: dropdownController.getSelectedValue('estado')?.key,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key == 0
+            ? null
+            : dropdownController.getSelectedValue('guardia')?.key,
+        inEstado: dropdownController.getSelectedValue('estado')?.key == 0
+            ? null
+            : dropdownController.getSelectedValue('estado')?.key,
         pageSize: pageSize,
         pageNumber: pageNumber,
       );

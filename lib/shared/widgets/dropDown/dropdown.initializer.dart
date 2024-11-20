@@ -72,9 +72,9 @@ class DropdownDataInitializer {
   Future<void> _loadEstado() async {
     dropdownController.initializeDropdown('estado');
     dropdownController.optionsMap['estado']?.addAll([
+      OptionValue(key: 0, nombre: 'Todos'),
       OptionValue(key: 95, nombre: 'Activo'),
       OptionValue(key: 96, nombre: 'Cesado'),
-      OptionValue(key: null, nombre: 'Todos'),
     ]);
     log('Estado cargado');
   }
@@ -83,9 +83,11 @@ class DropdownDataInitializer {
 
   Future<void> _loadGuardia() async {
     await dropdownController.loadOptions('guardia', () async {
-      return await _handleResponse(
+      var options = await _handleResponse(
         maestroDetalleService.listarMaestroDetallePorMaestro(2),
       );
+      options.insert(0, OptionValue(key: 0, nombre: 'Todos'));
+      return options;
     });
     log('Guardia cargada');
   }

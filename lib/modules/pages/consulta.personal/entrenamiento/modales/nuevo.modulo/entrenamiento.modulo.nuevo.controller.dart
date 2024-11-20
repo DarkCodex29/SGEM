@@ -65,8 +65,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
   var aaControlHorasExiste = false.obs;
   var aaExamenTeoricoExiste = false.obs;
-  var aaExamenPracticoExiste = false.obs ;
+  var aaExamenPracticoExiste = false.obs;
   var aaOtrosExiste = false.obs;
+
+  var aaControlHorasId = 0.obs;
+  var aaExamenTeoricoId = 0.obs;
+  var aaExamenPracticoId = 0.obs;
+  var aaOtrosId = 0.obs;
 
   RxBool isSaving = false.obs;
 
@@ -479,7 +484,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
           aaExamenPracticoController.text =
               fileName; // Muestra el nombre del archivo
           log('Documento adjuntado correctamente: $fileName');
-          aaExamenPracticoSeleccionado.value= true;
+          aaExamenPracticoSeleccionado.value = true;
           return ('Control de horas adjuntado correctamente: $fileName');
         }
       } else {
@@ -537,7 +542,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
       );
 
       if (response.success) {
-        aaControlHorasSeleccionado.value=false;
+        aaControlHorasSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        Get.snackbar(
+          'Exito',
+          'Archivo subido exitosamente: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
         log('Archivo ${aaControlHorasController.text} registrado con éxito');
         return ('Archivo ${aaControlHorasController.text} registrado con éxito');
       } else {
@@ -568,7 +581,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
       );
 
       if (response.success) {
-        aaExamenTeoricoSeleccionado.value= false;
+        aaExamenTeoricoSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        Get.snackbar(
+          'Exito',
+          'Archivo subido exitosamente: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
         log('Archivo ${aaExamenTeoricoController.text} registrado con éxito');
       } else {
         log('Error al registrar archivo  ${aaExamenTeoricoController.text}: ${response.message}');
@@ -596,7 +617,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
       );
 
       if (response.success) {
-        aaExamenPracticoSeleccionado.value= false;
+        aaExamenPracticoSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        Get.snackbar(
+          'Exito',
+          'Archivo subido exitosamente: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
         log('Archivo ${aaExamenPracticoController.text} registrado con éxito');
       } else {
         log('Error al registrar archivo  ${aaExamenPracticoController.text}: ${response.message}');
@@ -624,7 +653,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
       );
 
       if (response.success) {
-        aaOtrosSeleccionado.value= false;
+        aaOtrosSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        Get.snackbar(
+          'Exito',
+          'Archivo subido exitosamente: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
         log('Archivo ${aaOtrosController.text} registrado con éxito');
       } else {
         log('Error al registrar archivo  ${aaOtrosController.text}: ${response.message}');
@@ -658,7 +695,16 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
       log('Response: ${response.data}');
       if (response.success && response.data != null) {
-        //archivosAdjuntos.clear();
+        aaControlHorasController.clear();
+        aaExamenTeoricoController.clear();
+        aaExamenPracticoController.clear();
+        aaOtrosController.clear();
+
+        aaControlHorasExiste.value = false;
+        aaExamenTeoricoExiste.value = false;
+        aaExamenPracticoExiste.value = false;
+        aaOtrosExiste.value = false;
+
         for (var archivo in response.data!) {
           log('Tipo Archivo Modulo: ${archivo['InTipoArchivo']}');
           List<int> datos = List<int>.from(archivo['Datos']);
@@ -666,18 +712,22 @@ class EntrenamientoModuloNuevoController extends GetxController {
           if (archivo['InTipoArchivo'] == TipoArchivoModulo.CONTROL_HORAS) {
             aaControlHorasController.text = archivo['Nombre'];
             aaControlHorasExiste.value = true;
+            aaControlHorasId.value = archivo['Key'];
           }
           if (archivo['InTipoArchivo'] == TipoArchivoModulo.EXAMEN_TEORICO) {
             aaExamenTeoricoController.text = archivo['Nombre'];
             aaExamenTeoricoExiste.value = true;
+            aaExamenTeoricoId.value = archivo['Key'];
           }
           if (archivo['InTipoArchivo'] == TipoArchivoModulo.EXAMEN_PRACTICO) {
             aaExamenPracticoController.text = archivo['Nombre'];
             aaExamenPracticoExiste.value = true;
+            aaExamenPracticoId.value = archivo['Key'];
           }
           if (archivo['InTipoArchivo'] == TipoArchivoModulo.OTROS) {
             aaOtrosController.text = archivo['Nombre'];
             aaOtrosExiste.value = true;
+            aaOtrosId.value = archivo['Key'];
           }
           log('Archivo ${archivo['Nombre']} obtenido con éxito');
         }
@@ -701,5 +751,50 @@ class EntrenamientoModuloNuevoController extends GetxController {
       return true;
     }
     return false;
+  }
+
+  Future<void> eliminarArchivo(int archivoId) async {
+    try {
+      log('Archivo Id: ${archivoId}');
+      final response = await archivoService.eliminarArchivo(
+        key: archivoId,
+        nombre: '',
+        extension: '',
+        mime: '',
+        datos: '',
+        inTipoArchivo: 0,
+        inOrigen: 0,
+        inOrigenKey: 0,
+      );
+      log('Response: ${response}');
+      if (response.success) {
+        Get.snackbar(
+          'Exito',
+          'Archivo eliminado exitosamente: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        obtenerArchivosRegistrados();
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el archivo: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        obtenerArchivosRegistrados();
+      }
+    } catch (e) {
+      log('Error al eliminar el archivo: $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo eliminar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 }

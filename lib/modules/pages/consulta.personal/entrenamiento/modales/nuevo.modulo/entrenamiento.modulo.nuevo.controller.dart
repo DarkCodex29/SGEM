@@ -544,13 +544,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (response.success) {
         aaControlHorasSeleccionado.value = false;
         obtenerArchivosRegistrados();
-        Get.snackbar(
-          'Exito',
-          'Archivo subido exitosamente: ${response.message}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
         log('Archivo ${aaControlHorasController.text} registrado con éxito');
         return ('Archivo ${aaControlHorasController.text} registrado con éxito');
       } else {
@@ -583,13 +583,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (response.success) {
         aaExamenTeoricoSeleccionado.value = false;
         obtenerArchivosRegistrados();
-        Get.snackbar(
-          'Exito',
-          'Archivo subido exitosamente: ${response.message}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
         log('Archivo ${aaExamenTeoricoController.text} registrado con éxito');
       } else {
         log('Error al registrar archivo  ${aaExamenTeoricoController.text}: ${response.message}');
@@ -619,13 +619,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (response.success) {
         aaExamenPracticoSeleccionado.value = false;
         obtenerArchivosRegistrados();
-        Get.snackbar(
-          'Exito',
-          'Archivo subido exitosamente: ${response.message}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
         log('Archivo ${aaExamenPracticoController.text} registrado con éxito');
       } else {
         log('Error al registrar archivo  ${aaExamenPracticoController.text}: ${response.message}');
@@ -655,13 +655,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (response.success) {
         aaOtrosSeleccionado.value = false;
         obtenerArchivosRegistrados();
-        Get.snackbar(
-          'Exito',
-          'Archivo subido exitosamente: ${response.message}',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,
-        );
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
         log('Archivo ${aaOtrosController.text} registrado con éxito');
       } else {
         log('Error al registrar archivo  ${aaOtrosController.text}: ${response.message}');

@@ -1,2 +1,2 @@
-export 'maestro_edit_controller.dart';
-export 'maestro_edit_view.dart';
+export 'modulo_edit_controller.dart';
+export 'modulo_edit_view.dart';

@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/config/api/api.maestro.dart';
-import 'package:sgem/config/api/api.maestro.detail.dart';
+import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/shared/dialogs/confirm_dialog.dart';
 import 'package:sgem/shared/dialogs/success_dialog.dart';
-import 'package:sgem/shared/modules/maestro.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/modules/modulo_model.dart';
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/Extensions/get_snackbar.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
-class MaestroEditController extends GetxController {
-  MaestroEditController(
-    this.detalle, {
-    MaestroService? maestroService,
-    MaestroDetalleService? maestroDetalleService,
-  })  : _maestroService = maestroService ?? MaestroService(),
-        _maestroDetalleService =
-            maestroDetalleService ?? MaestroDetalleService();
+class ModuloEditController extends GetxController {
+  ModuloEditController(
+    this.modulo, {
+    ModuloMaestroService? moduloService,
+  }) : _moduloService = moduloService ?? ModuloMaestroService();
 
   @override
   Future<void> onInit() async {
@@ -24,135 +20,96 @@ class MaestroEditController extends GetxController {
     super.onInit();
   }
 
-  final MaestroService _maestroService;
-  final MaestroDetalleService _maestroDetalleService;
-  final MaestroDetalle? detalle;
+  final ModuloMaestroService _moduloService;
+  final Modulo modulo;
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
 
   void initializeDropdown() {
-    valorController.text = detalle?.valor ?? '';
-    descripcionController.text = detalle?.descripcion ?? '';
     dropdownController
-      ..loadOptions('maestro_2', getMaestros)
       ..loadOptions(
-        'estado_2',
+        'estado_modulos',
         () async => [
-          OptionValue(key: 1, nombre: 'Activo'),
-          OptionValue(key: 0, nombre: 'Inactivo'),
+          const OptionValue(key: 1, nombre: 'Activo'),
+          const OptionValue(key: 0, nombre: 'Inactivo'),
         ],
+      )
+      ..selectValueByKey(
+        options: 'estado_modulos',
+        optionKey: modulo.status ? 1 : 0,
       );
-
-    if (detalle != null) {
-      if (detalle!.activo != null) {
-        dropdownController.selectValueByKey(
-          options: 'estado_2',
-          optionKey: detalle!.activo == 'S' ? 1 : 0,
-        );
-      }
-
-      dropdownController.selectValueByKey(
-        options: 'maestro_2',
-        optionKey: detalle!.maestro.key,
-      );
-    }
   }
 
-  final TextEditingController valorController = TextEditingController();
-  final TextEditingController descripcionController = TextEditingController();
+  final TextEditingController hourController = TextEditingController();
+  final TextEditingController minGradeController = TextEditingController();
+  final TextEditingController maxGradeController = TextEditingController();
 
   void clearFilter() {
-    valorController.clear();
-    descripcionController.clear();
-    dropdownController
-      ..resetSelection('maestro')
-      ..resetSelection('estado');
-  }
-
-  Future<List<OptionValue>?> getMaestros() async {
-    final response = await _maestroService.getMaestros();
-    if (!response.success) {
-      Get.snackbar(
-        'Error',
-        'Error al cargar los maestros',
-        snackPosition: SnackPosition.BOTTOM,
-      );
-    }
-    return response.data;
+    hourController.clear();
+    minGradeController.clear();
+    maxGradeController.clear();
+    dropdownController.resetSelection('estado_modulos');
   }
 
   bool _validate({
-    required String valor,
-    required OptionValue? maestro,
-    required String descripcion,
-    required OptionValue? estado,
+    required String hours,
+    required String minGrade,
+    required String maxGrade,
+    required OptionValue? status,
   }) {
     final errors = <String>[];
-    if (valor.isEmpty) {
-      errors.add('El campo valor es obligatorio');
-    } else if (valor.length > 50) {
-      errors.add('El campo valor no puede tener más de 50 caracteres');
+    if (hours.isEmpty) {
+      errors.add('El campo Horas de Cumplimiento es obligatorio');
+    } else if (int.tryParse(hours) == null) {
+      errors.add('El campo Horas de Cumplimiento is inválido');
     }
 
-    if (maestro == null) {
-      errors.add('El campo maestro es obligatorio');
+    if (minGrade.isEmpty) {
+      errors.add('El campo Nota Mínima Aprobatoria es obligatorio');
+    } else if (int.tryParse(minGrade) == null) {
+      errors.add('El campo Nota Mínima Aprobatoria es inválido');
     }
 
-    if (descripcion.length > 200) {
-      errors.add('El campo descripción no puede tener más de 200 caracteres');
+    if (maxGrade.isNotEmpty && int.tryParse(maxGrade) == null) {
+      errors.add('El campo Nota Máxima es inválido');
     }
 
-    if (estado == null) {
-      errors.add('El campo estado es obligatorio');
+    if (status == null) {
+      errors.add('El campo Estado es obligatorio');
     }
 
     if (errors.isNotEmpty) {
-      Get.snackbar(
-        'Error',
-        errors.join('\n'),
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.white,
-        colorText: Colors.red,
-      );
+      Get.errorSnackbar(errors.join('\n'));
       return false;
     }
 
     return true;
   }
 
-  Future<void> saveDetalle() async {
-    final valor = valorController.text;
-    final maestro = dropdownController.getSelectedValue('maestro_2');
-    final descripcion = descripcionController.text;
-    final estado = dropdownController.getSelectedValue('estado_2');
+  Future<void> updateModulo() async {
+    final hours = hourController.text;
+    final minGrade = minGradeController.text;
+    final maxGrade = maxGradeController.text;
+    final status = dropdownController.getSelectedValue('estado_modulos');
 
     if (!_validate(
-      valor: valor,
-      maestro: maestro,
-      descripcion: descripcion,
-      estado: estado,
+      hours: hours,
+      minGrade: minGrade,
+      maxGrade: maxGrade,
+      status: status,
     )) return;
 
     final confirm = await const ConfirmDialog().show();
 
     if (!(confirm ?? false)) return;
 
-    final response = await _maestroDetalleService.registrarMaestroDetalle(
-      MaestroDetalle(
-        valor: valor,
-        activo: switch (estado!.key!) {
-          1 => 'S',
-          0 => 'N',
-          _ => throw Exception('Estado no válido'),
-        },
-        maestro: MaestroBasico(
-          key: maestro!.key!,
-          nombre: maestro.nombre,
-        ),
-        key: null,
-        fechaRegistro: DateTime.now(),
-        usuarioRegistro: 'ldolorier',
+    final response = await _moduloService.updateModulo(
+      modulo.copyWith(
+        hours: int.parse(hours),
+        minGrade: int.parse(minGrade),
+        maxGrade: maxGrade.isNotEmpty ? int.parse(maxGrade) : null,
+        status: status!.key == 1,
       ),
     );
 
@@ -163,55 +120,6 @@ class MaestroEditController extends GetxController {
       Get.snackbar(
         'Error',
         response.message ?? 'Error al guardar el registro',
-        backgroundColor: Colors.white,
-        colorText: Colors.red,
-      );
-    }
-  }
-
-  Future<void> updateDetalle() async {
-    final valor = valorController.text;
-    final maestro = dropdownController.getSelectedValue('maestro_2');
-    final descripcion = descripcionController.text;
-    final estado = dropdownController.getSelectedValue('estado_2');
-
-    if (!_validate(
-      valor: valor,
-      maestro: maestro,
-      descripcion: descripcion,
-      estado: estado,
-    )) return;
-
-    final confirm = await const ConfirmDialog().show();
-
-    if (!(confirm ?? false)) return;
-
-    final newDetalle = MaestroDetalle(
-      valor: valor,
-      activo: switch (estado!.key!) {
-        1 => 'S',
-        0 => 'N',
-        _ => throw Exception('Estado no válido'),
-      },
-      maestro: MaestroBasico(
-        key: maestro!.key!,
-        nombre: maestro.nombre,
-      ),
-      key: detalle!.key,
-      usuarioModifica: 'ldolorier',
-      fechaRegistro: DateTime.now(),
-    );
-
-    final response =
-        await _maestroDetalleService.updateMaestroDetalle(newDetalle);
-
-    if (response.success) {
-      Get.back<void>();
-      await const SuccessDialog().show();
-    } else {
-      Get.snackbar(
-        'Error',
-        response.message ?? 'Error al actualizar el registro',
         backgroundColor: Colors.white,
         colorText: Colors.red,
       );

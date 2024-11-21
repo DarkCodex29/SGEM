@@ -43,7 +43,7 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
       futurePdf: _getdata,
       angleRotation: angleRotacion,
       onCancel: () {
-        widget.controller.hideForms();
+        widget.controller.showTraining(widget.data!);
       },
       onPrint: (pages) {
         descargarPaginasComoPdf(pages,

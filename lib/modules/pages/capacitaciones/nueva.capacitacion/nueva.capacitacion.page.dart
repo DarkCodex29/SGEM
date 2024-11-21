@@ -35,6 +35,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     if (isEditMode || isViewing) {
       controller.loadCapacitacion(capacitacionKey!);
       controller.loadPersonalInterno(codigoMcp!);
+      controller.loadPersonalExterno(dni!);
     } else {
       controller.resetControllers();
     }

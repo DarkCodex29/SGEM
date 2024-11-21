@@ -16,6 +16,7 @@ import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
@@ -73,6 +74,24 @@ class NuevaCapacitacionController extends GetxController {
   CapacitacionController capacitacionController =
       Get.put(CapacitacionController());
 
+  void _mostrarMensajeGuardado(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const MensajeGuardadoWidget();
+      },
+    );
+  }
+
+  void _mostrarErroresValidacion(BuildContext context, List<String> errores) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return MensajeValidacionWidget(errores: errores);
+      },
+    );
+  }
+
   Future<EntrenamientoModulo?> loadCapacitacion(int capacitacionKey) async {
     try {
       final response =
@@ -90,6 +109,11 @@ class NuevaCapacitacionController extends GetxController {
   }
 
   Future<Personal?> loadPersonalInterno(String codigoMcp) async {
+    if (codigoMcp.isEmpty) {
+      _mostrarErroresValidacion(
+          Get.context!, ['Por favor ingrese un código MCP']);
+      return null;
+    }
     try {
       final response = await personalService.listarPersonalEntrenamiento(
           codigoMcp: codigoMcp);
@@ -97,15 +121,22 @@ class NuevaCapacitacionController extends GetxController {
         personalInterno = response.data!.first;
         llenarControladores();
       } else {
-        log('Error al obtener datos de personal: ${response.message}');
+        _mostrarErroresValidacion(
+            Get.context!, ['No se encontró personal con ese código MCP.']);
       }
     } catch (e) {
-      log('Error al cargar personal: $e');
+      _mostrarErroresValidacion(
+          Get.context!, ['No se encontró personal con ese código MCP.']);
     }
     return null;
   }
 
   Future<Personal?> loadPersonalExterno(String dni) async {
+    if (dni.isEmpty) {
+      _mostrarErroresValidacion(
+          Get.context!, ['Por favor ingrese un número de documento.']);
+      return null;
+    }
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
@@ -114,8 +145,8 @@ class NuevaCapacitacionController extends GetxController {
         personalExterno = response.data;
         llenarControladores();
       } else {
-        log('Error al obtener datos de personal: ${response.message}');
-        log('PersonalExterno: ${personalExterno!.toJson()}');
+        _mostrarErroresValidacion(Get.context!,
+            ['No se encontró personal con ese número de documento.']);
       }
     } catch (e) {
       log('Error al cargar personal externo: $e');
@@ -133,7 +164,7 @@ class NuevaCapacitacionController extends GetxController {
           ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaTermino!)
           : '';
       horasController.text =
-          entrenamientoModulo!.inTotalHoras?.toString() ?? '';
+          entrenamientoModulo!.inHorasAcumuladas?.toString() ?? '';
       notaTeoriaController.text =
           entrenamientoModulo!.inNotaTeorica?.toString() ?? '';
       notaPracticaController.text =
@@ -144,10 +175,11 @@ class NuevaCapacitacionController extends GetxController {
           'empresaCapacitacion', entrenamientoModulo!.inEmpresaCapacitadora);
       dropdownController.selectValueKey(
           'entrenador', entrenamientoModulo!.inEntrenador);
-      dropdownController.selectValueKey('capacitacion', 25);
+      dropdownController.selectValueKey(
+          'capacitacion', entrenamientoModulo!.inCapacitacion);
     }
 
-    if (personalInterno != null) {
+    if (isInternoSelected == true) {
       loadPersonalPhoto(personalInterno!.inPersonalOrigen!);
       codigoMcpController.text = personalInterno!.codigoMcp!;
       dniInternoController.text = personalInterno!.numeroDocumento!;
@@ -157,9 +189,10 @@ class NuevaCapacitacionController extends GetxController {
       guardiaController.text = personalInterno!.guardia!.nombre!;
     }
 
-    if (personalExterno != null) {
+    if (isInternoSelected == false) {
       nombresController.text =
           '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
+      dniExternoController.text = personalExterno!.numeroDocumento!;
       apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
       apellidoMaternoController.text = personalExterno!.apellidoMaterno!;
     }
@@ -183,30 +216,37 @@ class NuevaCapacitacionController extends GetxController {
   Future<bool?> registrarCapacitacion() async {
     try {
       // Validar que exista el personal interno
-      if ( personalInterno?.key == null) {
-        Get.snackbar('Error', 'No se ha seleccionado personal interno',
-            backgroundColor: Colors.red, colorText: Colors.white);
+      if (isInternoSelected == true && personalInterno == null) {
+        _mostrarErroresValidacion(
+            Get.context!, ['Por favor busque un personal']);
+        return false;
+      }
+
+      if (isInternoSelected == false && personalExterno == null) {
+        _mostrarErroresValidacion(
+            Get.context!, ['Por favor busque un externo']);
         return false;
       }
 
       // Validar campos requeridos
       if (!_validarCamposRequeridos()) {
-        Get.snackbar('Error', 'Por favor complete todos los campos requeridos',
-            backgroundColor: Colors.red, colorText: Colors.white);
+        _mostrarErroresValidacion(
+            Get.context!, ['Por favor complete todos los campos requeridos.']);
         return false;
       }
 
       // Validar fechas
       if (fechaInicio == null || fechaTermino == null) {
-        Get.snackbar('Error', 'Las fechas son requeridas',
-            backgroundColor: Colors.red, colorText: Colors.white);
+        _mostrarErroresValidacion(
+            Get.context!, ['Por favor ingrese fechas válidas.']);
         return false;
       }
 
       // Crear el modelo de capacitación
       entrenamientoModulo = EntrenamientoModulo()
         ..inTipoActividad = TipoActividad.CAPACITACION
-        ..inCapacitacion = 25
+        ..inCapacitacion =
+            dropdownController.getSelectedValue('capacitacion')?.key ?? 0
         ..inModulo = 0
         ..modulo = OptionValue(key: 0, nombre: '')
         ..tipoPersona = tipoPersona.isEmpty ? 'I' : tipoPersona
@@ -234,21 +274,21 @@ class NuevaCapacitacionController extends GetxController {
       // Manejo seguro de conversiones numéricas
       try {
         entrenamientoModulo!
-          ..inTotalHoras = int.parse(horasController.text)
+          ..inHorasAcumuladas = int.parse(horasController.text)
           ..inNotaTeorica = int.parse(notaTeoriaController.text)
           ..inNotaPractica = int.parse(notaPracticaController.text);
       } catch (e) {
-        log('Error al convertir valores numéricos: $e');
-        Get.snackbar(
-            'Error', 'Los valores de horas y notas deben ser números válidos',
-            backgroundColor: Colors.red, colorText: Colors.white);
+        _mostrarErroresValidacion(Get.context!, [
+          'Los valores de horas y notas deben ser números válidos',
+        ]);
         return false;
       }
 
       // Validar que las notas estén en el rango correcto (0-99)
       if (!_validarRangoNotas()) {
-        Get.snackbar('Error', 'Las notas deben estar entre 0 y 99',
-            backgroundColor: Colors.red, colorText: Colors.white);
+        _mostrarErroresValidacion(Get.context!, [
+          'Las notas deben estar entre 0 y 99',
+        ]);
         return false;
       }
 
@@ -289,9 +329,9 @@ class NuevaCapacitacionController extends GetxController {
     try {
       // Validar campos requeridos
       if (!_validarCamposRequeridos()) {
-        log('Error: campos requeridos incompletos');
-        Get.snackbar('Error', 'Por favor complete todos los campos requeridos',
-            backgroundColor: Colors.red, colorText: Colors.white);
+        _mostrarErroresValidacion(Get.context!, [
+          'Por favor complete todos los campos requeridos',
+        ]);
         return false;
       }
 
@@ -299,7 +339,8 @@ class NuevaCapacitacionController extends GetxController {
       final capacitacionActualizada = EntrenamientoModulo()
         ..key = entrenamientoModulo!.key
         ..inTipoActividad = TipoActividad.CAPACITACION
-        ..inCapacitacion = 25
+        ..inCapacitacion =
+            dropdownController.getSelectedValue('capacitacion')?.key ?? 0
         ..inModulo = 0
         ..modulo = OptionValue(key: 0, nombre: '')
         ..tipoPersona = tipoPersona.isEmpty ? 'I' : tipoPersona
@@ -321,7 +362,7 @@ class NuevaCapacitacionController extends GetxController {
         ..estadoEntrenamiento = OptionValue(key: 0, nombre: '')
         ..fechaInicio = _parseFecha(fechaInicioController.text)
         ..fechaTermino = _parseFecha(fechaTerminoController.text)
-        ..inTotalHoras = int.tryParse(horasController.text) ?? 0
+        ..inHorasAcumuladas = int.tryParse(horasController.text) ?? 0
         ..inNotaTeorica = int.tryParse(notaTeoriaController.text) ?? 0
         ..inNotaPractica = int.tryParse(notaPracticaController.text) ?? 0;
 
@@ -380,15 +421,6 @@ class NuevaCapacitacionController extends GetxController {
         dropdownController.getSelectedValue('categoria') != null &&
         dropdownController.getSelectedValue('entrenador') != null &&
         dropdownController.getSelectedValue('empresaCapacitacion') != null;
-  }
-
-  void _mostrarMensajeGuardado(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return const MensajeGuardadoWidget();
-      },
-    );
   }
 
   Future<void> adjuntarDocumentos() async {
@@ -470,7 +502,7 @@ class NuevaCapacitacionController extends GetxController {
   Future<void> obtenerArchivosRegistrados(int idOrigen, int idOrigenKey) async {
     try {
       final response = await archivoService.obtenerArchivosPorOrigen(
-        idOrigen: idOrigen, // 1: TABLA Personal
+        idOrigen: idOrigen,
         idOrigenKey: idOrigenKey,
       );
 

@@ -526,7 +526,7 @@ class PersonalSearchPage extends StatelessWidget {
         icon:
             const Icon(Icons.add, size: 18, color: AppTheme.primaryBackground),
         label: const Text(
-          "Nuevo personal",
+          "Agregar personal",
           style: TextStyle(fontSize: 16, color: AppTheme.primaryBackground),
         ),
         style: ElevatedButton.styleFrom(

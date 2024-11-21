@@ -915,4 +915,20 @@ class CapacitacionPage extends StatelessWidget {
       onPressed: onPressed,
     );
   }
+
+  Widget _buildRegresarButton(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          //controller.resetControllers();
+          onCancel();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+        ),
+        child: const Text("Regresar", style: TextStyle(color: Colors.white)),
+      ),
+    );
+  }
 }

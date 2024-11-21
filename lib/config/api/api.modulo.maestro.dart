@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
@@ -203,7 +204,7 @@ class ModuloMaestroService {
     Modulo data,
   ) async {
     try {
-      await _dio.post<dynamic>(
+      await _dio.put<dynamic>(
         '/ActualizarModuloMaestro',
         data: data.toJson(),
       );

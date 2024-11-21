@@ -45,9 +45,9 @@ class CapacitacionController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
     buscarCapacitaciones(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
-    super.onInit();
   }
 
   Future<void> buscarCapacitaciones(
@@ -70,7 +70,9 @@ class CapacitacionController extends GetxController {
       var response = await capacitacionService.capacitacionConsultaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key == 0
+            ? null
+            : dropdownController.getSelectedValue('guardia')?.key,
         nombres: nombres,
         apellidoPaterno: apellidoPaterno,
         apellidoMaterno: apellidoMaterno,
@@ -225,6 +227,10 @@ class CapacitacionController extends GetxController {
 
   void showEditarCapacitacion(int capacitacionKey) {
     screenPage.value = CapacitacionScreen.editarCapacitacion;
+  }
+
+  void showVerCapacitacion(int capacitacionKey) {
+    screenPage.value = CapacitacionScreen.visualizarCapacitacion;
   }
 
   void showCapacitacionPage() {

@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
@@ -46,6 +47,7 @@ class CapacitacionPage extends StatelessWidget {
           case CapacitacionScreen.nuevaCapacitacion:
             return NuevaCapacitacionPage(
                 isEditMode: false,
+                isViewing: false,
                 onCancel: () {
                   controller.showCapacitacionPage();
                 });
@@ -54,13 +56,22 @@ class CapacitacionPage extends StatelessWidget {
               dni: controller.selectedCapacitacion.value!.numeroDocumento,
               codigoMcp: controller.selectedCapacitacion.value!.codigoMcp,
               isEditMode: true,
+              isViewing: false,
               capacitacionKey: controller.selectedCapacitacion.value!.key,
               onCancel: () {
                 controller.showCapacitacionPage();
               },
             );
           case CapacitacionScreen.visualizarCapacitacion:
-            return const Placeholder();
+            return NuevaCapacitacionPage(
+                dni: controller.selectedCapacitacion.value!.numeroDocumento,
+                codigoMcp: controller.selectedCapacitacion.value!.codigoMcp,
+                capacitacionKey: controller.selectedCapacitacion.value!.key,
+                isEditMode: false,
+                isViewing: true,
+                onCancel: () {
+                  controller.showCapacitacionPage();
+                });
           case CapacitacionScreen.cargaMasivaCapacitacion:
             return CapacitacionCargaMasivaPage(onCancel: () {
               controller.showCapacitacionPage();
@@ -580,6 +591,16 @@ class CapacitacionPage extends StatelessWidget {
                             child: Row(
                               children: [
                                 _buildIconButton(
+                                    'Visualizar',
+                                    Icons.remove_red_eye,
+                                    AppTheme.primaryColor, () {
+                                  controller.selectedCapacitacion.value =
+                                      entrenamiento;
+                                  controller
+                                      .showVerCapacitacion(entrenamiento.key!);
+                                }),
+                                _buildIconButton(
+                                  'Editar',
                                   Icons.edit,
                                   AppTheme.primaryColor,
                                   () async {
@@ -592,6 +613,7 @@ class CapacitacionPage extends StatelessWidget {
                                   },
                                 ),
                                 _buildIconButton(
+                                  'Eliminar',
                                   Icons.delete,
                                   AppTheme.errorColor,
                                   () async {
@@ -630,11 +652,6 @@ class CapacitacionPage extends StatelessWidget {
 
                                     if (controller.selectedCapacitacion.value !=
                                         null) {
-                                      /*
-                                      String? nombreCapacitacion = controller
-                                          .selectedCapacitacion
-                                          .value!
-                                          .nombreCompleto;*/
                                       await showDialog(
                                         context: Get.context!,
                                         builder: (context) {
@@ -845,23 +862,23 @@ class CapacitacionPage extends StatelessWidget {
                         ))
                     .toList(),
                 onChanged: (value) {
-                  // if (value != null) {
-                  //   controller.rowsPerPage.value = value;
-                  //   controller.currentPage.value = 1;
-                  //   controller.searchPersonal(
-                  //       pageNumber: controller.currentPage.value,
-                  //       pageSize: value);
-                  // }
+                  if (value != null) {
+                    controller.rowsPerPage.value = value;
+                    controller.currentPage.value = 1;
+                    controller.buscarCapacitaciones(
+                        pageNumber: controller.currentPage.value,
+                        pageSize: value);
+                  }
                 },
               ),
               IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: controller.currentPage.value > 1
                     ? () {
-                        // controller.currentPage.value--;
-                        // controller.searchPersonal(
-                        //     pageNumber: controller.currentPage.value,
-                        //     pageSize: controller.rowsPerPage.value);
+                        controller.currentPage.value--;
+                        controller.buscarCapacitaciones(
+                            pageNumber: controller.currentPage.value,
+                            pageSize: controller.rowsPerPage.value);
                       }
                     : null,
               ),
@@ -872,10 +889,10 @@ class CapacitacionPage extends StatelessWidget {
                 onPressed:
                     controller.currentPage.value < controller.totalPages.value
                         ? () {
-                            // controller.currentPage.value++;
-                            // controller.searchPersonal(
-                            //     pageNumber: controller.currentPage.value,
-                            //     pageSize: controller.rowsPerPage.value);
+                            controller.currentPage.value++;
+                            controller.buscarCapacitaciones(
+                                pageNumber: controller.currentPage.value,
+                                pageSize: controller.rowsPerPage.value);
                           }
                         : null,
               ),
@@ -886,30 +903,16 @@ class CapacitacionPage extends StatelessWidget {
     );
   }
 
-  Widget _buildIconButton(IconData icon, Color color, VoidCallback onPressed) {
+  Widget _buildIconButton(
+      String toolTip, IconData icon, Color color, VoidCallback onPressed) {
     return IconButton(
+      tooltip: toolTip,
       icon: Icon(
         icon,
         color: color,
-        size: 24,
+        size: 20,
       ),
       onPressed: onPressed,
-    );
-  }
-
-  Widget _buildRegresarButton(BuildContext context) {
-    return Center(
-      child: ElevatedButton(
-        onPressed: () {
-          //controller.resetControllers();
-          onCancel();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-        ),
-        child: const Text("Regresar", style: TextStyle(color: Colors.white)),
-      ),
     );
   }
 }

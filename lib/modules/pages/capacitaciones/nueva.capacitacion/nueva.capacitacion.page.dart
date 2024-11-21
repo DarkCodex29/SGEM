@@ -4,11 +4,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
+import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
 class NuevaCapacitacionPage extends StatelessWidget {
   final bool isEditMode;
+  final bool isViewing;
   final int? capacitacionKey;
   final String? dni;
   final String? codigoMcp;
@@ -20,6 +22,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
   NuevaCapacitacionPage({
     super.key,
     required this.isEditMode,
+    required this.isViewing,
     this.dni,
     this.codigoMcp,
     this.capacitacionKey,
@@ -29,7 +32,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
   }
 
   void _initializeCapacitacion() {
-    if (isEditMode) {
+    if (isEditMode || isViewing) {
       controller.loadCapacitacion(capacitacionKey!);
       controller.loadPersonalInterno(codigoMcp!);
     } else {
@@ -52,7 +55,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildDatosCapacitacion(),
             const SizedBox(height: 20),
-            _buildArchivosAdjuntos(),
+            _buildArchivoSection(),
             const SizedBox(height: 20),
             _buildBotonesAccion(isEditMode),
           ],
@@ -192,7 +195,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                     Expanded(
                         child: CustomTextField(
                             label: "DNI",
-                            controller: controller.dniController)),
+                            controller: controller.dniInternoController)),
                     const SizedBox(width: 20),
                     Expanded(
                         child: CustomTextField(
@@ -231,12 +234,11 @@ class NuevaCapacitacionPage extends StatelessWidget {
             width: 200,
             child: CustomTextField(
               label: "DNI",
-              controller: controller.dniController,
+              controller: controller.dniExternoController,
               icon: const Icon(Icons.search),
               onIconPressed: () {
-                controller.loadPersonalExterno(controller.dniController.text);
-                //controller
-                //  .buscarPersonalExternoPorDni(controller.dniController.text);
+                controller
+                    .loadPersonalExterno(controller.dniExternoController.text);
               },
             ),
           ),
@@ -393,6 +395,133 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
+  Widget _buildArchivoSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Icon(Icons.attach_file, color: Colors.grey),
+            SizedBox(width: 10),
+            Text("Archivos adjuntos:"),
+            SizedBox(width: 10),
+            Text(
+              "(Archivos adjuntos peso máx: 8MB c/u)",
+              style: TextStyle(color: Colors.grey, fontSize: 12),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Obx(() {
+          if (controller.archivosAdjuntos.isEmpty) {
+            return isViewing
+                ? const Padding(
+                    padding: EdgeInsets.only(top: 10, left: 20),
+                    child: Text(
+                      "No hay archivos adjuntos.",
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  )
+                : const SizedBox();
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: controller.archivosAdjuntos.map((archivo) {
+              return Container(
+                width: 400,
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                  color: archivo['nuevo'] == true
+                      ? Colors.red.shade50
+                      : Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        archivo['nombre'] ?? '',
+                        style: TextStyle(
+                          color: archivo['nuevo'] == true
+                              ? Colors.red
+                              : Colors.green,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                    if (!isViewing)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          archivo['nuevo'] == false
+                              ? IconButton(
+                                  icon: const Icon(Icons.download,
+                                      color: Colors.blue, size: 20),
+                                  onPressed: () {
+                                    controller.descargarArchivo(archivo);
+                                  },
+                                )
+                              : const SizedBox(),
+                          IconButton(
+                            icon: Icon(
+                              archivo['nuevo'] == true
+                                  ? Icons.cancel
+                                  : Icons.delete,
+                              color: Colors.red,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (archivo['nuevo'] == true) {
+                                controller.removerArchivo(archivo['nombre']);
+                              } else {
+                                showDialog(
+                                  context: Get.context!,
+                                  builder: (BuildContext context) {
+                                    return ConfirmDeleteWidget(
+                                      itemName: archivo['nombre'],
+                                      entityType: 'archivo',
+                                      onConfirm: () {
+                                        controller.eliminarArchivo(archivo);
+                                        Navigator.pop(context);
+                                      },
+                                      onCancel: () {
+                                        Navigator.pop(context);
+                                      },
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              );
+            }).toList(),
+          );
+        }),
+        const SizedBox(height: 10),
+        if (!isViewing)
+          TextButton.icon(
+            onPressed: () {
+              controller.adjuntarDocumentos();
+            },
+            icon: const Icon(Icons.attach_file, color: Colors.blue),
+            label: const Text(
+              "Adjuntar documentos",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ),
+      ],
+    );
+  }
+
+  /*
   Widget _buildArchivosAdjuntos() {
     return Container(
       padding: const EdgeInsets.all(12.0),
@@ -459,7 +588,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
       ),
     );
   }
-
+*/
   Widget _buildBotonesAccion(bool isEditMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +10,7 @@ import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.personal.dart';
+import 'package:sgem/config/constants/origen.archivo.dart';
 import 'package:sgem/config/constants/tipo.actividad.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
@@ -20,7 +22,8 @@ import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart'
 class NuevaCapacitacionController extends GetxController {
   // Controladores de campos de texto
   final TextEditingController codigoMcpController = TextEditingController();
-  final TextEditingController dniController = TextEditingController();
+  final TextEditingController dniInternoController = TextEditingController();
+  final TextEditingController dniExternoController = TextEditingController();
   final TextEditingController nombresController = TextEditingController();
   final TextEditingController apellidoPaternoController =
       TextEditingController();
@@ -42,9 +45,6 @@ class NuevaCapacitacionController extends GetxController {
   final PersonalService personalService = PersonalService();
   var selectedPersonal = Rxn<Personal>();
 
-  //ARCHIVOS
-  var documentoAdjuntoNombre = ''.obs;
-  var documentoAdjuntoBytes = Rxn<Uint8List>();
   var archivosAdjuntos = <Map<String, dynamic>>[].obs;
   final ArchivoService archivoService = ArchivoService();
 
@@ -105,45 +105,12 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
-/*
-  Future<void> buscarPersonalExternoPorDni(String dni) async {
-    try {
-      final response =
-          await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
-      log('PersonalExterno: ${personalExterno!.toJson()}');
-
-      if (response.success && response.data != null) {
-        personalExterno = response.data!;
-        nombresController.text =
-            '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
-        apellidoPaternoController.text = personalExterno!.apellidoPaterno!;
-        apellidoMaternoController.text = personalExterno!.apellidoMaterno!;
-
-        log('Personal externo cargado con éxito: ${personalExterno!.nombreCompleto}');
-      } else {
-        log('No se encontró personal externo con el DNI proporcionado');
-        Get.snackbar(
-            'Error', 'No se encontró personal externo con el DNI proporcionado',
-            backgroundColor: Colors.red, colorText: Colors.white);
-      }
-    } catch (e) {
-      log('Error al buscar personal externo: $e');
-      Get.snackbar('Error', 'Error al buscar personal externo: $e');
-    }
-  }
-*/
   Future<Personal?> loadPersonalExterno(String dni) async {
-    log('Buscando personal externo con DNI: $dni');
     try {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
 
-      log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
-      log('PersonalExterno: ${response.data!.toJson()}');
       if (response.success && response.data != null) {
-        log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
-
-        log('Personal Externo: Key- ${response.data}');
         personalExterno = response.data;
         llenarControladores();
       } else {
@@ -183,7 +150,7 @@ class NuevaCapacitacionController extends GetxController {
     if (personalInterno != null) {
       loadPersonalPhoto(personalInterno!.inPersonalOrigen!);
       codigoMcpController.text = personalInterno!.codigoMcp!;
-      dniController.text = personalInterno!.numeroDocumento!;
+      dniInternoController.text = personalInterno!.numeroDocumento!;
       nombresController.text = personalInterno!.nombreCompleto!;
       apellidoPaternoController.text = personalInterno!.apellidoPaterno!;
       apellidoMaternoController.text = personalInterno!.apellidoMaterno!;
@@ -395,7 +362,6 @@ class NuevaCapacitacionController extends GetxController {
     try {
       final notaTeorica = int.parse(notaTeoriaController.text);
       final notaPractica = int.parse(notaPracticaController.text);
-
       return notaTeorica >= 0 &&
           notaTeorica <= 99 &&
           notaPractica >= 0 &&
@@ -478,8 +444,8 @@ class NuevaCapacitacionController extends GetxController {
               extension: extension,
               mime: mimeType,
               datos: datosBase64,
-              inTipoArchivo: 1,
-              inOrigen: TipoActividad.CAPACITACION, // 1: TABLA Personal
+              inTipoArchivo: OrigenArchivo.capacitacion,
+              inOrigen: TipoActividad.CAPACITACION,
               inOrigenKey: origenKey,
             );
 
@@ -501,6 +467,40 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
+  Future<void> obtenerArchivosRegistrados(int idOrigen, int idOrigenKey) async {
+    try {
+      final response = await archivoService.obtenerArchivosPorOrigen(
+        idOrigen: idOrigen, // 1: TABLA Personal
+        idOrigenKey: idOrigenKey,
+      );
+
+      log('Response: ${response.data}');
+      if (response.success && response.data != null) {
+        archivosAdjuntos.clear();
+        for (var archivo in response.data!) {
+          List<int> datos = List<int>.from(archivo['Datos']);
+          Uint8List archivoBytes = Uint8List.fromList(datos);
+
+          archivosAdjuntos.add({
+            'key': archivo['Key'],
+            'nombre': archivo['Nombre'],
+            'extension': archivo['Extension'],
+            'mime': archivo['Mime'],
+            'datos': base64Encode(archivoBytes),
+            'inOrigenKey': idOrigenKey,
+            'nuevo': false,
+          });
+
+          log('Archivo ${archivo['Nombre']} obtenido con éxito');
+        }
+      } else {
+        log('Error al obtener archivos: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener archivos: $e');
+    }
+  }
+
   String _determinarMimeType(String extension) {
     switch (extension) {
       case 'pdf':
@@ -516,16 +516,98 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
-  void eliminarArchivo(String nombreArchivo) {
+  void removerArchivo(String nombreArchivo) {
     archivosAdjuntos.removeWhere((archivo) =>
         archivo['nombre'] == nombreArchivo && archivo['nuevo'] == true);
     log('Archivo $nombreArchivo eliminado');
   }
 
+  Future<void> descargarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      String nombreArchivo = archivo['nombre'];
+      String extension = archivo['extension'];
+      String datosBase64 = archivo['datos'];
+      Uint8List archivoBytes = base64Decode(datosBase64);
+
+      if (nombreArchivo.endsWith('.$extension')) {
+        nombreArchivo = nombreArchivo.substring(
+            0, nombreArchivo.length - extension.length - 1);
+      }
+      MimeType mimeType = _determinarMimeType2(extension);
+      await FileSaver.instance.saveFile(
+        name: nombreArchivo,
+        bytes: archivoBytes,
+        ext: extension,
+        mimeType: mimeType,
+      );
+    } catch (e) {
+      log('Error al descargar el archivo $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo descargar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  MimeType _determinarMimeType2(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return MimeType.pdf;
+      case 'doc':
+      case 'docx':
+        return MimeType.microsoftWord;
+      case 'xlsx':
+        return MimeType.microsoftExcel;
+      default:
+        return MimeType.other;
+    }
+  }
+
+  Future<void> eliminarArchivo(Map<String, dynamic> archivo) async {
+    try {
+      final response = await archivoService.eliminarArchivo(
+        key: archivo['key'],
+        nombre: archivo['nombre'],
+        extension: archivo['extension'],
+        mime: archivo['mime'],
+        datos: archivo['datos'],
+        inTipoArchivo: 1,
+        inOrigen: 1,
+        inOrigenKey: archivo['inOrigenKey'],
+      );
+
+      if (response.success) {
+        obtenerArchivosRegistrados(
+            OrigenArchivo.capacitacion, archivo['inOrigenKey']);
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el archivo: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      log('Error al eliminar el archivo: $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo eliminar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   void resetControllers() {
     personalPhoto.value = null;
     codigoMcpController.clear();
-    dniController.clear();
+    dniInternoController.clear();
+    dniExternoController.clear();
     nombresController.clear();
     apellidoPaternoController.clear();
     apellidoMaternoController.clear();

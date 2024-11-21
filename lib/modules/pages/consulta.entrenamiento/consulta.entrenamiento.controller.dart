@@ -33,9 +33,9 @@ class ConsultaEntrenamientoController extends GetxController {
 
   @override
   void onInit() {
+    super.onInit();
     buscarEntrenamientos(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
-    super.onInit();
   }
 
   Future<void> buscarEntrenamientos(
@@ -45,13 +45,13 @@ class ConsultaEntrenamientoController extends GetxController {
     String? nombres =
         nombresController.text.isEmpty ? null : nombresController.text;
     try {
-      // log("Fecha inicio: ${fechaInicio}");
-      // log("Fecha termino: ${fechaTermino}");
       var response = await entrenamientoService.consultarEntrenamientoPaginado(
         codigoMcp: codigoMcp,
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,
         inModulo: dropdownController.getSelectedValue('modulo')?.key,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
+        inGuardia: dropdownController.getSelectedValue('guardia')?.key == 0
+            ? null
+            : dropdownController.getSelectedValue('guardia')?.key,
         inEstadoEntrenamiento:
             dropdownController.getSelectedValue('estadoEntrenamiento')?.key,
         inCondicion: dropdownController.getSelectedValue('condicion')?.key,
@@ -200,4 +200,3 @@ class ConsultaEntrenamientoController extends GetxController {
     dropdownController.resetAllSelections();
   }
 }
-

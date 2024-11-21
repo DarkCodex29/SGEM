@@ -11,7 +11,7 @@ Future<pw.Page> generateCertificado(
     Personal? personal,
     EntrenamientoModulo? entrenamiento,
     List<EntrenamientoModulo> modulos) async {
-  const double heigthCeldastable = 30;
+  const double heigthCeldastable = 15;
   int totalHoras =
       modulos.fold(0, (sum, modulo) => sum + (modulo.inHorasAcumuladas ?? 0));
   final imageIcon = await loadImage('logo.png');
@@ -85,15 +85,13 @@ Future<pw.Page> generateCertificado(
                   ],
                 )
               ],
-            ).padding(
-              const pw.EdgeInsets.only(bottom: 10),
             ),
             pw.Container(
               width: double.infinity,
               alignment: pw.Alignment.centerLeft,
               child: pw.Text("Datos del operador autorizado",
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
-                  .padding(const pw.EdgeInsets.only(bottom: 10, top: 20)),
+                  .padding(const pw.EdgeInsets.only(bottom: 10, top: 10)),
             ),
             cardCustom(
               pw.Column(
@@ -111,7 +109,7 @@ Future<pw.Page> generateCertificado(
               alignment: pw.Alignment.centerLeft,
               child: pw.Text("Datos del entrenamiento",
                       style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
-                  .padding(const pw.EdgeInsets.only(bottom: 10, top: 20)),
+                  .padding(const pw.EdgeInsets.only(bottom: 10, top: 10)),
             ),
             cardCustom(
               pw.Column(children: [
@@ -121,13 +119,13 @@ Future<pw.Page> generateCertificado(
                     entrenamiento.entrenador!.nombre),
               ]).padding(const pw.EdgeInsets.only(left: 20)),
             ),
-            pw.SizedBox(height: 20),
+            pw.SizedBox(height: 10),
             pw.Row(mainAxisAlignment: pw.MainAxisAlignment.start, children: [
               pw.Table(
                 border: pw.TableBorder.all(),
                 columnWidths: {
                   0: const pw.FixedColumnWidth(100),
-                  1: const pw.FixedColumnWidth(150),
+                  1: const pw.FixedColumnWidth(100),
                 },
                 children: [
                   pw.TableRow(
@@ -190,7 +188,7 @@ Future<pw.Page> generateCertificado(
                     DateFormat('dd/MM/yyyy')
                         .format(entrenamiento.fechaTermino!)),
               ])
-            ]).padding(const pw.EdgeInsets.only(left: 60, right: 20)),
+            ]).padding(const pw.EdgeInsets.only(left: 100, right: 20)),
             pw.Container(
               width: double.infinity,
               child: pw.Column(
@@ -274,8 +272,29 @@ Future<pw.Page> generateCertificado(
               alignment: pw.Alignment.centerLeft,
               child: pw.Text(
                 "Se concluye que el operador queda APTO para operar el equipo ${entrenamiento.equipo!.nombre} en la mina de Chinalco Perú.",
-              ).padding(const pw.EdgeInsets.only(top: 10, bottom: 10)),
+              ).padding(const pw.EdgeInsets.only(top: 10, bottom: 30)),
             ),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                userFirm('Superintendente de Operaciones Mina'),
+                userFirm(
+                    'Superintendente de Mejora Continua y Control de Producción'),
+              ],
+            ).padding(const pw.EdgeInsets.all(20)),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                userFirm('Jefe de Guardia'),
+              ],
+            ).padding(const pw.EdgeInsets.only(left: 20, right: 20)),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                userFirm('Entrenador de Operaciones Mina'),
+                userFirm('Operador de Equipo Pesado'),
+              ],
+            ).padding(const pw.EdgeInsets.all(20)),
           ],
         ),
       );

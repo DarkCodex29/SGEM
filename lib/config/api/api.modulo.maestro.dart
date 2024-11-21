@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
@@ -195,6 +196,25 @@ class ModuloMaestroService {
     } on DioException catch (e) {
       log('Error al manejar el módulo. Datos: ${jsonEncode(modulo.toJson())}, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure<bool>(e);
+    }
+  }
+
+  Future<ResponseHandler<bool>> updateModulo(
+    Modulo data,
+  ) async {
+    try {
+      await _dio.post<dynamic>(
+        '/ActualizarModuloMaestro',
+        data: data.toJson(),
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al actualizar módulo',
+      );
     }
   }
 

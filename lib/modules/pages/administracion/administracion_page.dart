@@ -33,7 +33,8 @@ class AdministracionPage extends StatelessWidget {
         child: Obx(
           () => switch (controller.screenPage.value) {
             AdministracionScreen.none => const AdministracionView(),
-            AdministracionScreen.maestro => const MaestroPage()
+            AdministracionScreen.maestro => const MaestroPage(),
+            AdministracionScreen.modulos => const ModuloView()
           },
         ),
       ),
@@ -61,6 +62,7 @@ class AdministracionView extends StatelessWidget {
               _Button(
                 icon: Icons.view_module_rounded,
                 label: 'Modulo',
+                toPage: AdministracionScreen.modulos,
               ),
               _Button(
                 icon: Icons.business_rounded,

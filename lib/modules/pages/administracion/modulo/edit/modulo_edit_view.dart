@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/administracion/maestro/edit/maestro_edit.dart';
-import 'package:sgem/shared/modules/maestro.detail.dart';
-import 'package:sgem/shared/utils/Extensions/format_extension.dart';
+import 'package:sgem/modules/pages/administracion/administracion.dart';
+import 'package:sgem/shared/modules/modulo_model.dart';
 import 'package:sgem/shared/widgets/app_button.dart';
 import 'package:sgem/shared/widgets/app_text_field.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 
-class MaestroEditView extends StatelessWidget {
-  const MaestroEditView({
+class ModuloEditView extends StatelessWidget {
+  const ModuloEditView({
+    required this.modulo,
     super.key,
-    this.detalle,
   });
 
-  final MaestroDetalle? detalle;
+  final Modulo modulo;
 
-  void show() => Get.dialog<void>(this);
+  Future<bool?> show() async => Get.dialog<bool>(this);
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.put(MaestroEditController(detalle));
-    final isEdit = detalle != null;
+    final ctr = Get.put(ModuloEditController(modulo));
 
     return Dialog(
       backgroundColor: Colors.white,
@@ -52,10 +50,10 @@ class MaestroEditView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        isEdit ? 'Editar Maestro' : 'Registro de Maestro',
+                      const Text(
+                        'Editar Modulo',
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                         ),
@@ -76,36 +74,33 @@ class MaestroEditView extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 48, vertical: 8),
                   child: Column(
                     children: [
-                      if (isEdit)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Código: ${detalle!.key!.format}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      Text(
+                        modulo.module,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      const AppDropdownField(
-                        dropdownKey: 'maestro_2',
-                        isRequired: true,
-                        label: 'Maestro',
                       ),
                       AppTextField(
-                        label: 'Valor',
+                        label: 'Horas de Cumplimiento',
                         isRequired: true,
-                        controller: ctr.valorController,
+                        controller: ctr.hourController,
                       ),
                       AppTextField(
-                        label: 'Descripción',
-                        controller: ctr.descripcionController,
+                        label: 'Nota Mínima Aprobatoria',
+                        isRequired: true,
+                        controller: ctr.minGradeController,
+                      ),
+                      AppTextField(
+                        label: 'Nota Máxima',
+                        controller: ctr.maxGradeController,
+                        isRequired: true,
                         maxLines: 3,
                       ),
                       const AppDropdownField(
                         label: 'Estado',
                         isRequired: true,
-                        dropdownKey: 'estado_2',
+                        dropdownKey: 'estado_modulos',
                       ),
                     ],
                   ),
@@ -115,11 +110,11 @@ class MaestroEditView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     AppButton.white(
-                      onPressed: Get.back<void>,
+                      onPressed: () => Get.back<bool>(result: false),
                       text: 'Cerrar',
                     ),
                     AppButton.blue(
-                      onPressed: isEdit ? ctr.updateDetalle : ctr.saveDetalle,
+                      onPressed: ctr.updateModulo,
                       text: 'Guardar',
                     ),
                   ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 
 part 'custom_table_controller.dart';
@@ -34,7 +35,10 @@ class _CustomTableState<T> extends State<CustomTable<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.find<CustomTableController<T>>()..data = widget.data;
+    Logger('CustomTable').info('Building CustomTable');
+    final ctr = Get.find<CustomTableController<T>>()
+      ..data = widget.data
+      ..currentPage.value = 1;
 
     return Column(
       children: [

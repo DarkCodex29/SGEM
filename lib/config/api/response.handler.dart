@@ -1,19 +1,69 @@
 import 'dart:convert';
 import 'dart:developer';
+
+import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 
 class ResponseHandler<T> {
-  final T? data;
-  final bool success;
-  final String? message;
-
-  ResponseHandler({
+  const ResponseHandler({
     required this.success,
     this.data,
     this.message,
   });
+
+  factory ResponseHandler.fromDioException(
+    DioException exception,
+    StackTrace? stackTrace, [
+    String? defaultMessage,
+  ]) {
+    var message = defaultMessage ?? exception.message;
+
+    if (exception.type == DioExceptionType.badResponse) {
+      final data = exception.response?.data;
+      if (data is Map<String, dynamic> && data.containsKey('Message')) {
+        message = data['Message'] as String;
+      }
+    }
+
+    Logger('ResponseHandler').severe(message, exception, stackTrace);
+
+    return ResponseHandler<T>(
+      success: false,
+      message: message,
+    );
+  }
+
+  factory ResponseHandler.fromError(
+    Object error,
+    StackTrace? stackTrace, [
+    String? defaultMessage,
+  ]) {
+    if (error is DioException) {
+      return ResponseHandler.fromDioException(
+        error,
+        stackTrace,
+        defaultMessage,
+      );
+    }
+
+    final message = defaultMessage ?? error.toString();
+
+    Logger('ResponseHandler').severe(message, error, stackTrace);
+
+    return ResponseHandler<T>(
+      success: false,
+      message: message,
+    );
+  }
+
+  final T? data;
+  final bool success;
+  final String? message;
+
+  bool get hasData => data != null;
 
   static ResponseHandler<T> handleSuccess<T>(dynamic response) {
     log('Response Handler Caso 1');
@@ -52,7 +102,6 @@ class ResponseHandler<T> {
         final personal = Personal.fromJson(response);
         log("Api: Fin Mapeando personal ");
         return ResponseHandler<T>(success: true, data: personal as T);
-
       } catch (e) {
         log('Error al mapear la respuesta a Personal: $e');
         return ResponseHandler<T>(
@@ -153,9 +202,8 @@ class ResponseHandler<T> {
 }
 
 class ErrorHandler {
-  final String message;
-
   ErrorHandler(this.message);
+  final String message;
 
   @override
   String toString() {

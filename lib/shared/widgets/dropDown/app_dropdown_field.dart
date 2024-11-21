@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
@@ -57,8 +58,14 @@ class AppDropdownField extends StatelessWidget {
                         );
                       }
                     }
-                    final value = initialValue ??
-                        controller.getSelectedValue(dropdownKey)?.key;
+
+                    final int? value;
+                    if (options?.isEmpty ?? true) {
+                      value = null;
+                    } else {
+                      value = initialValue ??
+                          controller.getSelectedValue(dropdownKey)?.key;
+                    }
 
                     return _Dropdown(
                       options: options!,
@@ -141,7 +148,7 @@ class _Dropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('Building Dropdown $dropdownKey');
+    Logger('Dropdown').info('Building dropdown $dropdownKey');
 
     return DropdownButtonFormField<int>(
       value: value,
@@ -171,10 +178,8 @@ class _Dropdown extends StatelessWidget {
             width: 2,
           ),
         ),
-        contentPadding: const EdgeInsets.symmetric(
-          vertical: 14,
-          horizontal: 12,
-        ),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
       onChanged: readOnly ? null : onChanged,
       items: options

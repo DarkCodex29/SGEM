@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/maestro.dart';
@@ -22,7 +21,7 @@ class MaestroService {
 
   Future<ResponseHandler<List<OptionValue>>> getMaestros() async {
     try {
-      final response = await _dio.get<List<dynamic>>('/ListarMaestros');
+      final response = await _dio.get<List<dynamic>>('/ListarMaestrosEditables');
 
       return ResponseHandler.handleSuccess(
         response.data
@@ -30,14 +29,11 @@ class MaestroService {
                 .toList() ??
             const [],
       );
-    } on DioException catch (e) {
-      return ResponseHandler.handleFailure(e);
-    } catch (error) {
-      debugPrint('Error al listar maestros: $error');
-
-      return ResponseHandler(
-        success: false,
-        message: 'Error al listar maestros',
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al listar maestros',
       );
     }
   }

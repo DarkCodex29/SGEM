@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/administracion.dart';
 import 'package:sgem/shared/modules/option.value.dart';
-import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/utils/Extensions/format_extension.dart';
+import 'package:sgem/shared/widgets/active_box.dart';
+import 'package:sgem/shared/widgets/app_text_field.dart';
 import 'package:sgem/shared/widgets/custom_table/custom_table.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 
@@ -92,8 +94,15 @@ class MaestroPage extends StatelessWidget {
                               Text(mdetalle.maestro.nombre ?? 'N/A'),
                               Text(mdetalle.value),
                               Text(mdetalle.usuarioRegistro ?? 'N/A'),
-                              Text(mdetalle.fechaRegistro?.toString() ?? 'N/A'),
-                              Text(mdetalle.activo ?? 'N/A'),
+                              Text(mdetalle.fechaRegistro?.formatExtended ?? 'N/A'),
+                              if (mdetalle.activo == null)
+                                const Text('N/A')
+                              else
+                                Center(
+                                  child: ActiveBox(
+                                    isActive: mdetalle.activo == 'S',
+                                  ),
+                                ),
                             ];
                           },
                           actions: (mdetalle) => [
@@ -171,16 +180,16 @@ class FilterTile extends StatelessWidget {
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: CustomTextField(
+                    child: AppTextField(
                       label: 'Valor',
                       controller: ctr.valorController,
                     ),
                   ),
                   const SizedBox(width: 20),
-                  Expanded(
+                  const Expanded(
                     child: AppDropdownField(
                       label: 'Estado',
-                      dropdownKey: 'estado',
+                      dropdownKey: 'estado_m',
                       options: [
                         OptionValue(key: 1, nombre: 'Activo'),
                         OptionValue(key: 0, nombre: 'Inactivo'),

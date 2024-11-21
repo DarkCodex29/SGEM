@@ -94,7 +94,8 @@ class MaestroDetalleService {
   }
 
   Future<ResponseHandler<bool>> registrateMaestroDetalle(
-      MaestroDetalle data) async {
+    MaestroDetalle data,
+  ) async {
     try {
       await _dio.post<dynamic>(
         '/RegistrarMaestroDetalle',
@@ -105,17 +106,12 @@ class MaestroDetalleService {
       );
 
       return ResponseHandler.handleSuccess(true);
-    } on DioException catch (e) {
-      if (e.response?.data != null && e.response?.data['Message'] != null) {
-        var errorMessage = e.response!.data['Message'];
-        log('Error al registrar: $errorMessage');
-        return ResponseHandler(
-          success: false,
-          message: 'Error al registrar maestro detalle: $errorMessage',
-        );
-      } else {
-        return ResponseHandler.handleFailure<bool>(e);
-      }
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al registrar maestro detalle',
+      );
     }
   }
 
@@ -157,24 +153,18 @@ class MaestroDetalleService {
     MaestroDetalle data,
   ) async {
     try {
-      debugPrint('Data: ${data.toJson()}');
       await _dio.put<dynamic>(
         '/ActualizarMaestroDetalle',
         data: data.toJson(),
       );
 
       return ResponseHandler.handleSuccess(true);
-    } on DioException catch (e) {
-      if (e.response?.data != null && e.response?.data['Message'] != null) {
-        var errorMessage = e.response!.data['Message'];
-        log('Error al actualizar: $errorMessage');
-        return ResponseHandler(
-          success: false,
-          message: 'Error al actualizar maestro detalle: $errorMessage',
-        );
-      } else {
-        return ResponseHandler.handleFailure<bool>(e);
-      }
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al actualizar maestro detalle',
+      );
     }
   }
 

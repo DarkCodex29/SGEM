@@ -1,25 +1,25 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
-import 'dart:developer';
+import 'package:sgem/shared/modules/modulo_model.dart';
 
 class ModuloMaestroService {
-  final Dio dio = Dio();
+  ModuloMaestroService({
+    Dio? dio,
+  }) : _dio = dio ?? Dio(_options);
 
-  ModuloMaestroService() {
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        options.headers['Content-Type'] = 'application/json';
-        return handler.next(options);
-      },
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
-    ));
-  }
+  final Dio _dio;
+
+  static final BaseOptions _options = BaseOptions(
+    baseUrl: '${ConfigFile.apiUrl}/modulo',
+    contentType: Headers.jsonContentType,
+    followRedirects: false,
+  );
 
   Future<ResponseHandler<List<EntrenamientoModulo>>>
       listarModulosPorEntrenamiento(int entrenamientoId) async {
@@ -27,7 +27,7 @@ class ModuloMaestroService {
         '${ConfigFile.apiUrl}/modulo/ListarModulosPorEntrenamiento/$entrenamientoId';
 
     try {
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(followRedirects: false),
       );
@@ -39,7 +39,7 @@ class ModuloMaestroService {
         return ResponseHandler.handleSuccess<List<EntrenamientoModulo>>(
             modulos);
       } else {
-        return ResponseHandler(
+        return const ResponseHandler(
           success: false,
           message: 'Error al listar los módulos por entrenamiento',
         );
@@ -49,11 +49,32 @@ class ModuloMaestroService {
     }
   }
 
+  /// Obtiene los módulos de un entrenamiento
+  Future<ResponseHandler<List<Modulo>>> getModules() async {
+    try {
+      final response = await _dio.get<List<dynamic>>('/ListarModuloMaestro');
+
+      return ResponseHandler.handleSuccess(
+        response.data
+                ?.map((e) => Modulo.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+      );
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al listar modulos',
+      );
+    }
+  }
+
+  @Deprecated('Use getModules instead')
   Future<ResponseHandler<List<ModuloMaestro>>> listarMaestros() async {
     const url = '${ConfigFile.apiUrl}/modulo/ListarModuloMaestro';
 
     try {
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(
           followRedirects: false,
@@ -66,7 +87,7 @@ class ModuloMaestroService {
         );
         return ResponseHandler.handleSuccess<List<ModuloMaestro>>(maestros);
       } else {
-        return ResponseHandler(
+        return const ResponseHandler(
           success: false,
           message: 'Error al listar modulos',
         );
@@ -82,7 +103,7 @@ class ModuloMaestroService {
     log('Api modulo obtener modulo por id $moduloId');
     try {
       log('Api: $url');
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(followRedirects: false),
       );
@@ -97,7 +118,7 @@ class ModuloMaestroService {
       } else {
         log('Api modulo, error al obtener modulo por id');
 
-        return ResponseHandler(
+        return const ResponseHandler(
           success: false,
           message: 'Error al obtener el módulo por ID',
         );
@@ -114,7 +135,7 @@ class ModuloMaestroService {
         '${ConfigFile.apiUrl}/modulo/ObtenerModuloMaestroPorId/$maestroId';
 
     try {
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(followRedirects: false),
       );
@@ -122,7 +143,7 @@ class ModuloMaestroService {
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<ModuloMaestro>(response.data);
       } else {
-        return ResponseHandler(
+        return const ResponseHandler(
           success: false,
           message: 'Error al obtener el módulo maestro por ID',
         );
@@ -140,13 +161,13 @@ class ModuloMaestroService {
       Response response;
 
       if (method == 'POST') {
-        response = await dio.post(url, data: jsonEncode(modulo.toJson()));
+        response = await _dio.post(url, data: jsonEncode(modulo.toJson()));
       } else if (method == 'PUT') {
-        response = await dio.put(url, data: jsonEncode(modulo.toJson()));
+        response = await _dio.put(url, data: jsonEncode(modulo.toJson()));
       } else if (method == 'DELETE') {
-        response = await dio.delete(url, data: jsonEncode(modulo.toJson()));
+        response = await _dio.delete(url, data: jsonEncode(modulo.toJson()));
       } else {
-        return ResponseHandler(
+        return const ResponseHandler(
           success: false,
           message: 'Método HTTP no soportado',
         );
@@ -162,13 +183,13 @@ class ModuloMaestroService {
             message: response.data['Message'] ?? 'Error desconocido',
           );
         } else {
-          return ResponseHandler(
+          return const ResponseHandler(
             success: false,
             message: 'Formato de respuesta inesperado al manejar el módulo',
           );
         }
       } else {
-        return ResponseHandler(
+        return const ResponseHandler(
           success: false,
           message: 'Error al manejar el módulo',
         );
@@ -176,6 +197,25 @@ class ModuloMaestroService {
     } on DioException catch (e) {
       log('Error al manejar el módulo. Datos: ${jsonEncode(modulo.toJson())}, Error: ${e.response?.data}');
       return ResponseHandler.handleFailure<bool>(e);
+    }
+  }
+
+  Future<ResponseHandler<bool>> updateModulo(
+    Modulo data,
+  ) async {
+    try {
+      await _dio.put<dynamic>(
+        '/ActualizarModuloMaestro',
+        data: data.toJson(),
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al actualizar módulo',
+      );
     }
   }
 

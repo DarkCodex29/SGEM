@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
+
+@immutable
 class OptionValue {
-  OptionValue({
+  const OptionValue({
     this.key,
     this.nombre,
   });
 
-  int? key;
-  String? nombre;
+  final int? key;
+  final String? nombre;
 
   factory OptionValue.fromJson(Map<String, dynamic> json) => OptionValue(
         key: json['Key'] as int?,
@@ -19,4 +22,14 @@ class OptionValue {
 
   @override
   String toString() => 'OptionValue(key: $key, nombre: $nombre)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is OptionValue && other.key == key && other.nombre == nombre;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ nombre.hashCode;
 }

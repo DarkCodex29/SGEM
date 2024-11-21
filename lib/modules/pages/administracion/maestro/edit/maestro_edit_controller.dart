@@ -39,8 +39,8 @@ class MaestroEditController extends GetxController {
       ..loadOptions(
         'estado_2',
         () async => [
-          OptionValue(key: 1, nombre: 'Activo'),
-          OptionValue(key: 0, nombre: 'Inactivo'),
+          const OptionValue(key: 1, nombre: 'Activo'),
+          const OptionValue(key: 0, nombre: 'Inactivo'),
         ],
       );
 
@@ -138,7 +138,7 @@ class MaestroEditController extends GetxController {
 
     if (!(confirm ?? false)) return;
 
-    final response = await _maestroDetalleService.registrarMaestroDetalle(
+    final response = await _maestroDetalleService.registrateMaestroDetalle(
       MaestroDetalle(
         valor: valor,
         activo: switch (estado!.key!) {

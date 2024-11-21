@@ -11,6 +11,7 @@ import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/modules/pages/consulta.personal/consulta.personal.controller.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
@@ -224,8 +225,10 @@ class NuevoPersonalController extends GetxController {
         ..licenciaConducir = verificarTexto(codigoLicenciaController.text)
         ..fechaIngresoMina = fechaIngresoMina
         ..licenciaVencimiento = fechaRevalidacion
-        ..guardia!.key =
-            dropdownController.getSelectedValue('guardia')?.key ?? 0
+        ..guardia = OptionValue(
+          key: dropdownController.getSelectedValue('guardia')?.key ?? 0,
+          nombre: personalData!.guardia?.nombre,
+        )
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
         ..zonaPlataforma = isZonaPlataforma.value ? 'S' : 'N'
         ..restricciones = verificarTexto(restriccionesController.text);

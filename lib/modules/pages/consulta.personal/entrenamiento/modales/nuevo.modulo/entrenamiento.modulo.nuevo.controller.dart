@@ -368,8 +368,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (response.success) {
         log('Modulo obtenido: ${response.data}');
         entrenamientoModulo = response.data!;
-        obtenerDatosModuloMaestro(entrenamientoModulo!.inModulo!);
-        llenarDatos();
+        await obtenerDatosModuloMaestro(entrenamientoModulo!.inModulo!);
+        await llenarDatos();
       } else {
         Get.snackbar('Error', 'No se pudieron cargar el módulo');
       }
@@ -399,7 +399,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
         'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
-
+    //log('Estado modulo: ${entrenamientoModulo!.inEstado}');
     dropdownController.selectValueKey(
         'estadoModulo', entrenamientoModulo!.inEstado);
 
@@ -749,24 +749,22 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Examen Practico existe ${aaExamenPracticoSeleccionado.value}');
       log('Otros existe ${aaOtrosSeleccionado.value}');
 
-
-
       return true;
     }
     return false;
-
   }
-  Future<void> subirArchivos() async{
-    if (aaControlHorasSeleccionado.value){
+
+  Future<void> subirArchivos() async {
+    if (aaControlHorasSeleccionado.value) {
       await registrarArchivoControlHoras();
     }
-    if (aaExamenTeoricoSeleccionado.value){
+    if (aaExamenTeoricoSeleccionado.value) {
       await registrarArchivoExamenTeorico();
     }
-    if (aaExamenPracticoSeleccionado.value){
+    if (aaExamenPracticoSeleccionado.value) {
       await registrarArchivoExamenPractico();
     }
-    if (aaOtrosSeleccionado.value){
+    if (aaOtrosSeleccionado.value) {
       await registrarArchivoOtros();
     }
   }

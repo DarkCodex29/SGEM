@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
@@ -93,7 +92,7 @@ class CustomDropdownGlobal extends StatelessWidget {
       child: DropdownButtonFormField<OptionValue>(
         key: textFieldKey,
         value: initialValue ?? controller?.getSelectedValue(dropdownKey),
-        isExpanded: true,
+        isExpanded: true,    
         hint: Text(
           options.isEmpty ? noDataHintText : hintText,
           style: const TextStyle(

@@ -177,7 +177,7 @@ class PersonalService {
     int? inEstado,
   }) async {
     const url = '${ConfigFile.apiUrl}/Personal/ListarPersonalEntrenamiento';
-    log('DNI: ${numeroDocumento}');
+    log('DNI: $numeroDocumento');
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.numeroDOcumento': numeroDocumento,

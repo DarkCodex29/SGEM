@@ -73,7 +73,8 @@ class _PdfToImageScreenState extends State<PdfToImageScreen> {
         widget.controller.hideForms();
       },
       onPrint: (pages) {
-        descargarPaginasComoPdf(pages);
+        descargarPaginasComoPdf(pages,
+            nombreArchivo: 'CARNET_${widget.data!.codigoMcp}.pdf', rotar: true);
       },
     );
   }

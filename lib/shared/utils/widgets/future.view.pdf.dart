@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
+import 'package:sgem/config/theme/app_theme.dart';
 
 class PdfViewer extends StatelessWidget {
   final Future<List<PdfPageImage?>>? futurePdf;
@@ -16,57 +17,37 @@ class PdfViewer extends StatelessWidget {
   });
 
   List<List<PdfPageImage?>> _groupImagesInPairs(List<PdfPageImage?> images) {
-    List<List<PdfPageImage?>> rows = [];
-    for (int i = 0; i < images.length; i += 2) {
-      final range = i + 2 > images.length ? images.length : i + 2;
-      rows.add(images.sublist(i, range));
-    }
-    return rows;
+    return List.generate(
+      (images.length / 2).ceil(),
+      (index) => images.sublist(
+        index * 2,
+        (index * 2 + 2).clamp(0, images.length),
+      ),
+    );
   }
 
   Widget _buildPdfPage(PdfPageImage? pageImage) {
     if (pageImage == null) return const SizedBox.shrink();
 
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Center(
-        child: Transform.rotate(
-          angle: angleRotation,
-          child: Image.memory(pageImage.bytes),
+    const double scaleFactor = 0.9;
+
+    return Center(
+      child: Transform.rotate(
+        angle: angleRotation,
+        child: SizedBox(
+          width: pageImage.width! * scaleFactor,
+          height: pageImage.height! * scaleFactor,
+          child: FittedBox(
+            fit: BoxFit.cover,
+            child: Image.memory(pageImage.bytes),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildActionButtons(List<PdfPageImage?> pages) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ElevatedButton(
-          onPressed: onCancel,
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            backgroundColor: Colors.white,
-          ),
-          child: const Text("Cancelar", style: TextStyle(color: Colors.black)),
-        ),
-        const SizedBox(width: 15),
-        ElevatedButton(
-          onPressed: () => onPrint(pages),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            backgroundColor: Colors.blue,
-          ),
-          child: const Text("Imprimir", style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return FutureBuilder<List<PdfPageImage?>>(
       future: futurePdf,
       builder: (context, snapshot) {
@@ -105,35 +86,52 @@ class PdfViewer extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final rows = _groupImagesInPairs(snapshot.data!);
+        final rows = snapshot.data!.length == 1
+            ? [snapshot.data!]
+            : _groupImagesInPairs(snapshot.data!);
 
-        return Column(
-          children: [
-            SizedBox(
-              height: screenHeight * 0.75,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
+        return Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              children: rows.map((row) {
+                return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: rows.map((row) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: row.map((page) {
-                          return SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            child: _buildPdfPage(page),
-                          );
-                        }).toList(),
-                      ),
-                    );
+                  children: row.map((page) {
+                    return _buildPdfPage(page);
                   }).toList(),
-                ),
-              ),
+                );
+              }).toList(),
             ),
-            _buildActionButtons(snapshot.data!),
-          ],
+          ),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: onCancel,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 16),
+                    backgroundColor: Colors.red,
+                  ),
+                  child: const Text("Cancelar",
+                      style: TextStyle(color: Colors.white)),
+                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () => onPrint(snapshot.data!),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 16),
+                    backgroundColor: AppTheme.backgroundBlue,
+                  ),
+                  child: const Text("Imprimir",
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );

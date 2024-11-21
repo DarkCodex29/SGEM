@@ -37,7 +37,6 @@ dependencies:
   file_saver: ^0.2.13
   flutter:
     sdk: flutter
-  flutter_isolate: ^2.1.0
   flutter_secure_storage: ^9.2.2
   flutter_svg: ^2.0.4
   get: ^4.6.6

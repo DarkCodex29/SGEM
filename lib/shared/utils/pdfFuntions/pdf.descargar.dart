@@ -1,78 +1,189 @@
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdfx/pdfx.dart';
 import 'dart:typed_data';
 import 'dart:html' as html;
+import 'package:image/image.dart';
 
-Future<pw.Page> generatePdfPageFromImages(Future<List<PdfPageImage?>> imagess) async {
-  var images = await imagess;
-  // Crea la página del PDF
-  return generatePdfPagesFromImages(images);
+// Procesar una imagen (rotar, redimensionar y/o comprimir)
+Future<Uint8List> processImageAsync(Uint8List imageBytes,
+    {int? width, int quality = 100, bool rotate = false}) async {
+  return await Future(() {
+    final image = decodeImage(imageBytes);
+    if (image == null) return imageBytes;
+
+    Image processedImage = image;
+
+    if (width != null) {
+      processedImage = copyResize(processedImage, width: width);
+    }
+
+    if (rotate) {
+      processedImage = copyRotate(processedImage, angle: 90);
+    }
+
+    return Uint8List.fromList(encodeJpg(processedImage, quality: quality));
+  });
 }
 
-Future<pw.Page> generatePdfPagesFromImages(List<PdfPageImage?> imagess) async {
-  var images = imagess;
-  // Crea la página del PDF
-  return pw.Page(
-    orientation: pw.PageOrientation.landscape,
-    build: (pw.Context context) {
+// Convertir una imagen a escala de grises
+Future<Uint8List> convertToGrayscaleAsync(Uint8List imageBytes) async {
+  return await Future(() {
+    final decodedImage = decodeImage(imageBytes);
+    if (decodedImage != null) {
+      final grayImage = grayscale(decodedImage);
+      return Uint8List.fromList(encodeJpg(grayImage, quality: 100));
+    }
+    return imageBytes;
+  });
+}
+
+// Generar el PDF dinámicamente con imágenes distribuidas en filas y columnas
+pw.Widget generateDynamicGrid(List<PdfPageImage?> images,
+    {int columns = 2, int imageWidth = 800}) {
+  final rows = (images.length / columns).ceil();
+
+  return pw.Column(
+    children: List.generate(rows, (rowIndex) {
       return pw.Row(
-        children: [
-          _columnCarnet(images, 0, 4),
-          _columnCarnet(images, 1, 5),
-          _columnCarnet(images, 2, 6),
-          _columnCarnet(images, 3, 7),
-        ],
+        children: List.generate(columns, (colIndex) {
+          final imageIndex = rowIndex * columns + colIndex;
+
+          if (imageIndex < images.length && images[imageIndex] != null) {
+            return pw.Expanded(
+              child: pw.Container(
+                padding: const pw.EdgeInsets.all(5),
+                child: pw.Image(
+                  pw.MemoryImage(images[imageIndex]!.bytes),
+                  fit: pw.BoxFit.contain,
+                ),
+              ),
+            );
+          } else {
+            return pw.Expanded(child: pw.Container()); // Espacio vacío
+          }
+        }),
       );
-    },
+    }),
   );
 }
 
-Future<void> descargarPaginaComoPdf(Future<List<PdfPageImage?>> imagess) async {
-  var page = await imagess;
-  // Crea un documento PDF
-  return descargarPaginasComoPdf(page);
-}
+// Descargar un PDF generado con una o más páginas
+Future<void> descargarPaginasComoPdf(List<PdfPageImage?> imagess,
+    {String nombreArchivo = "documento.pdf",
+    bool rotar = false,
+    int columns = 2,
+    double margin = 10.0}) async {
+  if (imagess.isEmpty) {
+    throw Exception("No hay imágenes para generar el PDF.");
+  }
 
-Future<void> descargarPaginasComoPdf(List<PdfPageImage?> imagess) async {
-  var page = await generatePdfPagesFromImages(imagess);
-  // Crea un documento PDF
   final pdf = pw.Document();
 
-  // Agrega la página al documento
-  pdf.addPage(page);
+  for (var i = 0; i < imagess.length; i++) {
+    final image = imagess[i];
+    if (image != null) {
+      final processedImage =
+          await processImageAsync(image.bytes, rotate: rotar);
 
-  // Genera el archivo PDF como Uint8List
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.all(margin),
+          build: (pw.Context context) {
+            return pw.Center(
+              child: pw.Image(
+                pw.MemoryImage(processedImage),
+                fit: pw.BoxFit.contain,
+              ),
+            );
+          },
+        ),
+      );
+
+      // Permitir que el navegador procese eventos
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+  }
+
+  // Guardar y descargar el PDF
   final Uint8List bytes = await pdf.save();
-
-  // Crea un blob a partir del archivo PDF
   final blob = html.Blob([bytes], 'application/pdf');
-
-  // Crea una URL para el archivo PDF
   final url = html.Url.createObjectUrlFromBlob(blob);
-
-  // Crea un enlace temporal para la descarga
   final anchor = html.AnchorElement(href: url)
-    ..setAttribute('download', 'pagina.pdf')
+    ..setAttribute('download', nombreArchivo)
     ..click();
-
-  // Revoca la URL temporal
   html.Url.revokeObjectUrl(url);
 }
 
-pw.Widget _columnCarnet(List<PdfPageImage?> images, int position1, int position2) {
+// Descargar una sola página como PDF
+Future<void> descargarPaginaComoPdf(Future<List<PdfPageImage?>> imagess,
+    {String nombreArchivo = "documento.pdf", bool rotar = false}) async {
+  var images = await imagess;
+
+  if (images.isEmpty) {
+    print("No hay imágenes para generar el PDF.");
+    return;
+  }
+
+  await descargarPaginasComoPdf(images,
+      nombreArchivo: nombreArchivo, rotar: rotar);
+}
+
+// Generar una columna dinámica de carnets (dos imágenes por columna)
+pw.Widget _columnCarnet(
+    List<PdfPageImage?> images, int position1, int position2) {
   return pw.Column(
+    mainAxisAlignment: pw.MainAxisAlignment.center,
     children: [
-      // Mostrar las últimas dos imágenes
       pw.Expanded(
-        child: images[position1] != null
-            ? pw.Image(pw.MemoryImage(images[position1]!.bytes))
-            : pw.Container(), // Si es null, muestra un contenedor vacío
+        child: (position1 < images.length && images[position1] != null)
+            ? pw.Image(
+                pw.MemoryImage(images[position1]!.bytes),
+              )
+            : pw.Container(),
       ),
       pw.Expanded(
-        child: images[position2] != null
-            ? pw.Image(pw.MemoryImage(images[position2]!.bytes))
-            : pw.Container(), // Si es null, muestra un contenedor vacío
+        child: (position2 < images.length && images[position2] != null)
+            ? pw.Image(
+                pw.MemoryImage(images[position2]!.bytes),
+              )
+            : pw.Container(),
       ),
     ],
+  );
+}
+
+// Método para generar una página del PDF desde imágenes
+Future<pw.Page> generatePdfPageFromImages(
+    Future<List<PdfPageImage?>> imagess) async {
+  var images = await imagess;
+  return generatePdfPagesFromImages(images);
+}
+
+// Método para generar varias páginas del PDF desde imágenes
+Future<pw.Page> generatePdfPagesFromImages(List<PdfPageImage?> imagess) async {
+  var images = imagess;
+
+  // Calcular columnas dinámicamente (2 imágenes por columna)
+  final int totalColumns = (images.length / 2).ceil();
+
+  return pw.Page(
+    orientation: pw.PageOrientation.portrait,
+    margin: const pw.EdgeInsets.all(10),
+    build: (pw.Context context) {
+      return pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.center,
+        children: List.generate(
+          totalColumns,
+          (index) {
+            final int position1 = index * 2;
+            final int position2 = position1 + 1;
+
+            return _columnCarnet(images, position1, position2);
+          },
+        ),
+      );
+    },
   );
 }

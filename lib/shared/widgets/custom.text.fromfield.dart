@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 
@@ -15,6 +16,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType inputType;
   final bool? enabled;
   final bool isMultiEmail;
+  final TextStyle textStyle;
   const CustomTextFormField(
       {super.key,
       required this.label,
@@ -29,7 +31,8 @@ class CustomTextFormField extends StatelessWidget {
       this.focusNode,
       this.inputType = TextInputType.text,
       this.isMultiEmail = false,
-      this.enabled = true});
+      this.enabled = true,
+      this.textStyle = const TextStyle()});
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +49,13 @@ class CustomTextFormField extends StatelessWidget {
               onChanged: onChanged,
               focusNode: focusNode,
               enabled: enabled,
+              style: textStyle,
               validator: (value) {
                 if (!isRequired) {
                   return null;
                 }
 
-                if (value != null && value.trim().isEmpty ) {
+                if (value != null && value.trim().isEmpty) {
                   return 'Campo requerido';
                 }
                 if (inputType == TextInputType.emailAddress) {

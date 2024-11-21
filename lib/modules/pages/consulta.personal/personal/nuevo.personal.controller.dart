@@ -398,6 +398,7 @@ class NuevoPersonalController extends GetxController {
         idOrigen: idOrigen, // 1: TABLA Personal
         idOrigenKey: idOrigenKey,
       );
+
       log('Response: ${response.data}');
       if (response.success && response.data != null) {
         archivosAdjuntos.clear();

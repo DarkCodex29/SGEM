@@ -183,7 +183,7 @@ class NuevaCapacitacionController extends GetxController {
   Future<bool?> registrarCapacitacion() async {
     try {
       // Validar que exista el personal interno
-      if (personalInterno?.key == null) {
+      if ( personalInterno?.key == null) {
         Get.snackbar('Error', 'No se ha seleccionado personal interno',
             backgroundColor: Colors.red, colorText: Colors.white);
         return false;

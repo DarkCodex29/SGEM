@@ -138,10 +138,10 @@ class NuevaCapacitacionController extends GetxController {
       final response =
           await personalService.obtenerPersonalExternoPorNumeroDocumento(dni);
 
-      log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
+      log('Capacitacion Controller: response:${response.success} data:${response.data!.key}');
       log('PersonalExterno: ${response.data!.toJson()}');
       if (response.success && response.data != null) {
-        log("Capacitacion Controller: response:${response.success} data:${response.data!.key}");
+        log('Capacitacion Controller: response:${response.success} data:${response.data!.key}');
 
         log('Personal Externo: Key- ${response.data}');
         personalExterno = response.data;
@@ -216,7 +216,7 @@ class NuevaCapacitacionController extends GetxController {
   Future<bool?> registrarCapacitacion() async {
     try {
       // Validar que exista el personal interno
-      if (personalInterno?.key == null) {
+      if ( personalInterno?.key == null) {
         Get.snackbar('Error', 'No se ha seleccionado personal interno',
             backgroundColor: Colors.red, colorText: Colors.white);
         return false;

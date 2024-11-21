@@ -92,9 +92,9 @@ class EntrenamientoNuevoController extends GetxController {
       if (condiciones != null) condicionDetalle.assignAll(condiciones);
       if (estados != null) estadoDetalle.assignAll(estados);
 
-      log("Datos de equipos y condiciones cargados correctamente");
+      log('Datos de equipos y condiciones cargados correctamente');
     } catch (e) {
-      log("Error al cargar equipos o condiciones: $e");
+      log('Error al cargar equipos o condiciones: $e');
     } finally {
       isLoading.value = false;
     }

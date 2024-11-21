@@ -72,7 +72,7 @@ class PersonalSearchPage extends StatelessWidget {
                 controller: controller);
           case PersonalSearchScreen.certificadoPersonal:
             return PdfToCertificadoScreen(
-                data: controller.selectedPersonal.value,
+                personal: controller.selectedPersonal.value,
                 controller: controller);
         }
       }),

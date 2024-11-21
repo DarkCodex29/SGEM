@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
@@ -11,13 +10,32 @@ import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 Future<pw.Page> generateCertificado(
     Personal? personal,
     EntrenamientoModulo? entrenamiento,
-    Map<int, RxList<EntrenamientoModulo>> modulosPorEntrenamiento) async {
-      
-  const horamodulo1 = 5;
-  const horamodulo2 = 10;
-  const totalHoras = horamodulo1 + horamodulo2;
+    List<EntrenamientoModulo> modulos) async {
   const double heigthCeldastable = 30;
+  int totalHoras =
+      modulos.fold(0, (sum, modulo) => sum + (modulo.inHorasAcumuladas ?? 0));
   final imageIcon = await loadImage('logo.png');
+  modulos.sort((a, b) {
+    return a.modulo!.nombre!.compareTo(b.modulo!.nombre!);
+  });
+
+  List<Map<String, dynamic>> notasPorCategoria(
+      List<EntrenamientoModulo> modulos) {
+    // Ordenar los módulos por nombre
+    modulos.sort((a, b) => a.modulo!.nombre!.compareTo(b.modulo!.nombre!));
+
+    // Crear las filas de categorías (Teórico y Práctico)
+    return [
+      {
+        "tipo": "Teórico",
+        "notas": modulos.map((modulo) => modulo.inNotaTeorica ?? 0).toList(),
+      },
+      {
+        "tipo": "Práctico",
+        "notas": modulos.map((modulo) => modulo.inNotaPractica ?? 0).toList(),
+      },
+    ];
+  }
 
   final page = pw.Page(
     //orientation: pw.PageOrientation.landscape,
@@ -60,7 +78,8 @@ Future<pw.Page> generateCertificado(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     userDetailEncabezado("Empresa:", "Minera Chinalco Peru"),
-                    userDetailEncabezado("Fecha:", DateTime.now().toString()),
+                    userDetailEncabezado("Fecha:",
+                        DateFormat('dd/MM/yyyy').format(DateTime.now())),
                     userDetailEncabezado(
                         "Proceso:", "Entrenamiento de equipos moviles"),
                   ],
@@ -129,30 +148,23 @@ Future<pw.Page> generateCertificado(
                                   const pw.TextStyle(color: PdfColors.white))),
                     ],
                   ),
-                  pw.TableRow(
-                    children: [
-                      pw.Container(
+                  ...modulos.map((modulo) {
+                    return pw.TableRow(
+                      children: [
+                        pw.Container(
+                          padding: const pw.EdgeInsets.all(0),
                           height: heigthCeldastable,
                           alignment: pw.Alignment.center,
-                          child: pw.Text("I")),
-                      pw.Container(
-                          height: heigthCeldastable,
-                          alignment: pw.Alignment.center,
-                          child: pw.Text("$horamodulo1")),
-                    ],
-                  ),
-                  pw.TableRow(
-                    children: [
-                      pw.Container(
-                          height: heigthCeldastable,
-                          alignment: pw.Alignment.center,
-                          child: pw.Text("II")),
-                      pw.Container(
-                          height: heigthCeldastable,
-                          alignment: pw.Alignment.center,
-                          child: pw.Text("$horamodulo2")),
-                    ],
-                  ),
+                          child: pw.Text(modulo.modulo!.nombre!),
+                        ),
+                        pw.Container(
+                            height: heigthCeldastable,
+                            alignment: pw.Alignment.center,
+                            child:
+                                pw.Text(modulo.inHorasAcumuladas!.toString())),
+                      ],
+                    );
+                  }),
                   pw.TableRow(
                     children: [
                       pw.Container(
@@ -210,18 +222,12 @@ Future<pw.Page> generateCertificado(
             pw.Container(
               width: double.infinity,
               alignment: pw.Alignment.centerLeft,
-              child: pw.Text("Evaluación del participante")
+              child: pw.Text("Evaluación del participante",
+                      style: pw.TextStyle(fontWeight: pw.FontWeight.bold))
                   .padding(const pw.EdgeInsets.only(top: 10, bottom: 10)),
             ),
             pw.Table(
               border: pw.TableBorder.all(),
-              columnWidths: {
-                0: const pw.FlexColumnWidth(2),
-                1: const pw.FlexColumnWidth(1),
-                2: const pw.FlexColumnWidth(1),
-                3: const pw.FlexColumnWidth(1),
-                4: const pw.FlexColumnWidth(1),
-              },
               children: [
                 pw.TableRow(
                   children: [
@@ -232,62 +238,43 @@ Future<pw.Page> generateCertificado(
                       child: pw.Text("Notas",
                           style: const pw.TextStyle(color: PdfColors.white)),
                     ),
-                    pw.Container(
-                      height: heigthCeldastable,
-                      alignment: pw.Alignment.center,
-                      color: const PdfColor.fromInt(0xFF051367),
-                      child: pw.Text("Módulo I",
-                          style: const pw.TextStyle(color: PdfColors.white)),
-                    ),
-                    pw.Container(
-                      height: heigthCeldastable,
-                      alignment: pw.Alignment.center,
-                      color: const PdfColor.fromInt(0xFF051367),
-                      child: pw.Text("Módulo II",
-                          style: const pw.TextStyle(color: PdfColors.white)),
-                    ),
-                    pw.Container(
-                      height: heigthCeldastable,
-                      alignment: pw.Alignment.center,
-                      color: const PdfColor.fromInt(0xFF051367),
-                      child: pw.Text("Módulo III",
-                          style: const pw.TextStyle(color: PdfColors.white)),
-                    ),
-                    pw.Container(
-                      height: heigthCeldastable,
-                      alignment: pw.Alignment.center,
-                      color: const PdfColor.fromInt(0xFF051367),
-                      child: pw.Text("Módulo IV",
-                          style: const pw.TextStyle(color: PdfColors.white)),
-                    ),
+                    ...modulos.map((modulo) {
+                      return pw.Container(
+                        height: heigthCeldastable,
+                        alignment: pw.Alignment.center,
+                        color: const PdfColor.fromInt(0xFF051367),
+                        child: pw.Text(modulo.modulo!.nombre!,
+                            style: const pw.TextStyle(color: PdfColors.white)),
+                      );
+                    }),
                   ],
                 ),
-                pw.TableRow(
-                  children: [
-                    pw.Text("Teórico"),
-                    pw.Text("20"),
-                    pw.Text("15"),
-                    pw.Text("44"),
-                    pw.Text("50"),
-                  ],
-                ),
-                pw.TableRow(
-                  children: [
-                    pw.Text("Práctico"),
-                    pw.Text("30"),
-                    pw.Text("35"),
-                    pw.Text("50"),
-                    pw.Text("68"),
-                  ],
-                ),
+                ...notasPorCategoria(modulos).map((categoria) {
+                  return pw.TableRow(
+                    children: [
+                      pw.Container(
+                        height: heigthCeldastable,
+                        alignment: pw.Alignment.center,
+                        child: pw.Text(categoria["tipo"]),
+                      ),
+                      ...categoria["notas"].map((nota) {
+                        return pw.Container(
+                          height: heigthCeldastable,
+                          alignment: pw.Alignment.center,
+                          child: pw.Text(nota.toString()),
+                        );
+                      }).toList(),
+                    ],
+                  );
+                }),
               ],
             ),
             pw.Container(
               width: double.infinity,
               alignment: pw.Alignment.centerLeft,
               child: pw.Text(
-                      "Se concluye que el operador queda APTO para operar el equipo HEX 390DL")
-                  .padding(const pw.EdgeInsets.only(top: 10, bottom: 10)),
+                "Se concluye que el operador queda APTO para operar el equipo ${entrenamiento.equipo!.nombre} en la mina de Chinalco Perú.",
+              ).padding(const pw.EdgeInsets.only(top: 10, bottom: 10)),
             ),
           ],
         ),

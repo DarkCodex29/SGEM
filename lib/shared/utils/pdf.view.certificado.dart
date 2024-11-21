@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:sgem/modules/pages/consulta.personal/entrenamiento/entrenamiento.personal.controller.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/PDFGenerators/generate.certificado.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
@@ -34,10 +35,12 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
   Future<List<PdfPageImage?>> getData() async {
     final personalData = widget.personal;
     final training = entrenamientoController.selectedTraining.value;
-    final modulos = entrenamientoController.modulosPorEntrenamiento;
+    List<EntrenamientoModulo>? modulos = entrenamientoController
+        .modulosPorEntrenamiento[training!.key!]
+        ?.toList();
 
     List<Future<pw.Page>> listPages = [];
-    listPages.add(generateCertificado(personalData, training, modulos));
+    listPages.add(generateCertificado(personalData, training, modulos!));
     return getImages(listPages);
   }
 

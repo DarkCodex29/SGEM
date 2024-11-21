@@ -529,7 +529,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           },
           controller.aaExamenPracticoExiste,
         ),
-
         _buildAdjuntoRow(
           'Otros',
           controller.aaOtrosController,
@@ -589,14 +588,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           },
           controller.aaOtrosExiste,
         ),
-        // Obx((){
-        //
-        //   return Column(crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //
-        //   ],
-        //   );
-        // }),
       ],
     );
   }
@@ -627,12 +618,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             controller: controller,
             isReadOnly: true,
             isRequired: false,
-            // textStyle: archivoSeleccionado
-            //     ? const TextStyle(
-            //         fontWeight: FontWeight.bold, color: Colors.blueAccent)
-            //     : const TextStyle(),
-            //nombreArchivo,
-            //style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(width: 10),
@@ -648,15 +633,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             width: 0,
           );
         }),
-
-        //if (archivoSeleccionado)
-        //   IconButton(
-        //     tooltip: 'Quitar archivo',
-        //     icon: const Icon(Icons.close, color: Colors.red),
-        //     onPressed: onRemove,
-        //   ),
         const SizedBox(width: 10),
-        //if (archivoSeleccionado)
         Obx(() {
           if (!archivoExiste.value && archivoSeleccionado.value) {
             return IconButton(
@@ -670,14 +647,6 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             width: 0,
           );
         }),
-
-        // IconButton(
-        //   tooltip: 'Subir archivo',
-        //   icon: const Icon(Icons.upload_rounded, color: Colors.blueAccent),
-        //   onPressed: onUpload,
-        // ),
-        //const SizedBox(width: 10),
-
         Obx(() {
           if (archivoExiste.value) {
             return IconButton(
@@ -687,17 +656,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             );
           }
           ;
-          return SizedBox(
+          return const SizedBox(
             width: 0,
           );
         }),
-
-        // //if (archivoExiste)
-        //   IconButton(
-        //     tooltip: 'Elimnar archivo',
-        //     icon: const Icon(Icons.delete, color: Colors.red),
-        //     onPressed: onDelete,
-        //   ),
       ],
     );
   }
@@ -721,28 +683,61 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () async {
-              bool success = false;
-              //var pendientes = controller.validarArchivosPorSubir();
-              //log('pendientes: ${pendientes}');
-              // if (pendientes) {
-              //   showDialog(
-              //     context: Get.context!,
-              //     builder: (context) {
-              //       return const MensajeValidacionWidget(
-              //         errores: [
-              //           "Hay archivos selecionados pendientes por subir. Confirmelos o eliminelos."
-              //         ],
-              //       );
-              //     },
-              //   );
-              // }
-              //else {
-              success = await controller.registrarModulo(context);
+              final success = await _handleButtonPress();
               if (success) {
-                await controller.subirArchivos();
                 onCancel();
               }
-              //}
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            ),
+            child: Obx(() {
+              return controller.isSaving.value
+                  ? const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              )
+                  : const Text(
+                "Guardar",
+                style: TextStyle(color: Colors.white),
+              );
+            }),
+          ),
+
+          /*
+          ElevatedButton(
+            onPressed: () async {
+              bool success = false;
+
+              if (controller.dropdownController
+                      .getSelectedValue('estadoModulo')!
+                      .nombre!
+                      .toLowerCase() ==
+                  'completo') {
+                if (!controller.validarArchivosObligatorios()) {
+                  showDialog(
+                    context: Get.context!,
+                    builder: (context) {
+                      return const MensajeValidacionWidget(
+                        errores: [
+                          "No se puedo completar el modulo mientras no se hayan completado todas las condiciones."
+                        ],
+                      );
+                    },
+                  );
+                }
+                success = await controller.registrarModulo(context);
+                await controller.subirArchivos();
+                if (success) {
+                  onCancel();
+                }
+              } else {
+                success = await controller.registrarModulo(context);
+                await controller.subirArchivos();
+                if (success) {
+                  onCancel();
+                }
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,
@@ -757,8 +752,41 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                       style: TextStyle(color: Colors.white));
             }),
           ),
+          */
         ],
       ),
     );
   }
+
+  Future<bool> _handleButtonPress() async {
+    final isModuloCompleto = _isEstadoModuloCompleto();
+
+    if (isModuloCompleto && !controller.validarArchivosObligatorios()) {
+      _mostrarErrores([
+        "No se puede completar el módulo mientras no se hayan cumplido todas las condiciones."
+      ]);
+      return false;
+    }
+
+    final success = await controller.registrarModulo(Get.context!);
+    if (success) {
+      await controller.subirArchivos();
+    }
+    return success;
+  }
+  bool _isEstadoModuloCompleto() {
+    final selectedValue = controller.dropdownController.getSelectedValue('estadoModulo');
+    return selectedValue != null &&
+        selectedValue.nombre?.toLowerCase() == 'completo';
+  }
+
+  void _mostrarErrores(List<String> errores) {
+    showDialog(
+      context: Get.context!,
+      builder: (context) {
+        return MensajeValidacionWidget(errores: errores);
+      },
+    );
+  }
 }
+

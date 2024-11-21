@@ -157,15 +157,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
       if (response.success && response.data != null) {
-        /*
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-          SnackBar(
-            content: Text(
-                "Módulo ${isEdit ? "actualizado" : "registrado"} con éxito."),
-            backgroundColor: Colors.green,
-          ),
-        );
-*/
         EntrenamientoPersonalController controller =
             Get.put(EntrenamientoPersonalController());
         controller
@@ -175,26 +166,10 @@ class EntrenamientoModuloNuevoController extends GetxController {
         return true;
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
-        /*
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-          SnackBar(
-            content: Text(
-                "Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}"),
-            backgroundColor: Colors.red,
-          ),
-        );
-        */
+
         return false;
       }
     } catch (e) {
-      /*
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        SnackBar(
-          content: Text(
-              "Error al ${isEdit ? "actualizar" : "registrar"} módulo: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );*/
       return false;
     }
   }
@@ -749,6 +724,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Examen Practico existe ${aaExamenPracticoSeleccionado.value}');
       log('Otros existe ${aaOtrosSeleccionado.value}');
 
+      return true;
+    }
+    return false;
+  }
+
+  bool validarArchivosObligatorios() {
+    if (aaControlHorasExiste.value &&
+        aaExamenTeoricoExiste.value &&
+        aaExamenPracticoExiste.value) {
       return true;
     }
     return false;

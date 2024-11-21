@@ -21,7 +21,7 @@ class MaestroService {
 
   Future<ResponseHandler<List<OptionValue>>> getMaestros() async {
     try {
-      final response = await _dio.get<List<dynamic>>('/ListarMaestros');
+      final response = await _dio.get<List<dynamic>>('/ListarMaestrosEditables');
 
       return ResponseHandler.handleSuccess(
         response.data

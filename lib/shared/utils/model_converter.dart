@@ -1,13 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
 
-class IntBoolConverter extends JsonConverter<int, bool> {
+class IntBoolConverter extends JsonConverter<bool, int> {
   const IntBoolConverter();
 
   @override
-  int fromJson(bool json) => json ? 1 : 0;
+  int toJson(bool object) => object ? 1 : 0;
 
   @override
-  bool toJson(int object) => object == 1;
+  bool fromJson(int json) => json == 1;
 }
 
 const intBoolConverter = IntBoolConverter();

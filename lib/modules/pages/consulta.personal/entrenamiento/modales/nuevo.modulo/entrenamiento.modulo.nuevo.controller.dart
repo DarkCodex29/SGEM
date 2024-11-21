@@ -1,12 +1,17 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
+import 'package:sgem/config/constants/origen.archivo.dart';
+import 'package:sgem/config/constants/tipo.archivo.modulo.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/modulo.maestro.dart';
 import 'package:sgem/shared/modules/option.value.dart';
@@ -36,6 +41,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
   DateTime? fechaTermino;
   DateTime? fechaExamen;
 
+  ArchivoService archivoService = ArchivoService();
   ModuloMaestroService moduloMaestroService = ModuloMaestroService();
   PersonalService personalService = PersonalService();
   EntrenamientoService entrenamientoService = EntrenamientoService();
@@ -51,6 +57,21 @@ class EntrenamientoModuloNuevoController extends GetxController {
   var aaExamenTeoricoSeleccionado = false.obs;
   var aaExamenPracticoSeleccionado = false.obs;
   var aaOtrosSeleccionado = false.obs;
+
+  Uint8List? aaControlHorasFileBytes;
+  Uint8List? aaExamenTeoricoFileBytes;
+  Uint8List? aaExamenPracticoFileBytes;
+  Uint8List? aaOtrosFileBytes;
+
+  var aaControlHorasExiste = false.obs;
+  var aaExamenTeoricoExiste = false.obs;
+  var aaExamenPracticoExiste = false.obs;
+  var aaOtrosExiste = false.obs;
+
+  var aaControlHorasId = 0.obs;
+  var aaExamenTeoricoId = 0.obs;
+  var aaExamenPracticoId = 0.obs;
+  var aaOtrosId = 0.obs;
 
   RxBool isSaving = false.obs;
 
@@ -155,7 +176,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       } else {
         log('Error al ${isEdit ? "actualizar" : "registrar"} módulo: ${response.message}');
         /*
-        
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           SnackBar(
             content: Text(
@@ -358,7 +378,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
-  void llenarDatos() {
+  Future<void> llenarDatos() async {
     fechaInicio = entrenamientoModulo!.fechaInicio;
     fechaInicioController.text = DateFormat('dd/MM/yyyy').format(fechaInicio!);
     fechaTermino = entrenamientoModulo!.fechaTermino;
@@ -384,17 +404,11 @@ class EntrenamientoModuloNuevoController extends GetxController {
         'estadoModulo', entrenamientoModulo!.inEstado);
 
     inModulo.value = entrenamientoModulo!.inModulo!;
+
+    await obtenerArchivosRegistrados();
   }
 
   Future<void> cargarArchivoControlHoras() async {
-    // cargaMasivaResultadosPaginados.clear();
-    // cargaMasivaResultadosValidados.clear();
-    //
-    // archivoController.clear();
-    // totalRecords.value=0;
-    // correctRecords.value=0;
-    // errorRecords.value=0;
-
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
@@ -405,10 +419,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (result != null) {
         PlatformFile file = result.files.first;
         if (file.bytes != null) {
-          Uint8List fileBytes = file.bytes!;
+          //Uint8List fileBytes = file.bytes!;
+          aaControlHorasFileBytes = file.bytes!;
           String fileName = file.name;
 
-          aaControlHorasController.text = fileName; // Muestra el nombre del archivo
+          aaControlHorasController.text =
+              fileName; // Muestra el nombre del archivo
           log('Documento adjuntado correctamente: $fileName');
 
           aaControlHorasSeleccionado.value = true;
@@ -420,15 +436,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Error al adjuntar documentos: $e');
     }
   }
-  Future<void> cargarArchivoExamenTeorico() async {
-    // cargaMasivaResultadosPaginados.clear();
-    // cargaMasivaResultadosValidados.clear();
-    //
-    // archivoController.clear();
-    // totalRecords.value=0;
-    // correctRecords.value=0;
-    // errorRecords.value=0;
 
+  Future<void> cargarArchivoExamenTeorico() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
@@ -439,10 +448,12 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (result != null) {
         PlatformFile file = result.files.first;
         if (file.bytes != null) {
-          Uint8List fileBytes = file.bytes!;
+          //Uint8List fileBytes = file.bytes!;
+          aaExamenTeoricoFileBytes = file.bytes!;
           String fileName = file.name;
 
-          aaExamenTeoricoController.text = fileName; // Muestra el nombre del archivo
+          aaExamenTeoricoController.text =
+              fileName; // Muestra el nombre del archivo
           log('Documento adjuntado correctamente: $fileName');
 
           aaExamenTeoricoSeleccionado.value = true;
@@ -454,15 +465,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       log('Error al adjuntar documentos: $e');
     }
   }
-  Future<void> cargarArchivoExamenPractico() async {
-    // cargaMasivaResultadosPaginados.clear();
-    // cargaMasivaResultadosValidados.clear();
-    //
-    // archivoController.clear();
-    // totalRecords.value=0;
-    // correctRecords.value=0;
-    // errorRecords.value=0;
 
+  Future<String> cargarArchivoExamenPractico() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
@@ -473,30 +477,26 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (result != null) {
         PlatformFile file = result.files.first;
         if (file.bytes != null) {
-          Uint8List fileBytes = file.bytes!;
+          //Uint8List fileBytes = file.bytes!;
+          aaExamenPracticoFileBytes = file.bytes!;
           String fileName = file.name;
 
-          aaExamenPracticoController.text = fileName; // Muestra el nombre del archivo
+          aaExamenPracticoController.text =
+              fileName; // Muestra el nombre del archivo
           log('Documento adjuntado correctamente: $fileName');
-
           aaExamenPracticoSeleccionado.value = true;
+          return ('Control de horas adjuntado correctamente: $fileName');
         }
       } else {
-        log('No se seleccionaron archivos');
+        return ('No se seleccionaron archivos');
       }
     } catch (e) {
-      log('Error al adjuntar documentos: $e');
+      return ('Error al adjuntar documentos: $e');
     }
+    return ('');
   }
-  Future<void> cargarArchivoOtros() async {
-    // cargaMasivaResultadosPaginados.clear();
-    // cargaMasivaResultadosValidados.clear();
-    //
-    // archivoController.clear();
-    // totalRecords.value=0;
-    // correctRecords.value=0;
-    // errorRecords.value=0;
 
+  Future<void> cargarArchivoOtros() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         allowMultiple: false,
@@ -507,7 +507,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (result != null) {
         PlatformFile file = result.files.first;
         if (file.bytes != null) {
-          Uint8List fileBytes = file.bytes!;
+          //Uint8List fileBytes = file.bytes!;
+          aaOtrosFileBytes = file.bytes!;
           String fileName = file.name;
 
           aaOtrosController.text = fileName; // Muestra el nombre del archivo
@@ -520,6 +521,298 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     } catch (e) {
       log('Error al adjuntar documentos: $e');
+    }
+  }
+
+  Future<String> registrarArchivoControlHoras() async {
+    try {
+      String datosBase64 = base64Encode(aaControlHorasFileBytes!);
+      String extension = aaControlHorasController.text.split('.').last;
+      String mimeType = _determinarMimeType(extension);
+
+      final response = await archivoService.registrarArchivo(
+        key: 0,
+        nombre: aaControlHorasController.text,
+        extension: extension,
+        mime: mimeType,
+        datos: datosBase64,
+        inTipoArchivo: TipoArchivoModulo.CONTROL_HORAS,
+        inOrigen: OrigenArchivo.entrenamientoModulo,
+        inOrigenKey: entrenamientoModuloId,
+      );
+
+      if (response.success) {
+        aaControlHorasSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
+        log('Archivo ${aaControlHorasController.text} registrado con éxito');
+        return ('Archivo ${aaControlHorasController.text} registrado con éxito');
+      } else {
+        log('Error al registrar archivo  ${aaControlHorasController.text}: ${response.message}');
+        return ('Error al registrar archivo  ${aaControlHorasController.text}: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al registrar archivos: $e');
+      return ('Error al registrar archivos: $e');
+    }
+  }
+
+  Future<void> registrarArchivoExamenTeorico() async {
+    try {
+      String datosBase64 = base64Encode(aaExamenTeoricoFileBytes!);
+      String extension = aaExamenTeoricoController.text.split('.').last;
+      String mimeType = _determinarMimeType(extension);
+
+      final response = await archivoService.registrarArchivo(
+        key: 0,
+        nombre: aaExamenTeoricoController.text,
+        extension: extension,
+        mime: mimeType,
+        datos: datosBase64,
+        inTipoArchivo: TipoArchivoModulo.EXAMEN_TEORICO,
+        inOrigen: OrigenArchivo.entrenamientoModulo,
+        inOrigenKey: entrenamientoModuloId,
+      );
+
+      if (response.success) {
+        aaExamenTeoricoSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
+        log('Archivo ${aaExamenTeoricoController.text} registrado con éxito');
+      } else {
+        log('Error al registrar archivo  ${aaExamenTeoricoController.text}: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al registrar archivos: $e');
+    }
+  }
+
+  Future<void> registrarArchivoExamenPractico() async {
+    try {
+      String datosBase64 = base64Encode(aaExamenPracticoFileBytes!);
+      String extension = aaExamenPracticoController.text.split('.').last;
+      String mimeType = _determinarMimeType(extension);
+
+      final response = await archivoService.registrarArchivo(
+        key: 0,
+        nombre: aaExamenPracticoController.text,
+        extension: extension,
+        mime: mimeType,
+        datos: datosBase64,
+        inTipoArchivo: TipoArchivoModulo.EXAMEN_PRACTICO,
+        inOrigen: OrigenArchivo.entrenamientoModulo,
+        inOrigenKey: entrenamientoModuloId,
+      );
+
+      if (response.success) {
+        aaExamenPracticoSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
+        log('Archivo ${aaExamenPracticoController.text} registrado con éxito');
+      } else {
+        log('Error al registrar archivo  ${aaExamenPracticoController.text}: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al registrar archivos: $e');
+    }
+  }
+
+  Future<void> registrarArchivoOtros() async {
+    try {
+      String datosBase64 = base64Encode(aaOtrosFileBytes!);
+      String extension = aaOtrosController.text.split('.').last;
+      String mimeType = _determinarMimeType(extension);
+
+      final response = await archivoService.registrarArchivo(
+        key: 0,
+        nombre: aaOtrosController.text,
+        extension: extension,
+        mime: mimeType,
+        datos: datosBase64,
+        inTipoArchivo: TipoArchivoModulo.OTROS,
+        inOrigen: OrigenArchivo.entrenamientoModulo,
+        inOrigenKey: entrenamientoModuloId,
+      );
+
+      if (response.success) {
+        aaOtrosSeleccionado.value = false;
+        obtenerArchivosRegistrados();
+        // Get.snackbar(
+        //   'Exito',
+        //   'Archivo subido exitosamente: ${response.message}',
+        //   snackPosition: SnackPosition.BOTTOM,
+        //   backgroundColor: Colors.green,
+        //   colorText: Colors.white,
+        // );
+        log('Archivo ${aaOtrosController.text} registrado con éxito');
+      } else {
+        log('Error al registrar archivo  ${aaOtrosController.text}: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al registrar archivos: $e');
+    }
+  }
+
+  String _determinarMimeType(String extension) {
+    switch (extension.toLowerCase()) {
+      case 'pdf':
+        return 'application/pdf';
+      case 'doc':
+        return 'application/msword';
+      case 'docx':
+        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'xlsx':
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      default:
+        return 'application/octet-stream';
+    }
+  }
+
+  Future<void> obtenerArchivosRegistrados() async {
+    try {
+      final response = await archivoService.obtenerArchivosPorOrigen(
+        idOrigen: OrigenArchivo.entrenamientoModulo,
+        idOrigenKey: entrenamientoModuloId,
+      );
+
+      log('Response: ${response.data}');
+      if (response.success && response.data != null) {
+        aaControlHorasController.clear();
+        aaExamenTeoricoController.clear();
+        aaExamenPracticoController.clear();
+        aaOtrosController.clear();
+
+        aaControlHorasExiste.value = false;
+        aaExamenTeoricoExiste.value = false;
+        aaExamenPracticoExiste.value = false;
+        aaOtrosExiste.value = false;
+
+        for (var archivo in response.data!) {
+          log('Tipo Archivo Modulo: ${archivo['InTipoArchivo']}');
+          List<int> datos = List<int>.from(archivo['Datos']);
+          Uint8List archivoBytes = Uint8List.fromList(datos);
+          if (archivo['InTipoArchivo'] == TipoArchivoModulo.CONTROL_HORAS) {
+            aaControlHorasController.text = archivo['Nombre'];
+            aaControlHorasExiste.value = true;
+            aaControlHorasId.value = archivo['Key'];
+          }
+          if (archivo['InTipoArchivo'] == TipoArchivoModulo.EXAMEN_TEORICO) {
+            aaExamenTeoricoController.text = archivo['Nombre'];
+            aaExamenTeoricoExiste.value = true;
+            aaExamenTeoricoId.value = archivo['Key'];
+          }
+          if (archivo['InTipoArchivo'] == TipoArchivoModulo.EXAMEN_PRACTICO) {
+            aaExamenPracticoController.text = archivo['Nombre'];
+            aaExamenPracticoExiste.value = true;
+            aaExamenPracticoId.value = archivo['Key'];
+          }
+          if (archivo['InTipoArchivo'] == TipoArchivoModulo.OTROS) {
+            aaOtrosController.text = archivo['Nombre'];
+            aaOtrosExiste.value = true;
+            aaOtrosId.value = archivo['Key'];
+          }
+          log('Archivo ${archivo['Nombre']} obtenido con éxito');
+        }
+      } else {
+        log('Error al obtener archivos: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener archivos: $e');
+    }
+  }
+
+  bool validarArchivosPorSubir() {
+    if (aaControlHorasSeleccionado.value ||
+        aaExamenTeoricoSeleccionado.value ||
+        aaExamenPracticoSeleccionado.value ||
+        aaOtrosSeleccionado.value) {
+      log('Control de horas existe ${aaControlHorasSeleccionado.value}');
+      log('Examen Teorico existe ${aaExamenTeoricoSeleccionado.value}');
+      log('Examen Practico existe ${aaExamenPracticoSeleccionado.value}');
+      log('Otros existe ${aaOtrosSeleccionado.value}');
+
+
+
+      return true;
+    }
+    return false;
+
+  }
+  Future<void> subirArchivos() async{
+    if (aaControlHorasSeleccionado.value){
+      await registrarArchivoControlHoras();
+    }
+    if (aaExamenTeoricoSeleccionado.value){
+      await registrarArchivoExamenTeorico();
+    }
+    if (aaExamenPracticoSeleccionado.value){
+      await registrarArchivoExamenPractico();
+    }
+    if (aaOtrosSeleccionado.value){
+      await registrarArchivoOtros();
+    }
+  }
+
+  Future<void> eliminarArchivo(int archivoId) async {
+    try {
+      log('Archivo Id: ${archivoId}');
+      final response = await archivoService.eliminarArchivo(
+        key: archivoId,
+        nombre: '',
+        extension: '',
+        mime: '',
+        datos: '',
+        inTipoArchivo: 0,
+        inOrigen: 0,
+        inOrigenKey: 0,
+      );
+      log('Response: ${response}');
+      if (response.success) {
+        Get.snackbar(
+          'Exito',
+          'Archivo eliminado exitosamente: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+        obtenerArchivosRegistrados();
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el archivo: ${response.message}',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        obtenerArchivosRegistrados();
+      }
+    } catch (e) {
+      log('Error al eliminar el archivo: $e');
+      Get.snackbar(
+        'Error',
+        'No se pudo eliminar el archivo: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 }

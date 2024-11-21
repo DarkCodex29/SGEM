@@ -1,7 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
+import 'package:sgem/shared/widgets/custom.text.fromfield.dart';
 import '../../../../../../config/theme/app_theme.dart';
 import '../../../../../../shared/widgets/custom.textfield.dart';
 import '../../../../../../shared/widgets/dropDown/custom.dropdown.global.dart';
@@ -46,7 +51,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Container(
             width: 800,
-            height: isEdit == false ? 600 : 800,
+            height: isEdit == false ? 600 : 900,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -349,23 +354,241 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           height: 10,
         ),
         _buildAdjuntoRow(
-            'Control de horas', controller.aaControlHorasController.text,
+            'Control de horas',
+            controller.aaControlHorasController,
             () async {
-          controller.cargarArchivoControlHoras();
-        }, () {}),
+              controller.cargarArchivoControlHoras();
+            },
+            () async {
+              if (controller.aaControlHorasSeleccionado.value) {
+                controller.aaControlHorasController.clear();
+                controller.aaControlHorasSeleccionado.value = false;
+              }
+            },
+            controller.aaControlHorasSeleccionado,
+            () async {
+              if (controller.aaControlHorasExiste.value) {
+                showDialog(
+                  context: Get.context!,
+                  builder: (context) {
+                    return const MensajeValidacionWidget(
+                      errores: [
+                        "Ya existe un archivo subido para CONTROL DE HORAS. Debe eliminar el anterior para poder subir uno nuevo."
+                      ],
+                    );
+                  },
+                );
+                return;
+              }
+
+              if (!controller.aaControlHorasSeleccionado.value) {
+                showDialog(
+                  context: Get.context!,
+                  builder: (context) {
+                    return const MensajeValidacionWidget(
+                      errores: [
+                        "Debe seleccionar un archivo para poder subirlo."
+                      ],
+                    );
+                  },
+                );
+                return;
+              }
+              controller.registrarArchivoControlHoras();
+            },
+            () async {
+              if (controller.aaControlHorasExiste.value) {
+                controller.eliminarArchivo(controller.aaControlHorasId.value);
+              } else {
+                showDialog(
+                  context: Get.context!,
+                  builder: (context) {
+                    return const MensajeValidacionWidget(
+                      errores: ["No hay archivo para eliminar."],
+                    );
+                  },
+                );
+              }
+            },
+            controller.aaControlHorasExiste),
         _buildAdjuntoRow(
-            'Examen Teórico', controller.aaExamenTeoricoController.text,
-            () async {
-          controller.cargarArchivoExamenTeorico();
-        }, () {}),
+          'Examen Teórico',
+          controller.aaExamenTeoricoController,
+          () async {
+            controller.cargarArchivoExamenTeorico();
+          },
+          () async {
+            if (controller.aaExamenTeoricoSeleccionado.value) {
+              controller.aaExamenTeoricoController.clear();
+              controller.aaExamenTeoricoSeleccionado.value = false;
+            }
+          },
+          controller.aaExamenTeoricoSeleccionado,
+          () async {
+            if (controller.aaExamenTeoricoExiste.value) {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: [
+                      "Ya existe un archivo subido para EXAMEN TEORICO. Debe eliminar el anterior para poder subir uno nuevo."
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+
+            if (!controller.aaExamenTeoricoSeleccionado.value) {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: [
+                      "Debe seleccionar un archivo para poder subirlo."
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+            controller.registrarArchivoExamenTeorico();
+          },
+          () async {
+            if (controller.aaExamenTeoricoExiste.value) {
+              controller.eliminarArchivo(controller.aaExamenTeoricoId.value);
+            } else {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: ["No hay archivo para eliminar."],
+                  );
+                },
+              );
+            }
+          },
+          controller.aaExamenTeoricoExiste,
+        ),
         _buildAdjuntoRow(
-            'Examen Práctico', controller.aaExamenPracticoController.text,
-            () async {
-          controller.cargarArchivoExamenPractico();
-        }, () {}),
-        _buildAdjuntoRow('Otros', controller.aaOtrosController.text, () async {
-          controller.cargarArchivoOtros();
-        }, () {}),
+          'Examen Práctico',
+          controller.aaExamenPracticoController,
+          () async {
+            controller.cargarArchivoExamenPractico();
+          },
+          () {
+            if (controller.aaExamenPracticoSeleccionado.value) {
+              controller.aaExamenPracticoController.clear();
+              controller.aaExamenPracticoSeleccionado.value = false;
+            }
+          },
+          controller.aaExamenPracticoSeleccionado,
+          () async {
+            if (controller.aaExamenPracticoExiste.value) {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: [
+                      "Ya existe un archivo subido para EXAMEN PRACTICO. Debe eliminar el anterior para poder subir uno nuevo."
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+
+            if (!controller.aaExamenPracticoSeleccionado.value) {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: [
+                      "Debe seleccionar un archivo para poder subirlo."
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+            controller.registrarArchivoExamenPractico();
+          },
+          () async {
+            if (controller.aaExamenPracticoExiste.value) {
+              controller.eliminarArchivo(controller.aaExamenPracticoId.value);
+            } else {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: ["No hay archivo para eliminar."],
+                  );
+                },
+              );
+            }
+          },
+          controller.aaExamenPracticoExiste,
+        ),
+
+        _buildAdjuntoRow(
+          'Otros',
+          controller.aaOtrosController,
+          () async {
+            controller.cargarArchivoOtros();
+          },
+          () async {
+            if (controller.aaOtrosSeleccionado.value) {
+              controller.aaOtrosController.clear();
+              controller.aaOtrosSeleccionado.value = false;
+            }
+          },
+          controller.aaOtrosSeleccionado,
+          () async {
+            if (controller.aaOtrosExiste.value) {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: [
+                      "Ya existe un archivo subido para OTROS. Debe eliminar el anterior para poder subir uno nuevo."
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+
+            if (!controller.aaOtrosSeleccionado.value) {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: [
+                      "Debe seleccionar un archivo para poder subirlo."
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+            controller.registrarArchivoOtros();
+          },
+          () async {
+            if (controller.aaOtrosExiste.value) {
+              controller.eliminarArchivo(controller.aaOtrosId.value);
+            } else {
+              showDialog(
+                context: Get.context!,
+                builder: (context) {
+                  return const MensajeValidacionWidget(
+                    errores: ["No hay archivo para eliminar."],
+                  );
+                },
+              );
+            }
+          },
+          controller.aaOtrosExiste,
+        ),
         // Obx((){
         //
         //   return Column(crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,28 +603,101 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   Widget _buildAdjuntoRow(
     String titulo,
-    String nombreArchivo,
+    TextEditingController controller,
     VoidCallback onPressed,
     VoidCallback onRemove,
+    RxBool archivoSeleccionado,
+    VoidCallback onUpload,
+    VoidCallback onDelete,
+    RxBool archivoExiste,
   ) {
     return Row(
       children: [
         Text(titulo),
         const SizedBox(width: 10),
         IconButton(
+            tooltip: 'Adjuntar archivo',
             onPressed: onPressed,
             icon: const Icon(Icons.attach_file, color: Colors.grey)),
         const SizedBox(width: 10),
-        // TODO: Aquí puedes mostrar el nombre del archivo subido si está disponible
-        Text(
-          nombreArchivo,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+        Expanded(
+          flex: 1,
+          child: CustomTextFormField(
+            label: 'Archivo',
+            controller: controller,
+            isReadOnly: true,
+            isRequired: false,
+            // textStyle: archivoSeleccionado
+            //     ? const TextStyle(
+            //         fontWeight: FontWeight.bold, color: Colors.blueAccent)
+            //     : const TextStyle(),
+            //nombreArchivo,
+            //style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
         const SizedBox(width: 10),
-        IconButton(
-          icon: const Icon(Icons.close, color: Colors.red),
-          onPressed: onRemove,
-        ),
+        Obx(() {
+          if (archivoSeleccionado.value) {
+            return IconButton(
+              tooltip: 'Quitar archivo',
+              icon: const Icon(Icons.close, color: Colors.red),
+              onPressed: onRemove,
+            );
+          }
+          return const SizedBox(
+            width: 0,
+          );
+        }),
+
+        //if (archivoSeleccionado)
+        //   IconButton(
+        //     tooltip: 'Quitar archivo',
+        //     icon: const Icon(Icons.close, color: Colors.red),
+        //     onPressed: onRemove,
+        //   ),
+        const SizedBox(width: 10),
+        //if (archivoSeleccionado)
+        Obx(() {
+          if (!archivoExiste.value && archivoSeleccionado.value) {
+            return IconButton(
+              tooltip: 'Subir archivo',
+              icon: const Icon(Icons.upload_rounded, color: Colors.blueAccent),
+              onPressed: onUpload,
+            );
+          }
+          ;
+          return const SizedBox(
+            width: 0,
+          );
+        }),
+
+        // IconButton(
+        //   tooltip: 'Subir archivo',
+        //   icon: const Icon(Icons.upload_rounded, color: Colors.blueAccent),
+        //   onPressed: onUpload,
+        // ),
+        //const SizedBox(width: 10),
+
+        Obx(() {
+          if (archivoExiste.value) {
+            return IconButton(
+              tooltip: 'Elimnar archivo',
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: onDelete,
+            );
+          }
+          ;
+          return SizedBox(
+            width: 0,
+          );
+        }),
+
+        // //if (archivoExiste)
+        //   IconButton(
+        //     tooltip: 'Elimnar archivo',
+        //     icon: const Icon(Icons.delete, color: Colors.red),
+        //     onPressed: onDelete,
+        //   ),
       ],
     );
   }
@@ -426,10 +722,27 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           ElevatedButton(
             onPressed: () async {
               bool success = false;
+              //var pendientes = controller.validarArchivosPorSubir();
+              //log('pendientes: ${pendientes}');
+              // if (pendientes) {
+              //   showDialog(
+              //     context: Get.context!,
+              //     builder: (context) {
+              //       return const MensajeValidacionWidget(
+              //         errores: [
+              //           "Hay archivos selecionados pendientes por subir. Confirmelos o eliminelos."
+              //         ],
+              //       );
+              //     },
+              //   );
+              // }
+              //else {
               success = await controller.registrarModulo(context);
               if (success) {
+                await controller.subirArchivos();
                 onCancel();
               }
+              //}
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,

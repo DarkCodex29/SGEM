@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/shared/modules/modulo_model.dart';
@@ -10,6 +12,7 @@ class ModuloController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    unawaited(getModulos());
     super.onInit();
   }
 

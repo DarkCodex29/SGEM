@@ -26,19 +26,25 @@ class ModuloEditController extends GetxController {
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
 
+  static const _statusOptions = [
+    OptionValue(key: 1, nombre: 'Activo'),
+    OptionValue(key: 0, nombre: 'Inactivo'),
+  ];
+
   void initializeDropdown() {
     dropdownController
       ..loadOptions(
         'estado_modulos',
-        () async => [
-          const OptionValue(key: 1, nombre: 'Activo'),
-          const OptionValue(key: 0, nombre: 'Inactivo'),
-        ],
+        () async => _statusOptions,
       )
-      ..selectValueByKey(
-        options: 'estado_modulos',
-        optionKey: modulo.status ? 1 : 0,
+      ..selectValue(
+        'estado_modulos',
+        modulo.status ? _statusOptions[0] : _statusOptions[1],
       );
+
+    hourController.text = modulo.hours.toString();
+    minGradeController.text = modulo.minGrade.toString();
+    maxGradeController.text = modulo.maxGrade.toString();
   }
 
   final TextEditingController hourController = TextEditingController();
@@ -114,7 +120,7 @@ class ModuloEditController extends GetxController {
     );
 
     if (response.success) {
-      Get.back<void>();
+      Get.back<bool>(result: true);
       await const SuccessDialog().show();
     } else {
       Get.snackbar(

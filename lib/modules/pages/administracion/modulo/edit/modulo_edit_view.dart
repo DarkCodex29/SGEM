@@ -15,7 +15,7 @@ class ModuloEditView extends StatelessWidget {
 
   final Modulo modulo;
 
-  void show() => Get.dialog<void>(this);
+  Future<bool?> show() async => Get.dialog<bool>(this);
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +75,7 @@ class ModuloEditView extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        'Módulo: ${modulo.module}',
+                        modulo.module,
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class ModuloEditView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     AppButton.white(
-                      onPressed: Get.back<void>,
+                      onPressed: () => Get.back<bool>(result: false),
                       text: 'Cerrar',
                     ),
                     AppButton.blue(

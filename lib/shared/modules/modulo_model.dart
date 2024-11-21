@@ -24,7 +24,7 @@ class Modulo extends Equatable {
   @JsonKey(name: 'Modulo')
   final String module;
 
-  @JsonKey(name: 'InHours')
+  @JsonKey(name: 'InHoras')
   final int hours;
 
   @JsonKey(name: 'InNotaMinima')
@@ -33,8 +33,8 @@ class Modulo extends Equatable {
   @JsonKey(name: 'InNotaMaxima')
   final int maxGrade;
 
-  @intBoolConverter
   @JsonKey(name: 'InEstado')
+  @intBoolConverter
   final bool status;
 
   @JsonKey(name: 'UsuarioModificacion')
@@ -71,4 +71,3 @@ class Modulo extends Equatable {
   @override
   List<Object> get props => [key];
 }
-

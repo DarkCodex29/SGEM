@@ -9,10 +9,10 @@ part of 'modulo_model.dart';
 Modulo _$ModuloFromJson(Map<String, dynamic> json) => Modulo(
       key: (json['Key'] as num).toInt(),
       module: json['Modulo'] as String,
-      hours: (json['InHours'] as num).toInt(),
+      hours: (json['InHoras'] as num).toInt(),
       minGrade: (json['InNotaMinima'] as num).toInt(),
       maxGrade: (json['InNotaMaxima'] as num).toInt(),
-      status: json['InEstado'] as bool,
+      status: intBoolConverter.fromJson((json['InEstado'] as num).toInt()),
       userModification: json['UsuarioModificacion'] as String,
       modificationDate: _$JsonConverterFromJson<String, DateTime>(
           json['FechaModificacion'], ajaxDateConverter.fromJson),
@@ -21,10 +21,10 @@ Modulo _$ModuloFromJson(Map<String, dynamic> json) => Modulo(
 Map<String, dynamic> _$ModuloToJson(Modulo instance) => <String, dynamic>{
       'Key': instance.key,
       'Modulo': instance.module,
-      'InHours': instance.hours,
+      'InHoras': instance.hours,
       'InNotaMinima': instance.minGrade,
       'InNotaMaxima': instance.maxGrade,
-      'InEstado': instance.status,
+      'InEstado': intBoolConverter.toJson(instance.status),
       'UsuarioModificacion': instance.userModification,
       'FechaModificacion': _$JsonConverterToJson<String, DateTime>(
           instance.modificationDate, ajaxDateConverter.toJson),

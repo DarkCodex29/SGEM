@@ -40,9 +40,10 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
                     children: [
                       pw.SizedBox(height: dimensionsImage.height / 3.1),
                       pw.Text(nombreCompleto,
-                          style: const pw.TextStyle(fontSize: 16)),
+                          style: const pw.TextStyle(fontSize: 12)),
                       pw.SizedBox(height: dimensionsImage.height / 14),
-                      pw.Text(cargo, style: const pw.TextStyle(fontSize: 16)),
+                      pw.SizedBox(height: 10),
+                      pw.Text(cargo, style: const pw.TextStyle(fontSize: 12)),
                       pw.SizedBox(height: dimensionsImage.height / 16),
                       pw.Container(
                         padding: const pw.EdgeInsets.only(left: 60),

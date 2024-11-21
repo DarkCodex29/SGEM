@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
@@ -22,7 +23,8 @@ class PdfToCertificadoScreen extends StatefulWidget {
 
 class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
   Future<List<PdfPageImage?>>? _getdata;
-  late EntrenamientoPersonalController entrenamientoController;
+  final EntrenamientoPersonalController entrenamientoController =
+      Get.find<EntrenamientoPersonalController>();
   @override
   void initState() {
     super.initState();
@@ -31,8 +33,11 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
 
   Future<List<PdfPageImage?>> getData() async {
     final personalData = widget.personal;
+    final training = entrenamientoController.selectedTraining.value;
+    final modulos = entrenamientoController.modulosPorEntrenamiento;
+
     List<Future<pw.Page>> listPages = [];
-    listPages.add(generateCertificado(personalData));
+    listPages.add(generateCertificado(personalData, training, modulos));
     return getImages(listPages);
   }
 

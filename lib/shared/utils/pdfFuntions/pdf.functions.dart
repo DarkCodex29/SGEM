@@ -95,8 +95,6 @@ pw.Widget userDetail(String label, String? value) {
 
 pw.Widget userDetailEncabezado(String label, String? value) {
   return pw.Row(
-    mainAxisAlignment: pw.MainAxisAlignment.start,
-    crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
       pw.SizedBox(
         width: 80,

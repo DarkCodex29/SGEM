@@ -1,11 +1,18 @@
 import 'dart:async';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/utils/Extensions/pdf.extensions.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 
-Future<pw.Page> generateCertificado(Personal? personal) async {
+Future<pw.Page> generateCertificado(
+    Personal? personal,
+    EntrenamientoModulo? entrenamiento,
+    Map<int, RxList<EntrenamientoModulo>> modulosPorEntrenamiento) async {
+      
   const horamodulo1 = 5;
   const horamodulo2 = 10;
   const totalHoras = horamodulo1 + horamodulo2;
@@ -38,17 +45,17 @@ Future<pw.Page> generateCertificado(Personal? personal) async {
                     fit: pw.BoxFit.contain,
                   ),
                 ),
-                pw.SizedBox(width: 20),
+                pw.SizedBox(width: 10),
                 pw.Container(
                   width: 200,
                   alignment: pw.Alignment.center,
                   child: pw.Text(
                     "DIPLOMA DE AUTORIZACIÓN PARA USO DE EQUIPOS MÓVILES",
                     style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold, fontSize: 12),
+                        fontWeight: pw.FontWeight.bold, fontSize: 14),
                   ),
                 ),
-                pw.SizedBox(width: 20),
+                pw.SizedBox(width: 30),
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
@@ -62,16 +69,6 @@ Future<pw.Page> generateCertificado(Personal? personal) async {
             ).padding(
               const pw.EdgeInsets.only(bottom: 10),
             ),
-            /*
-            cardCustom(
-              pw.Column(
-                children: [
-                  userDetail("Empresa:", "Minera Chinalco Peru"),
-                  userDetail("Fecha:", DateTime.now().toString()),
-                  userDetail("Proceso:", "Entrenamiento de equipos moviles"),
-                ],
-              ).padding(const pw.EdgeInsets.only(left: 20)),
-            ),*/
             pw.Container(
               width: double.infinity,
               alignment: pw.Alignment.centerLeft,
@@ -99,10 +96,10 @@ Future<pw.Page> generateCertificado(Personal? personal) async {
             ),
             cardCustom(
               pw.Column(children: [
-                userDetail("Equipo móvil:", "entrenamiento!.equipo!.nombre"),
-                userDetail("Condición:", "entrenamiento.condicion!.nombre"),
+                userDetail("Equipo móvil:", entrenamiento!.equipo!.nombre),
+                userDetail("Condición:", entrenamiento.condicion!.nombre),
                 userDetail("Entrenador responsable:",
-                    "entrenamiento.entrenador!.nombre"),
+                    entrenamiento.entrenador!.nombre),
               ]).padding(const pw.EdgeInsets.only(left: 20)),
             ),
             pw.SizedBox(height: 20),
@@ -170,12 +167,18 @@ Future<pw.Page> generateCertificado(Personal? personal) async {
                   ),
                 ],
               ),
-              pw.SizedBox(width: 50),
+              pw.SizedBox(width: 40),
               pw.Column(children: [
-                userDetail("Fecha inicio", "12-04-2024"),
-                userDetail("Fecha fin", "15-05-2024"),
+                userDetailEncabezado(
+                    "Fecha inicio:",
+                    DateFormat('dd/MM/yyyy')
+                        .format(entrenamiento.fechaInicio!)),
+                userDetailEncabezado(
+                    "Fecha fin:",
+                    DateFormat('dd/MM/yyyy')
+                        .format(entrenamiento.fechaTermino!)),
               ])
-            ]).padding(const pw.EdgeInsets.only(left: 20)),
+            ]).padding(const pw.EdgeInsets.only(left: 60, right: 20)),
             pw.Container(
               width: double.infinity,
               child: pw.Column(

@@ -481,9 +481,11 @@ class EntrenamientoPersonalPage extends StatelessWidget {
           const Spacer(),
           Row(
             children: [
-              if(modulo.estadoEntrenamiento!.nombre!.toLowerCase()=='completo')
+              if (modulo.estadoEntrenamiento!.nombre!.toLowerCase() ==
+                  'completo')
                 IconButton(
-                  tooltip: 'Ver modulo ${modulo.estadoEntrenamiento!.nombre!.toLowerCase()}',
+                  tooltip:
+                      'Ver modulo ${modulo.estadoEntrenamiento!.nombre!.toLowerCase()}',
                   icon: const Icon(
                     Icons.remove_red_eye,
                     color: AppTheme.primaryColor,
@@ -494,9 +496,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       builder: (context) {
                         return GestureDetector(
                           child: Padding(
-                            padding: MediaQuery
-                                .of(context)
-                                .viewInsets,
+                            padding: MediaQuery.of(context).viewInsets,
                             child: EntrenamientoModuloNuevo(
                               entrenamiento: modulo,
                               inPersona: modulo.inPersona,
@@ -518,9 +518,11 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     }
                   },
                 ),
-              if(modulo.estadoEntrenamiento!.nombre!.toLowerCase()!='completo')
+              if (modulo.estadoEntrenamiento!.nombre!.toLowerCase() !=
+                  'completo')
                 IconButton(
-                  tooltip: 'Editar modulo ${modulo.estadoEntrenamiento!.nombre!.toLowerCase()}',
+                  tooltip:
+                      'Editar modulo ${modulo.estadoEntrenamiento!.nombre!.toLowerCase()}',
                   icon: const Icon(
                     Icons.edit,
                     color: AppTheme.primaryColor,
@@ -531,9 +533,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       builder: (context) {
                         return GestureDetector(
                           child: Padding(
-                            padding: MediaQuery
-                                .of(context)
-                                .viewInsets,
+                            padding: MediaQuery.of(context).viewInsets,
                             child: EntrenamientoModuloNuevo(
                               entrenamiento: modulo,
                               inPersona: modulo.inPersona,
@@ -554,7 +554,8 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     }
                   },
                 ),
-              if(modulo.estadoEntrenamiento!.nombre!.toLowerCase()!='completo')
+              if (modulo.estadoEntrenamiento!.nombre!.toLowerCase() !=
+                  'completo')
                 IconButton(
                   tooltip: 'Eliminar modulo',
                   icon: const Icon(Icons.delete, color: Colors.red),
@@ -566,9 +567,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         return GestureDetector(
                           onTap: () => FocusScope.of(context).unfocus(),
                           child: Padding(
-                            padding: MediaQuery
-                                .of(context)
-                                .viewInsets,
+                            padding: MediaQuery.of(context).viewInsets,
                             child: DeleteReasonWidget(
                               entityType: 'módulo',
                               isMotivoRequired: false,
@@ -594,9 +593,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         return GestureDetector(
                           onTap: () => FocusScope.of(context).unfocus(),
                           child: Padding(
-                            padding: MediaQuery
-                                .of(context)
-                                .viewInsets,
+                            padding: MediaQuery.of(context).viewInsets,
                             child: ConfirmDeleteWidget(
                               itemName: 'módulo',
                               entityType: '',
@@ -634,7 +631,6 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     }
                   },
                 ),
-
             ],
           ),
         ],
@@ -856,6 +852,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 icon: const Icon(Icons.file_copy_sharp,
                     color: AppTheme.primaryColor),
                 onPressed: () {
+                  controller.selectedTraining.value = training;
                   controllerPersonal.showCertificado();
                 },
               ),

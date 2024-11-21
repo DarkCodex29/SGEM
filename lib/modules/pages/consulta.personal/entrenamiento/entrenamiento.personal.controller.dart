@@ -10,8 +10,12 @@ class EntrenamientoPersonalController extends GetxController {
   var trainingList = <EntrenamientoModulo>[].obs;
   final EntrenamientoService entrenamientoService = EntrenamientoService();
   final ModuloMaestroService moduloMaestroService = ModuloMaestroService();
-
   var modulosPorEntrenamiento = <int, RxList<EntrenamientoModulo>>{}.obs;
+  var selectedTraining = Rxn<EntrenamientoModulo>();
+
+  void setSelectedTrainingKey(EntrenamientoModulo training) {
+    selectedTraining.value = training;
+  }
 
   Future<void> fetchTrainings(int personId) async {
     try {

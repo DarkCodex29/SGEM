@@ -67,12 +67,12 @@ class CustomDropdownState extends State<CustomDropdown> {
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
                           color: AppTheme.alternateColor,
-                          width: 2.0,
+                          width: 2,
                         ),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
-                        vertical: 14.0,
-                        horizontal: 12.0,
+                        vertical: 14,
+                        horizontal: 12,
                       ),
                     ),
                     onChanged: widget.isReadOnly

@@ -460,15 +460,15 @@ class EntrenamientoModuloNuevoController extends GetxController {
               fileName; // Muestra el nombre del archivo
           log('Documento adjuntado correctamente: $fileName');
           aaExamenPracticoSeleccionado.value = true;
-          return ('Control de horas adjuntado correctamente: $fileName');
+          return 'Control de horas adjuntado correctamente: $fileName';
         }
       } else {
-        return ('No se seleccionaron archivos');
+        return 'No se seleccionaron archivos';
       }
     } catch (e) {
-      return ('Error al adjuntar documentos: $e');
+      return 'Error al adjuntar documentos: $e';
     }
-    return ('');
+    return '';
   }
 
   Future<void> cargarArchivoOtros() async {
@@ -527,14 +527,14 @@ class EntrenamientoModuloNuevoController extends GetxController {
         //   colorText: Colors.white,
         // );
         log('Archivo ${aaControlHorasController.text} registrado con éxito');
-        return ('Archivo ${aaControlHorasController.text} registrado con éxito');
+        return 'Archivo ${aaControlHorasController.text} registrado con éxito';
       } else {
         log('Error al registrar archivo  ${aaControlHorasController.text}: ${response.message}');
-        return ('Error al registrar archivo  ${aaControlHorasController.text}: ${response.message}');
+        return 'Error al registrar archivo  ${aaControlHorasController.text}: ${response.message}';
       }
     } catch (e) {
       log('Error al registrar archivos: $e');
-      return ('Error al registrar archivos: $e');
+      return 'Error al registrar archivos: $e';
     }
   }
 

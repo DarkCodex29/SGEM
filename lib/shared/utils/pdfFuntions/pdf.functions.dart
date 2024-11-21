@@ -25,9 +25,9 @@ Future<List<pdf.PdfPageImage?>> getImages(List<Future<pw.Page>> pages) async {
   for (int i = 1; i <= document.pagesCount; i++) {
     final page = await document.getPage(i);
     final image = await page.render(
-      width: page.width / 1.6,
-      height: page.height / 1.6,
-      format: pdf.PdfPageImageFormat.jpeg,
+      width: page.width,
+      height: page.height,
+      format: pdf.PdfPageImageFormat.png,
       backgroundColor: '#ffffff',
     );
     images.add(image);

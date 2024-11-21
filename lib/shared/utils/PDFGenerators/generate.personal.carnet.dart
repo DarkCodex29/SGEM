@@ -8,7 +8,7 @@ import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 Future<pw.Page> generatePersonalCarnetFrontPdf(
     Personal? personal, String imageFromAssets, Uint8List? photoPerfil) async {
   final fondoImageBytes = await loadImage(imageFromAssets);
-  final imageLogo = await loadImage('logo.png');
+  final qr = await loadImage('QR_code.png');
   String fechaEmision = DateTime.now().toString();
   String nombreCompleto = "";
   String cargo = "";
@@ -49,7 +49,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
         child: pw.Padding(
           padding: const pw.EdgeInsets.all(16),
           child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            //crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
               pw.Container(
                 padding:
@@ -113,7 +113,8 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
               ),
               pw.Spacer(),
               pw.Container(
-                padding: const pw.EdgeInsets.only(left: 60, right: 60),
+                padding:
+                    const pw.EdgeInsets.only(left: 60, right: 60, bottom: 30),
                 child: pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
@@ -129,27 +130,32 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
                       ],
                     ),
                     pw.Container(
-                      width: 140,
-                      height: 140,
+                      width: 100,
+                      height: 100,
                       child: pw.Image(
-                        pw.MemoryImage(imageLogo),
+                        pw.MemoryImage(qr),
                         fit: pw.BoxFit.contain,
                       ),
                     ),
                   ],
                 ),
               ),
+              pw.Align(
+                alignment: pw.Alignment.centerLeft,
+                child: pw.Text(
+                  "Autorizado para operar en:",
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColors.blue,
+                  ),
+                ),
+              ).padding(const pw.EdgeInsets.only(left: 60)),
+              pw.SizedBox(height: 10),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
                   pw.Column(
                     children: [
-                      pw.Text(
-                        "Autorizado para operar en:",
-                        style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                            color: PdfColors.blue),
-                      ),
                       pw.Row(
                         children: [
                           pw.Text('Operaciones mina:'),
@@ -172,7 +178,7 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
                   ),
                 ],
               ).padding(
-                  const pw.EdgeInsets.only(left: 30, right: 30, bottom: 10)),
+                  const pw.EdgeInsets.only(left: 60, right: 60, bottom: 30)),
             ],
           ),
         ),

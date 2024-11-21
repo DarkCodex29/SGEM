@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
-
 import 'modales/nuevo.entrenamiento/entrenamiento.nuevo.controller.dart';
 
 class EntrenamientoPersonalController extends GetxController {

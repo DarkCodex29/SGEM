@@ -5,33 +5,37 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 import 'package:image/image.dart';
 
-// Procesar una imagen (opcionalmente rotar, redimensionar y/o comprimir)
-Uint8List processImage(Uint8List imageBytes,
-    {int? width, int quality = 100, bool rotate = false}) {
-  final image = decodeImage(imageBytes);
-  if (image == null) return imageBytes;
+// Procesar una imagen (rotar, redimensionar y/o comprimir)
+Future<Uint8List> processImageAsync(Uint8List imageBytes,
+    {int? width, int quality = 100, bool rotate = false}) async {
+  return await Future(() {
+    final image = decodeImage(imageBytes);
+    if (image == null) return imageBytes;
 
-  Image processedImage = image;
+    Image processedImage = image;
 
-  if (width != null) {
-    processedImage = copyResize(processedImage, width: width);
-  }
+    if (width != null) {
+      processedImage = copyResize(processedImage, width: width);
+    }
 
-  if (rotate) {
-    processedImage = copyRotate(processedImage, angle: 90);
-  }
+    if (rotate) {
+      processedImage = copyRotate(processedImage, angle: 90);
+    }
 
-  return Uint8List.fromList(encodeJpg(processedImage, quality: quality));
+    return Uint8List.fromList(encodeJpg(processedImage, quality: quality));
+  });
 }
 
 // Convertir una imagen a escala de grises
-Uint8List convertToGrayscale(Uint8List imageBytes) {
-  final decodedImage = decodeImage(imageBytes);
-  if (decodedImage != null) {
-    final grayImage = grayscale(decodedImage);
-    return Uint8List.fromList(encodeJpg(grayImage, quality: 100));
-  }
-  return imageBytes;
+Future<Uint8List> convertToGrayscaleAsync(Uint8List imageBytes) async {
+  return await Future(() {
+    final decodedImage = decodeImage(imageBytes);
+    if (decodedImage != null) {
+      final grayImage = grayscale(decodedImage);
+      return Uint8List.fromList(encodeJpg(grayImage, quality: 100));
+    }
+    return imageBytes;
+  });
 }
 
 // Generar el PDF dinámicamente con imágenes distribuidas en filas y columnas
@@ -50,8 +54,7 @@ pw.Widget generateDynamicGrid(List<PdfPageImage?> images,
               child: pw.Container(
                 padding: const pw.EdgeInsets.all(5),
                 child: pw.Image(
-                  pw.MemoryImage(processImage(images[imageIndex]!.bytes,
-                      width: imageWidth)),
+                  pw.MemoryImage(images[imageIndex]!.bytes),
                   fit: pw.BoxFit.contain,
                 ),
               ),
@@ -77,15 +80,31 @@ Future<void> descargarPaginasComoPdf(List<PdfPageImage?> imagess,
 
   final pdf = pw.Document();
 
-  pdf.addPage(
-    pw.Page(
-      pageFormat: PdfPageFormat.a4,
-      margin: pw.EdgeInsets.all(margin),
-      build: (pw.Context context) {
-        return generateDynamicGrid(imagess, columns: columns);
-      },
-    ),
-  );
+  for (var i = 0; i < imagess.length; i++) {
+    final image = imagess[i];
+    if (image != null) {
+      final processedImage =
+          await processImageAsync(image.bytes, rotate: rotar);
+
+      pdf.addPage(
+        pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          margin: pw.EdgeInsets.all(margin),
+          build: (pw.Context context) {
+            return pw.Center(
+              child: pw.Image(
+                pw.MemoryImage(processedImage),
+                fit: pw.BoxFit.contain,
+              ),
+            );
+          },
+        ),
+      );
+
+      // Permitir que el navegador procese eventos
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
+  }
 
   // Guardar y descargar el PDF
   final Uint8List bytes = await pdf.save();
@@ -107,7 +126,7 @@ Future<void> descargarPaginaComoPdf(Future<List<PdfPageImage?>> imagess,
     return;
   }
 
-  return descargarPaginasComoPdf(images,
+  await descargarPaginasComoPdf(images,
       nombreArchivo: nombreArchivo, rotar: rotar);
 }
 
@@ -120,16 +139,14 @@ pw.Widget _columnCarnet(
       pw.Expanded(
         child: (position1 < images.length && images[position1] != null)
             ? pw.Image(
-                pw.MemoryImage(
-                    processImage(images[position1]!.bytes, width: 800)),
+                pw.MemoryImage(images[position1]!.bytes),
               )
             : pw.Container(),
       ),
       pw.Expanded(
         child: (position2 < images.length && images[position2] != null)
             ? pw.Image(
-                pw.MemoryImage(
-                    processImage(images[position2]!.bytes, width: 800)),
+                pw.MemoryImage(images[position2]!.bytes),
               )
             : pw.Container(),
       ),

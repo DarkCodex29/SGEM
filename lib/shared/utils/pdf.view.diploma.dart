@@ -7,7 +7,6 @@ import 'package:sgem/shared/utils/pdfFuntions/pdf.descargar.dart';
 import 'package:sgem/shared/utils/pdfFuntions/pdf.functions.dart';
 import 'dart:math';
 import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
-
 import '../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 class PdfToDiplomaScreen extends StatefulWidget {

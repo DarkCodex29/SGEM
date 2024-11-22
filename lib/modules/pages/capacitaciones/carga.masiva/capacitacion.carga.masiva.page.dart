@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 import '../../../../shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
@@ -448,8 +449,10 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           onPressed: () {
             if (controller.esConfirmacionValida()) {
               // Proceder con la carga
-              // controller.confirmarCarga();
-
+               controller.confirmarCarga();
+              showDialog(context: Get.context!, builder: (context) {
+                return MensajeGuardadoWidget();
+              },);
               Get.snackbar(
                 "Confirmacion",
                 "Carga con exito",
@@ -464,7 +467,9 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
                 builder: (context) {
                   return MensajeValidacionWidget(
                     errores: [
-                      'Seleccione un archivo y asegúrese de que todos los registros estén validados y sin errores'
+                      'Para confirmar la cargar debe realizar lo siguiente:',
+                      'Seleccione un archivo, previsualice la carga.',
+                      'Asegúrese de que todos los registros estén validados y sin errores'
                     ],
                   );
                 },
@@ -473,7 +478,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: AppTheme.primaryColor,
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           ),
           child: const Text("Confirmar carga",
               style: TextStyle(color: Colors.white)),

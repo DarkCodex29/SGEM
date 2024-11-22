@@ -224,34 +224,32 @@ class CapacitacionService {
     }
   }
 
-  /*
-  Future<ResponseHandler<bool>>
-  cargarMasiva(
+  Future<ResponseHandler<bool>> cargarMasiva(
       {required List<CapacitacionCargaMasivaExcel> cargaMasivaList}) async {
     log('Llamando al endpoint carga masiva');
-    const url = '${ConfigFile.apiUrl}/Capacitacion/ValidarCargaMasiva';
+    const url = '${ConfigFile.apiUrl}/Capacitacion/CargaMasiva';
 
     final request = cargaMasivaList.map((e) => e.toJson()).toList();
 
     try {
-      log('Enviando datos de capacitación para validación: $request');
+      log('Api Capacitacion: Enviando datos de capacitación para carga: $request');
       final response = await dio.post(
         url,
         data: request,
       );
 
       if (response.statusCode == 200 && response.data != null) {
-        List<CapacitacionCargaMasivaValidado> cargaMasivaValidada =
-        List<CapacitacionCargaMasivaValidado>.from(
-          response.data
-              .map((json) => CapacitacionCargaMasivaValidado.fromJson(json)),
-        );
-        return ResponseHandler.handleSuccess<
-            List<CapacitacionCargaMasivaValidado>>(cargaMasivaValidada);
+        log('Api Capacitaciones: response ${response.data!}');
+        // List<CapacitacionCargaMasivaValidado> cargaMasivaValidada =
+        //     List<CapacitacionCargaMasivaValidado>.from(
+        //   response.data
+        //       .map((json) => CapacitacionCargaMasivaValidado.fromJson(json)),
+
+        return ResponseHandler.handleSuccess<bool>(true);
       } else {
         return ResponseHandler(
           success: false,
-          message: 'Error al listar carga masiva',
+          message: 'Error al realizar la carga masiva',
         );
       }
     } on DioException catch (e) {
@@ -259,13 +257,4 @@ class CapacitacionService {
       return ResponseHandler.handleFailure(e);
     }
   }
-*/
-/*
-   Future<ResponseHandler<bool>> registrarCapacitacion(
-       EntrenamientoModulo capacitacion) async {
-     const url = '${ConfigFile.apiUrl}/Capacitacion/RegistrarCapacitacion';
-     return _manageCapacitacion(url, 'POST', capacitacion);
-   }
-
- */
 }

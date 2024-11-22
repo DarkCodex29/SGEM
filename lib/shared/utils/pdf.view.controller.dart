@@ -11,7 +11,7 @@ class PDFGeneratoController extends GetxController {
 
   void getCertoficateImage() async {
     List<Future<pw.Page>> listPagues = [];
-    listPagues.add(generateDiploma(personalData));
+    listPagues.add(generateDiploma(personalData!));
     certificate.value = await getImages(listPagues);
   }
 }

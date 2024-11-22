@@ -10,10 +10,10 @@ import 'package:sgem/shared/utils/widgets/future.view.pdf.dart';
 import '../../modules/pages/consulta.personal/consulta.personal.controller.dart';
 
 class PdfToDiplomaScreen extends StatefulWidget {
-  final Personal? data;
+  final Personal? personal;
   final PersonalSearchController controller;
   const PdfToDiplomaScreen(
-      {super.key, required this.data, required this.controller});
+      {super.key, required this.personal, required this.controller});
 
   @override
   State<PdfToDiplomaScreen> createState() => _PdfToDiplomaScreenState();
@@ -29,9 +29,9 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
   }
 
   Future<List<PdfPageImage?>> getData() async {
-    final personalData = widget.data;
+    final personalData = widget.personal;
     List<Future<pw.Page>> listPages = [];
-    listPages.add(generateDiploma(personalData));
+    listPages.add(generateDiploma(personalData!));
     return getImages(listPages);
   }
 
@@ -43,11 +43,11 @@ class _PdfToDiplomaScreenState extends State<PdfToDiplomaScreen> {
       futurePdf: _getdata,
       angleRotation: angleRotacion,
       onCancel: () {
-        widget.controller.showTraining(widget.data!);
+        widget.controller.showTraining(widget.personal!);
       },
       onPrint: (pages) {
         descargarPaginasComoPdf(pages,
-            nombreArchivo: 'DIPLOMA_${widget.data!.codigoMcp}');
+            nombreArchivo: 'DIPLOMA_${widget.personal!.codigoMcp}');
       },
     );
   }

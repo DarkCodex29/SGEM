@@ -589,6 +589,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 */
+
   Widget _buildBotonesAccion(bool isEditMode) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

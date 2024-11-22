@@ -11,7 +11,8 @@ import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
 import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 
 class CapacitacionCargaMasivaController extends GetxController {
-  TextEditingController archivoController = TextEditingController(text: "Seleccione un archivo");
+  TextEditingController archivoController =
+      TextEditingController(text: "Seleccione un archivo");
 
   var cargaMasivaExcel = <CapacitacionCargaMasivaExcel>[].obs;
   var cargaMasivaResultadosValidados = <CapacitacionCargaMasivaValidado>[].obs;
@@ -35,9 +36,9 @@ class CapacitacionCargaMasivaController extends GetxController {
     cargaMasivaResultadosValidados.clear();
 
     archivoController.clear();
-    totalRecords.value=0;
-    correctRecords.value=0;
-    errorRecords.value=0;
+    totalRecords.value = 0;
+    correctRecords.value = 0;
+    errorRecords.value = 0;
 
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -83,6 +84,12 @@ class CapacitacionCargaMasivaController extends GetxController {
       log('Error al adjuntar documentos: $e');
     }
   }
+
+  // Future<void> confirmarCarga() {
+  //   if (cargaMasivaExcel.isNotEmpty) {
+  //     final response = await capacitacionService.carga
+  //   }
+  // }
 
   Future<void> previsualizarCarga() async {
     if (cargaMasivaExcel.isNotEmpty) {
@@ -140,9 +147,13 @@ class CapacitacionCargaMasivaController extends GetxController {
 
     // totalRecords.value = cargaMasivaResultados.length;
   }
+
   bool esConfirmacionValida() {
-    return archivoSeleccionado.value && registrosValidados.value && sinErrores.value;
+    return archivoSeleccionado.value &&
+        registrosValidados.value &&
+        sinErrores.value;
   }
+
   Future<void> descargarPlantilla() async {
     try {
       ByteData data = await rootBundle.load('assets/excel/Plantilla.xlsx');
@@ -154,10 +165,13 @@ class CapacitacionCargaMasivaController extends GetxController {
           ext: 'xlsx',
           mimeType: MimeType.microsoftExcel);
 
-      Get.snackbar('Descarga exitosa', 'Plantilla descargada con éxito',
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.green,
-          colorText: Colors.white,);
+      Get.snackbar(
+        'Descarga exitosa',
+        'Plantilla descargada con éxito',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       Get.snackbar('Error', 'Error al descargar la plantilla',
           snackPosition: SnackPosition.TOP,

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
@@ -51,7 +50,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Container(
             width: 800,
-            height: isEdit == false ? 600 : 900,
+            height: (isEdit || isView) ? 900 : 600,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -79,7 +78,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      if (isEdit) _buildSeccionAdjuntos(),
+                      if (isEdit || isView) _buildSeccionAdjuntos(),
                       _buildBotones(context),
                     ],
                   ),
@@ -154,11 +153,11 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             hintText: "Responsable",
             noDataHintText: 'No se encontraron entrenadores',
             controller: controller.dropdownController,
-            //isReadOnly: isView,
+            isReadOnly: isView,
           ),
         ),
         const SizedBox(width: 20),
-        isEdit
+        isEdit || isView
             ? Expanded(
                 flex: 1,
                 child: CustomDropdownGlobal(
@@ -187,11 +186,14 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             controller: controller.fechaInicioController,
             isRequired: true,
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: () async {
-              controller.fechaInicio = await _selectDate(context);
-              controller.fechaInicioController.text =
-                  DateFormat('dd/MM/yyyy').format(controller.fechaInicio!);
-            },
+            onIconPressed: isView
+                ? null
+                : () async {
+                    controller.fechaInicio = await _selectDate(context);
+                    controller.fechaInicioController.text =
+                        DateFormat('dd/MM/yyyy')
+                            .format(controller.fechaInicio!);
+                  },
             isReadOnly: isView,
           ),
         ),
@@ -203,11 +205,14 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             label: 'Fecha de termino:',
             controller: controller.fechaTerminoController,
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: () async {
-              controller.fechaTermino = await _selectDate(context);
-              controller.fechaTerminoController.text =
-                  DateFormat('dd/MM/yyyy').format(controller.fechaTermino!);
-            },
+            onIconPressed: isView
+                ? null
+                : () async {
+                    controller.fechaTermino = await _selectDate(context);
+                    controller.fechaTerminoController.text =
+                        DateFormat('dd/MM/yyyy')
+                            .format(controller.fechaTermino!);
+                  },
             isReadOnly: isView,
           ),
         ),
@@ -268,11 +273,14 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
               label: 'Fecha de examen:',
               controller: controller.fechaExamenController,
               icon: const Icon(Icons.calendar_month),
-              onIconPressed: () async {
-                controller.fechaExamen = await _selectDate(context);
-                controller.fechaExamenController.text =
-                    DateFormat('dd/MM/yyyy').format(controller.fechaExamen!);
-              },
+              onIconPressed: isView
+                  ? null
+                  : () async {
+                      controller.fechaExamen = await _selectDate(context);
+                      controller.fechaExamenController.text =
+                          DateFormat('dd/MM/yyyy')
+                              .format(controller.fechaExamen!);
+                    },
               isReadOnly: isView,
             ),
           ],
@@ -648,7 +656,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           );
         }),
         Obx(() {
-          if (archivoExiste.value) {
+          if (archivoExiste.value && isEdit) {
             return IconButton(
               tooltip: 'Elimnar archivo',
               icon: const Icon(Icons.delete, color: Colors.red),
@@ -681,78 +689,34 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
             ),
             child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              final success = await _handleButtonPress();
-              if (success) {
-                onCancel();
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            ),
-            child: Obx(() {
-              return controller.isSaving.value
-                  ? const CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              )
-                  : const Text(
-                "Guardar",
-                style: TextStyle(color: Colors.white),
-              );
-            }),
-          ),
-
-          /*
-          ElevatedButton(
-            onPressed: () async {
-              bool success = false;
-
-              if (controller.dropdownController
-                      .getSelectedValue('estadoModulo')!
-                      .nombre!
-                      .toLowerCase() ==
-                  'completo') {
-                if (!controller.validarArchivosObligatorios()) {
-                  showDialog(
-                    context: Get.context!,
-                    builder: (context) {
-                      return const MensajeValidacionWidget(
-                        errores: [
-                          "No se puedo completar el modulo mientras no se hayan completado todas las condiciones."
-                        ],
-                      );
-                    },
-                  );
-                }
-                success = await controller.registrarModulo(context);
-                await controller.subirArchivos();
-                if (success) {
-                  onCancel();
-                }
-              } else {
-                success = await controller.registrarModulo(context);
-                await controller.subirArchivos();
-                if (success) {
-                  onCancel();
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-            ),
-            child: Obx(() {
-              return controller.isSaving.value
-                  ? const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    )
-                  : const Text("Guardar",
-                      style: TextStyle(color: Colors.white));
-            }),
-          ),
-          */
+          isView
+              ? SizedBox(
+                  width: 0,
+                )
+              : ElevatedButton(
+                  onPressed: () async {
+                    final success = await _handleButtonPress();
+                    if (success) {
+                      onCancel();
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 16),
+                  ),
+                  child: Obx(() {
+                    return controller.isSaving.value
+                        ? const CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          )
+                        : const Text(
+                            "Guardar",
+                            style: TextStyle(color: Colors.white),
+                          );
+                  }),
+                ),
         ],
       ),
     );
@@ -760,12 +724,16 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
 
   Future<bool> _handleButtonPress() async {
     final isModuloCompleto = _isEstadoModuloCompleto();
-
-    if (isModuloCompleto && !controller.validarArchivosObligatorios()) {
-      _mostrarErrores([
-        "No se puede completar el módulo mientras no se hayan cumplido todas las condiciones."
-      ]);
-      return false;
+    if (isEdit) {
+      if (isModuloCompleto && !controller.validarArchivosObligatorios()) {
+        _mostrarErrores([
+          "No se puede cambiar el estado del modulo a COMPLETO.",
+          if (!controller.aaControlHorasExiste.value) "Falta CONTROL DE HORAS",
+          if (!controller.aaExamenTeoricoExiste.value) "Falta EXAMEN TEORICO",
+          if (!controller.aaExamenPracticoExiste.value) "Falta EXAMEN PRACTICO",
+        ]);
+        return false;
+      }
     }
 
     final success = await controller.registrarModulo(Get.context!);
@@ -774,8 +742,10 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     }
     return success;
   }
+
   bool _isEstadoModuloCompleto() {
-    final selectedValue = controller.dropdownController.getSelectedValue('estadoModulo');
+    final selectedValue =
+        controller.dropdownController.getSelectedValue('estadoModulo');
     return selectedValue != null &&
         selectedValue.nombre?.toLowerCase() == 'completo';
   }
@@ -789,4 +759,3 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     );
   }
 }
-

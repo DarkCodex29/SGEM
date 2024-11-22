@@ -485,7 +485,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   'completo')
                 IconButton(
                   tooltip:
-                      'Ver modulo ${modulo.estadoEntrenamiento!.nombre!.toLowerCase()}',
+                      'Ver modulo',
                   icon: const Icon(
                     Icons.remove_red_eye,
                     color: AppTheme.primaryColor,
@@ -522,7 +522,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   'completo')
                 IconButton(
                   tooltip:
-                      'Editar modulo ${modulo.estadoEntrenamiento!.nombre!.toLowerCase()}',
+                      'Editar modulo',
                   icon: const Icon(
                     Icons.edit,
                     color: AppTheme.primaryColor,
@@ -784,12 +784,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                       .obtenerUltimoModuloPorEntrenamiento(training.key!);
                   var ultimoModulo = response.data!;
                   if (ultimoModulo.inModulo != 4) {
-                    log("Ultimo modulo: ${response.data!.inModulo}");
+                    log("Ultimo modulo: ${ultimoModulo.inModulo}");
+                    log('Estado ultimo modulo: ${ultimoModulo.estadoEntrenamiento!.nombre}');
                     if (ultimoModulo.inModulo != null &&
                         ultimoModulo.inModulo! >= 1 &&
                         ultimoModulo.estadoEntrenamiento!.nombre!
-                                .toLowerCase() ==
-                            'incompleto') {
+                                .toLowerCase() !=
+                            'completo') {
                       log('Estado ultimo modulo: ${ultimoModulo.estadoEntrenamiento!.nombre}');
                       showDialog(
                           context: Get.context!,

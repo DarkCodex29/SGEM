@@ -370,8 +370,9 @@ class EntrenamientoModuloNuevoController extends GetxController {
         entrenamientoModulo!.inHorasAcumuladas.toString();
     horasMinestarController.text =
         entrenamientoModulo!.inHorasMinestar.toString();
-    tituloModal.value =
-        'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
+    tituloModal.value = isView
+        ? 'Ver Módulo - ${entrenamientoModulo!.modulo!.nombre!}'
+        : 'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
     //log('Estado modulo: ${entrenamientoModulo!.inEstado}');

@@ -841,7 +841,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                tooltip: 'Ver diplomada',
+                tooltip: 'Ver diploma',
                 icon:
                     const Icon(Icons.stars_sharp, color: AppTheme.primaryColor),
                 onPressed: () {

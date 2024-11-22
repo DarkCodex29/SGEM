@@ -13,7 +13,7 @@ class EntrenamientoPersonalController extends GetxController {
   var modulosPorEntrenamiento = <int, RxList<EntrenamientoModulo>>{}.obs;
   var selectedTraining = Rxn<EntrenamientoModulo>();
 
-  void setSelectedTrainingKey(EntrenamientoModulo training) {
+  void setSelectedTrainingKey(EntrenamientoModulo? training) {
     selectedTraining.value = training;
   }
 
@@ -61,7 +61,6 @@ class EntrenamientoPersonalController extends GetxController {
       try {
         final response = await moduloMaestroService
             .listarModulosPorEntrenamiento(entrenamiento.key!);
-        log('Modulos por entrenamiento: ${response.data}');
         if (response.success) {
           modulosPorEntrenamiento[entrenamiento.key!] =
               RxList<EntrenamientoModulo>(response.data!);

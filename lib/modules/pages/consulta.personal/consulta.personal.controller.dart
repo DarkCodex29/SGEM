@@ -300,7 +300,6 @@ class PersonalSearchController extends GetxController {
 
   void showViewPersonal(Personal personal) {
     selectedPersonal.value = personal;
-
     screen.value = PersonalSearchScreen.viewPersonal;
   }
 
@@ -312,7 +311,7 @@ class PersonalSearchController extends GetxController {
     isExpanded.value = !isExpanded.value;
   }
 
-  void showTraining(Personal personal) {
+  void showTraining(Personal? personal) {
     selectedPersonal.value = personal;
     screen.value = PersonalSearchScreen.trainingForm;
   }

@@ -40,7 +40,7 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
         ?.toList();
 
     List<Future<pw.Page>> listPages = [];
-    listPages.add(generateCertificado(personalData, training, modulos!));
+    listPages.add(generateCertificado(personalData!, training, modulos!));
     return getImages(listPages);
   }
 
@@ -50,7 +50,7 @@ class _PdfToCertificadoScreenState extends State<PdfToCertificadoScreen> {
       futurePdf: _getdata,
       angleRotation: 0,
       onCancel: () {
-        widget.controller.hideForms();
+        widget.controller.showTraining(widget.personal!);
       },
       onPrint: (pages) {
         descargarPaginasComoPdf(pages,

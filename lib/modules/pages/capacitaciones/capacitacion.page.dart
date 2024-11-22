@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -590,68 +591,45 @@ class CapacitacionPage extends StatelessWidget {
                             flex: 1,
                             child: Row(
                               children: [
-                                _buildIconButton(
-                                    'Visualizar',
-                                    Icons.remove_red_eye,
-                                    AppTheme.primaryColor, () {
-                                  controller.selectedCapacitacion.value =
-                                      entrenamiento;
-                                  controller
-                                      .showVerCapacitacion(entrenamiento.key!);
-                                }),
-                                _buildIconButton(
-                                  'Editar',
-                                  Icons.edit,
-                                  AppTheme.primaryColor,
-                                  () async {
-                                    if (entrenamiento.key != null) {
-                                      controller.selectedCapacitacion.value =
-                                          entrenamiento;
-                                      controller.showEditarCapacitacion(
-                                          entrenamiento.key!);
-                                    }
-                                  },
-                                ),
-                                _buildIconButton(
-                                  'Eliminar',
-                                  Icons.delete,
-                                  AppTheme.errorColor,
-                                  () async {
+                                Expanded(
+                                  flex: 1,
+                                  child: _buildIconButton(
+                                      'Visualizar',
+                                      Icons.remove_red_eye,
+                                      AppTheme.primaryColor, () {
                                     controller.selectedCapacitacion.value =
                                         entrenamiento;
-                                    String motivoEliminacion = '';
+                                    controller.showVerCapacitacion(
+                                        entrenamiento.key!);
+                                  }),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: _buildIconButton(
+                                    'Editar',
+                                    Icons.edit,
+                                    AppTheme.primaryColor,
+                                    () async {
+                                      if (entrenamiento.key != null) {
+                                        controller.selectedCapacitacion.value =
+                                            entrenamiento;
+                                        controller.showEditarCapacitacion(
+                                            entrenamiento.key!);
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: _buildIconButton(
+                                    'Eliminar',
+                                    Icons.delete,
+                                    AppTheme.errorColor,
+                                    () async {
+                                      controller.selectedCapacitacion.value =
+                                          entrenamiento;
+                                      String motivoEliminacion = '';
 
-                                    await showDialog(
-                                      context: Get.context!,
-                                      builder: (context) {
-                                        return GestureDetector(
-                                          onTap: () =>
-                                              FocusScope.of(context).unfocus(),
-                                          child: Padding(
-                                            padding: MediaQuery.of(context)
-                                                .viewInsets,
-                                            child: DeleteReasonWidget(
-                                              entityType: 'capacitacion',
-                                              isMotivoRequired: false,
-                                              onCancel: () {
-                                                Navigator.pop(context);
-                                              },
-                                              onConfirm: (motivo) {
-                                                motivoEliminacion = motivo;
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                    if (motivoEliminacion.isEmpty) {
-                                      return;
-                                    }
-                                    bool confirmarEliminar = false;
-
-                                    if (controller.selectedCapacitacion.value !=
-                                        null) {
                                       await showDialog(
                                         context: Get.context!,
                                         builder: (context) {
@@ -661,14 +639,14 @@ class CapacitacionPage extends StatelessWidget {
                                             child: Padding(
                                               padding: MediaQuery.of(context)
                                                   .viewInsets,
-                                              child: ConfirmDeleteWidget(
-                                                itemName: '',
-                                                entityType: 'capacitación',
+                                              child: DeleteReasonWidget(
+                                                entityType: 'capacitacion',
+                                                isMotivoRequired: false,
                                                 onCancel: () {
                                                   Navigator.pop(context);
                                                 },
-                                                onConfirm: () {
-                                                  confirmarEliminar = true;
+                                                onConfirm: (motivo) {
+                                                  motivoEliminacion = motivo;
                                                   Navigator.pop(context);
                                                 },
                                               ),
@@ -676,47 +654,81 @@ class CapacitacionPage extends StatelessWidget {
                                           );
                                         },
                                       );
-                                    } else {
-                                      log('Error: No hay capacitación seleccionada');
-                                      return;
-                                    }
-                                    if (!confirmarEliminar) {
-                                      return;
-                                    }
-                                    try {
-                                      bool success =
-                                          await controller.eliminarCapacitacion(
-                                              motivoEliminacion);
-                                      if (success == true) {
+                                      if (motivoEliminacion.isEmpty) {
+                                        return;
+                                      }
+                                      bool confirmarEliminar = false;
+
+                                      if (controller
+                                              .selectedCapacitacion.value !=
+                                          null) {
                                         await showDialog(
                                           context: Get.context!,
                                           builder: (context) {
-                                            return const SuccessDeleteWidget();
+                                            return GestureDetector(
+                                              onTap: () =>
+                                                  FocusScope.of(context)
+                                                      .unfocus(),
+                                              child: Padding(
+                                                padding: MediaQuery.of(context)
+                                                    .viewInsets,
+                                                child: ConfirmDeleteWidget(
+                                                  itemName: '',
+                                                  entityType: 'capacitación',
+                                                  onCancel: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  onConfirm: () {
+                                                    confirmarEliminar = true;
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ),
+                                            );
                                           },
                                         );
-                                        //controller.buscarCapacitaciones();
                                       } else {
+                                        log('Error: No hay capacitación seleccionada');
+                                        return;
+                                      }
+                                      if (!confirmarEliminar) {
+                                        return;
+                                      }
+                                      try {
+                                        bool success = await controller
+                                            .eliminarCapacitacion(
+                                                motivoEliminacion);
+                                        if (success == true) {
+                                          await showDialog(
+                                            context: Get.context!,
+                                            builder: (context) {
+                                              return const SuccessDeleteWidget();
+                                            },
+                                          );
+                                          //controller.buscarCapacitaciones();
+                                        } else {
+                                          ScaffoldMessenger.of(Get.context!)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                  "Error al eliminar la capacitación. Intenta nuevamente."),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        log('Error eliminando la capacitación: $e');
                                         ScaffoldMessenger.of(Get.context!)
                                             .showSnackBar(
-                                          const SnackBar(
+                                          SnackBar(
                                             content: Text(
-                                                "Error al eliminar la capacitación. Intenta nuevamente."),
+                                                "Error eliminando la capacitación: $e"),
                                             backgroundColor: Colors.red,
                                           ),
                                         );
                                       }
-                                    } catch (e) {
-                                      log('Error eliminando la capacitación: $e');
-                                      ScaffoldMessenger.of(Get.context!)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                              "Error eliminando la capacitación: $e"),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  },
+                                    },
+                                  ),
                                 ),
                               ],
                             ),

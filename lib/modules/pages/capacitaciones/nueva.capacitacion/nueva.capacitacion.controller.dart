@@ -72,7 +72,7 @@ class NuevaCapacitacionController extends GetxController {
   String tipoPersona = '';
 
   CapacitacionController capacitacionController =
-      Get.put(CapacitacionController());
+      Get.find<CapacitacionController>();
 
   void _mostrarMensajeGuardado(BuildContext context) {
     showDialog(
@@ -164,7 +164,7 @@ class NuevaCapacitacionController extends GetxController {
           ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaTermino!)
           : '';
       horasController.text =
-          entrenamientoModulo!.inHorasAcumuladas?.toString() ?? '';
+          entrenamientoModulo!.inTotalHoras?.toString() ?? '';
       notaTeoriaController.text =
           entrenamientoModulo!.inNotaTeorica?.toString() ?? '';
       notaPracticaController.text =
@@ -249,9 +249,11 @@ class NuevaCapacitacionController extends GetxController {
             dropdownController.getSelectedValue('capacitacion')?.key ?? 0
         ..inModulo = 0
         ..modulo = OptionValue(key: 0, nombre: '')
-        ..tipoPersona = tipoPersona.isEmpty ? 'I' : tipoPersona
-        ..inPersona = personalInterno!.key
-        ..inActividadEntrenamiento = personalInterno!.key
+        ..tipoPersona = isInternoSelected == true ? 'I' : 'E'
+        ..inPersona = isInternoSelected == true
+            ? personalInterno!.key
+            : personalExterno!.inPersonalOrigen!
+        ..inActividadEntrenamiento = 0
         ..inCategoria =
             dropdownController.getSelectedValue('categoria')?.key ?? 0
         ..inEquipo = 0
@@ -274,7 +276,7 @@ class NuevaCapacitacionController extends GetxController {
       // Manejo seguro de conversiones numéricas
       try {
         entrenamientoModulo!
-          ..inHorasAcumuladas = int.parse(horasController.text)
+          ..inTotalHoras = int.parse(horasController.text)
           ..inNotaTeorica = int.parse(notaTeoriaController.text)
           ..inNotaPractica = int.parse(notaPracticaController.text);
       } catch (e) {
@@ -298,11 +300,11 @@ class NuevaCapacitacionController extends GetxController {
           await capacitacionService.registrarCapacitacion(entrenamientoModulo!);
 
       if (response.success) {
+        await registrarArchivos(personalInterno!.numeroDocumento!);
         log('Capacitación registrada exitosamente');
         _mostrarMensajeGuardado(Get.context!);
-        capacitacionController.buscarCapacitaciones(
-            pageNumber: capacitacionController.currentPage.value,
-            pageSize: capacitacionController.rowsPerPage.value);
+        capacitacionController.clearFields();
+        capacitacionController.buscarCapacitaciones();
         return true;
       } else {
         log('Error al registrar la capacitación: ${response.message}');
@@ -343,9 +345,11 @@ class NuevaCapacitacionController extends GetxController {
             dropdownController.getSelectedValue('capacitacion')?.key ?? 0
         ..inModulo = 0
         ..modulo = OptionValue(key: 0, nombre: '')
-        ..tipoPersona = tipoPersona.isEmpty ? 'I' : tipoPersona
-        ..inPersona = personalInterno!.key
-        ..inActividadEntrenamiento = personalInterno!.key
+        ..tipoPersona = isInternoSelected == true ? 'I' : 'E'
+        ..inPersona = isInternoSelected == true
+            ? personalInterno!.key
+            : personalExterno!.inPersonalOrigen!
+        ..inActividadEntrenamiento = 0
         ..inCategoria = dropdownController.getSelectedValue('categoria')?.key
         ..inEquipo = 0
         ..equipo = OptionValue(key: 0, nombre: '')
@@ -360,11 +364,27 @@ class NuevaCapacitacionController extends GetxController {
         ..condicion = OptionValue(key: 0, nombre: '')
         ..inEstado = 0
         ..estadoEntrenamiento = OptionValue(key: 0, nombre: '')
-        ..fechaInicio = _parseFecha(fechaInicioController.text)
-        ..fechaTermino = _parseFecha(fechaTerminoController.text)
-        ..inHorasAcumuladas = int.tryParse(horasController.text) ?? 0
-        ..inNotaTeorica = int.tryParse(notaTeoriaController.text) ?? 0
-        ..inNotaPractica = int.tryParse(notaPracticaController.text) ?? 0;
+        ..fechaInicio = fechaInicio
+        ..fechaTermino = fechaTermino;
+
+      try {
+        entrenamientoModulo!
+          ..inTotalHoras = int.parse(horasController.text)
+          ..inNotaTeorica = int.parse(notaTeoriaController.text)
+          ..inNotaPractica = int.parse(notaPracticaController.text);
+      } catch (e) {
+        _mostrarErroresValidacion(Get.context!, [
+          'Los valores de horas y notas deben ser números válidos',
+        ]);
+        return false;
+      }
+
+      if (!_validarRangoNotas()) {
+        _mostrarErroresValidacion(Get.context!, [
+          'Las notas deben estar entre 0 y 99',
+        ]);
+        return false;
+      }
 
       log('Enviando actualización: ${capacitacionActualizada.toJson()}');
 
@@ -372,8 +392,11 @@ class NuevaCapacitacionController extends GetxController {
           .actualizarCapacitacion(capacitacionActualizada);
 
       if (response.success) {
+        await registrarArchivos(personalInterno!.numeroDocumento!);
         log('Capacitación actualizada exitosamente');
         _mostrarMensajeGuardado(Get.context!);
+        capacitacionController.clearFields();
+        capacitacionController.buscarCapacitaciones();
         return true;
       } else {
         log('Error en la respuesta del servidor: ${response.message}');
@@ -606,8 +629,8 @@ class NuevaCapacitacionController extends GetxController {
         extension: archivo['extension'],
         mime: archivo['mime'],
         datos: archivo['datos'],
-        inTipoArchivo: 1,
-        inOrigen: 1,
+        inTipoArchivo: OrigenArchivo.capacitacion,
+        inOrigen: TipoActividad.CAPACITACION,
         inOrigenKey: archivo['inOrigenKey'],
       );
 

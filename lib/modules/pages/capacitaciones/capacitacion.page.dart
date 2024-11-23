@@ -1,7 +1,5 @@
 import 'dart:developer';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
@@ -95,10 +93,6 @@ class CapacitacionPage extends StatelessWidget {
                 height: 20,
               ),
               _buildSeccionResultado(controller),
-              // const SizedBox(
-              //   height: 20,
-              // ),
-              // _buildRegresarButton(context)
             ],
           ),
         );
@@ -337,7 +331,7 @@ class CapacitacionPage extends StatelessWidget {
           onPressed: () async {
             controller.clearFields();
             await controller.buscarCapacitaciones();
-            controller.isExpanded.value = false;
+            //controller.isExpanded.value = false;
           },
           icon: const Icon(
             Icons.cleaning_services,

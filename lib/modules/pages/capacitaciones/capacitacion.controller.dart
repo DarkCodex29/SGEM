@@ -257,7 +257,7 @@ class CapacitacionController extends GetxController {
           await capacitacionService.eliminarCapacitacion(capacitacion);
       log('Respuesta recibida: ${response.data}');
       if (response.success) {
-        log('Capacitación eliminada con éxito');
+        log('Capacitación eliminada correctamente');
         buscarCapacitaciones(
             pageNumber: currentPage.value, pageSize: rowsPerPage.value);
         return true;

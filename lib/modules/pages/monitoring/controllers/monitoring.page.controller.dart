@@ -101,14 +101,20 @@ class MonitoringSearchController extends GetxController {
   }
 
   clearFilter() {
-    codigoMCPController = TextEditingController();
-    documentoIdentidadController = TextEditingController();
-    nombresController = TextEditingController();
-    apellidosMaternoController = TextEditingController();
-    apellidosPaternoController = TextEditingController();
-    rangoFechaController = TextEditingController();
+    codigoMCPController = TextEditingController(text: "");
+    documentoIdentidadController = TextEditingController(text: "");
+    nombresController = TextEditingController(text: "");
+    apellidosMaternoController = TextEditingController(text: "");
+    apellidosPaternoController = TextEditingController(text: "");
+    rangoFechaController = TextEditingController(text: "");
     fechaInicio = null;
     fechaTermino = null;
+    selectedEquipoKey.value = null;
+    selectedEntrenadorKey.value = null;
+    selectedModuloKey.value = null;
+    selectedGuardiaKey.value = null;
+    selectedEstadoEntrenamientoKey.value = null;
+    selectedCondicionKey.value = null;
   }
 
   Future<void> searchMonitoring({int pageNumber = 1, int pageSize = 10}) async {

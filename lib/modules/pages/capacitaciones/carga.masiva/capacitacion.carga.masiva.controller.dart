@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
+import 'package:sgem/shared/widgets/save/widget.save.personal.dart';
 
 import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 
@@ -85,11 +86,18 @@ class CapacitacionCargaMasivaController extends GetxController {
     }
   }
 
-  // Future<void> confirmarCarga() {
-  //   if (cargaMasivaExcel.isNotEmpty) {
-  //     final response = await capacitacionService.carga
-  //   }
-  // }
+  Future<bool> confirmarCarga() async {
+    if (cargaMasivaExcel.isNotEmpty) {
+      final response = await capacitacionService.cargarMasiva(
+          cargaMasivaList: cargaMasivaExcel);
+
+      if (response.success) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
 
   Future<void> previsualizarCarga() async {
     if (cargaMasivaExcel.isNotEmpty) {

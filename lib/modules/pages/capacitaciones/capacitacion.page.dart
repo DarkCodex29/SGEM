@@ -422,7 +422,10 @@ class CapacitacionPage extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton.icon(
           onPressed: () {
+            log('Mostrar carga masiva');
             controller.showCargaMasivaCapacitacion();
+            // log('Cargar capacitaciones');
+            // controller.buscarCapacitaciones();
           },
           icon: const Icon(
             Icons.refresh,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/modules/pages/capacitaciones/capacitacion.controller.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 
 import 'package:sgem/shared/widgets/custom.textfield.dart';
@@ -18,16 +19,20 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final CapacitacionCargaMasivaController controller =
         Get.put(CapacitacionCargaMasivaController());
+
+    final CapacitacionController capacitacionController =
+        Get.put(CapacitacionController());
+
     return Scaffold(
       body: _buildCapacitacionCargaMasivaPage(
-        controller,
-        context,
-      ),
+          controller, context, capacitacionController),
     );
   }
 
   Widget _buildCapacitacionCargaMasivaPage(
-      CapacitacionCargaMasivaController controller, BuildContext context) {
+      CapacitacionCargaMasivaController controller,
+      BuildContext context,
+      CapacitacionController capacitacionController) {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
@@ -42,7 +47,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              _buildRegresarButton(context, controller)
+              _buildRegresarButton(context, controller, capacitacionController),
             ],
           ),
         );
@@ -312,6 +317,17 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
   List<Widget> _buildBotonesAccion(
       CapacitacionCargaMasivaController controller) {
     return [
+      // IconButton(
+      //   onPressed: () {
+      //     controller.limpiar();
+      //   },
+      //   icon: Icon(
+      //     Icons.clear_rounded,
+      //     color: Colors.red,
+      //   ),
+      //   iconSize: 32,
+      // ),
+      // const SizedBox(width: 10),
       ElevatedButton.icon(
         onPressed: () {
           controller.previsualizarCarga();
@@ -427,7 +443,9 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
   }
 
   Widget _buildRegresarButton(
-      BuildContext context, CapacitacionCargaMasivaController controller) {
+      BuildContext context,
+      CapacitacionCargaMasivaController controller,
+      CapacitacionController capacitacionController) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -446,20 +464,30 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           width: 20,
         ),
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             if (controller.esConfirmacionValida()) {
               // Proceder con la carga
-               controller.confirmarCarga();
-              showDialog(context: Get.context!, builder: (context) {
-                return MensajeGuardadoWidget();
-              },);
-              Get.snackbar(
-                "Confirmacion",
-                "Carga con exito",
-                backgroundColor: Colors.green,
-                colorText: Colors.white,
-                isDismissible: true,
-              );
+              var response = await controller.confirmarCarga();
+              if (response) {
+                controller.limpiar();
+                showDialog(
+                  context: Get.context!,
+                  builder: (context) {
+                    return MensajeGuardadoWidget();
+                  },
+                );
+
+                onCancel();
+                capacitacionController.buscarCapacitaciones();
+              } else {
+                showDialog(
+                  context: Get.context!,
+                  builder: (context) {
+                    return MensajeValidacionWidget(
+                        errores: ['Ha sucedido un error']);
+                  },
+                );
+              }
             } else {
               // Mostrar un mensaje de advertencia si las condiciones no se cumplen
               showDialog(

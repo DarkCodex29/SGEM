@@ -32,14 +32,16 @@ class CapacitacionCargaMasivaController extends GetxController {
   var registrosValidados = false.obs; // Estado de validación de registros
   var sinErrores = false.obs; // Estado de errores en registros
 
-  Future<void> cargarArchivo() async {
+  void limpiar(){
     cargaMasivaResultadosPaginados.clear();
     cargaMasivaResultadosValidados.clear();
-
     archivoController.clear();
     totalRecords.value = 0;
     correctRecords.value = 0;
     errorRecords.value = 0;
+  }
+  Future<void> cargarArchivo() async {
+    limpiar();
 
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(

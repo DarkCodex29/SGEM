@@ -317,6 +317,17 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
   List<Widget> _buildBotonesAccion(
       CapacitacionCargaMasivaController controller) {
     return [
+      // IconButton(
+      //   onPressed: () {
+      //     controller.limpiar();
+      //   },
+      //   icon: Icon(
+      //     Icons.clear_rounded,
+      //     color: Colors.red,
+      //   ),
+      //   iconSize: 32,
+      // ),
+      // const SizedBox(width: 10),
       ElevatedButton.icon(
         onPressed: () {
           controller.previsualizarCarga();
@@ -468,7 +479,6 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
 
                 onCancel();
                 capacitacionController.buscarCapacitaciones();
-                
               } else {
                 showDialog(
                   context: Get.context!,

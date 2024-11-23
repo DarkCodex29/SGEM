@@ -418,14 +418,6 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
-  DateTime? _parseFecha(String fecha) {
-    try {
-      return DateFormat('dd/MM/yyyy').parse(fecha);
-    } catch (e) {
-      log('Error al parsear fecha: $e');
-      return null;
-    }
-  }
 
   bool _validarRangoNotas() {
     try {

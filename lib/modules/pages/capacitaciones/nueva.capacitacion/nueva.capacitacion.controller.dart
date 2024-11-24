@@ -298,9 +298,11 @@ class NuevaCapacitacionController extends GetxController {
 
       final response =
           await capacitacionService.registrarCapacitacion(entrenamientoModulo!);
-
+      log('Response: ${response.data}');
       if (response.success) {
-        await registrarArchivos(personalInterno!.numeroDocumento!);
+        await registrarArchivos(isInternoSelected == true
+            ? personalInterno!.numeroDocumento!
+            : personalExterno!.numeroDocumento!);
         log('Capacitación registrada exitosamente');
         _mostrarMensajeGuardado(Get.context!);
         capacitacionController.clearFields();
@@ -310,7 +312,8 @@ class NuevaCapacitacionController extends GetxController {
         log('Error al registrar la capacitación: ${response.message}');
         Get.snackbar('Error',
             'No se pudo registrar la capacitación: ${response.message}',
-            backgroundColor: Colors.red, colorText: Colors.white);
+            backgroundColor: Colors.red,
+            colorText: const Color.fromARGB(255, 250, 128, 128));
         return false;
       }
     } catch (e) {
@@ -392,7 +395,9 @@ class NuevaCapacitacionController extends GetxController {
           .actualizarCapacitacion(capacitacionActualizada);
 
       if (response.success) {
-        await registrarArchivos(personalInterno!.numeroDocumento!);
+        await registrarArchivos(isInternoSelected == true
+            ? personalInterno!.numeroDocumento!
+            : personalExterno!.numeroDocumento!);
         log('Capacitación actualizada exitosamente');
         _mostrarMensajeGuardado(Get.context!);
         capacitacionController.clearFields();
@@ -413,14 +418,6 @@ class NuevaCapacitacionController extends GetxController {
     }
   }
 
-  DateTime? _parseFecha(String fecha) {
-    try {
-      return DateFormat('dd/MM/yyyy').parse(fecha);
-    } catch (e) {
-      log('Error al parsear fecha: $e');
-      return null;
-    }
-  }
 
   bool _validarRangoNotas() {
     try {

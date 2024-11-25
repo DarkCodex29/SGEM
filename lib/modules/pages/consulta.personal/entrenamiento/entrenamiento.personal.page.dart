@@ -641,7 +641,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(
-      BuildContext context, EntrenamientoModulo training) {
+      BuildContext context, EntrenamientoModulo entrenamiento) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -663,7 +663,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                         child: EntrenamientoNuevoModal(
                           data: controllerPersonal.selectedPersonal.value!,
                           isEdit: true,
-                          entrenamiento: training,
+                          entrenamiento: entrenamiento,
                           close: () {
                             Navigator.pop(context);
                           },
@@ -688,7 +688,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 }
               },
             ),
-            if (training.estadoEntrenamiento!.nombre!.toLowerCase() !=
+            if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() !=
                 'autorizado')
               IconButton(
                 tooltip: 'Eliminar entrenamiento',
@@ -748,7 +748,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   if (!confirmarEliminar) return;
                   try {
                     bool success =
-                        await controller.eliminarEntrenamiento(training);
+                        await controller.eliminarEntrenamiento(entrenamiento);
                     if (success) {
                       await showDialog(
                         context: Get.context!,
@@ -775,15 +775,16 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                   }
                 },
               ),
-            if (training.estadoEntrenamiento!.nombre!.toLowerCase() ==
+            if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() ==
                 "entrenando")
               IconButton(
                 icon: const Icon(Icons.add_circle_outline,
                     color: AppTheme.primaryColor),
                 tooltip: 'Nuevo modulo',
                 onPressed: () async {
+                  log('Entrenamiento: ${entrenamiento.key!}');
                   var response = await controller.entrenamientoService
-                      .obtenerUltimoModuloPorEntrenamiento(training.key!);
+                      .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key!);
                   var ultimoModulo = response.data!;
                   if (ultimoModulo.inModulo != 4) {
                     log("Ultimo modulo: ${ultimoModulo.inModulo}");
@@ -809,10 +810,10 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                             child: Padding(
                               padding: MediaQuery.of(context).viewInsets,
                               child: EntrenamientoModuloNuevo(
-                                entrenamiento: training,
+                                entrenamiento: entrenamiento,
                                 isEdit: false,
-                                inEntrenamiento: training.key,
-                                inPersona: training.inPersona,
+                                inEntrenamiento: entrenamiento.key,
+                                inPersona: entrenamiento.inPersona,
                                 onCancel: () {
                                   Navigator.pop(context);
                                 },
@@ -839,7 +840,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               ),
           ],
         ),
-        if (training.estadoEntrenamiento!.nombre!.toLowerCase() == "autorizado")
+        if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() == "autorizado")
           Row(
             children: [
               IconButton(
@@ -855,7 +856,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 icon: const Icon(Icons.file_copy_sharp,
                     color: AppTheme.primaryColor),
                 onPressed: () {
-                  controller.selectedTraining.value = training;
+                  controller.selectedTraining.value = entrenamiento;
                   controllerPersonal.showCertificado();
                 },
               ),

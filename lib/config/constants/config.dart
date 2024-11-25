@@ -1,6 +1,6 @@
 class ConfigFile {
-  //static const String apiUrl = 'http://13.90.57.44:8080/SgemApi/api';
-  static const String apiUrl = 'http://localhost/chinalcoApiEntrenamiento/api';
+  static const String apiUrl = 'http://13.90.57.44:8080/SgemApi/api';
+  //static const String apiUrl = 'http://localhost/chinalcoApiEntrenamiento/api';
   static const String apiUsername = "perucopper.local\\svcsyd01";
   static const String apiPassword = "Syst3md3v3l@p";
   static const String ambienteDesarrollo = "dev - ";

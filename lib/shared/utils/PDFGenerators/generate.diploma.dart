@@ -57,11 +57,12 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
                                     pw.MainAxisAlignment.spaceAround,
                                 children: [
                                   textFirma(
-                                      "SUPERINTENDENCIA OPERACIONES MINA"),
-                                  textFirma("SUPERINTENDENCIA OPERACIONES MINA")
+                                      "SUPERINTENDENTE DE OPERACIONES MINA"),
+                                  textFirma("GERENTE MINA")
                                 ]),
                             pw.SizedBox(height: dimensionsImage.height / 40),
-                            textFirma("SUPERINTENDENCIA OPERACIONES MINA"),
+                            textFirma(
+                                "SUPERINTENDENTE DE MEJORA CONTINUA Y CONTROL DE PRODUCCIÓN"),
                           ],
                         ),
                       ),

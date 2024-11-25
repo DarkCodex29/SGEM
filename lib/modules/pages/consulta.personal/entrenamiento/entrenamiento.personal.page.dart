@@ -401,9 +401,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
+                Icon(Icons.radio_button_on,
+                    color: modulo.estadoEntrenamiento!.nombre!.toLowerCase() == 'completo'
+                        ? Colors.green
+                        : Colors.orange),
+                SizedBox(width: 10,),
                 Text(
                   modulo.modulo!.nombre!,
                   style: const TextStyle(
@@ -484,8 +488,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               if (modulo.estadoEntrenamiento!.nombre!.toLowerCase() ==
                   'completo')
                 IconButton(
-                  tooltip:
-                      'Ver modulo',
+                  tooltip: 'Ver modulo',
                   icon: const Icon(
                     Icons.remove_red_eye,
                     color: AppTheme.primaryColor,
@@ -521,8 +524,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               if (modulo.estadoEntrenamiento!.nombre!.toLowerCase() !=
                   'completo')
                 IconButton(
-                  tooltip:
-                      'Editar modulo',
+                  tooltip: 'Editar modulo',
                   icon: const Icon(
                     Icons.edit,
                     color: AppTheme.primaryColor,

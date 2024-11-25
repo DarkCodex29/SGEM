@@ -12,9 +12,14 @@ import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
 
-class MonitoringPage extends StatelessWidget {
+class MonitoringPage extends StatefulWidget {
   MonitoringPage({super.key});
 
+  @override
+  State<MonitoringPage> createState() => _MonitoringPageState();
+}
+
+class _MonitoringPageState extends State<MonitoringPage> {
   @override
   Widget build(BuildContext context) {
     final MonitoringSearchController controller =
@@ -224,6 +229,7 @@ class MonitoringPage extends StatelessWidget {
                       onPressed: () {
                         controller.clearFilter();
                         controller.searchMonitoring();
+                        setState(() {});
                       },
                       icon: const Icon(
                         Icons.cleaning_services,
@@ -386,7 +392,7 @@ class MonitoringPage extends StatelessWidget {
   Widget _buildDropdownEntrenadorResponsable(
       MonitoringSearchController controller) {
     return Obx(() {
-      if (controller.equipoOpciones.isEmpty) {
+      if (controller.entrenadores.isEmpty) {
         return const CupertinoActivityIndicator(
           radius: 10,
           color: Colors.grey,
@@ -449,6 +455,7 @@ class MonitoringPage extends StatelessWidget {
   }
 
   final DateTime today = DateTime.now();
+
   Future<void> _selectDateRange(
       BuildContext context, MonitoringSearchController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(

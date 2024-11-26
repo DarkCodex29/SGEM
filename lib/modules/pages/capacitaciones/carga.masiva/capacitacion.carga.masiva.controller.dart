@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
-import 'package:sgem/shared/widgets/save/widget.save.personal.dart';
+
 
 import '../../../../shared/modules/capacitacion.carga.masiva.excel.dart';
 

@@ -94,14 +94,19 @@ class InfoPersonMonitoringWidegt extends StatelessWidget {
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: CustomTextField(
-                                  label: "Nombres y Apellidos",
-                                  isReadOnly: true,
-                                  controller: createMonitoringController
-                                      .fullNameController,
+                                child: SizedBox(
+                                  child: CustomTextField(
+                                    label: "Nombres y Apellidos",
+                                    isReadOnly: true,
+                                    controller: createMonitoringController
+                                        .fullNameController,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                            ],
+                          ),
+                          Row(
+                            children: [
                               Expanded(
                                 child: CustomTextField(
                                   label: "Guardia",

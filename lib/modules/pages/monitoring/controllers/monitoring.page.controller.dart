@@ -4,6 +4,7 @@ import 'package:excel/excel.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
@@ -258,80 +259,88 @@ class MonitoringSearchController extends GetxController {
   }
 
   Future<void> downloadExcel() async {
-    var excel = Excel.createExcel();
-    excel.rename('Sheet1', 'Monitoreo');
+    var response =
+        await monitoringService.queryMonitoringPaginated(isPaginate: false);
+    if (response.success && response.data != null) {
+      var result = response.data as Map<String, dynamic>;
 
-    CellStyle headerStyle = CellStyle(
-      backgroundColorHex: ExcelColor.blue,
-      fontColorHex: ExcelColor.white,
-      bold: true,
-      horizontalAlign: HorizontalAlign.Center,
-      verticalAlign: VerticalAlign.Center,
-    );
-    List<String> headers = [
-      'CÓDIGO_MCP',
-      'APPELLIDO_PATERNO',
-      'APPELLIDO_MATERNO',
-      'NOMBRES',
-      'GUARDIA',
-      'EQUIPO',
-      'ENTRENADOR_RESPONSABLE',
-      'CONDICIÓN_MONITOREO',
-      'FECHA_MONITOREO',
-      'FECHA_REGISTRO'
-    ];
+      var items = result['Items'] as List<Monitoring>;
+      var excel = Excel.createExcel();
+      excel.rename('Sheet1', 'Monitoreo');
 
-    for (int i = 0; i < headers.length; i++) {
-      var cell = excel.sheets['Monitoreo']!
-          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
-      cell.value = TextCellValue(headers[i]);
-      cell.cellStyle = headerStyle;
-
-      excel.sheets['Monitoreo']!
-          .setColumnWidth(i, headers[i].length.toDouble() + 5);
-    }
-
-    // final dateFormat = DateFormat('dd/MM/yyyy');
-
-    for (int rowIndex = 0; rowIndex < monitoringAll.length; rowIndex++) {
-      var entrenamiento = monitoringAll[rowIndex];
-      List<CellValue> row = [
-        TextCellValue(entrenamiento.codigoMcp ?? ""),
-        TextCellValue(entrenamiento.apellidoPaterno ?? ""),
-        TextCellValue(entrenamiento.apellidoMaterno ?? ""),
-        TextCellValue(
-            "${entrenamiento.primerNombre} ${entrenamiento.segundoNombre}"),
-        TextCellValue(entrenamiento.guardia?.nombre ?? ""),
-        TextCellValue(entrenamiento.equipo?.nombre ?? ""),
-        TextCellValue(entrenamiento.entrenador?.nombre ?? ""),
-        TextCellValue(entrenamiento.condicion?.nombre ?? ""),
-        TextCellValue(''),
-        TextCellValue(''),
+      CellStyle headerStyle = CellStyle(
+        backgroundColorHex: ExcelColor.blue,
+        fontColorHex: ExcelColor.white,
+        bold: true,
+        horizontalAlign: HorizontalAlign.Center,
+        verticalAlign: VerticalAlign.Center,
+      );
+      List<String> headers = [
+        'CÓDIGO_MCP',
+        'APELLIDO_PATERNO',
+        'APELLIDO_MATERNO',
+        'NOMBRES',
+        'GUARDIA',
+        'EQUIPO',
+        'ENTRENADOR_RESPONSABLE',
+        'CONDICIÓN_MONITOREO',
+        'FECHA_REAL_DE_MONITOREO',
+        'FECHA_PROXIMO_MONITOREO'
       ];
 
-      for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        var cell = excel.sheets['Monitoreo']!.cell(CellIndex.indexByColumnRow(
-            columnIndex: colIndex, rowIndex: rowIndex + 1));
-        cell.value = row[colIndex];
+      for (int i = 0; i < headers.length; i++) {
+        var cell = excel.sheets['Monitoreo']!
+            .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
+        cell.value = TextCellValue(headers[i]);
+        cell.cellStyle = headerStyle;
 
-        // double contentWidth = row[colIndex].toString().length.toDouble();
-        // if (contentWidth >
-        //     excel.sheets['Monitoreo']!.getColumnWidth(colIndex)) {
-        //   excel.sheets['Monitoreos']!
-        //       .setColumnWidth(colIndex, contentWidth + 5);
-        // }
+        excel.sheets['Monitoreo']!
+            .setColumnWidth(i, headers[i].length.toDouble() + 5);
       }
+
+      // final dateFormat = DateFormat('dd/MM/yyyy');
+
+      for (int rowIndex = 0; rowIndex < items.length; rowIndex++) {
+        var entrenamiento = items[rowIndex];
+        List<CellValue> row = [
+          TextCellValue(entrenamiento.codigoMcp ?? ""),
+          TextCellValue(entrenamiento.apellidoPaterno ?? ""),
+          TextCellValue(entrenamiento.apellidoMaterno ?? ""),
+          TextCellValue(
+              "${entrenamiento.primerNombre} ${entrenamiento.segundoNombre}"),
+          TextCellValue(entrenamiento.guardia?.nombre ?? ""),
+          TextCellValue(entrenamiento.equipo?.nombre ?? ""),
+          TextCellValue(entrenamiento.entrenador?.nombre ?? ""),
+          TextCellValue(entrenamiento.condicion?.nombre ?? ""),
+          TextCellValue(DateFormat('dd/MM/yyyy')
+              .format(entrenamiento.fechaRealMonitoreo!)),
+          TextCellValue(""),
+        ];
+
+        for (int colIndex = 0; colIndex < row.length; colIndex++) {
+          var cell = excel.sheets['Monitoreo']!.cell(CellIndex.indexByColumnRow(
+              columnIndex: colIndex, rowIndex: rowIndex + 1));
+          cell.value = row[colIndex];
+
+          // double contentWidth = row[colIndex].toString().length.toDouble();
+          // if (contentWidth >
+          //     excel.sheets['Monitoreo']!.getColumnWidth(colIndex)) {
+          //   excel.sheets['Monitoreos']!
+          //       .setColumnWidth(colIndex, contentWidth + 5);
+          // }
+        }
+      }
+
+      var excelBytes = excel.encode();
+      Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
+
+      String fileName = generateExcelFileName();
+      await FileSaver.instance.saveFile(
+          name: fileName,
+          bytes: uint8ListBytes,
+          ext: "xlsx",
+          mimeType: MimeType.microsoftExcel);
     }
-
-    var excelBytes = excel.encode();
-    Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
-
-    String fileName = generateExcelFileName();
-    await FileSaver.instance.saveFile(
-        name: fileName,
-        bytes: uint8ListBytes,
-        ext: "xlsx",
-        mimeType: MimeType.microsoftExcel);
   }
 
   String generateExcelFileName() {
@@ -343,6 +352,6 @@ class MonitoringSearchController extends GetxController {
     final minute = now.minute.toString().padLeft(2, '0');
     final second = now.second.toString().padLeft(2, '0');
 
-    return 'MONITOREO_MINA_$day$month$year$hour$minute$second.xlsx';
+    return 'MONITOREOS_MINA_$day$month$year$hour$minute$second.xlsx';
   }
 }

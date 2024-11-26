@@ -16,11 +16,13 @@ class FormMonitoringWidget extends StatefulWidget {
       required this.isSmallScreen,
       required this.monitoringSearchController,
       required this.createMonitoringController,
-      required this.isEditing});
+      required this.isEditing,
+      this.isView = false});
   final bool isSmallScreen;
   final MonitoringSearchController monitoringSearchController;
   final CreateMonitoringController createMonitoringController;
   final bool isEditing;
+  final bool isView;
 
   @override
   State<FormMonitoringWidget> createState() => _FormMonitoringWidgetState();
@@ -56,6 +58,8 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                           label: "Horas",
                           controller:
                               widget.createMonitoringController.horasController,
+                          maxLength: 2,
+                          isReadOnly: widget.isView,
                         ),
                         const SizedBox(height: 10),
                         _buildDropdownEntrenadorResponsable(),
@@ -75,6 +79,9 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                           ),
                           icon: const Icon(Icons.calendar_month),
                           onIconPressed: () async {
+                            if (widget.isView) {
+                              return;
+                            }
                             final date = await _chooseDate(context);
                             widget.createMonitoringController
                                 .fechaRealMonitoreoController = date;
@@ -83,6 +90,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                         ),
                         const SizedBox(height: 10),
                         CustomTextFormField(
+                          isRequired: false,
                           label: "Fecha Apróximada de monitoreo",
                           isReadOnly: true,
                           controller: TextEditingController(
@@ -97,6 +105,9 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                           ),
                           icon: const Icon(Icons.calendar_month),
                           onIconPressed: () async {
+                            if (widget.isView) {
+                              return;
+                            }
                             final date = await _chooseDate(context);
                             widget.createMonitoringController
                                 .fechaProximoMonitoreoController = date;
@@ -108,7 +119,11 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                         const SizedBox(height: 10),
                         CustomTextFormField(
                           label: "Comentarios",
-                          controller: TextEditingController(text: ""),
+                          controller: widget
+                              .createMonitoringController.commentController,
+                          maxLines: 3,
+                          maxLength: 200,
+                          isReadOnly: widget.isView,
                         ),
                       ],
                     )
@@ -130,6 +145,8 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                                 label: "Horas",
                                 controller: widget
                                     .createMonitoringController.horasController,
+                                maxLength: 2,
+                                isReadOnly: widget.isView,
                               ),
                             ),
                           ],
@@ -156,6 +173,9 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                                 ),
                                 icon: const Icon(Icons.calendar_month),
                                 onIconPressed: () async {
+                                  if (widget.isView) {
+                                    return;
+                                  }
                                   final date = await _chooseDate(context);
                                   widget.createMonitoringController
                                       .fechaRealMonitoreoController = date;
@@ -166,6 +186,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                             const SizedBox(width: 10),
                             Expanded(
                               child: CustomTextFormField(
+                                isRequired: false,
                                 label: "Fecha Apróximada de monitoreo",
                                 isReadOnly: true,
                                 controller: TextEditingController(
@@ -180,6 +201,9 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                                 ),
                                 icon: const Icon(Icons.calendar_month),
                                 onIconPressed: () async {
+                                  if (widget.isView) {
+                                    return;
+                                  }
                                   final date = await _chooseDate(context);
                                   widget.createMonitoringController
                                       .fechaProximoMonitoreoController = date;
@@ -198,7 +222,11 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                             Expanded(
                               child: CustomTextFormField(
                                 label: "Comentarios",
-                                controller: TextEditingController(text: ""),
+                                controller: widget.createMonitoringController
+                                    .commentController,
+                                maxLines: 3,
+                                maxLength: 200,
+                                isReadOnly: widget.isView,
                               ),
                             ),
                             const SizedBox(width: 10),
@@ -214,7 +242,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
             ),
           ),
           const SizedBox(height: 20),
-          if (widget.isEditing) _buildArchivoSection(),
+          if (widget.isEditing || widget.isView) _buildArchivoSection(),
           Padding(
             padding: const EdgeInsets.only(left: 50, right: 50, top: 10),
             child: _buildButtons(context),
@@ -256,6 +284,9 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                   children: [
                     TextButton.icon(
                       onPressed: () {
+                        if (widget.isEditing || widget.isView) {
+                          return;
+                        }
                         widget.createMonitoringController
                             .eliminarArchivo(archivo['nombre']);
                       },
@@ -282,15 +313,16 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
             );
           }
         }),
-        const SizedBox(height: 10),
-        TextButton.icon(
-          onPressed: () {
-            widget.createMonitoringController.adjuntarDocumentos();
-          },
-          icon: const Icon(Icons.attach_file, color: Colors.blue),
-          label: const Text("Adjuntar Documentos",
-              style: TextStyle(color: Colors.blue)),
-        ),
+        if (!widget.isView) const SizedBox(height: 10),
+        if (!widget.isView)
+          TextButton.icon(
+            onPressed: () {
+              widget.createMonitoringController.adjuntarDocumentos();
+            },
+            icon: const Icon(Icons.attach_file, color: Colors.blue),
+            label: const Text("Adjuntar Documentos",
+                style: TextStyle(color: Colors.blue)),
+          ),
       ],
     );
   }
@@ -327,6 +359,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
 
       return CustomDropdown(
         hintText: 'Selecciona Estado de Entrenamiento',
+        labelName: "Estado del tentrenamiento",
         options: widget.monitoringSearchController.estadoEntrenamientoOpciones
             .map((option) => option.valor ?? "")
             .toList(),
@@ -336,7 +369,8 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
             ? selectValue
             : null,
         isSearchable: false,
-        isRequired: false,
+        isRequired: true,
+        isReadOnly: widget.isView,
         onChanged: (value) {
           final selectedOption = widget
               .monitoringSearchController.estadoEntrenamientoOpciones
@@ -368,6 +402,8 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           widget.monitoringSearchController.condicionOpciones;
       return CustomDropdown(
         hintText: 'Selecciona condicion',
+        labelName: "Condición",
+        isReadOnly: widget.isView,
         options: options.map((option) => option.valor!).toList(),
         selectedValue:
             widget.createMonitoringController.selectedCondicionKey.value != null
@@ -379,7 +415,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                     .valor
                 : null,
         isSearchable: false,
-        isRequired: false,
+        isRequired: true,
         onChanged: (value) {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
@@ -409,6 +445,8 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           widget.monitoringSearchController.equipoOpciones;
       return CustomDropdown(
         hintText: 'Selecciona Equipo',
+        labelName: "Equipo",
+        isReadOnly: widget.isView,
         options: options.map((option) => option.valor!).toList(),
         selectedValue:
             widget.createMonitoringController.selectedEquipoKey.value != null
@@ -420,7 +458,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                     .valor
                 : null,
         isSearchable: false,
-        isRequired: false,
+        isRequired: true,
         onChanged: (value) {
           final selectedOption = options.firstWhere(
             (option) => option.valor == value,
@@ -449,6 +487,8 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
       List<Personal> options = widget.monitoringSearchController.entrenadores;
       return CustomDropdown(
         hintText: 'Selecciona Entrenador',
+        labelName: "Entrenador",
+        isReadOnly: widget.isView,
         options: options.map((option) => option.nombreCompleto!).toList(),
         selectedValue:
             widget.createMonitoringController.selectedEntrenadorKey.value !=
@@ -462,7 +502,7 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
                     .toString()
                 : null,
         isSearchable: false,
-        isRequired: false,
+        isRequired: true,
         onChanged: (value) {
           final selectedOption = options.firstWhere(
             (option) => option.nombreCompleto == value,
@@ -525,40 +565,42 @@ class _FormMonitoringWidgetState extends State<FormMonitoringWidget> {
           ),
           child: const Text("Cancelar", style: TextStyle(color: Colors.grey)),
         ),
-        ElevatedButton(
-          onPressed: widget.createMonitoringController.isSaving.value
-              ? null
-              : () async {
-                  if (_formKey.currentState!.validate()) {
-                    final state = await widget.createMonitoringController
-                        .saveMonitoring(context);
-                    if (state) {
-                      if (widget.isEditing) {
-                        widget.createMonitoringController.uploadArchive();
-                      } else {
-                        widget.monitoringSearchController.screen.value =
-                            MonitoringSearchScreen.none;
-                        // widget.monitoringSearchController.screen.value =
-                        //     widget.monitoringSearchController.clearFilter();
-                        // widget.createMonitoringController.clearModel();
-                        widget.monitoringSearchController
-                            .searchMonitoring(pageNumber: 1, pageSize: 10);
+        if (!widget.isView)
+          ElevatedButton(
+            onPressed: widget.createMonitoringController.isSaving.value
+                ? null
+                : () async {
+                    if (_formKey.currentState!.validate()) {
+                      final state = await widget.createMonitoringController
+                          .saveMonitoring(context);
+                      if (state) {
+                        if (widget.isEditing) {
+                          widget.createMonitoringController.uploadArchive();
+                        } else {
+                          widget.monitoringSearchController.screen.value =
+                              MonitoringSearchScreen.none;
+                          // widget.monitoringSearchController.screen.value =
+                          //     widget.monitoringSearchController.clearFilter();
+                          widget.createMonitoringController.clearModel();
+                          widget.monitoringSearchController
+                              .searchMonitoring(pageNumber: 1, pageSize: 10);
+                        }
                       }
                     }
-                  }
-                },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.primaryColor,
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                  },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+            ),
+            child: Obx(() {
+              return widget.createMonitoringController.isSaving.value
+                  ? const CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    )
+                  : const Text("Guardar",
+                      style: TextStyle(color: Colors.white));
+            }),
           ),
-          child: Obx(() {
-            return widget.createMonitoringController.isSaving.value
-                ? const CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  )
-                : const Text("Guardar", style: TextStyle(color: Colors.white));
-          }),
-        ),
       ],
     );
   }

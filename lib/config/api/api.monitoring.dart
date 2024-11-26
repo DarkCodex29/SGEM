@@ -11,22 +11,25 @@ class MonitoringService {
 
   final Dio dio = Dio();
 
-  Future<ResponseHandler<Map<String, dynamic>>> queryMonitoringPaginated({
-    String? codigoMcp,
-    String? apellidoPaterno,
-    String? apellidoMaterno,
-    String? nombres,
-    int? inGuardia,
-    int? inEstadoEntrenamiento,
-    int? inEquipo,
-    int? inEntrenador,
-    int? inCondicion,
-    DateTime? fechaInicio,
-    DateTime? fechaTermino,
-    int? pageSize,
-    int? pageNumber,
-  }) async {
-    final url = '$baseUrl/monitoreo/MonitoreoConsultaPaginado';
+  Future<ResponseHandler<Map<String, dynamic>>> queryMonitoringPaginated(
+      {String? codigoMcp,
+      String? apellidoPaterno,
+      String? apellidoMaterno,
+      String? nombres,
+      int? inGuardia,
+      int? inEstadoEntrenamiento,
+      int? inEquipo,
+      int? inEntrenador,
+      int? inCondicion,
+      DateTime? fechaInicio,
+      DateTime? fechaTermino,
+      int? pageSize,
+      int? pageNumber,
+      bool isPaginate = true}) async {
+    String url = "$baseUrl/monitoreo/MonitoreoConsultaPaginado";
+    if (!isPaginate) {
+      url = '$baseUrl/monitoreo/MonitoreoConsulta';
+    }
     Map<String, dynamic> queryParams = {
       'parametros.codigoMcp': codigoMcp,
       'parametros.apellidoPaterno': apellidoPaterno,
@@ -51,20 +54,31 @@ class MonitoringService {
           followRedirects: false,
         ),
       );
+      List<Monitoring> personalList = [];
+      Map<String, dynamic> responseData;
+      if (isPaginate) {
+        final result = response.data as Map<String, dynamic>;
 
-      final result = response.data as Map<String, dynamic>;
-
-      final items = result['Items'] as List;
-      final personalList = items
+        final items = result['Items'] as List;
+        personalList = items
+            .map((personalJson) => Monitoring.fromJson(personalJson))
+            .toList();
+        responseData = {
+          'Items': personalList,
+          'PageNumber': result['PageNumber'],
+          'TotalPages': result['TotalPages'],
+          'TotalRecords': result['TotalRecords'],
+          'PageSize': result['PageSize'],
+        };
+        return ResponseHandler.handleSuccess<Map<String, dynamic>>(
+            responseData);
+      }
+      final result = response.data as List;
+      personalList = result
           .map((personalJson) => Monitoring.fromJson(personalJson))
           .toList();
-
-      final responseData = {
+      responseData = {
         'Items': personalList,
-        'PageNumber': result['PageNumber'],
-        'TotalPages': result['TotalPages'],
-        'TotalRecords': result['TotalRecords'],
-        'PageSize': result['PageSize'],
       };
 
       return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);

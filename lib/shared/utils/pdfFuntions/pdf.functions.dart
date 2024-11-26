@@ -53,7 +53,10 @@ pw.Widget userFirm(String label) {
 }
 
 pw.Widget textFirma(String text) {
-  return pw.Container(width: 150, child: pw.Text(text));
+  return pw.Container(
+      width: 200,
+      child: pw.Text(text,
+          textAlign: pw.TextAlign.center, style: pw.TextStyle(fontSize: 10)));
 }
 
 Future<ui.Image> getImageDimensions(Uint8List fondoImageBytes) async {

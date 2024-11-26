@@ -542,6 +542,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
     return Center(
       child: ElevatedButton(
         onPressed: () {
+          controller.personalPhoto.value = null;
+          controller.entrenamientoModulo = null;
           controller.resetControllers();
           onCancel();
         },
@@ -560,6 +562,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: () {
+            controller.personalPhoto.value = null;
+            controller.entrenamientoModulo = null;
             controller.resetControllers();
             onCancel();
           },

@@ -687,8 +687,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
         for (var archivo in response.data!) {
           log('Tipo Archivo Modulo: ${archivo['InTipoArchivo']}');
-          List<int> datos = List<int>.from(archivo['Datos']);
-          Uint8List archivoBytes = Uint8List.fromList(datos);
+          //List<int> datos = List<int>.from(archivo['Datos']);
+          //Uint8List archivoBytes = Uint8List.fromList(datos);
           if (archivo['InTipoArchivo'] == TipoArchivoModulo.CONTROL_HORAS) {
             aaControlHorasController.text = archivo['Nombre'];
             aaControlHorasExiste.value = true;

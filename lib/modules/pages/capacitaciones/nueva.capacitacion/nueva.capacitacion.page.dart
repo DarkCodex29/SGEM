@@ -145,8 +145,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
         children: [
           Obx(
             () {
-              if (controller.personalPhoto.value != null &&
-                  controller.personalPhoto.value!.isNotEmpty) {
+              if (controller.personalPhoto.value != null) {
                 try {
                   return CircleAvatar(
                     backgroundImage:

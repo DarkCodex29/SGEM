@@ -32,6 +32,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
   }
 
   void _initializeCapacitacion() {
+    controller.isInternoSelected.value = true;
     if (isEditMode || isViewing) {
       controller.loadCapacitacion(capacitacionKey!);
       if (controller.isInternoSelected.value) {
@@ -197,19 +198,28 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                        child: CustomTextField(
-                            label: "DNI",
-                            controller: controller.dniInternoController)),
+                      child: CustomTextField(
+                        label: "DNI",
+                        controller: controller.dniInternoController,
+                        isReadOnly: true,
+                      ),
+                    ),
                     const SizedBox(width: 20),
                     Expanded(
-                        child: CustomTextField(
-                            label: "Nombres",
-                            controller: controller.nombresController)),
+                      child: CustomTextField(
+                        label: "Nombres",
+                        controller: controller.nombresController,
+                        isReadOnly: true,
+                      ),
+                    ),
                     const SizedBox(width: 20),
                     Expanded(
-                        child: CustomTextField(
-                            label: "Guardia",
-                            controller: controller.guardiaController)),
+                      child: CustomTextField(
+                        label: "Guardia",
+                        controller: controller.guardiaController,
+                        isReadOnly: true,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -253,6 +263,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Nombres",
                   controller: controller.nombresController,
+                  isReadOnly: true,
                 ),
               ),
               const SizedBox(width: 12),
@@ -260,6 +271,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Apellido Paterno",
                   controller: controller.apellidoPaternoController,
+                  isReadOnly: true,
                 ),
               ),
               const SizedBox(width: 12),
@@ -267,6 +279,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Apellido Materno",
                   controller: controller.apellidoMaternoController,
+                  isReadOnly: true,
                 ),
               ),
             ],

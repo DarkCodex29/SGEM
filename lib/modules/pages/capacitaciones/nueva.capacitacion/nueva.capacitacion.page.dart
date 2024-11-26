@@ -61,7 +61,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
             const SizedBox(height: 20),
             if (isEditMode || isViewing) _buildArchivoSection(),
             const SizedBox(height: 20),
-            _buildBotonesAccion(isEditMode),
+            if (!isViewing) _buildBotonesAccion(isEditMode) else SizedBox(),
+            if (isViewing) _buildRegresarButton(context) else SizedBox(),
           ],
         ),
       ),
@@ -117,7 +118,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  "Persona Externa",
+                  "Personal Externa",
                   style: TextStyle(
                       color: controller.isInternoSelected.value
                           ? Colors.black54

@@ -38,7 +38,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       TextEditingController(text: '0');
 
   DateTime? fechaInicio;
-  DateTime? fechaTermino;
+  DateTime? fechaTermino = null;
   DateTime? fechaExamen;
 
   ArchivoService archivoService = ArchivoService();
@@ -203,11 +203,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 */
-    if (modulo.fechaTermino == null ||
-        modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
-      respuesta = false;
-      errores.add(
-          "La fecha de término no puede ser anterior a la fecha de inicio.");
+    log('Fecha termino: ${modulo.fechaTermino}');
+    if (modulo.fechaTermino != null) {
+      if (modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
+        respuesta = false;
+        errores.add(
+            "La fecha de término no puede ser anterior a la fecha de inicio.");
+      }
     }
 
     if (notaTeoricaController.text.isEmpty) {
@@ -242,7 +244,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
             "La fecha del examen no puede ser anterior a la fecha de inicio del módulo.");
       }
     }
-
+    log('Validar: ${respuesta}');
     return respuesta;
   }
 

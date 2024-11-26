@@ -50,7 +50,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Container(
             width: 800,
-            height: (isEdit || isView) ? 900 : 600,
+            height: (isEdit || isView) ? 900 : 620,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),

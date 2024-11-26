@@ -555,6 +555,7 @@ class PersonalSearchPage extends StatelessWidget {
         List<String> cabecera = [
           'Código MCP',
           'Nombre completo',
+          '',
           'Documento de identidad',
           'Guardia',
           'Estado',
@@ -576,8 +577,9 @@ class PersonalSearchPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(child: Text(personal.codigoMcp!)),
+                          Expanded(flex:1,child: Text(personal.codigoMcp!)),
                           Expanded(
+                            flex:2,
                               child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -593,9 +595,9 @@ class PersonalSearchPage extends StatelessWidget {
                               ),
                             ],
                           )),
-                          Expanded(child: Text(personal.numeroDocumento!)),
-                          Expanded(child: Text(personal.guardia!.nombre!)),
-                          Expanded(
+                          Expanded(flex:1,child: Text(personal.numeroDocumento!)),
+                          Expanded(flex:1,child: Text(personal.guardia!.nombre!)),
+                          Expanded(flex:1,
                             child: Row(
                               children: [
                                 Icon(
@@ -611,6 +613,7 @@ class PersonalSearchPage extends StatelessWidget {
                             ),
                           ),
                           Expanded(
+                            flex:1,
                             child: Row(
                               children: estado == 'Cesado'
                                   ? [

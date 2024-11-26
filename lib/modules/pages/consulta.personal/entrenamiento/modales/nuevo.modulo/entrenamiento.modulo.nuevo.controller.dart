@@ -355,17 +355,20 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
+  String formatoFechaPantalla(DateTime? fecha) {
+    return fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : '';
+  }
+
   Future<void> llenarDatos() async {
     fechaInicio = entrenamientoModulo!.fechaInicio;
-    fechaInicioController.text = DateFormat('dd/MM/yyyy').format(fechaInicio!);
+    fechaInicioController.text = formatoFechaPantalla(fechaInicio);
     fechaTermino = entrenamientoModulo!.fechaTermino;
-    fechaTerminoController.text =
-        DateFormat('dd/MM/yyyy').format(fechaTermino!);
+    fechaTerminoController.text = formatoFechaPantalla(fechaTermino);
     notaTeoricaController.text = entrenamientoModulo!.inNotaTeorica.toString();
     notaPracticaController.text =
         entrenamientoModulo!.inNotaPractica.toString();
     fechaExamen = entrenamientoModulo!.fechaExamen;
-    fechaExamenController.text = DateFormat('dd/MM/yyyy').format(fechaExamen!);
+    fechaExamenController.text = formatoFechaPantalla(fechaExamen!);
     totalHorasModuloController.value.text =
         entrenamientoModulo!.inTotalHoras.toString();
     horasAcumuladasController.text =
@@ -377,7 +380,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         : 'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
-    //log('Estado modulo: ${entrenamientoModulo!.inEstado}');
     dropdownController.selectValueKey(
         'estadoModulo', entrenamientoModulo!.inEstado);
 

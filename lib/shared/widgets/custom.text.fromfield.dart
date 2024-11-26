@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 
 class CustomTextFormField extends StatelessWidget {
@@ -17,6 +18,8 @@ class CustomTextFormField extends StatelessWidget {
   final bool? enabled;
   final bool isMultiEmail;
   final TextStyle textStyle;
+  final int maxLength;
+  final int? maxLines;
   const CustomTextFormField(
       {super.key,
       required this.label,
@@ -32,6 +35,8 @@ class CustomTextFormField extends StatelessWidget {
       this.inputType = TextInputType.text,
       this.isMultiEmail = false,
       this.enabled = true,
+      this.maxLength = 250,
+      this.maxLines,
       this.textStyle = const TextStyle()});
 
   @override
@@ -50,6 +55,10 @@ class CustomTextFormField extends StatelessWidget {
               focusNode: focusNode,
               enabled: enabled,
               style: textStyle,
+              maxLines: maxLines,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(maxLength), // Limita a 2 caracteres
+              ],
               validator: (value) {
                 if (!isRequired) {
                   return null;

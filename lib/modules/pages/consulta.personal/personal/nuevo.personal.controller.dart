@@ -286,11 +286,16 @@ class NuevoPersonalController extends GetxController {
     if (fechaIngresoMina == null) {
       errores.add('Debe seleccionar una fecha de ingreso a la mina.');
     } else {
-      if (fechaIngresoMina!.isBefore(DateTime.now())) {
-        log('Fecha de ingreso mina: $fechaIngresoMina');
-        errores.add(
-            'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
-      }
+      // if (fechaIngresoMina!.isBefore(DateTime.now())) {
+      //   log('Fecha de ingreso mina: $fechaIngresoMina');
+      //   errores.add(
+      //       'La fecha de ingreso a la mina debe ser mayor a la fecha actual.');
+      // }
+      if (fechaIngresoMina!.isBefore(fechaIngreso!)) {
+           log('Fecha de ingreso mina: $fechaIngresoMina');
+           errores.add(
+               'La FECHA INGRESO MINA debe ser mayor a la FECHA INGRESO.');
+         }
     }
     if (codigoLicenciaController.text.isEmpty ||
         codigoLicenciaController.text.length != 9) {

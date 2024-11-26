@@ -7,9 +7,11 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/api/api.archivo.dart';
+import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.monitoring.dart';
 import 'package:sgem/config/api/api.personal.dart';
 import 'package:sgem/config/api/response.handler.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/monitoring.detail.dart';
 import 'package:sgem/shared/modules/monitoring.save.dart';
 import 'package:sgem/shared/modules/option.value.dart';
@@ -19,6 +21,7 @@ import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/save/widget.save.personal.confirmation.dart';
 
 class CreateMonitoringController extends GetxController {
+  final EntrenamientoService entrenamientoService = EntrenamientoService();
   final monitoringService = MonitoringService();
   final PersonalService personalService = PersonalService();
   final codigoMCPController = TextEditingController();
@@ -27,6 +30,7 @@ class CreateMonitoringController extends GetxController {
   final guardController = TextEditingController();
   final stateTrainingController = TextEditingController();
   final moduleController = TextEditingController();
+  final commentController = TextEditingController();
   DateTime? fechaProximoMonitoreoController;
   DateTime? fechaRealMonitoreoController;
   final horasController = TextEditingController();
@@ -88,14 +92,35 @@ class CreateMonitoringController extends GetxController {
     stateTrainingController.text = "";
     moduleController.text = "";
     selectedPersonKey.value = null;
+    personalPhoto.value = null;
   }
 
   Future<bool> saveMonitoring(BuildContext context) async {
     bool state = false;
     try {
       if (selectedPersonKey.value == null) {
-        _mostrarErroresValidacion(
+        mostrarErroresValidacion(
             Get.context!, ['No hay información de la persona']);
+        return false;
+      }
+      if (selectedEquipoKey.value == null) {
+        mostrarErroresValidacion(
+            Get.context!, ['Por favor seleccione  el equipo']);
+        return false;
+      }
+      if (selectedEntrenadorKey.value == null) {
+        mostrarErroresValidacion(
+            Get.context!, ['Por favor seleccione el  entrenador']);
+        return false;
+      }
+      if (selectedCondicionKey.value == null) {
+        mostrarErroresValidacion(
+            Get.context!, ['Por favor seleccione la condición']);
+        return false;
+      }
+      if (selectedEstadoEntrenamientoKey.value == null) {
+        mostrarErroresValidacion(
+            Get.context!, ['Por favor seleccione el estado del entrenamiento']);
         return false;
       }
       modelMonitoring.inPersona = selectedPersonKey.value;
@@ -107,6 +132,7 @@ class CreateMonitoringController extends GetxController {
       modelMonitoring.fechaProximoMonitoreo = fechaProximoMonitoreoController;
       modelMonitoring.fechaRealMonitoreo = fechaRealMonitoreoController;
       modelMonitoring.inTotalHoras = int.parse(horasController.text);
+      modelMonitoring.comentarios = commentController.text;
       ResponseHandler<bool> response;
       if (modelMonitoring.key == null || modelMonitoring.key == 0) {
         response = await monitoringService.registerMonitoring(modelMonitoring);
@@ -118,7 +144,7 @@ class CreateMonitoringController extends GetxController {
         _mostrarMensajeGuardado(context);
         state = true;
       } else {
-        _mostrarErroresValidacion(Get.context!, ['Error al guardar monitoreo']);
+        mostrarErroresValidacion(Get.context!, ['Error al guardar monitoreo']);
       }
     } catch (e) {
       log('Error: $e');
@@ -305,7 +331,7 @@ class CreateMonitoringController extends GetxController {
         state = true;
         clearModel();
       } else {
-        _mostrarErroresValidacion(
+        mostrarErroresValidacion(
             Get.context!, ['Error al Eliminar monitoreo']);
       }
     } catch (e) {
@@ -318,7 +344,7 @@ class CreateMonitoringController extends GetxController {
 
   Future<void> searchPersonByCodeMcp() async {
     if (codigoMCPController.text.isEmpty) {
-      _mostrarErroresValidacion(
+      mostrarErroresValidacion(
           Get.context!, ['Ingrese un Código MCP válido.']);
       resetInfoPerson();
       return;
@@ -329,8 +355,8 @@ class CreateMonitoringController extends GetxController {
         codigoMcp: codigoMCPController.text,
       );
       if ((responseListar.data == null || responseListar.data!.isEmpty)) {
-        _mostrarErroresValidacion(
-            Get.context!, ['No hay infromación para mostar.']);
+        mostrarErroresValidacion(Get.context!,
+            ['El personal no se encuentra registrado en el sistema.']);
       }
       setInfoPerson(responseListar.data!.first);
       await loadPersonalPhoto(responseListar.data!.first.inPersonalOrigen!);
@@ -338,6 +364,45 @@ class CreateMonitoringController extends GetxController {
       log('Error inesperado al buscar el personal: $e');
     } finally {
       isLoadingCodeMcp.value = false;
+    }
+  }
+
+  Future<void> fetchTrainings(int personId) async {
+    try {
+      log("Entrenamiento Controller: $personId");
+      final response =
+          await entrenamientoService.listarEntrenamientoPorPersona(personId);
+      if (response.success) {
+        final trainingList = response.data!
+            .map((json) => EntrenamientoModulo.fromJson(json))
+            .toList();
+        for (var training in trainingList) {
+          await _fetchAndCombineUltimoModulo(training);
+        }
+      } else {
+        Get.snackbar('Error', 'No se pudieron cargar los entrenamientos');
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'Ocurrió un problema al cargar los entrenamientos');
+    }
+  }
+
+  Future<void> _fetchAndCombineUltimoModulo(
+      EntrenamientoModulo training) async {
+    try {
+      final response = await entrenamientoService
+          .obtenerUltimoModuloPorEntrenamiento(training.key!);
+      if (response.success && response.data != null) {
+        EntrenamientoModulo ultimoModulo = response.data!;
+        training.actualizarConUltimoModulo(ultimoModulo);
+        stateTrainingController.text =
+            training.estadoEntrenamiento!.nombre ?? "";
+        moduleController.text = training.modulo!.nombre ?? "";
+      } else {
+        log('Error al obtener el último módulo: ${response.message}');
+      }
+    } catch (e) {
+      log('Error al obtener el último módulo: $e');
     }
   }
 
@@ -373,6 +438,7 @@ class CreateMonitoringController extends GetxController {
           FnDateTime.fromDotNetDate(monitoring.fechaRealMonitoreo ?? "");
       horasController.text = monitoring.inTotalHoras.toString();
       modelMonitoring.key = monitoring.key;
+      commentController.text = monitoring.comentarios ?? "";
       final personalInfo = await personalService
           .buscarPersonalPorId(monitoring.inPersona!.toString());
       final person = Personal.fromJson(personalInfo);
@@ -380,6 +446,7 @@ class CreateMonitoringController extends GetxController {
       await searchPersonByCodeMcp();
       isLoandingDetail.value = false;
       obtenerArchivosRegistrados(1, monitoring.key!);
+      codigoMCP2Controller.text = person.codigoMcp!;
     } catch (e) {
       log('error al obtener la información del monitoreo');
     }
@@ -393,6 +460,7 @@ class CreateMonitoringController extends GetxController {
     stateTrainingController.text = "";
     moduleController.text = "";
     selectedPersonKey.value = person.key;
+    fetchTrainings(person.id);
   }
 
   resetInfoPerson() {
@@ -415,7 +483,7 @@ class CreateMonitoringController extends GetxController {
     );
   }
 
-  void _mostrarErroresValidacion(BuildContext context, List<String> errores) {
+  void mostrarErroresValidacion(BuildContext context, List<String> errores) {
     showDialog(
       context: context,
       builder: (BuildContext context) {

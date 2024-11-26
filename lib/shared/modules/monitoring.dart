@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/utils/functions/parse.date.time.dart';
 
 Monitoring monitoingFromJson(String str) =>
     Monitoring.fromJson(json.decode(str));
@@ -22,7 +23,7 @@ class Monitoring {
   OptionValue? equipo;
   OptionValue? entrenador;
   OptionValue? condicion;
-  dynamic fechaRealMonitoreo;
+  DateTime? fechaRealMonitoreo;
 
   Monitoring({
     this.key,
@@ -57,7 +58,8 @@ class Monitoring {
         condicion: json["Condicion"] == null
             ? null
             : OptionValue.fromJson(json["Condicion"]),
-        fechaRealMonitoreo: json["FechaRealMonitoreo"],
+        fechaRealMonitoreo:json["FechaRealMonitoreo"] == null
+            ? null: FnDateTime.fromDotNetDate(json["FechaRealMonitoreo"]),
       );
 
   Map<String, dynamic> toJson() => {

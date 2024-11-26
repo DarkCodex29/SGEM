@@ -723,6 +723,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   }
 
   Future<bool> _handleButtonPress() async {
+    controller.isSaving.value= true;
     final isModuloCompleto = _isEstadoModuloCompleto();
     if (isEdit) {
       if (isModuloCompleto && !controller.validarArchivosObligatorios()) {
@@ -740,6 +741,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     if (success) {
       await controller.subirArchivos();
     }
+    controller.isSaving.value= false;
     return success;
   }
 

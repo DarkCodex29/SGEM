@@ -733,6 +733,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           if (!controller.aaExamenTeoricoExiste.value) "Falta EXAMEN TEORICO",
           if (!controller.aaExamenPracticoExiste.value) "Falta EXAMEN PRACTICO",
         ]);
+        controller.isSaving.value= false;
         return false;
       }
     }

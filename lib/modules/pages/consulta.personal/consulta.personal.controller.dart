@@ -29,7 +29,7 @@ extension PersonalSearchScreenExtension on PersonalSearchScreen {
       case PersonalSearchScreen.none:
         return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.newPersonal:
-        return "Nuevo personal a entrenar";
+        return "Agregar personal a entrenar";
       case PersonalSearchScreen.editPersonal:
         return "Editar personal";
       case PersonalSearchScreen.trainingForm:

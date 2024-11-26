@@ -32,6 +32,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
           case MonitoringSearchScreen.newMonitoring:
             return CreateMonioringView(controller: controller);
           case MonitoringSearchScreen.viewMonitoring:
+            return CreateMonioringView(controller: controller, isViewing: true);
           case MonitoringSearchScreen.editMonitoring:
             return CreateMonioringView(controller: controller, isEditing: true);
           case MonitoringSearchScreen.actualizacionMasiva:
@@ -112,12 +113,12 @@ class _MonitoringPageState extends State<MonitoringPage> {
                     ),
                     const SizedBox(height: 10),
                     CustomTextField(
-                      label: "Apellidos Paterno",
+                      label: "Apellido Paterno",
                       controller: controller.apellidosPaternoController,
                     ),
                     const SizedBox(height: 10),
                     CustomTextField(
-                      label: "Apellidos Materno",
+                      label: "Apellido Materno",
                       controller: controller.apellidosMaternoController,
                     ),
                     const SizedBox(height: 10),
@@ -154,14 +155,14 @@ class _MonitoringPageState extends State<MonitoringPage> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextField(
-                              label: "Appellido Paterno",
+                              label: "Apellido Paterno",
                               controller: controller.apellidosPaternoController,
                             ),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: CustomTextField(
-                              label: "Apellidos Materno",
+                              label: "Apellido Materno",
                               controller: controller.apellidosMaternoController,
                             ),
                           ),
@@ -310,6 +311,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
       return CustomDropdown(
         hintText: 'Selecciona Estado de Entrenamiento',
+        labelName: "Estado del Entrenamiento",
         options: controller.estadoEntrenamientoOpciones
             .map((option) => option.valor ?? "")
             .toList(),
@@ -340,6 +342,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
       List<MaestroDetalle> options = controller.guardiaOpciones;
       return CustomDropdown(
         hintText: 'Selecciona Guardia',
+        labelName: "Guardia",
         options: options.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedGuardiaKey.value != null
             ? options
@@ -370,6 +373,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
       List<MaestroDetalle> options = controller.equipoOpciones;
       return CustomDropdown(
         hintText: 'Selecciona Equipo',
+        labelName: "Equipo",
         options: options.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedEquipoKey.value != null
             ? options
@@ -401,6 +405,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
       List<Personal> options = controller.entrenadores;
       return CustomDropdown(
         hintText: 'Selecciona Entrenador',
+        labelName: "Entrenador",
         options: options.map((option) => option.nombreCompleto!).toList(),
         selectedValue: controller.selectedEntrenadorKey.value != null
             ? options
@@ -434,7 +439,8 @@ class _MonitoringPageState extends State<MonitoringPage> {
       }
       List<MaestroDetalle> options = controller.condicionOpciones;
       return CustomDropdown(
-        hintText: 'Selecciona condicion',
+        hintText: 'Selecciona condición',
+        labelName: "Condición",
         options: options.map((option) => option.valor!).toList(),
         selectedValue: controller.selectedCondicionKey.value != null
             ? options
@@ -469,6 +475,15 @@ class _MonitoringPageState extends State<MonitoringPage> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
       initialEntryMode: DatePickerEntryMode.calendar,
+      builder: (BuildContext context, Widget? child) {
+        return Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * .5, // Ajusta el ancho
+            height: MediaQuery.of(context).size.height * .7, // Ajusta el alto
+            child: child,
+          ),
+        );
+      },
     );
     if (picked != null && picked != selectedDateRange) {
       controller.rangoFechaController.text =

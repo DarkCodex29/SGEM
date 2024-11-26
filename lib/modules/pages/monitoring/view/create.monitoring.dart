@@ -35,8 +35,12 @@ class _CreateMonioringViewState extends State<CreateMonioringView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Nuevo Monitoreo",
+            Text(
+              widget.isEditing
+                  ? "Editar Monitoreo"
+                  : widget.isViewing
+                      ? "Detalle del Monitoreo"
+                      : "Nuevo Monitoreo",
               style: TextStyle(
                   fontSize: 19,
                   fontWeight: FontWeight.bold,
@@ -72,7 +76,12 @@ class _CreateMonioringViewState extends State<CreateMonioringView> {
                                       radius: 10,
                                       color: Colors.grey,
                                     )
-                                  : const Icon(Icons.search);
+                                  : widget.isEditing || widget.isViewing
+                                      ? const SizedBox(
+                                          height: 2,
+                                          width: 2,
+                                        )
+                                      : const Icon(Icons.search);
                             }),
                             isReadOnly: widget.isEditing || widget.isViewing,
                             onIconPressed: () async {
@@ -101,6 +110,7 @@ class _CreateMonioringViewState extends State<CreateMonioringView> {
                           isSmallScreen: isSmallScreen,
                           monitoringSearchController: widget.controller,
                           isEditing: widget.isEditing,
+                          isView: widget.isViewing,
                           createMonitoringController:
                               createMonitoringController,
                         )

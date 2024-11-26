@@ -43,8 +43,6 @@ class CustomDropdownGlobal extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Si controller está presente y staticOptions es null,
-                /// usamos Obx
                 if (controller != null && staticOptions == null)
                   Obx(() {
                     final options = controller!.getOptions(dropdownKey);
@@ -61,7 +59,6 @@ class CustomDropdownGlobal extends StatelessWidget {
                     }
                     return _buildDropdown(options);
                   })
-                // Si staticOptions está presente, mostramos sin Obx
                 else if (staticOptions != null)
                   _buildDropdown(staticOptions!)
                 else
@@ -77,7 +74,7 @@ class CustomDropdownGlobal extends StatelessWidget {
                 '*',
                 style: TextStyle(
                   color: Colors.red,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -88,32 +85,47 @@ class CustomDropdownGlobal extends StatelessWidget {
 
   Widget _buildDropdown(List<OptionValue> options) {
     return SizedBox(
-      height: 60,
+      height: 70,
       child: DropdownButtonFormField<OptionValue>(
         key: textFieldKey,
         value: initialValue ?? controller?.getSelectedValue(dropdownKey),
-        isExpanded: true,    
+        isExpanded: true,
         hint: Text(
-          options.isEmpty ? noDataHintText : hintText,
+          hintText,
           style: const TextStyle(
-            color: AppTheme.primaryText,
+            color: Colors.grey,
             fontSize: 16,
           ),
         ),
         decoration: InputDecoration(
-          labelText:
-              options.isNotEmpty && initialValue != null ? labelText : null,
+          labelText: options.isNotEmpty &&
+                  (initialValue != null ||
+                      controller?.getSelectedValue(dropdownKey) != null)
+              ? labelText
+              : null,
           floatingLabelBehavior: FloatingLabelBehavior.auto,
+          labelStyle: const TextStyle(
+            fontSize: 14,
+            color: AppTheme.primaryColor,
+            fontWeight: FontWeight.w500,
+          ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(
               color: AppTheme.alternateColor,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(
               color: AppTheme.alternateColor,
+              width: 1.5,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(
+              color: AppTheme.primaryColor,
               width: 2,
             ),
           ),
@@ -135,7 +147,13 @@ class CustomDropdownGlobal extends StatelessWidget {
         items: options.map((option) {
           return DropdownMenuItem<OptionValue>(
             value: option,
-            child: Text(option.nombre ?? ''),
+            child: Text(
+              option.nombre ?? '',
+              style: const TextStyle(
+                fontSize: 14,
+                color: Colors.black,
+              ),
+            ),
           );
         }).toList(),
         disabledHint: Text(

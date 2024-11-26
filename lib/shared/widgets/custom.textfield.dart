@@ -12,7 +12,6 @@ class CustomTextField extends StatelessWidget {
   final bool isReadOnly;
   final Function(String)? onChanged;
   final int maxLines;
-  //final FocusNode? focusNode;
 
   const CustomTextField({
     super.key,
@@ -25,8 +24,7 @@ class CustomTextField extends StatelessWidget {
     this.onIconPressed,
     this.isReadOnly = false,
     this.onChanged,
-    this.maxLines=1,
-    //this.focusNode,
+    this.maxLines = 1,
   });
 
   @override
@@ -34,55 +32,78 @@ class CustomTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: TextField(
-              controller: controller,
-              obscureText: isPassword,
-              keyboardType: keyboardType,
-              readOnly: isReadOnly,
-              onChanged: onChanged,
-              //focusNode: focusNode,
-              maxLines: maxLines,
-              decoration: InputDecoration(
-                labelText: label,
-                labelStyle: const TextStyle(
-                  color: AppTheme.primaryText,
-                ),
-                suffixIcon: icon != null
-                    ? IconButton(
-                        icon: icon!,
-                        onPressed: onIconPressed,
-                      )
-                    : null,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: AppTheme.alternateColor,
-                    width: 1.0,
+            child: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: controller,
+              builder: (context, value, child) {
+                return TextField(
+                  controller: controller,
+                  obscureText: isPassword,
+                  keyboardType: keyboardType,
+                  readOnly: isReadOnly,
+                  onChanged: onChanged,
+                  maxLines: maxLines,
+                  decoration: InputDecoration(
+                    hintText: value.text.isEmpty ? label : null,
+                    labelText: value.text.isNotEmpty ? label : null,
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    labelStyle: TextStyle(
+                      fontSize: 14,
+                      color: value.text.isNotEmpty
+                          ? AppTheme.primaryColor
+                          : Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    hintStyle: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
+                    suffixIcon: icon != null
+                        ? IconButton(
+                            icon: IconTheme(
+                              data: IconThemeData(
+                                color: value.text.isNotEmpty
+                                    ? AppTheme.primaryColor
+                                    : Colors.grey,
+                              ),
+                              child: icon!,
+                            ),
+                            onPressed: onIconPressed,
+                          )
+                        : null,
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: AppTheme.alternateColor,
+                        width: 1.5,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: AppTheme.primaryColor,
+                        width: 2.0,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 14,
+                      horizontal: 12,
+                    ),
                   ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(
-                    color: AppTheme.backgroundBlue,
-                    width: 1.0,
-                  ),
-                ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                floatingLabelBehavior: FloatingLabelBehavior.auto,
-              ),
+                );
+              },
             ),
           ),
           if (isRequired)
             const Padding(
-              padding: EdgeInsets.only(left: 6, bottom: 16),
+              padding: EdgeInsets.only(left: 6),
               child: Text(
                 '*',
                 style: TextStyle(
                   color: Colors.red,
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
               ),
             ),

@@ -45,7 +45,10 @@ pw.Widget userFirm(String label) {
       child: pw.Divider(color: PdfColors.black),
     ),
     pw.Container(
-        width: 200, child: pw.Text(label, textAlign: pw.TextAlign.center))
+        width: 200,
+        child: pw.Text(label,
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(fontSize: 12, color: PdfColors.black))),
   ]);
 }
 

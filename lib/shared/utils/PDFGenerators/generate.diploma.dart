@@ -44,7 +44,7 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
                       pw.SizedBox(height: dimensionsImage.height / 14),
                       pw.SizedBox(height: 10),
                       pw.Text(cargo, style: const pw.TextStyle(fontSize: 12)),
-                      pw.SizedBox(height: dimensionsImage.height / 16),
+                      //pw.SizedBox(height: dimensionsImage.height / 16),
                       pw.Container(
                         padding: const pw.EdgeInsets.only(left: 60),
                         alignment: pw.Alignment.center,
@@ -56,13 +56,13 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
                                 mainAxisAlignment:
                                     pw.MainAxisAlignment.spaceAround,
                                 children: [
-                                  textFirma(
+                                  userFirm(
                                       "SUPERINTENDENTE DE OPERACIONES MINA"),
-                                  textFirma("GERENTE MINA")
+                                  userFirm(
+                                      "SUPERINTENDENTE DE MEJORA CONTINUA Y CONTROL DE PRODUCCIÓN"),
                                 ]),
                             pw.SizedBox(height: dimensionsImage.height / 40),
-                            textFirma(
-                                "SUPERINTENDENTE DE MEJORA CONTINUA Y CONTROL DE PRODUCCIÓN"),
+                            userFirm("GERENTE MINA")
                           ],
                         ),
                       ),

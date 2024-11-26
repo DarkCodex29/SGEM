@@ -574,7 +574,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                           child: Padding(
                             padding: MediaQuery.of(context).viewInsets,
                             child: DeleteReasonWidget(
-                              entityType: 'módulo',
+                              entityType: 'módulo - ${modulo.modulo!.nombre}',
                               isMotivoRequired: false,
                               onCancel: () {
                                 Navigator.pop(context);
@@ -911,11 +911,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
 
   String _getEstadoAvanceActual(
       String estadoEntrenamiento, int horasAcumuladas, int totalHoras) {
-    if (estadoEntrenamiento.toLowerCase() == 'autorizado') {
-      return 'Finalizado';
-    } else {
       return '$horasAcumuladas / $totalHoras';
-    }
   }
 
   Color _getColorByEstado(int estado) {

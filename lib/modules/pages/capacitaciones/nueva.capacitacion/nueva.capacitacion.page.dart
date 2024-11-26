@@ -34,8 +34,11 @@ class NuevaCapacitacionPage extends StatelessWidget {
   void _initializeCapacitacion() {
     if (isEditMode || isViewing) {
       controller.loadCapacitacion(capacitacionKey!);
-      controller.loadPersonalInterno(codigoMcp!);
-      controller.loadPersonalExterno(dni!);
+      if (controller.isInternoSelected.value) {
+        controller.loadPersonalInterno(codigoMcp!, false);
+      } else {
+        controller.loadPersonalExterno(dni!, false);
+      }
     } else {
       controller.resetControllers();
     }
@@ -48,7 +51,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            if (!isEditMode) _buildSelectorDeTipo(),
+            if (!isEditMode && !isViewing) _buildSelectorDeTipo(),
             const SizedBox(height: 20),
             Obx(() => controller.isInternoSelected.value
                 ? _buildFormularioInterno()
@@ -56,7 +59,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
             const SizedBox(height: 20),
             _buildDatosCapacitacion(),
             const SizedBox(height: 20),
-            _buildArchivoSection(),
+            if (isEditMode || isViewing) _buildArchivoSection(),
             const SizedBox(height: 20),
             _buildBotonesAccion(isEditMode),
           ],
@@ -173,7 +176,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (!isEditMode)
+                if (!isEditMode && !isViewing)
                   SizedBox(
                     width: 200,
                     child: CustomTextField(
@@ -182,7 +185,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                       icon: const Icon(Icons.search),
                       onIconPressed: () {
                         controller.loadPersonalInterno(
-                            controller.codigoMcpController.text);
+                            controller.codigoMcpController.text, true);
                       },
                     ),
                   ),
@@ -238,8 +241,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
               controller: controller.dniExternoController,
               icon: const Icon(Icons.search),
               onIconPressed: () {
-                controller
-                    .loadPersonalExterno(controller.dniExternoController.text);
+                controller.loadPersonalExterno(
+                    controller.dniExternoController.text, true);
               },
             ),
           ),
@@ -522,74 +525,21 @@ class NuevaCapacitacionPage extends StatelessWidget {
     );
   }
 
-  /*
-  Widget _buildArchivosAdjuntos() {
-    return Container(
-      padding: const EdgeInsets.all(12.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.attach_file, color: Colors.grey),
-              SizedBox(width: 10),
-              Text("Archivos adjuntos:"),
-              SizedBox(width: 10),
-              Text(
-                "(Archivos adjuntos peso máx: 8MB c/u)",
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Obx(() {
-            if (controller.archivosAdjuntos.isEmpty) {
-              return const Text("No hay archivos adjuntos.");
-            } else {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: controller.archivosAdjuntos.map((archivo) {
-                  return Row(
-                    children: [
-                      TextButton.icon(
-                        onPressed: () {
-                          controller.eliminarArchivo(archivo['nombre']);
-                        },
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        label: Text(
-                          archivo['nombre'] ?? '',
-                          style: TextStyle(
-                            color: archivo['nuevo'] == true
-                                ? Colors.red
-                                : Colors.green,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }).toList(),
-              );
-            }
-          }),
-          const SizedBox(height: 10),
-          TextButton.icon(
-            onPressed: () {
-              controller.adjuntarDocumentos();
-            },
-            icon: const Icon(Icons.attach_file, color: Colors.blue),
-            label: const Text("Adjuntar Documentos",
-                style: TextStyle(color: Colors.blue)),
-          ),
-        ],
+  Widget _buildRegresarButton(BuildContext context) {
+    return Center(
+      child: ElevatedButton(
+        onPressed: () {
+          controller.resetControllers();
+          onCancel();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppTheme.primaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+        ),
+        child: const Text("Regresar", style: TextStyle(color: Colors.white)),
       ),
     );
   }
-*/
 
   Widget _buildBotonesAccion(bool isEditMode) {
     return Row(

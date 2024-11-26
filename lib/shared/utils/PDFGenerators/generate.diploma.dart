@@ -60,7 +60,7 @@ Future<pw.Page> generateDiploma(Personal? personal) async {
                                       "SUPERINTENDENTE DE OPERACIONES MINA"),
                                   userFirm(
                                       "SUPERINTENDENTE DE MEJORA CONTINUA Y CONTROL DE PRODUCCIÓN"),
-                                ]),
+                                ]), 
                             pw.SizedBox(height: dimensionsImage.height / 40),
                             userFirm("GERENTE MINA")
                           ],

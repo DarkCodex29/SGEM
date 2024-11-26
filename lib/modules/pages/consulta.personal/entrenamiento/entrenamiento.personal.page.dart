@@ -361,7 +361,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                _buildActionButtons(context, training),
+               _buildActionButtons(context, training),
               ],
             ),
             Obx(() {
@@ -404,10 +404,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
             child: Row(
               children: [
                 Icon(Icons.radio_button_on,
-                    color: modulo.estadoEntrenamiento!.nombre!.toLowerCase() == 'completo'
+                    color: modulo.estadoEntrenamiento!.nombre!.toLowerCase() ==
+                            'completo'
                         ? Colors.green
                         : Colors.orange),
-                SizedBox(width: 10,),
+                SizedBox(
+                  width: 10,
+                ),
                 Text(
                   modulo.modulo!.nombre!,
                   style: const TextStyle(
@@ -641,7 +644,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(
-      BuildContext context, EntrenamientoModulo entrenamiento) {
+      BuildContext context, EntrenamientoModulo entrenamiento)  {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -689,12 +692,31 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               },
             ),
             if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() !=
-                'autorizado')
+                'autorizado' )
               IconButton(
                 tooltip: 'Eliminar entrenamiento',
                 icon: const Icon(Icons.delete, color: Colors.red),
                 onPressed: () async {
                   String motivoEliminacion = '';
+
+                  log('Entrenamiento: ${entrenamiento.key!}');
+                  var response = await controller.entrenamientoService
+                      .obtenerUltimoModuloPorEntrenamiento(entrenamiento.key!);
+                  var ultimoModulo = response.data!;
+                  log('Eliminar Entrenamiento: ${ultimoModulo.inModulo}');
+                  if (ultimoModulo.inModulo != null &&
+                      ultimoModulo.inModulo! >= 1) {
+                    log('Existe modulo ${ultimoModulo.inModulo}');
+                    showDialog(
+                      context: Get.context!,
+                      builder: (context) {
+                        return MensajeValidacionWidget(errores: [
+                          'No se puede eliminar un ENTRENAMIENTO que ya tiene un MODULO registrado'
+                        ]);
+                      },
+                    );
+                    return;
+                  }
 
                   await showDialog(
                     context: context,
@@ -799,7 +821,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                           context: Get.context!,
                           builder: (context) {
                             return const MensajeValidacionWidget(errores: [
-                              "No se puede agregar un nuevo modulo mientras en modulo anterior no se haya completado."
+                              "No se puede agregar un NUEVO MODULO mientras el módulo anterior no haya sido COMPLETADO."
                             ]);
                           });
                     } else {
@@ -840,7 +862,8 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               ),
           ],
         ),
-        if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() == "autorizado")
+        if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() ==
+            "autorizado")
           Row(
             children: [
               IconButton(

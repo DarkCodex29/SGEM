@@ -12,6 +12,7 @@ class EntrenamientoPersonalController extends GetxController {
   final ModuloMaestroService moduloMaestroService = ModuloMaestroService();
   var modulosPorEntrenamiento = <int, RxList<EntrenamientoModulo>>{}.obs;
   var selectedTraining = Rxn<EntrenamientoModulo>();
+  var isLoading = false.obs;
 
   void setSelectedTrainingKey(EntrenamientoModulo? training) {
     selectedTraining.value = training;
@@ -19,6 +20,7 @@ class EntrenamientoPersonalController extends GetxController {
 
   Future<void> fetchTrainings(int personId) async {
     try {
+      isLoading.value = true;
       log("Entrenamiento Controller: $personId");
       final response =
           await entrenamientoService.listarEntrenamientoPorPersona(personId);
@@ -35,6 +37,8 @@ class EntrenamientoPersonalController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'Ocurrió un problema al cargar los entrenamientos');
+    } finally {
+      isLoading.value = false;
     }
   }
 

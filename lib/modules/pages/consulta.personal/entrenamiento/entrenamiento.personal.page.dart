@@ -213,10 +213,16 @@ class EntrenamientoPersonalPage extends StatelessWidget {
 
   Widget _buildTrainingList(BuildContext context) {
     return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: AppTheme.primaryColor,
+          ),
+        );
+      }
       if (controller.trainingList.isEmpty) {
         return const Center(child: Text('No hay entrenamientos disponibles'));
       }
-
       return ListView.builder(
         itemCount: controller.trainingList.length,
         itemBuilder: (context, index) {
@@ -245,10 +251,6 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // _buildCustomTextField(
-                    //   'Código de entrenamiento',
-                    //   training.key.toString(),
-                    // ),
                     _buildCustomTextField(
                       'Equipo',
                       training.equipo!.nombre!,
@@ -265,10 +267,6 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // _buildCustomTextField(
-                    //   'Equipo',
-                    //   training.equipo!.nombre!,
-                    // ),
                     Row(
                       children: [
                         Icon(
@@ -292,39 +290,10 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Row(
-                    //   children: [
-                    //     Icon(
-                    //       Icons.radio_button_checked,
-                    //       color: _getColorByEstado(
-                    //           training.estadoEntrenamiento!.key!),
-                    //     ),
-                    //     const SizedBox(width: 4),
-                    //     _buildCustomTextField(
-                    //       'Estado entrenamiento',
-                    //       training.estadoEntrenamiento!.nombre!,
-                    //     ),
-                    //   ],
-                    // ),
                     _buildCustomTextField(
                       'Fecha inicio',
-                      _formatDate(training
-                          .fechaInicio), // Formatear las fechas correctamente
+                      _formatDate(training.fechaInicio),
                     ),
-                    // Row(
-                    //   children: [
-                    //     const Icon(Icons.radio_button_on, color: Colors.green),
-                    //     const SizedBox(width: 4),
-                    //     _buildCustomTextField(
-                    //       'Horas de entrenamiento',
-                    //       _getEstadoAvanceActual(
-                    //         training.estadoEntrenamiento!.nombre!,
-                    //         training.inHorasAcumuladas!,
-                    //         training.inTotalHoras!,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                     _buildCustomTextField(
                       'Horas de entrenamiento',
                       _getEstadoAvanceActual(
@@ -361,32 +330,34 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                     ),
                   ],
                 ),
-               _buildActionButtons(context, training),
+                _buildActionButtons(context, training),
               ],
             ),
-            Obx(() {
-              final modulos =
-                  controller.obtenerModulosPorEntrenamiento(training.key!);
-              return ExpansionTile(
-                backgroundColor: Colors.grey.shade100,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                title: const Text('Módulos del entrenamiento',
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                children: modulos.isNotEmpty
-                    ? modulos.map((modulo) {
-                        return _buildModuleDetails(modulo);
-                      }).toList()
-                    : [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('No hay módulos disponibles'),
-                        )
-                      ],
-              );
-            }),
+            Obx(
+              () {
+                final modulos =
+                    controller.obtenerModulosPorEntrenamiento(training.key!);
+                return ExpansionTile(
+                  backgroundColor: Colors.grey.shade100,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  title: const Text('Módulos del entrenamiento',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  children: modulos.isNotEmpty
+                      ? modulos.map((modulo) {
+                          return _buildModuleDetails(modulo);
+                        }).toList()
+                      : [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('No hay módulos disponibles'),
+                          )
+                        ],
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -644,7 +615,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(
-      BuildContext context, EntrenamientoModulo entrenamiento)  {
+      BuildContext context, EntrenamientoModulo entrenamiento) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -692,7 +663,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
               },
             ),
             if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() !=
-                'autorizado' )
+                'autorizado')
               IconButton(
                 tooltip: 'Eliminar entrenamiento',
                 icon: const Icon(Icons.delete, color: Colors.red),
@@ -911,7 +882,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
 
   String _getEstadoAvanceActual(
       String estadoEntrenamiento, int horasAcumuladas, int totalHoras) {
-      return '$horasAcumuladas / $totalHoras';
+    return '$horasAcumuladas / $totalHoras';
   }
 
   Color _getColorByEstado(int estado) {

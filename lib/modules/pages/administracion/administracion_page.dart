@@ -36,7 +36,8 @@ class AdministracionPage extends StatelessWidget {
           () => switch (controller.screenPage.value) {
             AdministracionScreen.none => const AdministracionView(),
             AdministracionScreen.maestro => const MaestroPage(),
-            AdministracionScreen.rolesPermisos => const RolesPermisosPage(),
+            AdministracionScreen.modulos => const ModuloView(),
+            AdministracionScreen.rolesPermisos => const RolPermisoPage(),
             AdministracionScreen.usuarios => const UsuariosPage(),
           },
         ),

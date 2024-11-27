@@ -12,7 +12,7 @@ class UsuariosPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ctrRoles = Get.put(RolesPermisosController());
+    final ctrRoles = Get.put(RolPermisoController());
     final ctr = Get.put(MaestroController());
 
     return Padding(
@@ -110,20 +110,20 @@ class UsuariosPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 20),
                 Expanded(
                   child: Obx(
                     () {
                       debugPrint('Result: ${ctr.result.length}');
                       final result = ctr.result;
-                  
+
                       if (result.isEmpty) {
                         return const Center(
                           child: Text('No se encontraron resultados'),
                         );
                       }
-                  
+
                       return CustomTable(
                         headers: const [
                           'Código',
@@ -164,7 +164,7 @@ class UsuariosPage extends StatelessWidget {
           ),
         ],
       ),
-      
+
     );
   }
 }

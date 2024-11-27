@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/models/models.dart';
@@ -11,7 +14,7 @@ class RolPermisoService {
   final Dio _dio;
 
   static final BaseOptions _options = BaseOptions(
-    baseUrl: '${ConfigFile.apiUrl}/Rol',
+    baseUrl: '${ConfigFile.apiUrl}/RolPermiso',
     contentType: Headers.jsonContentType,
     followRedirects: false,
   );
@@ -86,6 +89,8 @@ class RolPermisoService {
     Rol data,
   ) async {
     try {
+      Logger('RolPermisoService')
+          .info('Registrando rol ${jsonEncode(data.toJson())}');
       await _dio.post<dynamic>(
         '/RegistrarRol',
         data: data.toJson(),
@@ -138,5 +143,4 @@ class RolPermisoService {
       );
     }
   }
-
 }

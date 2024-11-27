@@ -8,7 +8,7 @@ class Permiso extends Equatable {
   const Permiso({
     this.key = -1,
     required this.name,
-    required this.codigo,
+    required this.code,
     required this.userRegister,
     required this.dateRegister,
     this.activated = false,
@@ -24,7 +24,7 @@ class Permiso extends Equatable {
   final String name;
 
   @JsonKey(name: 'Codigo')
-  final String codigo;
+  final String code;
 
   @JsonKey(name: 'UsuarioRegistro')
   final String userRegister;
@@ -41,7 +41,7 @@ class Permiso extends Equatable {
   List<Object?> get props => [
         key,
         name,
-        codigo,
+        code,
         userRegister,
         dateRegister,
         activated,

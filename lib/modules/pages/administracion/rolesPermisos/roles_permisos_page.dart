@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/config/api/api_rol_permiso.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/administracion.dart';
 import 'package:sgem/modules/pages/administracion/rolesPermisos/permisos/permisos_tab_widget.dart';
@@ -11,62 +12,68 @@ import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 
-class RolesPermisosPage extends StatelessWidget {
-  const RolesPermisosPage({super.key});
+class RolPermisoPage extends StatefulWidget {
+  const RolPermisoPage({super.key});
+
+  @override
+  State<RolPermisoPage> createState() => _RolPermisoViewState();
+}
+
+class _RolPermisoViewState extends State<RolPermisoPage>
+    with SingleTickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    Get.put<RolPermisoController>(RolPermisoController());
+    _tabController = TabController(length: 3, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final ctr = Get.put(RolesPermisosController());
-
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
           TabBar(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: ctr.tabControllerForRolesPermisos,
-              indicatorColor: AppTheme.accent1,
-              indicatorWeight: 3.0,
-              labelColor: Colors.black,
-              tabs: const [
-                SizedBox(
-                  width: 200.0,
-                  child: Tab(
-                    text: "Roles"
-                    ),
-                ),
-                SizedBox(
-                  width: 200.0,
-                  child: Tab(
-                    text: "Permisos"
-                  ),
-                ),
-                SizedBox(
-                  width: 200.0,
-                  child: Tab(
-                    text: "Roles por permiso"
-                  ),
-                ),
-              ],
-              onTap: (index) async{
-              },
-            ),
-            Expanded(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            indicatorColor: AppTheme.accent1,
+            indicatorWeight: 3.0,
+            labelColor: Colors.black,
+            tabs: const [
+              SizedBox(
+                width: 200.0,
+                child: Tab(text: "Roles"),
+              ),
+              SizedBox(
+                width: 200.0,
+                child: Tab(text: "Permisos"),
+              ),
+              SizedBox(
+                width: 200.0,
+                child: Tab(text: "Roles por permiso"),
+              ),
+            ],
+            onTap: (index) async {},
+          ),
+          Expanded(
             child: TabBarView(
-              controller: ctr.tabControllerForRolesPermisos, 
+              controller: _tabController,
               children: const [
-                 RolesTabWidget(),
-                 PermisosTabWidget(),
-                 RolesPorPermisoTabWidget()
-            ]),
+                RolesTabWidget(),
+                PermisosTabWidget(),
+                RolesPorPermisoTabWidget()
+              ],
+            ),
           ),
           ButtonRolesPermisos(
             labelButton: "Regresar",
-            onTap: Get.find<AdministracionController>().screenPop
+            onTap: Get.find<AdministracionController>().screenPop,
           ),
         ],
       ),
-      
     );
   }
 }

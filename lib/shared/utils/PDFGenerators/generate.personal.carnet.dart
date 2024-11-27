@@ -104,12 +104,13 @@ Future<pw.Page> generatePersonalCarnetFrontPdf(
               ),
               pw.Container(
                 padding: const pw.EdgeInsets.only(left: 150),
-                child: pw.Column(children: [
-                  ...attributesMap.entries
-                      .where(
-                          (entry) => entry.value != null && entry.value != "")
-                      .map((entry) => userDetail(entry.key, entry.value!))
-                ]),
+                child: pw.Column(
+                  children: [
+                    ...attributesMap.entries.map(
+                      (entry) => userDetail(entry.key, entry.value ?? ""),
+                    ),
+                  ],
+                ),
               ),
               pw.Spacer(),
               pw.Container(

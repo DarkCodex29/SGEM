@@ -299,7 +299,7 @@ class Binding<T> {
 class CustomGenericDropdown<Element extends DropdownElement>
     extends StatefulWidget {
   const CustomGenericDropdown({
-    required this.hintText,
+    required this.label,
     required this.options,
     required this.selectedValue,
     this.isSearchable = false,
@@ -307,7 +307,7 @@ class CustomGenericDropdown<Element extends DropdownElement>
     this.isReadOnly = false,
     super.key,
   });
-  final String hintText;
+  final String label;
   final List<Element> options;
   final bool isSearchable;
   final Binding<Element> selectedValue;
@@ -343,14 +343,15 @@ class CustomGenericDropdownState<Element extends DropdownElement>
                   child: DropdownButtonFormField<Element>(
                     value: widget.selectedValue.get(),
                     isExpanded: true,
-                    hint: Text(
-                      widget.hintText,
-                      style: const TextStyle(
-                        color: AppTheme.primaryText,
-                        fontSize: 16,
-                      ),
-                    ),
+                    // hint: Text(
+                    //   widget.label,
+                    //   style: const TextStyle(
+                    //     color: AppTheme.primaryText,
+                    //     fontSize: 16,
+                    //   ),
+                    // ),
                     decoration: InputDecoration(
+                      labelText: widget.label,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(
@@ -377,7 +378,7 @@ class CustomGenericDropdownState<Element extends DropdownElement>
                       );
                     }).toList(),
                     disabledHint: Text(
-                      widget.selectedValue.get()?.value ?? widget.hintText,
+                      widget.selectedValue.get()?.value ?? widget.label,
                       style: const TextStyle(color: Colors.grey),
                     ),
                   ),

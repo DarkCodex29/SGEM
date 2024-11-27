@@ -46,8 +46,9 @@ class CustomTextField extends StatelessWidget {
                   onChanged: onChanged,
                   maxLines: maxLines,
                   decoration: InputDecoration(
-                    hintText: value.text.isEmpty ? label : null,
-                    labelText: value.text.isNotEmpty ? label : null,
+                    // hintText: value.text.isEmpty ? label : null,
+                    // labelText: value.text.isNotEmpty ? label : null,
+                    labelText: label,
                     floatingLabelBehavior: FloatingLabelBehavior.auto,
                     labelStyle: TextStyle(
                       fontSize: 14,

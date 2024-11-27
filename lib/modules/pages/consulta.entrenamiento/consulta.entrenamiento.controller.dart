@@ -46,6 +46,7 @@ class ConsultaEntrenamientoController extends GetxController {
     String? nombres =
         nombresController.text.isEmpty ? null : nombresController.text;
     try {
+      //log('${}');
       var response = await entrenamientoService.consultarEntrenamientoPaginado(
         codigoMcp: codigoMcp,
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,
@@ -63,7 +64,7 @@ class ConsultaEntrenamientoController extends GetxController {
         pageSize: pageSize,
         pageNumber: pageNumber,
       );
-
+      log('Termino consulta');
       if (response.success && response.data != null) {
         try {
           var result = response.data as Map<String, dynamic>;

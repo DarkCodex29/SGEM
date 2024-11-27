@@ -1,6 +1,6 @@
 # sgem
 
-A new Flutter project.
+SGEM - Sistema de Gestion Mina
 
 ## Getting Started
 

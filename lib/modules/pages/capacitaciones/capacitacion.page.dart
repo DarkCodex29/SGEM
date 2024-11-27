@@ -187,12 +187,12 @@ class CapacitacionPage extends StatelessWidget {
         Expanded(
             child: CustomDropdownGlobal(
           labelText: 'Guardia',
-          dropdownKey: 'guardia',
+          dropdownKey: 'guardiaFiltro',
           hintText: 'Selecciona guardia',
           noDataHintText: 'No se encontraron guardias',
           controller: controller.dropdownController,
           onChanged: (value) {
-            controller.dropdownController.selectValue('guardia', value);
+            controller.dropdownController.selectValue('guardiaFiltro', value);
           },
         )),
       ],

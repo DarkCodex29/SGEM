@@ -111,7 +111,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
         Expanded(
           child: CustomDropdownGlobal(
             labelText: 'Guardia',
-            dropdownKey: 'guardia',
+            dropdownKey: 'guardiaFiltro',
             hintText: 'Selecciona guardia',
             noDataHintText: 'No se encontraron guardias',
             controller: controller.dropdownController,

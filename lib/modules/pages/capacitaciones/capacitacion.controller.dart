@@ -70,9 +70,9 @@ class CapacitacionController extends GetxController {
       var response = await capacitacionService.capacitacionConsultaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.key == 0
+        inGuardia: dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
             ? null
-            : dropdownController.getSelectedValue('guardia')?.key,
+            : dropdownController.getSelectedValue('guardiaFiltro')?.key,
         nombres: nombres,
         apellidoPaterno: apellidoPaterno,
         apellidoMaterno: apellidoMaterno,

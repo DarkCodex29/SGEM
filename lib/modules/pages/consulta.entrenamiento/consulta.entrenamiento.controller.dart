@@ -34,6 +34,7 @@ class ConsultaEntrenamientoController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    dropdownController.selectValueKey('guardiaFiltro', 0);
     buscarEntrenamientos(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
   }
@@ -49,9 +50,10 @@ class ConsultaEntrenamientoController extends GetxController {
         codigoMcp: codigoMcp,
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,
         inModulo: dropdownController.getSelectedValue('modulo')?.key,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.key == 0
-            ? null
-            : dropdownController.getSelectedValue('guardia')?.key,
+        inGuardia:
+            dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
+                ? null
+                : dropdownController.getSelectedValue('guardiaFiltro')?.key,
         inEstadoEntrenamiento:
             dropdownController.getSelectedValue('estadoEntrenamiento')?.key,
         inCondicion: dropdownController.getSelectedValue('condicion')?.key,

@@ -49,7 +49,7 @@ class ActualizacionMasivaController extends GetxController {
       var response = await entrenamientoService.actualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: dropdownController.getSelectedValue('guardia')?.key,
+        inGuardia: dropdownController.getSelectedValue('guardiaFiltro')?.key,
         nombres: nombres,
         apellidos: apellidos,
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,

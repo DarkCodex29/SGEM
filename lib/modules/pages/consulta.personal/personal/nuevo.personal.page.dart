@@ -536,8 +536,10 @@ class NuevoPersonalPage extends StatelessWidget {
   Widget _buildRegresarButton(BuildContext context) {
     return Center(
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           controller.resetControllers();
+          consultPersonalController.resetControllers();
+          await consultPersonalController.searchPersonal();
           onCancel();
         },
         style: ElevatedButton.styleFrom(
@@ -556,8 +558,10 @@ class NuevoPersonalPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton(
-          onPressed: () {
+          onPressed: () async {
             controller.resetControllers();
+            consultPersonalController.resetControllers();
+            await consultPersonalController.searchPersonal();
             onCancel();
           },
           style: TextButton.styleFrom(

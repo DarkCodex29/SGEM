@@ -24,7 +24,8 @@ class DropdownDataInitializer {
   Future<void> initializeAllDropdowns() async {
     await Future.wait([
       _loadEstado(),
-      _loadGuardia(),
+      _loadGuardiaFiltro(),
+      _loadGuardiaRegistro(),
       _loadEquipo(),
       _loadModulo(),
       _loadCategoria(),
@@ -81,12 +82,22 @@ class DropdownDataInitializer {
 
   /// Métodos de carga específicos para cada dropdown, utilizando el servicio correcto
 
-  Future<void> _loadGuardia() async {
-    await dropdownController.loadOptions('guardia', () async {
+  Future<void> _loadGuardiaFiltro() async {
+    await dropdownController.loadOptions('guardiaFiltro', () async {
       var options = await _handleResponse(
         maestroDetalleService.listarMaestroDetallePorMaestro(2),
       );
       options.insert(0, OptionValue(key: 0, nombre: 'Todos'));
+      return options;
+    });
+    log('Guardia cargada');
+  }
+
+  Future<void> _loadGuardiaRegistro() async {
+    await dropdownController.loadOptions('guardiaRegistro', () async {
+      var options = await _handleResponse(
+        maestroDetalleService.listarMaestroDetallePorMaestro(2),
+      );
       return options;
     });
     log('Guardia cargada');

@@ -4,6 +4,15 @@ class MensajeValidacionWidget extends StatelessWidget {
   final List<String> errores;
   const MensajeValidacionWidget({super.key, required this.errores});
 
+  void show(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return MensajeValidacionWidget(errores: errores);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Align(

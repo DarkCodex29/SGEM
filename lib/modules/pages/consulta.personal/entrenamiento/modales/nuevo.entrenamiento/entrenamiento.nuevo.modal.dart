@@ -8,6 +8,8 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/utils/Extensions/get_snackbar.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
@@ -80,7 +82,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             adjuntarDocumentoPDF(controller),
           ],
           const SizedBox(height: 20),
-          customButtonsCancelAndAcept(() => close(), () => registerTraining()),
+          customButtonsCancelAndAcept(
+              () => close(), () => registerTraining(context)),
         ],
       ),
     );
@@ -91,7 +94,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       children: [
         Expanded(
           child: CustomGenericDropdown<MaestroDetalle>(
-            hintText: "Equipo",
+            label: "Equipo",
             options: controller.equipoDetalle,
             selectedValue: controller.equipoSelectedBinding,
             isSearchable: false,
@@ -123,7 +126,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       children: [
         Expanded(
           child: CustomGenericDropdown<MaestroDetalle>(
-            hintText: "Condición",
+            label: "Condición",
             options: controller.condicionDetalle,
             selectedValue: controller.condicionSelectedBinding,
             isSearchable: false,
@@ -135,7 +138,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           child: CustomTextField(
             label: 'Fecha de termino:',
             controller: controller.fechaTerminoController,
-            isRequired: true,
+            // isRequired: true,
             icon: const Icon(Icons.calendar_month),
             onIconPressed: () async {
               controller.fechaTermino = await _selectDate(Get.context!);
@@ -156,7 +159,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       children: [
         Expanded(
           child: CustomGenericDropdown<MaestroDetalle>(
-            hintText: "Estado Entrenamiento",
+            label: "Estado Entrenamiento",
             options: controller.estadoDetalle,
             selectedValue: controller.estadoEntrenamientoSelectedBinding,
             isSearchable: false,
@@ -256,14 +259,30 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     });
   }
 
-  void registerTraining() {
-    if (controller.equipoSelected.value == null ||
-        controller.condicionSelected.value == null) {
-      Get.snackbar(
-        'Error',
-        'Por favor, selecciona todos los campos obligatorios.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+  void registerTraining(BuildContext context) {
+    List<String> errores = [];
+
+    if (controller.fechaInicio == null) {
+      errores.add('Por favor, selecciona la fecha de inicio.');
+    }
+
+    if (controller.fechaTermino != null && controller.fechaInicio != null) {
+      if (controller.fechaTermino!.isBefore(controller.fechaInicio!)) {
+        errores.add(
+            'La fecha de término no puede ser anterior a la fecha de inicio.');
+      }
+    }
+
+    if (controller.condicionSelected.value == null) {
+      errores.add('Por favor, selecciona la condición.');
+    }
+
+    if (controller.equipoSelected.value == null) {
+      errores.add('Por favor, selecciona el equipo.');
+    }
+
+    if (errores.isNotEmpty) {
+      MensajeValidacionWidget(errores: errores).show(context);
       return;
     }
 

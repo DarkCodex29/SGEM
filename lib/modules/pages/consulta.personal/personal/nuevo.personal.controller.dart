@@ -176,9 +176,10 @@ class NuevoPersonalController extends GetxController {
         : '';
 
     if (personalData.guardia != null && personalData.guardia!.key != 0) {
-      dropdownController.selectValueKey('guardia', personalData.guardia!.key);
+      dropdownController.selectValueKey(
+          'guardiaRegistro', personalData.guardia!.key);
     } else {
-      dropdownController.selectValueKey('guardia', null);
+      dropdownController.selectValueKey('guardiaRegistro', null);
     }
     isOperacionMina.value = personalData.operacionMina == 'S';
     isZonaPlataforma.value = personalData.zonaPlataforma == 'S';
@@ -226,7 +227,7 @@ class NuevoPersonalController extends GetxController {
         ..fechaIngresoMina = fechaIngresoMina
         ..licenciaVencimiento = fechaRevalidacion
         ..guardia = OptionValue(
-          key: dropdownController.getSelectedValue('guardia')?.key ?? 0,
+          key: dropdownController.getSelectedValue('guardiaRegistro')?.key ?? 0,
           nombre: personalData!.guardia?.nombre,
         )
         ..operacionMina = isOperacionMina.value ? 'S' : 'N'
@@ -301,7 +302,8 @@ class NuevoPersonalController extends GetxController {
       errores
           .add('El código de licencia debe tener 9 caracteres alfanuméricos.');
     }
-    if (dropdownController.getSelectedValue('guardia')?.nombre == null) {
+    if (dropdownController.getSelectedValue('guardiaRegistro')?.nombre ==
+        null) {
       errores.add('Debe seleccionar una guardia.');
     }
     if (restriccionesController.text.length > 100) {

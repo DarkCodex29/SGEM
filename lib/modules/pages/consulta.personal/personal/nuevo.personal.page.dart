@@ -47,9 +47,9 @@ class NuevoPersonalPage extends StatelessWidget {
       controller.codigoLicenciaController.text = personal.licenciaConducir!;
       if (personal.guardia!.key != 0) {
         controller.dropdownController
-            .selectValueKey('guardia', personal.guardia!.key);
+            .selectValueKey('guardiaRegistro', personal.guardia!.key);
       } else {
-        controller.dropdownController.selectValueKey('guardia', null);
+        controller.dropdownController.selectValueKey('guardiaRegistro', null);
       }
       controller.restriccionesController.text = personal.restricciones!;
       controller.fechaIngresoMina = personal.fechaIngresoMina;
@@ -345,7 +345,7 @@ class NuevoPersonalPage extends StatelessWidget {
               Expanded(
                 child: CustomDropdownGlobal(
                   labelText: "Guardia",
-                  dropdownKey: 'guardia',
+                  dropdownKey: 'guardiaRegistro',
                   hintText: 'Selecciona guardia',
                   noDataHintText: 'No se encontraron guardias',
                   controller: controller.dropdownController,

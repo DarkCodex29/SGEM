@@ -210,6 +210,8 @@ class PersonalSearchPage extends StatelessWidget {
                         ],
                       )
                     : Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: CustomTextField(
@@ -267,6 +269,8 @@ class PersonalSearchPage extends StatelessWidget {
                         ],
                       )
                     : Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: CustomTextField(
@@ -577,27 +581,30 @@ class PersonalSearchPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(flex:1,child: Text(personal.codigoMcp!)),
+                          Expanded(flex: 1, child: Text(personal.codigoMcp!)),
                           Expanded(
-                            flex:2,
+                              flex: 2,
                               child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(personal.nombreCompleto!),
-                              Text(
-                                personal.cargo!,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: AppTheme.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          )),
-                          Expanded(flex:1,child: Text(personal.numeroDocumento!)),
-                          Expanded(flex:1,child: Text(personal.guardia!.nombre!)),
-                          Expanded(flex:1,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(personal.nombreCompleto!),
+                                  Text(
+                                    personal.cargo!,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: AppTheme.primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Expanded(
+                              flex: 1, child: Text(personal.numeroDocumento!)),
+                          Expanded(
+                              flex: 1, child: Text(personal.guardia!.nombre!)),
+                          Expanded(
+                            flex: 1,
                             child: Row(
                               children: [
                                 Icon(
@@ -613,7 +620,7 @@ class PersonalSearchPage extends StatelessWidget {
                             ),
                           ),
                           Expanded(
-                            flex:1,
+                            flex: 1,
                             child: Row(
                               children: estado == 'Cesado'
                                   ? [

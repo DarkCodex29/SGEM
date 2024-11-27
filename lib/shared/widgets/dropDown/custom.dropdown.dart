@@ -9,6 +9,7 @@ class CustomDropdown extends StatefulWidget {
   final Function(String?) onChanged;
   final bool isRequired;
   final bool isReadOnly;
+  final String labelName;
 
   const CustomDropdown({
     required this.hintText,
@@ -18,6 +19,7 @@ class CustomDropdown extends StatefulWidget {
     this.isSearchable = false,
     this.isRequired = false,
     this.isReadOnly = false,
+    this.labelName="",
     super.key,
   });
 
@@ -57,6 +59,7 @@ class CustomDropdownState extends State<CustomDropdown> {
                       ),
                     ),
                     decoration: InputDecoration(
+                      labelText: widget.labelName,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                         borderSide: const BorderSide(

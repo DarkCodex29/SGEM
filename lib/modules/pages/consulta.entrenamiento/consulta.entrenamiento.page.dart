@@ -259,6 +259,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
     );
 
     DateTimeRange? picked = await showDateRangePicker(
+      
       context: context,
       initialDateRange: selectedDateRange,
       firstDate: DateTime(2000),

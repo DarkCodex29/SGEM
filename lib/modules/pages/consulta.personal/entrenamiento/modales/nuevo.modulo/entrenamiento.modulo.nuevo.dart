@@ -48,7 +48,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Container(
             width: 800,
-            height: (isEdit || isView) ? 900 : 600,
+            height: (isEdit || isView) ? 900 : 620,
             decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
@@ -721,6 +721,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
   }
 
   Future<bool> _handleButtonPress() async {
+    controller.isSaving.value= true;
     final isModuloCompleto = _isEstadoModuloCompleto();
     if (isEdit) {
       if (isModuloCompleto && !controller.validarArchivosObligatorios()) {
@@ -730,6 +731,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
           if (!controller.aaExamenTeoricoExiste.value) "Falta EXAMEN TEORICO",
           if (!controller.aaExamenPracticoExiste.value) "Falta EXAMEN PRACTICO",
         ]);
+        controller.isSaving.value= false;
         return false;
       }
     }
@@ -738,6 +740,7 @@ class EntrenamientoModuloNuevo extends StatelessWidget {
     if (success) {
       await controller.subirArchivos();
     }
+    controller.isSaving.value= false;
     return success;
   }
 

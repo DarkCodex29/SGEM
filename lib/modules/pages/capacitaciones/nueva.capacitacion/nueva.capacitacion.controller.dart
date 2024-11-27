@@ -69,7 +69,6 @@ class NuevaCapacitacionController extends GetxController {
   EntrenamientoModulo? entrenamientoModulo;
   Personal? personalInterno;
   Personal? personalExterno;
-  String tipoPersona = '';
 
   CapacitacionController capacitacionController =
       Get.find<CapacitacionController>();
@@ -108,8 +107,8 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
-  Future<Personal?> loadPersonalInterno(String codigoMcp) async {
-    if (codigoMcp.isEmpty) {
+  Future<Personal?> loadPersonalInterno(String codigoMcp, bool validate) async {
+    if (codigoMcp.isEmpty && validate) {
       _mostrarErroresValidacion(
           Get.context!, ['Por favor ingrese un código MCP']);
       return null;
@@ -131,8 +130,8 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
-  Future<Personal?> loadPersonalExterno(String dni) async {
-    if (dni.isEmpty) {
+  Future<Personal?> loadPersonalExterno(String dni, bool validate) async {
+    if (dni.isEmpty && validate) {
       _mostrarErroresValidacion(
           Get.context!, ['Por favor ingrese un número de documento.']);
       return null;
@@ -190,6 +189,7 @@ class NuevaCapacitacionController extends GetxController {
     }
 
     if (isInternoSelected == false) {
+      loadPersonalPhoto(personalExterno!.inPersonalOrigen!);
       nombresController.text =
           '${personalExterno!.primerNombre} ${personalExterno!.segundoNombre}';
       dniExternoController.text = personalExterno!.numeroDocumento!;
@@ -417,7 +417,6 @@ class NuevaCapacitacionController extends GetxController {
       return false;
     }
   }
-
 
   bool _validarRangoNotas() {
     try {
@@ -670,5 +669,6 @@ class NuevaCapacitacionController extends GetxController {
     notaPracticaController.clear();
     guardiaController.clear();
     dropdownController.resetAllSelections();
+    archivosAdjuntos.clear();
   }
 }

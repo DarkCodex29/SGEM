@@ -39,6 +39,7 @@ class CapacitacionCargaMasivaController extends GetxController {
     correctRecords.value = 0;
     errorRecords.value = 0;
   }
+
   Future<void> cargarArchivo() async {
     limpiar();
 

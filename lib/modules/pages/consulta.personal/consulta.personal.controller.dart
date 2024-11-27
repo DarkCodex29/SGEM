@@ -29,7 +29,7 @@ extension PersonalSearchScreenExtension on PersonalSearchScreen {
       case PersonalSearchScreen.none:
         return "Búsqueda de entrenamiento de personal";
       case PersonalSearchScreen.newPersonal:
-        return "Nuevo personal a entrenar";
+        return "Agregar personal a entrenar";
       case PersonalSearchScreen.editPersonal:
         return "Editar personal";
       case PersonalSearchScreen.trainingForm:
@@ -256,6 +256,8 @@ class PersonalSearchController extends GetxController {
     dropdownController.resetAllSelections();
     nombresController.clear();
     apellidosController.clear();
+    dropdownController.selectValueKey('estado', 0);
+    dropdownController.selectValueKey('guardia', 0);
   }
 
   void showNewPersonal() {

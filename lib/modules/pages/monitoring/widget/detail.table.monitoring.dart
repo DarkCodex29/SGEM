@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.controller.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
@@ -109,7 +110,7 @@ class DetailTableMonitoring extends StatelessWidget {
                       fixedWidth: 220,
                       size: ColumnSize.L,
                       label: CustomText(
-                        title: "Condición de monitorieo",
+                        title: "Condición de monitoreo",
                         fontWeight: FontWeight.bold,
                         fontSize: 17,
                       ),
@@ -177,11 +178,12 @@ class DetailTableMonitoring extends StatelessWidget {
                           title:
                               controller.monitoringAll[index].condicion!.nombre,
                         )),
-                        const DataCell(CustomText(
-                          title: "",
+                        DataCell(CustomText(
+                          title: DateFormat('dd/MM/yyyy').format(controller
+                              .monitoringAll[index].fechaRealMonitoreo!),
                         )),
                         const DataCell(CustomText(
-                          title: "",
+                          title: "Completado",
                         )),
                         DataCell(Padding(
                           padding: const EdgeInsets.only(
@@ -199,14 +201,39 @@ class DetailTableMonitoring extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: IconButton(
-                                    icon: const Icon(Icons.edit),
+                                    icon:
+                                        const Icon(Icons.remove_red_eye_sharp),
                                     color: AppTheme.backgroundBlue,
                                     onPressed: () async {
-                                      controller.screen.value =
-                                          MonitoringSearchScreen.editMonitoring;
                                       await createMonitoringController
                                           .searchMonitoringDetailById(controller
                                               .monitoringAll[index].key!);
+                                      controller.screen.value =
+                                          MonitoringSearchScreen.viewMonitoring;
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Container(
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.black,
+                                      width: 0.5,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    color: AppTheme.backgroundBlue,
+                                    onPressed: () async {
+                                      await createMonitoringController
+                                          .searchMonitoringDetailById(controller
+                                              .monitoringAll[index].key!);
+                                      controller.screen.value =
+                                          MonitoringSearchScreen.editMonitoring;
                                     },
                                   ),
                                 ),
@@ -262,12 +289,17 @@ class DetailTableMonitoring extends StatelessWidget {
             padding: MediaQuery.of(context).viewInsets,
             child: DeleteReasonWidget(
               entityType: 'módulo',
-              isMotivoRequired: false,
+              isMotivoRequired: true,
               onCancel: () {
                 Navigator.pop(context);
               },
               onConfirm: (motivo) async {
                 // motivoEliminacion = motivo;
+                if (motivo.isEmpty) {
+                  createController.mostrarErroresValidacion(
+                      context, ['Debes ingresar el motivo de eliminación']);
+                  return;
+                }
                 Navigator.pop(context);
                 createController.modelMonitoring.motivoEliminado = motivo;
                 createController.modelMonitoring.key = key;

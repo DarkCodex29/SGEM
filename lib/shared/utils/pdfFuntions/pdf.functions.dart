@@ -45,12 +45,18 @@ pw.Widget userFirm(String label) {
       child: pw.Divider(color: PdfColors.black),
     ),
     pw.Container(
-        width: 200, child: pw.Text(label, textAlign: pw.TextAlign.center))
+        width: 200,
+        child: pw.Text(label,
+            textAlign: pw.TextAlign.center,
+            style: pw.TextStyle(fontSize: 12, color: PdfColors.black))),
   ]);
 }
 
 pw.Widget textFirma(String text) {
-  return pw.Container(width: 150, child: pw.Text(text));
+  return pw.Container(
+      width: 200,
+      child: pw.Text(text,
+          textAlign: pw.TextAlign.center, style: pw.TextStyle(fontSize: 10)));
 }
 
 Future<ui.Image> getImageDimensions(Uint8List fondoImageBytes) async {

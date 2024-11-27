@@ -38,7 +38,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
       TextEditingController(text: '0');
 
   DateTime? fechaInicio;
-  DateTime? fechaTermino;
+  DateTime? fechaTermino = null;
   DateTime? fechaExamen;
 
   ArchivoService archivoService = ArchivoService();
@@ -203,11 +203,13 @@ class EntrenamientoModuloNuevoController extends GetxController {
       }
     }
 */
-    if (modulo.fechaTermino == null ||
-        modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
-      respuesta = false;
-      errores.add(
-          "La fecha de término no puede ser anterior a la fecha de inicio.");
+    log('Fecha termino: ${modulo.fechaTermino}');
+    if (modulo.fechaTermino != null) {
+      if (modulo.fechaTermino!.isBefore(modulo.fechaInicio!)) {
+        respuesta = false;
+        errores.add(
+            "La fecha de término no puede ser anterior a la fecha de inicio.");
+      }
     }
 
     if (notaTeoricaController.text.isEmpty) {
@@ -242,7 +244,7 @@ class EntrenamientoModuloNuevoController extends GetxController {
             "La fecha del examen no puede ser anterior a la fecha de inicio del módulo.");
       }
     }
-
+    log('Validar: ${respuesta}');
     return respuesta;
   }
 
@@ -353,17 +355,20 @@ class EntrenamientoModuloNuevoController extends GetxController {
     }
   }
 
+  String formatoFechaPantalla(DateTime? fecha) {
+    return fecha != null ? DateFormat('dd/MM/yyyy').format(fecha) : '';
+  }
+
   Future<void> llenarDatos() async {
     fechaInicio = entrenamientoModulo!.fechaInicio;
-    fechaInicioController.text = DateFormat('dd/MM/yyyy').format(fechaInicio!);
+    fechaInicioController.text = formatoFechaPantalla(fechaInicio);
     fechaTermino = entrenamientoModulo!.fechaTermino;
-    fechaTerminoController.text =
-        DateFormat('dd/MM/yyyy').format(fechaTermino!);
+    fechaTerminoController.text = formatoFechaPantalla(fechaTermino);
     notaTeoricaController.text = entrenamientoModulo!.inNotaTeorica.toString();
     notaPracticaController.text =
         entrenamientoModulo!.inNotaPractica.toString();
     fechaExamen = entrenamientoModulo!.fechaExamen;
-    fechaExamenController.text = DateFormat('dd/MM/yyyy').format(fechaExamen!);
+    fechaExamenController.text = formatoFechaPantalla(fechaExamen!);
     totalHorasModuloController.value.text =
         entrenamientoModulo!.inTotalHoras.toString();
     horasAcumuladasController.text =
@@ -375,7 +380,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
         : 'Editar Módulo - ${entrenamientoModulo!.modulo!.nombre!}';
     dropdownController.selectValueKey(
         'entrenador', entrenamientoModulo!.inEntrenador);
-    //log('Estado modulo: ${entrenamientoModulo!.inEstado}');
     dropdownController.selectValueKey(
         'estadoModulo', entrenamientoModulo!.inEstado);
 
@@ -683,8 +687,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
 
         for (var archivo in response.data!) {
           log('Tipo Archivo Modulo: ${archivo['InTipoArchivo']}');
-          List<int> datos = List<int>.from(archivo['Datos']);
-          Uint8List archivoBytes = Uint8List.fromList(datos);
+          //List<int> datos = List<int>.from(archivo['Datos']);
+          //Uint8List archivoBytes = Uint8List.fromList(datos);
           if (archivo['InTipoArchivo'] == TipoArchivoModulo.CONTROL_HORAS) {
             aaControlHorasController.text = archivo['Nombre'];
             aaControlHorasExiste.value = true;

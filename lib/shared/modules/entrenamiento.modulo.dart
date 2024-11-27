@@ -85,7 +85,7 @@ class EntrenamientoModulo {
       entrenador = ultimoModulo.entrenador;
     }
     if (ultimoModulo.estadoEntrenamiento!.nombre!.isNotEmpty) {
-      estadoEntrenamiento = ultimoModulo.estadoEntrenamiento;
+      //estadoEntrenamiento = ultimoModulo.estadoEntrenamiento;
     }
     inNotaTeorica = ultimoModulo.inNotaTeorica;
     inNotaPractica = ultimoModulo.inNotaPractica;

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/shared/modules/option.value.dart';
@@ -179,7 +178,7 @@ class PersonalSearchPage extends StatelessWidget {
                           const SizedBox(height: 10),
                           CustomDropdownGlobal(
                             labelText: 'Guardia',
-                            dropdownKey: 'guardia',
+                            dropdownKey: 'guardiaFiltro',
                             hintText: 'Selecciona guardia',
                             noDataHintText: 'No se encontraron guardias',
                             controller: controller.dropdownController,
@@ -232,7 +231,7 @@ class PersonalSearchPage extends StatelessWidget {
                           Expanded(
                             child: CustomDropdownGlobal(
                               labelText: 'Guardia',
-                              dropdownKey: 'guardia',
+                              dropdownKey: 'guardiaFiltro',
                               hintText: 'Selecciona guardia',
                               noDataHintText: 'No se encontraron guardias',
                               controller: controller.dropdownController,

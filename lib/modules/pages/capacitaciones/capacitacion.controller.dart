@@ -46,6 +46,7 @@ class CapacitacionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    dropdownController.selectValueKey('guardiaFiltro', 0);
     buscarCapacitaciones(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
   }
@@ -70,9 +71,10 @@ class CapacitacionController extends GetxController {
       var response = await capacitacionService.capacitacionConsultaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
-            ? null
-            : dropdownController.getSelectedValue('guardiaFiltro')?.key,
+        inGuardia:
+            dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
+                ? null
+                : dropdownController.getSelectedValue('guardiaFiltro')?.key,
         nombres: nombres,
         apellidoPaterno: apellidoPaterno,
         apellidoMaterno: apellidoMaterno,
@@ -281,5 +283,6 @@ class CapacitacionController extends GetxController {
     fechaInicio = null;
     fechaTermino = null;
     dropdownController.resetAllSelections();
+    dropdownController.selectValueKey('guardiaFiltro', 0);
   }
 }

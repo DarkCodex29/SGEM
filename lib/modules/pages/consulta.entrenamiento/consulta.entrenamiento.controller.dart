@@ -201,5 +201,6 @@ class ConsultaEntrenamientoController extends GetxController {
     fechaTermino = null;
     nombresController.clear();
     dropdownController.resetAllSelections();
+    dropdownController.selectValueKey('guardiaFiltro', 0);
   }
 }

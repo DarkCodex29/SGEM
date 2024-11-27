@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/Repository/DTO/MaestroDetaille.dart';
 import 'package:sgem/config/Repository/MainRespository.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
@@ -27,6 +28,8 @@ class EntrenamientoNuevoController extends GetxController {
   RxList<MaestroDetalle> equipoDetalle = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> condicionDetalle = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> estadoDetalle = <MaestroDetalle>[].obs;
+
+  final _logger = Logger('EntrenamientoNuevoController');
 
   var equipoSelected = Rxn<MaestroDetalle?>();
   late final equipoSelectedBinding = Binding(get: () {
@@ -92,9 +95,9 @@ class EntrenamientoNuevoController extends GetxController {
       if (condiciones != null) condicionDetalle.assignAll(condiciones);
       if (estados != null) estadoDetalle.assignAll(estados);
 
-      log('Datos de equipos y condiciones cargados correctamente');
+      _logger.info('Datos de equipos y condiciones cargados correctamente');
     } catch (e) {
-      log('Error al cargar equipos o condiciones: $e');
+      _logger.info('Error al cargar equipos o condiciones: $e');
     } finally {
       isLoading.value = false;
     }
@@ -131,7 +134,7 @@ class EntrenamientoNuevoController extends GetxController {
         );
       }
     } catch (e) {
-      log('Error al eliminar el archivo: $e');
+      _logger.info('Error al eliminar el archivo: $e');
       Get.snackbar(
         'Error',
         'No se pudo eliminar el archivo: $e',
@@ -161,14 +164,14 @@ class EntrenamientoNuevoController extends GetxController {
               'nuevo': true,
             });
             //documentoAdjuntoNombre.value = fileName;
-            log('Documento adjuntado correctamente: $fileName');
+            _logger.info('Documento adjuntado correctamente: $fileName');
           }
         }
       } else {
-        log('No se seleccionaron archivos');
+        _logger.info('No se seleccionaron archivos');
       }
     } catch (e) {
-      log('Error al adjuntar documentos: $e');
+      _logger.info('Error al adjuntar documentos: $e');
     }
   }
 
@@ -196,11 +199,11 @@ class EntrenamientoNuevoController extends GetxController {
             archivo['nuevo'] = false;
           }
         } catch (e) {
-          log('Error al registrar archivo ${archivo['nombre']}: $e');
+          _logger.info('Error al registrar archivo ${archivo['nombre']}: $e');
         }
       }
     } catch (e) {
-      log('Error al registrar archivos: $e');
+      _logger.info('Error al registrar archivos: $e');
     }
   }
 
@@ -223,7 +226,7 @@ class EntrenamientoNuevoController extends GetxController {
         mimeType: mimeType,
       );
     } catch (e) {
-      log('Error al descargar el archivo $e');
+      _logger.info('Error al descargar el archivo $e');
       Get.snackbar(
         'Error',
         'No se pudo descargar el archivo: $e',
@@ -241,7 +244,7 @@ class EntrenamientoNuevoController extends GetxController {
         idOrigen: idOrigen, // 2: TABLA Entrenamiento
         idOrigenKey: inOrigenKey,
       );
-      log('Response: ${response.data}');
+      _logger.info('Response: ${response.data}');
       if (response.success && response.data != null) {
         archivosAdjuntos.clear();
         for (var archivo in response.data!) {
@@ -257,13 +260,13 @@ class EntrenamientoNuevoController extends GetxController {
             'inOrigenKey': inOrigenKey,
             'nuevo': false,
           });
-          log('Archivo ${archivo['Nombre']} obtenido con éxito');
+          _logger.info('Archivo ${archivo['Nombre']} obtenido con éxito');
         }
       } else {
-        log('Error al obtener archivos: ${response.message}');
+        _logger.info('Error al obtener archivos: ${response.message}');
       }
     } catch (e) {
-      log('Error al obtener archivos: $e');
+      _logger.info('Error al obtener archivos: $e');
     } finally {
       isLoadingFiles.value = false;
     }
@@ -300,7 +303,7 @@ class EntrenamientoNuevoController extends GetxController {
 
   void registertraining(
       EntrenamientoModulo register, Function(bool) callback) async {
-    log('Registrando entrenamiento: ${register.toJson()}');
+    _logger.info('Registrando entrenamiento: ${register.toJson()}');
     try {
       isLoading.value = true;
       final response = await trainingService.registerTraining(register);
@@ -308,14 +311,24 @@ class EntrenamientoNuevoController extends GetxController {
         controllerPersonal.fetchTrainings(register.inPersona!);
         callback(true);
       } else {
-        log('Error al registrar entrenamiento: ${response.message}');
+        _logger.info('Error al registrar entrenamiento: ${response.message}');
         callback(false);
       }
     } catch (e) {
-      log('CATCH: Error al registrar entrenamiento: $e');
+      _logger.info('CATCH: Error al registrar entrenamiento: $e');
       callback(false);
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void clearFields() {
+    fechaInicioController.clear();
+    fechaTerminoController.clear();
+    observacionesEntrenamiento.clear();
+    equipoSelected.value = null;
+    condicionSelected.value = null;
+    estadoEntrenamientoSelected.value = null;
+    archivosAdjuntos.clear();
   }
 }

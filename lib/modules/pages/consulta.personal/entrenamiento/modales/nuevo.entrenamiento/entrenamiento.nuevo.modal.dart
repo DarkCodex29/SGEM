@@ -30,6 +30,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     this.isEdit = false,
     this.entrenamiento,
   }) {
+    controller.clearFields();
     if (isEdit &&
         entrenamiento != null &&
         controller.equipoDetalle.isNotEmpty) {

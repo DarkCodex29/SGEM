@@ -254,7 +254,7 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
   Future<void> _selectDateRange(
       BuildContext context, ConsultaEntrenamientoController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(
-      start: today.subtract(const Duration(days: 30)),
+      start: today.subtract(const Duration(days: 7)),
       end: today,
     );
 

@@ -16,7 +16,7 @@ extension AdministracionScreenExtension on CapacitacionScreen {
       case CapacitacionScreen.visualizarCapacitacion:
         return "Visualizar Capacitación";
       case CapacitacionScreen.cargaMasivaCapacitacion:
-        return "Carga másiva de capacitaciones";
+        return "Carga masiva de capacitaciones";
       default:
         return "Búsqueda de Capacitaciones";
     }

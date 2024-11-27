@@ -375,7 +375,8 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                         DateFormat('dd/MM/yyyy').format(fila.fechaInicio!)),
                   ),
                   Expanded(
-                    child: Text(
+                    child: fila.fechaTermino==null?Text(''):
+                    Text(
                         DateFormat('dd/MM/yyyy').format(fila.fechaTermino!)),
                   ),
                   //Todo: Botones de accion

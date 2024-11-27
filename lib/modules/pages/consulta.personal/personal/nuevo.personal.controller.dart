@@ -214,7 +214,8 @@ class NuevoPersonalController extends GetxController {
       String verificarTexto(String texto) {
         return texto.isNotEmpty ? texto : '';
       }
-
+      log('Fecha mina: ${fechaIngresoMina}');
+      log('Fecha ingreso: ${fechaIngreso}');
       personalData!
         ..primerNombre = obtenerPrimerNombre(nombresController.text)
         ..segundoNombre = obtenerSegundoNombre(nombresController.text)

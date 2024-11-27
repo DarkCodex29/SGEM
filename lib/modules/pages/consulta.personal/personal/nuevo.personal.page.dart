@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 
 class NuevoPersonalPage extends StatelessWidget {
   final NuevoPersonalController controller = NuevoPersonalController();
+  final PersonalSearchController consultPersonalController =
+      PersonalSearchController();
   final PersonalSearchController controllerPersonalSearch = Get.find();
   final bool isEditing;
   final bool isViewing;
@@ -82,7 +84,7 @@ class NuevoPersonalPage extends StatelessWidget {
             _buildDatosAdicionalesSection(context),
             const SizedBox(height: 30),
             if (isViewing) _buildRegresarButton(context),
-            if (!isViewing) _buildButtons(context),
+            if (!isViewing) _buildButtons(context, consultPersonalController),
           ],
         ),
       ),
@@ -548,7 +550,8 @@ class NuevoPersonalPage extends StatelessWidget {
   }
 
   // Botones para editar o cancelar
-  Widget _buildButtons(BuildContext context) {
+  Widget _buildButtons(BuildContext context,
+      PersonalSearchController consultaPersonalController) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -576,6 +579,8 @@ class NuevoPersonalPage extends StatelessWidget {
                     context: context,
                   );
                   if (success) {
+                    consultPersonalController.resetControllers();
+                    await consultPersonalController.searchPersonal();
                     onCancel();
                   }
                 },
@@ -588,7 +593,10 @@ class NuevoPersonalPage extends StatelessWidget {
                 ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
-                : const Text("Guardar", style: TextStyle(color: Colors.white));
+                : const Text(
+                    "Guardar",
+                    style: TextStyle(color: Colors.white),
+                  );
           }),
         ),
       ],

@@ -10,5 +10,4 @@ class FnDateTime {
     final utcDate = date.toUtc();
     return '/Date(${utcDate.millisecondsSinceEpoch})/';
   }
-
 }

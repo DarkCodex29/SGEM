@@ -62,7 +62,7 @@ class EntrenamientoConsulta {
         condicion: OptionValue.fromJson(json["Condicion"]),
         equipo: OptionValue.fromJson(json["Equipo"]),
         fechaInicio:  FnDateTime.fromDotNetDate(json["FechaInicio"]),
-        fechaTermino: FnDateTime.fromDotNetDate(json["FechaTermino"]),
+        fechaTermino: json["FechaTermino"] == null ? null : FnDateTime.fromDotNetDate(json["FechaTermino"]),
       );
 
   Map<String, dynamic> toJson() => {

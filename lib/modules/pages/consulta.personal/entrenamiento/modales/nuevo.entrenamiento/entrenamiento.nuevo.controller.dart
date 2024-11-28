@@ -13,6 +13,8 @@ import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/constants/tipo.archivo.entrenamiento.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
+import 'package:sgem/shared/utils/Extensions/format_extension.dart';
+import 'package:sgem/shared/utils/Extensions/get_snackbar.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../entrenamiento.personal.controller.dart';
 
@@ -330,5 +332,26 @@ class EntrenamientoNuevoController extends GetxController {
     condicionSelected.value = null;
     estadoEntrenamientoSelected.value = null;
     archivosAdjuntos.clear();
+  }
+
+  void completeFields(EntrenamientoModulo entrenamiento) {
+    if (equipoDetalle.isEmpty) {
+      Get.errorSnackbar('No se han cargado los datos de los equipos');
+      return;
+    }
+    equipoSelected.value =
+        equipoDetalle.firstWhereOrNull((e) => e.key == entrenamiento.inEquipo);
+    condicionSelected.value = condicionDetalle
+        .firstWhereOrNull((e) => e.key == entrenamiento.inCondicion);
+    estadoEntrenamientoSelected.value = estadoDetalle.firstWhereOrNull(
+        (e) => e.key == entrenamiento.estadoEntrenamiento?.key);
+    // estadoEntrenamientoSelected.value =
+    //     estadoDetalle.firstWhereOrNull((e) => e.key == entrenamiento.inEstado);
+
+    fechaInicioController.text = entrenamiento.fechaInicio?.format ?? '';
+    fechaTerminoController.text = entrenamiento.fechaTermino?.format ?? '';
+
+    observacionesEntrenamiento.text = entrenamiento.comentarios ?? '';
+    obtenerArchivosRegistrados(2, entrenamiento.key!);
   }
 }

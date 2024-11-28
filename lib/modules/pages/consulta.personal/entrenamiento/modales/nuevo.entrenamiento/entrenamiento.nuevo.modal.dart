@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
@@ -33,33 +34,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     this.entrenamiento,
   }) {
     controller.clearFields();
-    if (isEdit &&
-        entrenamiento != null &&
-        controller.equipoDetalle.isNotEmpty) {
-      controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
-          (element) => element.key == entrenamiento!.inEquipo,
-          orElse: () => controller.equipoDetalle.first);
-      controller.condicionSelected.value = controller.condicionDetalle
-          .firstWhere((element) => element.key == entrenamiento!.inCondicion,
-              orElse: () => controller.condicionDetalle.first);
-      controller.estadoEntrenamientoSelected.value = controller.estadoDetalle
-          .firstWhere((element) => element.key == entrenamiento!.inEstado,
-              orElse: () => controller.estadoDetalle.first);
-
-      log("Fecha Inicio: ${entrenamiento!.fechaInicio}");
-      controller.fechaInicioController.text = entrenamiento!.fechaInicio == null
-          ? ''
-          : DateFormat('dd/MM/yyyy')
-              .format(DateTime.parse(entrenamiento!.fechaInicio.toString()));
-      controller.fechaTerminoController.text = entrenamiento!.fechaTermino ==
-              null
-          ? ''
-          : DateFormat('dd/MM/yyyy')
-              .format(DateTime.parse(entrenamiento!.fechaTermino.toString()));
-      controller.observacionesEntrenamiento.text =
-          entrenamiento?.comentarios ?? ' ';
-      controller.obtenerArchivosRegistrados(2, entrenamiento!.key!);
-    }
+    if (entrenamiento != null) controller.completeFields(entrenamiento!);
   }
 
   Widget content(BuildContext context) {
@@ -262,12 +237,16 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   void registerTraining(BuildContext context) {
     List<String> errores = [];
 
-    if (controller.fechaInicio == null) {
+    final fechaInicio = DateFormat('dd/MM/yyyy')
+        .tryParse(controller.fechaInicioController.text);
+    if (fechaInicio == null) {
       errores.add('Por favor, selecciona la fecha de inicio.');
     }
 
-    if (controller.fechaTermino != null && controller.fechaInicio != null) {
-      if (controller.fechaTermino!.isBefore(controller.fechaInicio!)) {
+    final fechaTermino = DateFormat('dd/MM/yyyy')
+        .tryParse(controller.fechaTerminoController.text);
+    if (fechaTermino != null && fechaInicio != null) {
+      if (fechaTermino.isBefore(fechaInicio)) {
         errores.add(
             'La fecha de término no puede ser anterior a la fecha de inicio.');
       }
@@ -316,8 +295,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       inCondicion: controller.condicionSelected.value!.key,
       condicion:
           OptionValue(key: controller.condicionSelected.value!.key, nombre: ''),
-      fechaInicio: controller.fechaInicio,
-      fechaTermino: controller.fechaTermino,
+      fechaInicio: fechaInicio,
+      fechaTermino: fechaTermino,
       fechaExamen: null,
       fechaRealMonitoreo: null,
       fechaProximoMonitoreo: null,

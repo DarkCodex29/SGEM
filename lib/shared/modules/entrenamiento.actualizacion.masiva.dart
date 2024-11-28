@@ -32,6 +32,7 @@ class EntrenamientoActualizacionMasiva {
   int? inHorasAcumuladas;
   DateTime? fechaInicio;
   DateTime? fechaTermino;
+  int? inHorasMinestar;
 
   EntrenamientoActualizacionMasiva({
     this.key,
@@ -48,6 +49,7 @@ class EntrenamientoActualizacionMasiva {
     this.inHorasAcumuladas,
     this.fechaInicio,
     this.fechaTermino,
+    this.inHorasMinestar,
   });
 
   factory EntrenamientoActualizacionMasiva.fromJson(
@@ -75,6 +77,7 @@ class EntrenamientoActualizacionMasiva {
         fechaTermino: json["FechaTermino"] == null
             ? null
             : FnDateTime.fromDotNetDate(json["FechaTermino"]),
+        inHorasMinestar: json["InHorasMinestar"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -92,5 +95,6 @@ class EntrenamientoActualizacionMasiva {
         "InHorasAcumuladas": inHorasAcumuladas,
         "FechaInicio": FnDateTime.toDotNetDate(fechaInicio!),
         "FechaTermino": FnDateTime.toDotNetDate(fechaTermino!),
+        "InHorasMinestar": inHorasMinestar,
       };
 }

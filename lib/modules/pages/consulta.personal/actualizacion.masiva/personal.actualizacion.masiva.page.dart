@@ -309,6 +309,7 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
       'Nota teórica',
       'Fecha de examen',
       'Horas de entrenamiento acumuladas',
+      'Horas Minestar',
       'Fecha de inicio',
       'Fecha de término',
       'Acciones'
@@ -360,7 +361,6 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                     fila.inNotaTeorica.toString(),
                     textAlign: TextAlign.center,
                   )),
-                  //Todo: Cambiar por fecha de examen
                   Expanded(
                     child: Text(DateFormat('dd/MM/yyyy')
                         .format(fila.fechaExamen as DateTime)),
@@ -370,6 +370,11 @@ class PersonalActualizacionMasivaPage extends StatelessWidget {
                     fila.inHorasAcumuladas.toString(),
                     textAlign: TextAlign.center,
                   )),
+                  Expanded(
+                      child: Text(
+                        fila.inHorasMinestar.toString(),
+                        textAlign: TextAlign.center,
+                      )),
                   Expanded(
                     child: Text(
                         DateFormat('dd/MM/yyyy').format(fila.fechaInicio!)),

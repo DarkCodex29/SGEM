@@ -49,7 +49,10 @@ class ActualizacionMasivaController extends GetxController {
       var response = await entrenamientoService.actualizacionMasivaPaginado(
         codigoMcp: codigoMcp,
         numeroDocumento: numeroDocumento,
-        inGuardia: dropdownController.getSelectedValue('guardiaFiltro')?.key,
+        inGuardia:
+            dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
+                ? null
+                : dropdownController.getSelectedValue('guardiaFiltro')?.key,
         nombres: nombres,
         apellidos: apellidos,
         inEquipo: dropdownController.getSelectedValue('equipo')?.key,
@@ -89,5 +92,6 @@ class ActualizacionMasivaController extends GetxController {
     nombresController.clear();
     apellidosController.clear();
     dropdownController.resetAllSelections();
+    dropdownController.selectValueKey('guardiaFiltro', 0);
   }
 }

@@ -173,6 +173,7 @@ class ModuloMaestroService {
         );
       }
 
+
       if (response.statusCode == 200 && response.data != null) {
         log('Respuesta de mnodulo: ${response}');
         if (response.data is bool && response.data) {
@@ -183,7 +184,15 @@ class ModuloMaestroService {
             success: false,
             message: response.data['Message'] ?? 'Error desconocido',
           );
-        } else {
+        }
+        else if (response.data is Map<String, dynamic> &&
+            response.data.containsKey('Valor')) {
+          return ResponseHandler(
+            success: true,
+            message: response.data['Valor'] ,
+          );
+        }
+        else {
           return const ResponseHandler(
             success: false,
             message: 'Formato de respuesta inesperado al manejar el módulo',

@@ -156,7 +156,8 @@ class EntrenamientoModuloNuevoController extends GetxController {
       final response = isEdit
           ? await moduloMaestroService.actualizarModulo(modulo)
           : await moduloMaestroService.registrarModulo(modulo);
-      if (response.success && response.data != null) {
+      //if (response.success && response.data != null) {
+        if (response.success ) {
         EntrenamientoPersonalController controller =
             Get.put(EntrenamientoPersonalController());
         controller
@@ -524,13 +525,6 @@ class EntrenamientoModuloNuevoController extends GetxController {
       if (response.success) {
         aaControlHorasSeleccionado.value = false;
         obtenerArchivosRegistrados();
-        // Get.snackbar(
-        //   'Exito',
-        //   'Archivo subido exitosamente: ${response.message}',
-        //   snackPosition: SnackPosition.BOTTOM,
-        //   backgroundColor: Colors.green,
-        //   colorText: Colors.white,
-        // );
         log('Archivo ${aaControlHorasController.text} registrado con éxito');
         return 'Archivo ${aaControlHorasController.text} registrado con éxito';
       } else {

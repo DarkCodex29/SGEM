@@ -304,7 +304,7 @@ class CapacitacionPage extends StatelessWidget {
         Expanded(
           flex: 1,
           child: CustomTextField(
-            label: 'Rango de fecha',
+            label: 'Rango de Fecha Inicio',
             controller: controller.rangoFechaController,
             icon: const Icon(Icons.calendar_month),
             onIconPressed: () {
@@ -548,6 +548,9 @@ class CapacitacionPage extends StatelessWidget {
                               child: Text(entrenamiento.entrenador.nombre!)),
                           Expanded(
                               flex: 1,
+                              child: Text(entrenamiento.capacitacion.nombre!)),
+                          Expanded(
+                              flex: 1,
                               child: Text(entrenamiento.categoria.nombre!)),
                           Expanded(
                               flex: 1,
@@ -781,6 +784,13 @@ class CapacitacionPage extends StatelessWidget {
           flex: 1,
           child: Text(
             'Entrenador responsable',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: Text(
+            'Capacitacion',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),

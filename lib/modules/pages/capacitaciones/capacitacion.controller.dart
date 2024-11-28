@@ -5,6 +5,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
@@ -121,14 +122,15 @@ class CapacitacionController extends GetxController {
   }
 
   Future<void> downloadExcel() async {
-    isLoadingCapacitacionResultados.value = true;
+    // isLoadingCapacitacionResultados.value = true;
+
     String? codigoMcp =
-    codigoMcpController.text.isEmpty ? null : codigoMcpController.text;
+        codigoMcpController.text.isEmpty ? null : codigoMcpController.text;
     String? numeroDocumento = numeroDocumentoController.text.isEmpty
         ? null
         : numeroDocumentoController.text;
     String? nombres =
-    nombresController.text.isEmpty ? null : nombresController.text;
+        nombresController.text.isEmpty ? null : nombresController.text;
     String? apellidoPaterno = apellidoPaternoController.text.isEmpty
         ? null
         : apellidoPaternoController.text;
@@ -139,18 +141,16 @@ class CapacitacionController extends GetxController {
     var response = await capacitacionService.capacitacionConsulta(
       codigoMcp: codigoMcp,
       numeroDocumento: numeroDocumento,
-      inGuardia:
-      dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
+      inGuardia: dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
           ? null
           : dropdownController.getSelectedValue('guardiaFiltro')?.key,
       nombres: nombres,
       apellidoPaterno: apellidoPaterno,
       apellidoMaterno: apellidoMaterno,
-      inCapacitacion:
-      dropdownController.getSelectedValue('capacitacion')?.key,
+      inCapacitacion: dropdownController.getSelectedValue('capacitacion')?.key,
       inCategoria: dropdownController.getSelectedValue('categoria')?.key,
       inEmpresaCapacitacion:
-      dropdownController.getSelectedValue('empresaCapacitacion')?.key,
+          dropdownController.getSelectedValue('empresaCapacitacion')?.key,
       inEntrenador: dropdownController.getSelectedValue('entrenador')?.key,
       fechaInicio: fechaInicio,
       fechaTermino: fechaTermino,
@@ -158,90 +158,95 @@ class CapacitacionController extends GetxController {
       pageNumber: 1,
     );
 
-    var excel = Excel.createExcel();
-    excel.rename('Sheet1', 'Capacitacion');
+    if (response.success && response.data != null) {
+      var result = response.data as Map<String, dynamic>;
 
-    CellStyle headerStyle = CellStyle(
-      backgroundColorHex: ExcelColor.blue,
-      fontColorHex: ExcelColor.white,
-      bold: true,
-      horizontalAlign: HorizontalAlign.Center,
-      verticalAlign: VerticalAlign.Center,
-    );
-    List<String> headers = [
-      'CODIGO_MCP',
-      'NOMBRES_APELLIDOS',
-      'GUARDIA',
-      'ENTRENADOR_RESPONSABLE',
-      'NOMBRE_CAPACITACION',
-      'CATEGORIA',
-      'EMPRESA_CAPACITACION',
-      'FECHA_INICIO',
-      'FECHA_TERMINO',
-      'HORAS',
-      'NOTA_TEÓRICA',
-      'NOTA_PRÁCTICA'
-    ];
+      var items = result['Items'] as List<CapacitacionConsulta>;
+      Logger('Capacitacion Excel').info('${items}');
 
-    for (int i = 0; i < headers.length; i++) {
-      var cell = excel.sheets['Capacitacion']!
-          .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
-      cell.value = TextCellValue(headers[i]);
-      cell.cellStyle = headerStyle;
+      var excel = Excel.createExcel();
+      excel.rename('Sheet1', 'Capacitacion');
 
-      excel.sheets['Capacitacion']!
-          .setColumnWidth(i, headers[i].length.toDouble() + 5);
-    }
-
-    final dateFormat = DateFormat('dd/MM/yyyy');
-
-    for (int rowIndex = 0;
-        rowIndex < capacitacionResultados.length;
-        rowIndex++) {
-      var entrenamiento = capacitacionResultados[rowIndex];
-      List<CellValue> row = [
-        TextCellValue(entrenamiento.codigoMcp!),
-        TextCellValue(entrenamiento.nombreCompleto!),
-        TextCellValue(entrenamiento.guardia.nombre!),
-        TextCellValue(entrenamiento.entrenador.nombre!),
-        TextCellValue(' '), //Nombre capacitacion
-        TextCellValue(entrenamiento.categoria.nombre!),
-        TextCellValue(entrenamiento.empresaCapacitadora.nombre!),
-        entrenamiento.fechaInicio != null
-            ? TextCellValue(dateFormat.format(entrenamiento.fechaInicio!))
-            : TextCellValue(''),
-        entrenamiento.fechaTermino != null
-            ? TextCellValue(dateFormat.format(entrenamiento.fechaTermino!))
-            : TextCellValue(''),
-        TextCellValue(entrenamiento.inTotalHoras.toString()),
-        TextCellValue(entrenamiento.inNotaTeorica.toString()),
-        TextCellValue(entrenamiento.inNotaPractica.toString()),
+      CellStyle headerStyle = CellStyle(
+        backgroundColorHex: ExcelColor.blue,
+        fontColorHex: ExcelColor.white,
+        bold: true,
+        horizontalAlign: HorizontalAlign.Center,
+        verticalAlign: VerticalAlign.Center,
+      );
+      List<String> headers = [
+        'CODIGO_MCP',
+        'NOMBRES_APELLIDOS',
+        'GUARDIA',
+        'ENTRENADOR_RESPONSABLE',
+        'NOMBRE_CAPACITACION',
+        'CATEGORIA',
+        'EMPRESA_CAPACITACION',
+        'FECHA_INICIO',
+        'FECHA_TERMINO',
+        'HORAS',
+        'NOTA_TEÓRICA',
+        'NOTA_PRÁCTICA'
       ];
 
-      for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        var cell = excel.sheets['Capacitacion']!.cell(
-            CellIndex.indexByColumnRow(
-                columnIndex: colIndex, rowIndex: rowIndex + 1));
-        cell.value = row[colIndex];
+      for (int i = 0; i < headers.length; i++) {
+        var cell = excel.sheets['Capacitacion']!
+            .cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
+        cell.value = TextCellValue(headers[i]);
+        cell.cellStyle = headerStyle;
 
-        double contentWidth = row[colIndex].toString().length.toDouble();
-        if (contentWidth >
-            excel.sheets['Capacitacion']!.getColumnWidth(colIndex)) {
-          excel.sheets['Capacitacion']!
-              .setColumnWidth(colIndex, contentWidth + 5);
+        excel.sheets['Capacitacion']!
+            .setColumnWidth(i, headers[i].length.toDouble() + 5);
+      }
+
+      final dateFormat = DateFormat('dd/MM/yyyy');
+
+      for (int rowIndex = 0; rowIndex < items.length; rowIndex++) {
+        var entrenamiento = items[rowIndex];
+        List<CellValue> row = [
+          TextCellValue(entrenamiento.codigoMcp!),
+          TextCellValue(entrenamiento.nombreCompleto!),
+          TextCellValue(entrenamiento.guardia.nombre!),
+          TextCellValue(entrenamiento.entrenador.nombre!),
+          TextCellValue(entrenamiento.capacitacion.nombre!),
+          TextCellValue(entrenamiento.categoria.nombre!),
+          TextCellValue(entrenamiento.empresaCapacitadora.nombre!),
+          entrenamiento.fechaInicio != null
+              ? TextCellValue(dateFormat.format(entrenamiento.fechaInicio!))
+              : TextCellValue(''),
+          entrenamiento.fechaTermino != null
+              ? TextCellValue(dateFormat.format(entrenamiento.fechaTermino!))
+              : TextCellValue(''),
+          TextCellValue(entrenamiento.inTotalHoras.toString()),
+          TextCellValue(entrenamiento.inNotaTeorica.toString()),
+          TextCellValue(entrenamiento.inNotaPractica.toString()),
+        ];
+
+        for (int colIndex = 0; colIndex < row.length; colIndex++) {
+          var cell = excel.sheets['Capacitacion']!.cell(
+              CellIndex.indexByColumnRow(
+                  columnIndex: colIndex, rowIndex: rowIndex + 1));
+          cell.value = row[colIndex];
+
+          double contentWidth = row[colIndex].toString().length.toDouble();
+          if (contentWidth >
+              excel.sheets['Capacitacion']!.getColumnWidth(colIndex)) {
+            excel.sheets['Capacitacion']!
+                .setColumnWidth(colIndex, contentWidth + 5);
+          }
         }
       }
+
+      var excelBytes = excel.encode();
+      Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
+
+      String fileName = generateExcelFileName();
+      await FileSaver.instance.saveFile(
+          name: fileName,
+          bytes: uint8ListBytes,
+          ext: "xlsx",
+          mimeType: MimeType.microsoftExcel);
     }
-
-    var excelBytes = excel.encode();
-    Uint8List uint8ListBytes = Uint8List.fromList(excelBytes!);
-
-    String fileName = generateExcelFileName();
-    await FileSaver.instance.saveFile(
-        name: fileName,
-        bytes: uint8ListBytes,
-        ext: "xlsx",
-        mimeType: MimeType.microsoftExcel);
   }
 
   String generateExcelFileName() {

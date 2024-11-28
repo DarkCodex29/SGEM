@@ -102,8 +102,8 @@ class EntrenamientoPersonalController extends GetxController {
 
   Future<bool> actualizarEntrenamiento(EntrenamientoModulo training) async {
     try {
-      final response =
-          await entrenamientoService.actualizarEntrenamiento(training);
+      final response = await entrenamientoService.updateEntrenamiento(training);
+
       if (response.success) {
         int index = trainingList.indexWhere((t) => t.key == training.key);
         if (index != -1) {
@@ -127,7 +127,7 @@ class EntrenamientoPersonalController extends GetxController {
       } else {
         Get.snackbar(
           'Error',
-          'No se pudo actualizar el entrenamiento',
+          response.message ?? 'No se pudo actualizar el entrenamiento',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.red,
           colorText: Colors.white,

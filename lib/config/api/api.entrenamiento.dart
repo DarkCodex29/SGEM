@@ -9,25 +9,23 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import '../../shared/modules/entrenamiento.consulta.dart';
 
 class EntrenamientoService {
-  final Dio dio = Dio();
+  EntrenamientoService({
+    Dio? dio,
+  }) : _dio = dio ?? Dio(_options);
 
-  EntrenamientoService() {
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) {
-        options.headers['Content-Type'] = 'application/json';
-        return handler.next(options);
-      },
-      onResponse: (response, handler) {
-        return handler.next(response);
-      },
-    ));
-  }
+  final Dio _dio;
+
+  static final BaseOptions _options = BaseOptions(
+    baseUrl: '${ConfigFile.apiUrl}/Entrenamiento',
+    contentType: Headers.jsonContentType,
+    followRedirects: false,
+  );
 
   Future<ResponseHandler<bool>> registerTraining(
       EntrenamientoModulo entrenamiento) async {
     const url = '${ConfigFile.apiUrl}/Entrenamiento/RegistrarEntrenamiento';
     try {
-      final response = await dio.post(
+      final response = await _dio.post(
         url,
         data: jsonEncode(entrenamiento.toJson()),
         options: Options(
@@ -77,7 +75,7 @@ class EntrenamientoService {
         '${ConfigFile.apiUrl}/Entrenamiento/ObtenerUltimoModuloPorEntrenamiento?inEntrenamiento=$entrenamientoId';
     try {
       final response =
-          await dio.get(url, options: Options(followRedirects: false));
+          await _dio.get(url, options: Options(followRedirects: false));
 
       if (response.statusCode == 200 && response.data != null) {
         try {
@@ -114,7 +112,7 @@ class EntrenamientoService {
         '${ConfigFile.apiUrl}/Entrenamiento/ListarEntrenamientoPorPersona?id=$id';
     try {
       final response =
-          await dio.get(url, options: Options(followRedirects: false));
+          await _dio.get(url, options: Options(followRedirects: false));
       if (response.statusCode == 200 && response.data != null) {
         return ResponseHandler.handleSuccess<List<dynamic>>(response.data);
       } else {
@@ -129,12 +127,31 @@ class EntrenamientoService {
     }
   }
 
+  Future<ResponseHandler<bool>> updateEntrenamiento(
+      EntrenamientoModulo data) async {
+    try {
+      await _dio.put(
+        '/ActualizarEntrenamiento',
+        data: data.toJson(),
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al actualizar el entrenamiento',
+      );
+    }
+  }
+
+  @Deprecated('Use updateEntrenamiento instead')
   Future<ResponseHandler<bool>> actualizarEntrenamiento(
       EntrenamientoModulo training) async {
     const url = '${ConfigFile.apiUrl}/Entrenamiento/ActualizarEntrenamiento';
     try {
       log('Actualizando entrenamiento: ${jsonEncode(training.toJson())}');
-      final response = await dio.put(
+      final response = await _dio.put(
         url,
         data: jsonEncode(training.toJson()),
         options: Options(followRedirects: false),
@@ -159,7 +176,7 @@ class EntrenamientoService {
     const url = '${ConfigFile.apiUrl}/Entrenamiento/EliminarEntrenamiento';
     try {
       log('Eliminando entrenamiento');
-      final response = await dio.delete(
+      final response = await _dio.delete(
         url,
         data: jsonEncode(training.toJson()),
         options: Options(followRedirects: false),
@@ -211,10 +228,10 @@ class EntrenamientoService {
     };
     try {
       log('Listando personal de entrenamiento paginado con parámetros: $queryParams');
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         queryParameters: queryParams,
-          //..removeWhere((key, value) => value == null),
+        //..removeWhere((key, value) => value == null),
         options: Options(
           followRedirects: false,
         ),
@@ -272,7 +289,7 @@ class EntrenamientoService {
     };
     try {
       log('Listando personal de entrenamiento paginado con parámetros: $queryParams');
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         queryParameters: queryParams
           ..removeWhere((key, value) => value == null),
@@ -313,7 +330,7 @@ class EntrenamientoService {
     log('Api entrenamiento obtener entrenamiento por id $entrenamientoId');
     try {
       log('Api: $url');
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(followRedirects: false),
       );
@@ -346,7 +363,7 @@ class EntrenamientoService {
         '${ConfigFile.apiUrl}/Entrenamiento/ObtenerUltimoEntrenamientoPorPersona?inPersona=$personaId';
 
     try {
-      final response = await dio.get(
+      final response = await _dio.get(
         url,
         options: Options(followRedirects: false),
       );

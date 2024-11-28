@@ -153,15 +153,19 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
+  String formatoFechaPantalla(DateTime? fecha){
+    if (fecha ==null) {
+      return '';
+    }
+    return DateFormat('dd/MM/yyyy').format(fecha);
+  }
   void llenarControladores() {
     resetControllers();
     if (entrenamientoModulo != null) {
-      fechaInicioController.text = entrenamientoModulo!.fechaInicio != null
-          ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaInicio!)
-          : '';
-      fechaTerminoController.text = entrenamientoModulo!.fechaTermino != null
-          ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaTermino!)
-          : '';
+      fechaInicio = entrenamientoModulo!.fechaInicio;
+      fechaInicioController.text = formatoFechaPantalla(fechaInicio);
+      fechaTermino= entrenamientoModulo!.fechaTermino;
+      fechaTerminoController.text = formatoFechaPantalla(fechaTermino );
       horasController.text =
           entrenamientoModulo!.inTotalHoras?.toString() ?? '';
       notaTeoriaController.text =

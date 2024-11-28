@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
@@ -158,7 +159,7 @@ class ModuloMaestroService {
 
     try {
       Response response;
-
+      Logger('ApiModuloMAestro').info('Modulo actualizar: ${jsonEncode(modulo.toJson())}');
       if (method == 'POST') {
         response = await _dio.post(url, data: jsonEncode(modulo.toJson()));
       } else if (method == 'PUT') {
@@ -173,6 +174,7 @@ class ModuloMaestroService {
       }
 
       if (response.statusCode == 200 && response.data != null) {
+        log('Respuesta de mnodulo: ${response}');
         if (response.data is bool && response.data) {
           return ResponseHandler.handleSuccess<bool>(true);
         } else if (response.data is Map<String, dynamic> &&

@@ -15,6 +15,7 @@ class AppDropdownField extends StatelessWidget {
     this.hint,
     this.disabledHint,
     this.initialValue,
+    this.onChanged,
     super.key,
   });
 
@@ -25,6 +26,7 @@ class AppDropdownField extends StatelessWidget {
   final String label;
   final String? disabledHint;
   final bool readOnly;
+  final void Function(int?)? onChanged;
 
   final int? initialValue;
 
@@ -76,27 +78,30 @@ class AppDropdownField extends StatelessWidget {
                       hint: hint,
                       disabledHint: disabledHint,
                       // onChanged: (_) {},
-                      onChanged: cached
-                          ? (value) {
-                              if (value == null) {
-                                controller.resetSelection(dropdownKey);
-                              } else {
-                                controller.selectValueByKey(
-                                  options: dropdownKey,
-                                  optionKey: value,
-                                );
-                              }
-                            }
-                          : (value) {
-                              if (value == null) {
-                                controller.resetSelection(dropdownKey);
-                              } else {
-                                controller.selectValue(
-                                  dropdownKey,
-                                  options!.firstWhere((e) => e.key == value),
-                                );
-                              }
-                            },
+                      onChanged: onChanged != null
+                          ? onChanged
+                          : cached
+                              ? (value) {
+                                  if (value == null) {
+                                    controller.resetSelection(dropdownKey);
+                                  } else {
+                                    controller.selectValueByKey(
+                                      options: dropdownKey,
+                                      optionKey: value,
+                                    );
+                                  }
+                                }
+                              : (value) {
+                                  if (value == null) {
+                                    controller.resetSelection(dropdownKey);
+                                  } else {
+                                    controller.selectValue(
+                                      dropdownKey,
+                                      options!
+                                          .firstWhere((e) => e.key == value),
+                                    );
+                                  }
+                                },
                     );
                   },
                 ),

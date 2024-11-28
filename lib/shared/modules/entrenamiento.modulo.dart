@@ -186,4 +186,6 @@ class EntrenamientoModulo {
         "MotivoEliminado": motivoEliminado,
         "ObservacionesEntrenamiento": observaciones,
       };
+
+  bool? get isAutorice => estadoEntrenamiento?.nombre == 'Autorizado';
 }

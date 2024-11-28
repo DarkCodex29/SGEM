@@ -92,9 +92,12 @@ class DeleteReasonWidget extends StatelessWidget {
                     height: 134,
                     child: TextField(
                       controller: motivoController,
-                      maxLines: 5,
+                      maxLines: 3,
                       decoration: InputDecoration(
-                        hintText: 'Motivo de eliminación',
+                        hintText: 'Motivo de eliminación (opcional)',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

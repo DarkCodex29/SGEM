@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
@@ -615,53 +616,67 @@ class EntrenamientoPersonalPage extends StatelessWidget {
   }
 
   Widget _buildActionButtons(
-      BuildContext context, EntrenamientoModulo entrenamiento) {
+    BuildContext context,
+    EntrenamientoModulo entrenamiento,
+  ) {
+    final status = entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase();
+    final isAutorizado = status == 'autorizado';
+
+    final modulos =
+        controller.obtenerModulosPorEntrenamiento(entrenamiento.key!);
+
+    modulos.sort((a, b) => a.inModulo!.compareTo(b.inModulo!));
+
+    final lastModule = modulos.isNotEmpty ? modulos.last.inModulo : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Row(
           children: [
-            IconButton(
-              tooltip: 'Editar entrenamiento',
-              icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
-              onPressed: () async {
-                EntrenamientoNuevoController controllerModal =
-                    Get.put(EntrenamientoNuevoController());
-                await controllerModal.getEquiposAndConditions();
-                final EntrenamientoModulo? updatedTraining = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return GestureDetector(
-                      onTap: () => FocusScope.of(context).unfocus(),
-                      child: Center(
-                        child: EntrenamientoNuevoModal(
-                          data: controllerPersonal.selectedPersonal.value!,
-                          isEdit: true,
-                          entrenamiento: entrenamiento,
-                          close: () {
-                            Navigator.pop(context);
-                          },
+            if (!isAutorizado)
+              IconButton(
+                tooltip: 'Editar entrenamiento',
+                icon: const Icon(Icons.edit, color: AppTheme.primaryColor),
+                onPressed: () async {
+                  EntrenamientoNuevoController controllerModal =
+                      Get.put(EntrenamientoNuevoController());
+                  await controllerModal.getEquiposAndConditions();
+                  final EntrenamientoModulo? updatedTraining = await showDialog(
+                    context: context,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () => FocusScope.of(context).unfocus(),
+                        child: Center(
+                          child: EntrenamientoNuevoModal(
+                            data: controllerPersonal.selectedPersonal.value!,
+                            isEdit: true,
+                            entrenamiento: entrenamiento,
+                            lastModulo: lastModule,
+                            close: () {
+                              Navigator.pop(context);
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                );
-                log("Entrenamiento: $updatedTraining");
-                if (updatedTraining != null) {
-                  bool success =
-                      await controller.actualizarEntrenamiento(updatedTraining);
-                  if (success) {
-                    ScaffoldMessenger.of(Get.context!).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text("Entrenamiento actualizado correctamente"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
+                      );
+                    },
+                  );
+                  log("Entrenamiento: $updatedTraining");
+                  if (updatedTraining != null) {
+                    bool success = await controller
+                        .actualizarEntrenamiento(updatedTraining);
+                    if (success) {
+                      ScaffoldMessenger.of(Get.context!).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text("Entrenamiento actualizado correctamente"),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    }
                   }
-                }
-              },
-            ),
+                },
+              ),
             if (entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase() !=
                 'autorizado')
               IconButton(

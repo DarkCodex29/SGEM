@@ -1,20 +1,33 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/dropDown/simple_app_dropdown.dart';
 import '../../entrenamiento.personal.controller.dart';
 import 'entrenamiento.nuevo.controller.dart';
 
 class EntrenamientoNuevoModal extends StatelessWidget {
+  EntrenamientoNuevoModal({
+    super.key,
+    required this.data,
+    required this.close,
+    this.isEdit = false,
+    this.entrenamiento,
+    this.lastModulo,
+  }) {
+    controller.clearFields();
+    if (entrenamiento != null) controller.completeFields(entrenamiento!);
+  }
+
   final Personal data;
   final EntrenamientoNuevoController controller =
       Get.put(EntrenamientoNuevoController());
@@ -22,44 +35,10 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final VoidCallback close;
   final bool isEdit;
   final EntrenamientoModulo? entrenamiento;
-
-  EntrenamientoNuevoModal({
-    super.key,
-    required this.data,
-    required this.close,
-    this.isEdit = false,
-    this.entrenamiento,
-  }) {
-    if (isEdit &&
-        entrenamiento != null &&
-        controller.equipoDetalle.isNotEmpty) {
-      controller.equipoSelected.value = controller.equipoDetalle.firstWhere(
-          (element) => element.key == entrenamiento!.inEquipo,
-          orElse: () => controller.equipoDetalle.first);
-      controller.condicionSelected.value = controller.condicionDetalle
-          .firstWhere((element) => element.key == entrenamiento!.inCondicion,
-              orElse: () => controller.condicionDetalle.first);
-      controller.estadoEntrenamientoSelected.value = controller.estadoDetalle
-          .firstWhere((element) => element.key == entrenamiento!.inEstado,
-              orElse: () => controller.estadoDetalle.first);
-
-      log("Fecha Inicio: ${entrenamiento!.fechaInicio}");
-      controller.fechaInicioController.text = entrenamiento!.fechaInicio == null
-          ? ''
-          : DateFormat('dd/MM/yyyy')
-              .format(DateTime.parse(entrenamiento!.fechaInicio.toString()));
-      controller.fechaTerminoController.text = entrenamiento!.fechaTermino ==
-              null
-          ? ''
-          : DateFormat('dd/MM/yyyy')
-              .format(DateTime.parse(entrenamiento!.fechaTermino.toString()));
-      controller.observacionesEntrenamiento.text =
-          entrenamiento?.comentarios ?? ' ';
-      controller.obtenerArchivosRegistrados(2, entrenamiento!.key!);
-    }
-  }
+  final int? lastModulo;
 
   Widget content(BuildContext context) {
+    Logger('EntrenamientoNuevoModal').info(lastModulo);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -79,7 +58,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
             adjuntarDocumentoPDF(controller),
           ],
           const SizedBox(height: 20),
-          customButtonsCancelAndAcept(() => close(), () => registerTraining()),
+          customButtonsCancelAndAcept(
+              () => close(), () => registerTraining(context)),
         ],
       ),
     );
@@ -90,7 +70,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       children: [
         Expanded(
           child: CustomGenericDropdown<MaestroDetalle>(
-            hintText: "Equipo",
+            label: "Equipo",
             options: controller.equipoDetalle,
             selectedValue: controller.equipoSelectedBinding,
             isSearchable: false,
@@ -118,14 +98,29 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   }
 
   Widget _buildConditionAndDateRow() {
+    final isReadOnly = lastModulo != null && lastModulo! > 1;
+    Logger('EntrenamientoNuevoModal').info(isReadOnly);
     return Row(
       children: [
         Expanded(
-          child: CustomGenericDropdown<MaestroDetalle>(
-            hintText: "Condición",
-            options: controller.condicionDetalle,
-            selectedValue: controller.condicionSelectedBinding,
-            isSearchable: false,
+          child: SimpleAppDropdown(
+            label: "Condición",
+            options: controller.condicionDetalle
+                .map((e) => (e.key!, e.value))
+                .toList(),
+            initialValue: entrenamiento?.condicion?.key,
+            // controller.condicionSelected.value?.key,
+            // selectedValue: controller.condicionSelectedBinding,
+            onChanged: (int? value) {
+              controller.condicionSelectedBinding.set(
+                value == null
+                    ? null
+                    : controller.condicionDetalle
+                        .firstWhere((e) => e.key == value),
+              );
+            },
+            readOnly: isReadOnly,
+            // isSearchable: false,
             isRequired: true,
           ),
         ),
@@ -134,7 +129,7 @@ class EntrenamientoNuevoModal extends StatelessWidget {
           child: CustomTextField(
             label: 'Fecha de termino:',
             controller: controller.fechaTerminoController,
-            isRequired: true,
+            // isRequired: true,
             icon: const Icon(Icons.calendar_month),
             onIconPressed: () async {
               controller.fechaTermino = await _selectDate(Get.context!);
@@ -151,14 +146,29 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   }
 
   Widget _buildStateAndObservationsRow() {
+    final estados = [...controller.estadoDetalle];
+    if ((entrenamiento?.isAutorice) ?? false) {
+      estados..removeWhere((e) => e.value == 'Entrenando');
+    }
+
+    final value = controller.estadoEntrenamientoSelected.value;
+
     return Row(
       children: [
         Expanded(
-          child: CustomGenericDropdown<MaestroDetalle>(
-            hintText: "Estado Entrenamiento",
-            options: controller.estadoDetalle,
-            selectedValue: controller.estadoEntrenamientoSelectedBinding,
-            isSearchable: false,
+          child: SimpleAppDropdown(
+            label: "Estado Entrenamiento",
+            options: estados.map((e) => (e.key!, e.value)).toList(),
+            initialValue: value?.key,
+            onChanged: (int? value) {
+              controller.estadoEntrenamientoSelectedBinding.set(
+                value == null
+                    ? null
+                    : estados.firstWhere((e) => e.key == value),
+              );
+            },
+            // selectedValue: controller.estadoEntrenamientoSelectedBinding,
+            // isSearchable: false,
             isRequired: true,
           ),
         ),
@@ -255,14 +265,34 @@ class EntrenamientoNuevoModal extends StatelessWidget {
     });
   }
 
-  void registerTraining() {
-    if (controller.equipoSelected.value == null ||
-        controller.condicionSelected.value == null) {
-      Get.snackbar(
-        'Error',
-        'Por favor, selecciona todos los campos obligatorios.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+  void registerTraining(BuildContext context) {
+    List<String> errores = [];
+
+    final fechaInicio = DateFormat('dd/MM/yyyy')
+        .tryParse(controller.fechaInicioController.text);
+    if (fechaInicio == null) {
+      errores.add('Por favor, selecciona la fecha de inicio.');
+    }
+
+    final fechaTermino = DateFormat('dd/MM/yyyy')
+        .tryParse(controller.fechaTerminoController.text);
+    if (fechaTermino != null && fechaInicio != null) {
+      if (fechaTermino.isBefore(fechaInicio)) {
+        errores.add(
+            'La fecha de término no puede ser anterior a la fecha de inicio.');
+      }
+    }
+
+    if (controller.condicionSelected.value == null) {
+      errores.add('Por favor, selecciona la condición.');
+    }
+
+    if (controller.equipoSelected.value == null) {
+      errores.add('Por favor, selecciona el equipo.');
+    }
+
+    if (errores.isNotEmpty) {
+      MensajeValidacionWidget(errores: errores).show(context);
       return;
     }
 
@@ -296,8 +326,8 @@ class EntrenamientoNuevoModal extends StatelessWidget {
       inCondicion: controller.condicionSelected.value!.key,
       condicion:
           OptionValue(key: controller.condicionSelected.value!.key, nombre: ''),
-      fechaInicio: controller.fechaInicio,
-      fechaTermino: controller.fechaTermino,
+      fechaInicio: fechaInicio,
+      fechaTermino: fechaTermino,
       fechaExamen: null,
       fechaRealMonitoreo: null,
       fechaProximoMonitoreo: null,

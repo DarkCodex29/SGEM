@@ -31,6 +31,7 @@ class EntrenamientoNuevoController extends GetxController {
   RxList<MaestroDetalle> condicionDetalle = <MaestroDetalle>[].obs;
   RxList<MaestroDetalle> estadoDetalle = <MaestroDetalle>[].obs;
 
+
   final _logger = Logger('EntrenamientoNuevoController');
 
   var equipoSelected = Rxn<MaestroDetalle?>();

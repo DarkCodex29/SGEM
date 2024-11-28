@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
@@ -621,6 +622,13 @@ class EntrenamientoPersonalPage extends StatelessWidget {
     final status = entrenamiento.estadoEntrenamiento!.nombre!.toLowerCase();
     final isAutorizado = status == 'autorizado';
 
+    final modulos =
+        controller.obtenerModulosPorEntrenamiento(entrenamiento.key!);
+
+    modulos.sort((a, b) => a.inModulo!.compareTo(b.inModulo!));
+
+    final lastModule = modulos.isNotEmpty ? modulos.last.inModulo : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
@@ -644,6 +652,7 @@ class EntrenamientoPersonalPage extends StatelessWidget {
                             data: controllerPersonal.selectedPersonal.value!,
                             isEdit: true,
                             entrenamiento: entrenamiento,
+                            lastModulo: lastModule,
                             close: () {
                               Navigator.pop(context);
                             },

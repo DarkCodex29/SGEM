@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -9,15 +7,27 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/modules/personal.dart';
-import 'package:sgem/shared/utils/Extensions/get_snackbar.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
+import 'package:sgem/shared/widgets/dropDown/simple_app_dropdown.dart';
 import '../../entrenamiento.personal.controller.dart';
 import 'entrenamiento.nuevo.controller.dart';
 
 class EntrenamientoNuevoModal extends StatelessWidget {
+  EntrenamientoNuevoModal({
+    super.key,
+    required this.data,
+    required this.close,
+    this.isEdit = false,
+    this.entrenamiento,
+    this.lastModulo,
+  }) {
+    controller.clearFields();
+    if (entrenamiento != null) controller.completeFields(entrenamiento!);
+  }
+
   final Personal data;
   final EntrenamientoNuevoController controller =
       Get.put(EntrenamientoNuevoController());
@@ -25,19 +35,10 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   final VoidCallback close;
   final bool isEdit;
   final EntrenamientoModulo? entrenamiento;
-
-  EntrenamientoNuevoModal({
-    super.key,
-    required this.data,
-    required this.close,
-    this.isEdit = false,
-    this.entrenamiento,
-  }) {
-    controller.clearFields();
-    if (entrenamiento != null) controller.completeFields(entrenamiento!);
-  }
+  final int? lastModulo;
 
   Widget content(BuildContext context) {
+    Logger('EntrenamientoNuevoModal').info(lastModulo);
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -97,14 +98,29 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   }
 
   Widget _buildConditionAndDateRow() {
+    final isReadOnly = lastModulo != null && lastModulo! > 1;
+    Logger('EntrenamientoNuevoModal').info(isReadOnly);
     return Row(
       children: [
         Expanded(
-          child: CustomGenericDropdown<MaestroDetalle>(
+          child: SimpleAppDropdown(
             label: "Condición",
-            options: controller.condicionDetalle,
-            selectedValue: controller.condicionSelectedBinding,
-            isSearchable: false,
+            options: controller.condicionDetalle
+                .map((e) => (e.key!, e.value))
+                .toList(),
+            initialValue: entrenamiento?.condicion?.key,
+            // controller.condicionSelected.value?.key,
+            // selectedValue: controller.condicionSelectedBinding,
+            onChanged: (int? value) {
+              controller.condicionSelectedBinding.set(
+                value == null
+                    ? null
+                    : controller.condicionDetalle
+                        .firstWhere((e) => e.key == value),
+              );
+            },
+            readOnly: isReadOnly,
+            // isSearchable: false,
             isRequired: true,
           ),
         ),
@@ -130,14 +146,29 @@ class EntrenamientoNuevoModal extends StatelessWidget {
   }
 
   Widget _buildStateAndObservationsRow() {
+    final estados = [...controller.estadoDetalle];
+    if ((entrenamiento?.isAutorice) ?? false) {
+      estados..removeWhere((e) => e.value == 'Entrenando');
+    }
+
+    final value = controller.estadoEntrenamientoSelected.value;
+
     return Row(
       children: [
         Expanded(
-          child: CustomGenericDropdown<MaestroDetalle>(
+          child: SimpleAppDropdown(
             label: "Estado Entrenamiento",
-            options: controller.estadoDetalle,
-            selectedValue: controller.estadoEntrenamientoSelectedBinding,
-            isSearchable: false,
+            options: estados.map((e) => (e.key!, e.value)).toList(),
+            initialValue: value?.key,
+            onChanged: (int? value) {
+              controller.estadoEntrenamientoSelectedBinding.set(
+                value == null
+                    ? null
+                    : estados.firstWhere((e) => e.key == value),
+              );
+            },
+            // selectedValue: controller.estadoEntrenamientoSelectedBinding,
+            // isSearchable: false,
             isRequired: true,
           ),
         ),

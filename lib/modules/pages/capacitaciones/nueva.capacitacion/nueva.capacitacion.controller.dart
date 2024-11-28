@@ -159,6 +159,7 @@ class NuevaCapacitacionController extends GetxController {
       fechaInicioController.text = entrenamientoModulo!.fechaInicio != null
           ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaInicio!)
           : '';
+
       fechaTerminoController.text = entrenamientoModulo!.fechaTermino != null
           ? DateFormat('dd/MM/yyyy').format(entrenamientoModulo!.fechaTermino!)
           : '';

@@ -5,6 +5,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/modules/pages/consulta.personal/entrenamiento/entrenamiento.personal.controller.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import '../../../config/api/api.maestro.detail.dart';
 import '../../../config/api/api.personal.dart';

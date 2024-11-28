@@ -51,7 +51,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
 
     final List<Widget> pages = [
       _buildHomeContent(isLargeScreen, isSmallScreen),
-      const PersonalSearchPage(),
+      PersonalSearchPage(),
       MonitoringPage(),
       CapacitacionPage(onCancel: () {}),
       ConsultaEntrenamientoPage(),

@@ -1,7 +1,9 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sgem/modules/pages/consulta.personal/entrenamiento/entrenamiento.personal.controller.dart';
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/modules/personal.dart';
@@ -20,13 +22,12 @@ import 'personal/nuevo.personal.controller.dart';
 import 'personal/nuevo.personal.page.dart';
 
 class PersonalSearchPage extends StatelessWidget {
-  const PersonalSearchPage({super.key});
+  PersonalSearchPage({super.key});
+  final PersonalSearchController controller =
+      Get.put(PersonalSearchController());
 
   @override
   Widget build(BuildContext context) {
-    final PersonalSearchController controller =
-        Get.put(PersonalSearchController());
-
     return Scaffold(
       appBar: AppBar(
         title: Obx(() {
@@ -665,10 +666,30 @@ class PersonalSearchPage extends StatelessWidget {
                                           Icons.delete,
                                           AppTheme.errorColor,
                                           () async {
+                                            final EntrenamientoPersonalController
+                                                controllerEntrenamiento =
+                                                Get.put(
+                                                    EntrenamientoPersonalController());
+                                            await controllerEntrenamiento
+                                                .fetchTrainings(personal.key!);
+                                            if (controllerEntrenamiento
+                                                .trainingList.isNotEmpty) {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) {
+                                                  return const MensajeValidacionWidget(
+                                                    errores: [
+                                                      'No se puede eliminar porque tiene entrenamientos.'
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                              return;
+                                            }
+
                                             controller.selectedPersonal.value =
                                                 personal;
                                             String motivoEliminacion = '';
-
                                             await showDialog(
                                               context: context,
                                               builder: (context) {

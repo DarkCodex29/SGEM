@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sgem/config/theme/app_theme.dart';
@@ -57,7 +56,8 @@ class CustomTextFormField extends StatelessWidget {
               style: textStyle,
               maxLines: maxLines,
               inputFormatters: [
-                LengthLimitingTextInputFormatter(maxLength), // Limita a 2 caracteres
+                LengthLimitingTextInputFormatter(
+                    maxLength), // Limita a 2 caracteres
               ],
               validator: (value) {
                 if (!isRequired) {

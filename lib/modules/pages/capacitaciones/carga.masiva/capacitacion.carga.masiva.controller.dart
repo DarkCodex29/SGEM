@@ -27,6 +27,7 @@ class CapacitacionCargaMasivaController extends GetxController {
 
   var errorRecords = 0.obs;
 
+  var archivoValidado = false.obs;
   var archivoSeleccionado = false.obs; // Estado de archivo seleccionado
   var registrosValidados = false.obs; // Estado de validación de registros
   var sinErrores = false.obs; // Estado de errores en registros
@@ -38,6 +39,7 @@ class CapacitacionCargaMasivaController extends GetxController {
     totalRecords.value = 0;
     correctRecords.value = 0;
     errorRecords.value = 0;
+    archivoValidado.value= false;
   }
 
   Future<void> cargarArchivo() async {
@@ -140,6 +142,7 @@ class CapacitacionCargaMasivaController extends GetxController {
 
         registrosValidados.value = true;
         if (errorRecords.value == 0) {
+          archivoValidado.value=true;
           sinErrores.value = true;
         }
       }
@@ -159,7 +162,7 @@ class CapacitacionCargaMasivaController extends GetxController {
   }
 
   bool esConfirmacionValida() {
-    return archivoSeleccionado.value &&
+    return archivoValidado.value && archivoSeleccionado.value &&
         registrosValidados.value &&
         sinErrores.value;
   }

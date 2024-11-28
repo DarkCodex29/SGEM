@@ -93,6 +93,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           onPressed: () {
             controller.cargarArchivo();
           },
+          tooltip: 'Adjuntar archivo',
           icon: const Icon(
             Icons.attach_file,
             color: Colors.blue,

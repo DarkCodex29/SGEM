@@ -121,6 +121,43 @@ class CapacitacionController extends GetxController {
   }
 
   Future<void> downloadExcel() async {
+    isLoadingCapacitacionResultados.value = true;
+    String? codigoMcp =
+    codigoMcpController.text.isEmpty ? null : codigoMcpController.text;
+    String? numeroDocumento = numeroDocumentoController.text.isEmpty
+        ? null
+        : numeroDocumentoController.text;
+    String? nombres =
+    nombresController.text.isEmpty ? null : nombresController.text;
+    String? apellidoPaterno = apellidoPaternoController.text.isEmpty
+        ? null
+        : apellidoPaternoController.text;
+    String? apellidoMaterno = apellidoMaternoController.text.isEmpty
+        ? null
+        : apellidoMaternoController.text;
+
+    var response = await capacitacionService.capacitacionConsulta(
+      codigoMcp: codigoMcp,
+      numeroDocumento: numeroDocumento,
+      inGuardia:
+      dropdownController.getSelectedValue('guardiaFiltro')?.key == 0
+          ? null
+          : dropdownController.getSelectedValue('guardiaFiltro')?.key,
+      nombres: nombres,
+      apellidoPaterno: apellidoPaterno,
+      apellidoMaterno: apellidoMaterno,
+      inCapacitacion:
+      dropdownController.getSelectedValue('capacitacion')?.key,
+      inCategoria: dropdownController.getSelectedValue('categoria')?.key,
+      inEmpresaCapacitacion:
+      dropdownController.getSelectedValue('empresaCapacitacion')?.key,
+      inEntrenador: dropdownController.getSelectedValue('entrenador')?.key,
+      fechaInicio: fechaInicio,
+      fechaTermino: fechaTermino,
+      pageSize: 10,
+      pageNumber: 1,
+    );
+
     var excel = Excel.createExcel();
     excel.rename('Sheet1', 'Capacitacion');
 

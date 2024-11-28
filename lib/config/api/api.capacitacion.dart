@@ -23,6 +23,73 @@ class CapacitacionService {
     ));
   }
 
+  Future<ResponseHandler<Map<String, dynamic>>> capacitacionConsulta({
+    String? codigoMcp,
+    String? numeroDocumento,
+    int? inGuardia,
+    String? nombres,
+    String? apellidoPaterno,
+    String? apellidoMaterno,
+    int? inCapacitacion,
+    int? inCategoria,
+    int? inEmpresaCapacitacion,
+    int? inEntrenador,
+    DateTime? fechaInicio,
+    DateTime? fechaTermino,
+    int? pageSize,
+    int? pageNumber,
+  }) async {
+    log('Llamando al endpoint consulta paginado');
+    const url =
+        '${ConfigFile.apiUrl}/Capacitacion/CapacitacionConsulta';
+    Map<String, dynamic> queryParams = {
+      'parametros.codigoMcp': codigoMcp,
+      'parametros.numeroDocumento': numeroDocumento,
+      'parametros.inGuardia': inGuardia,
+      'parametros.nombres': nombres,
+      'parametros.apellidoPaterno': apellidoPaterno,
+      'parametros.apellidoMaterno': apellidoMaterno,
+      'parametros.inCapacitacion': inCapacitacion,
+      'parametros.inCategoria': inCategoria,
+      'parametros.inEmpresaCapacitacion': inEmpresaCapacitacion,
+      'parametros.inEntrenador': inEntrenador,
+      'parametros.fechaInicio': fechaInicio,
+      'parametros.fechaTermino': fechaTermino,
+      'parametros.pageSize': pageSize,
+      'parametros.pageNumber': pageNumber,
+    };
+    try {
+      log('Listando capacitacion paginado con parámetros: $queryParams');
+      final response = await dio.get(
+        url,
+        queryParameters: queryParams
+          ..removeWhere((key, value) => value == null),
+        options: Options(
+          followRedirects: false,
+        ),
+      );
+
+      log('Respuesta recibida para capacitacion Paginado: ${response.data}');
+
+      //final result = response.data as Map<String, dynamic>;
+      final result = response.data as List;
+      //final items = result['Items'] as List;
+      final capacitacionList = result
+          .map((entrenamientoJson) =>
+          CapacitacionConsulta.fromJson(entrenamientoJson))
+          .toList();
+
+      final responseData = {
+        'Items': capacitacionList,
+      };
+
+      return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);
+    } on DioException catch (e) {
+      log('Error al consultar capacitaciones paginado. Error: ${e.response?.data}');
+      return ResponseHandler.handleFailure(e);
+    }
+  }
+
   Future<ResponseHandler<Map<String, dynamic>>> capacitacionConsultaPaginado({
     String? codigoMcp,
     String? numeroDocumento,

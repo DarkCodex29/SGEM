@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:sgem/modules/pages/consulta.personal/entrenamiento/entrenamiento.personal.controller.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 
 class DeleteReasonWidget extends StatelessWidget {
@@ -123,6 +125,25 @@ class DeleteReasonWidget extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
+                          EntrenamientoPersonalController controller =
+                              Get.put(EntrenamientoPersonalController());
+
+                          if (entityType == 'personal') {
+                            if (controller.trainingList.isNotEmpty) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return const MensajeValidacionWidget(
+                                    errores: [
+                                      'No se puede eliminar porque tiene entrenamientos.'
+                                    ],
+                                  );
+                                },
+                              );
+                              return;
+                            }
+                          }
+
                           if (isMotivoRequired &&
                               motivoController.text.isEmpty) {
                             showDialog(

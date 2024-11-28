@@ -119,7 +119,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  "Personal Externa",
+                  "Personal Externo",
                   style: TextStyle(
                       color: controller.isInternoSelected.value
                           ? Colors.black54

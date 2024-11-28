@@ -215,6 +215,14 @@ class NuevaCapacitacionController extends GetxController {
 
   Future<bool?> registrarCapacitacion() async {
     try {
+      if (!_validarHoras()) {
+        return false;
+      }
+
+      if (!_validarFechas()) {
+        return false;
+      }
+
       // Validar que exista el personal interno
       if (isInternoSelected == true && personalInterno == null) {
         _mostrarErroresValidacion(
@@ -340,6 +348,14 @@ class NuevaCapacitacionController extends GetxController {
         return false;
       }
 
+      if (!_validarHoras()) {
+        return false;
+      }
+
+      if (!_validarFechas()) {
+        return false;
+      }
+
       // Crear una copia del modelo para actualizarlo
       final capacitacionActualizada = EntrenamientoModulo()
         ..key = entrenamientoModulo!.key
@@ -429,6 +445,46 @@ class NuevaCapacitacionController extends GetxController {
     } catch (e) {
       return false;
     }
+  }
+
+  bool _validarFechas() {
+    if (fechaInicio == null || fechaTermino == null) {
+      _mostrarErroresValidacion(
+          Get.context!, ['Por favor ingrese fechas válidas.']);
+      return false;
+    }
+
+    if (fechaTermino!.isBefore(fechaInicio!)) {
+      _mostrarErroresValidacion(Get.context!,
+          ['La fecha de término debe ser mayor o igual a la fecha de inicio.']);
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validarHoras() {
+    final horasText = horasController.text.trim();
+
+    if (horasText.isEmpty) {
+      _mostrarErroresValidacion(
+          Get.context!, ['El campo de horas es obligatorio']);
+      return false;
+    }
+
+    if (!RegExp(r'^\d+$').hasMatch(horasText)) {
+      _mostrarErroresValidacion(
+          Get.context!, ['El campo de horas debe contener solo números']);
+      return false;
+    }
+
+    if (horasText.length > 3) {
+      _mostrarErroresValidacion(Get.context!,
+          ['El campo de horas no puede exceder los 3 caracteres']);
+      return false;
+    }
+
+    return true;
   }
 
   bool _validarCamposRequeridos() {

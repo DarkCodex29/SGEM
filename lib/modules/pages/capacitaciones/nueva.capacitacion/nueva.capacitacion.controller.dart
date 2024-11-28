@@ -153,19 +153,20 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
-  String formatoFechaPantalla(DateTime? fecha){
-    if (fecha ==null) {
+  String formatoFechaPantalla(DateTime? fecha) {
+    if (fecha == null) {
       return '';
     }
     return DateFormat('dd/MM/yyyy').format(fecha);
   }
+
   void llenarControladores() {
     resetControllers();
     if (entrenamientoModulo != null) {
       fechaInicio = entrenamientoModulo!.fechaInicio;
       fechaInicioController.text = formatoFechaPantalla(fechaInicio);
-      fechaTermino= entrenamientoModulo!.fechaTermino;
-      fechaTerminoController.text = formatoFechaPantalla(fechaTermino );
+      fechaTermino = entrenamientoModulo!.fechaTermino;
+      fechaTerminoController.text = formatoFechaPantalla(fechaTermino);
       horasController.text =
           entrenamientoModulo!.inTotalHoras?.toString() ?? '';
       notaTeoriaController.text =
@@ -283,20 +284,10 @@ class NuevaCapacitacionController extends GetxController {
         ..inEstado = 0
         ..estadoEntrenamiento = OptionValue(key: 0, nombre: '')
         ..fechaInicio = fechaInicio
-        ..fechaTermino = fechaTermino;
-
-      // Manejo seguro de conversiones numéricas
-      try {
-        entrenamientoModulo!
-          ..inTotalHoras = int.parse(horasController.text)
-          ..inNotaTeorica = int.parse(notaTeoriaController.text)
-          ..inNotaPractica = int.parse(notaPracticaController.text);
-      } catch (e) {
-        _mostrarErroresValidacion(Get.context!, [
-          'Los valores de horas y notas deben ser números válidos',
-        ]);
-        return false;
-      }
+        ..fechaTermino = fechaTermino
+        ..inTotalHoras = int.parse(horasController.text)
+        ..inNotaTeorica = int.parse(notaTeoriaController.text)
+        ..inNotaPractica = int.parse(notaPracticaController.text);
 
       // Validar que las notas estén en el rango correcto (0-99)
       if (!_validarRangoNotas()) {
@@ -388,19 +379,10 @@ class NuevaCapacitacionController extends GetxController {
         ..inEstado = 0
         ..estadoEntrenamiento = OptionValue(key: 0, nombre: '')
         ..fechaInicio = fechaInicio
-        ..fechaTermino = fechaTermino;
-
-      try {
-        entrenamientoModulo!
-          ..inTotalHoras = int.parse(horasController.text)
-          ..inNotaTeorica = int.parse(notaTeoriaController.text)
-          ..inNotaPractica = int.parse(notaPracticaController.text);
-      } catch (e) {
-        _mostrarErroresValidacion(Get.context!, [
-          'Los valores de horas y notas deben ser números válidos',
-        ]);
-        return false;
-      }
+        ..fechaTermino = fechaTermino
+        ..inTotalHoras = int.parse(horasController.text)
+        ..inNotaTeorica = int.parse(notaTeoriaController.text)
+        ..inNotaPractica = int.parse(notaPracticaController.text);
 
       if (!_validarRangoNotas()) {
         _mostrarErroresValidacion(Get.context!, [

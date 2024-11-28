@@ -1,7 +1,8 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/modules/pages/consulta.personal/entrenamiento/entrenamiento.personal.controller.dart';
+import 'package:sgem/config/api/api.entrenamiento.dart';
+import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/alert/widget.alert.dart';
 import 'package:sgem/shared/widgets/dynamic.table/dynamic.table.cabecera.dart';
@@ -666,14 +667,25 @@ class PersonalSearchPage extends StatelessWidget {
                                           Icons.delete,
                                           AppTheme.errorColor,
                                           () async {
-                                            final EntrenamientoPersonalController
-                                                controllerEntrenamiento =
-                                                Get.put(
-                                                    EntrenamientoPersonalController());
-                                            await controllerEntrenamiento
-                                                .fetchTrainings(personal.key!);
-                                            if (controllerEntrenamiento
-                                                .trainingList.isNotEmpty) {
+                                            final EntrenamientoService
+                                                entrenamientoService =
+                                                EntrenamientoService();
+                                            var trainingList =
+                                                <EntrenamientoModulo>[].obs;
+                                            final response =
+                                                await entrenamientoService
+                                                    .listarEntrenamientoPorPersona(
+                                                        personal.key!);
+                                            if (response.success) {
+                                              trainingList.value = response
+                                                  .data!
+                                                  .map((json) =>
+                                                      EntrenamientoModulo
+                                                          .fromJson(json))
+                                                  .toList();
+                                            }
+
+                                            if (trainingList.isNotEmpty) {
                                               showDialog(
                                                 context: context,
                                                 builder: (context) {

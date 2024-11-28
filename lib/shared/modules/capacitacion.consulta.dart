@@ -24,6 +24,7 @@ class CapacitacionConsulta {
   int? inTotalHoras;
   int? inNotaTeorica;
   int? inNotaPractica;
+  OptionValue capacitacion;
 
   CapacitacionConsulta({
     this.key,
@@ -39,6 +40,7 @@ class CapacitacionConsulta {
     this.inTotalHoras,
     this.inNotaTeorica,
     this.inNotaPractica,
+    required this.capacitacion,
   });
 
   factory CapacitacionConsulta.fromJson(Map<String, dynamic> json) =>
@@ -56,6 +58,7 @@ class CapacitacionConsulta {
         inTotalHoras: json["InTotalHoras"],
         inNotaTeorica: json["InNotaTeorica"],
         inNotaPractica: json["InNotaPractica"],
+        capacitacion: OptionValue.fromJson(json["Capacitacion"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -72,5 +75,6 @@ class CapacitacionConsulta {
         "InTotalHoras": inTotalHoras,
         "InNotaTeorica": inNotaTeorica,
         "InNotaPractica": inNotaPractica,
+        "Capacitacion" : capacitacion,
       };
 }

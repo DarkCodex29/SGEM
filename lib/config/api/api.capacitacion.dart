@@ -59,7 +59,7 @@ class CapacitacionService {
       'parametros.pageNumber': pageNumber,
     };
     try {
-      log('Listando capacitacion paginado con parámetros: $queryParams');
+      log('Listando capacitacion con parámetros: $queryParams');
       final response = await dio.get(
         url,
         queryParameters: queryParams
@@ -69,7 +69,7 @@ class CapacitacionService {
         ),
       );
 
-      log('Respuesta recibida para capacitacion Paginado: ${response.data}');
+      log('Respuesta recibida para capacitacion: ${response.data}');
 
       //final result = response.data as Map<String, dynamic>;
       final result = response.data as List;
@@ -85,7 +85,7 @@ class CapacitacionService {
 
       return ResponseHandler.handleSuccess<Map<String, dynamic>>(responseData);
     } on DioException catch (e) {
-      log('Error al consultar capacitaciones paginado. Error: ${e.response?.data}');
+      log('Error al consultar capacitaciones. Error: ${e.response?.data}');
       return ResponseHandler.handleFailure(e);
     }
   }

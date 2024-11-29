@@ -363,6 +363,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   controller: controller.fechaTerminoController,
                   icon: const Icon(Icons.calendar_today),
                   onIconPressed: () async {
+                    //if (isViewing) return;
                     controller.fechaTermino = await _selectDate(Get.context!);
                     controller.fechaTerminoController.text =
                         DateFormat('dd/MM/yyyy')

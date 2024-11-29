@@ -691,7 +691,7 @@ class PersonalSearchPage extends StatelessWidget {
                                                 builder: (context) {
                                                   return const MensajeValidacionWidget(
                                                     errores: [
-                                                      'No se puede eliminar porque tiene entrenamientos.'
+                                                      'No se puede eliminar PERSONAL que tiene ENTRENAMIENTOS asignados.'
                                                     ],
                                                   );
                                                 },

@@ -73,6 +73,8 @@ class NuevaCapacitacionController extends GetxController {
   CapacitacionController capacitacionController =
       Get.find<CapacitacionController>();
 
+  RxBool isCategoria = false.obs;
+
   void _mostrarMensajeGuardado(BuildContext context) {
     showDialog(
       context: context,
@@ -110,27 +112,29 @@ class NuevaCapacitacionController extends GetxController {
   void actualizarOpcionesEmpresaCapacitadora() {
     final categoriaSeleccionada =
         dropdownController.getSelectedValue('categoria')?.nombre ?? '';
-
     if (categoriaSeleccionada == 'Interna') {
-      // Carga la opción fija "Entrenamiento Mina"
-      dropdownController.loadOptions('empresaCapacitacion', () async {
-        return [
-          OptionValue(key: 1, nombre: 'Entrenamiento Mina'),
-        ];
-      });
-      //dropdownController.setReadOnly('empresaCapacitacion', true);
+      dropdownController.loadOptions(
+        'empresaCapacitacion',
+        () async {
+          return [
+            OptionValue(key: 24, nombre: 'Chinalco'),
+          ];
+        },
+      );
+      isCategoria.value = true;
     } else if (categoriaSeleccionada == 'Externa') {
-      // Filtra las empresas capacitadoras para excluir "Entrenamiento Mina"
       final todasEmpresas =
           dropdownController.getOptionsFromKey('empresaCapacitacion');
       final empresasFiltradas = todasEmpresas
-          .where((empresa) => empresa.nombre != 'Entrenamiento Mina')
+          .where((empresa) => empresa.nombre != 'Entrenamiento mina')
           .toList();
-
-      dropdownController.loadOptions('empresaCapacitacion', () async {
-        return empresasFiltradas;
-      });
-      //dropdownController.setReadOnly('empresaCapacitacion', false);
+      dropdownController.loadOptions(
+        'empresaCapacitacion',
+        () async {
+          return empresasFiltradas;
+        },
+      );
+      isCategoria.value = false;
     }
   }
 

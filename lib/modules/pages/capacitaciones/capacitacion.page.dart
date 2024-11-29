@@ -12,7 +12,6 @@ import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 import 'carga.masiva/capacitacion.carga.masiva.page.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
-import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
 
 class CapacitacionPage extends StatelessWidget {
   CapacitacionPage({super.key, required this.onCancel});
@@ -415,11 +414,10 @@ class CapacitacionPage extends StatelessWidget {
               primary: AppTheme.primaryColor,
               onPrimary: Colors.black,
               onSurface: Colors.black,
-
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-
+                elevation: 3,
                 foregroundColor: Colors.red, // button text color
               ),
             ),
@@ -433,14 +431,6 @@ class CapacitacionPage extends StatelessWidget {
             ),
           ),
         );
-        // return AlertDialog(
-        //   backgroundColor: Colors.white,
-        //   content: SizedBox(
-        //     child: child,
-        //     height: 500,
-        //     width: 400,
-        //   ),
-        // );
       },
     );
 
@@ -449,8 +439,6 @@ class CapacitacionPage extends StatelessWidget {
           '${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
       controller.fechaInicio = picked.start;
       controller.fechaTermino = picked.end;
-      log('Capacitacion Fecha Inicio: ${controller.fechaInicio}');
-      log('Capacitacion Fecha Termino: ${controller.fechaTermino}');
     }
   }
 

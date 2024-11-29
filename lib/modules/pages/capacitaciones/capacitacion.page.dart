@@ -12,7 +12,6 @@ import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 import 'carga.masiva/capacitacion.carga.masiva.page.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
-import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
 
 class CapacitacionPage extends StatelessWidget {
   CapacitacionPage({super.key, required this.onCancel});

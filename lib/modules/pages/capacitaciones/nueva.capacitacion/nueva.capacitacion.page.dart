@@ -323,7 +323,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona empresa de capacitación',
                   noDataHintText: 'No se encontraron empresas',
                   controller: controller.dropdownController,
-                  isReadOnly: isViewing,
+                  isReadOnly: controller.isCategoria.value || isViewing,
                   isRequired: isViewing ? false : true,
                 ),
               ),

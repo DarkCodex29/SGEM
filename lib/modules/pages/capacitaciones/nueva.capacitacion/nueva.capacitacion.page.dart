@@ -310,6 +310,9 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   controller: controller.dropdownController,
                   isReadOnly: isViewing,
                   isRequired: isViewing ? false : true,
+                  onChanged: (value) {
+                    controller.actualizarOpcionesEmpresaCapacitadora();
+                  },
                 ),
               ),
               const SizedBox(width: 20),

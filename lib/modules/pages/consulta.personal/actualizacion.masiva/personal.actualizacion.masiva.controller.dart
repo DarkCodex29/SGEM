@@ -29,6 +29,7 @@ class ActualizacionMasivaController extends GetxController {
 
   @override
   void onInit() {
+    dropdownController.selectValueKey('guardiaFiltro', 0);
     buscarActualizacionMasiva(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
     super.onInit();

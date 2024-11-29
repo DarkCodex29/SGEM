@@ -165,6 +165,8 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildSeccionConsultaPrimeraFila(CapacitacionController controller) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           child: CustomTextField(
@@ -201,6 +203,8 @@ class CapacitacionPage extends StatelessWidget {
 
   Widget _buildSeccionConsultaSegundaFila(CapacitacionController controller) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           child: CustomTextField(
@@ -233,6 +237,8 @@ class CapacitacionPage extends StatelessWidget {
   Widget _buildSeccionConsultaTerceraFila(
       BuildContext context, CapacitacionController controller) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           child: CustomDropdownGlobal(
@@ -284,6 +290,8 @@ class CapacitacionPage extends StatelessWidget {
   Widget _buildSeccionConsultaCuartaFila(
       BuildContext context, CapacitacionController controller) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Expanded(
           flex: 1,
@@ -307,8 +315,8 @@ class CapacitacionPage extends StatelessWidget {
             label: 'Rango de Fecha Inicio',
             controller: controller.rangoFechaController,
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: () {
-              _selectDateRange(context, controller);
+            onIconPressed: ()async {
+              await controller.seleccionarFecha(context);
             },
           ),
         ),
@@ -379,17 +387,8 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
-  //
-  // void _selectFechaRango(){
-  //
-  //   DateRangePickerWidget(
-  //     onDateRangeChanged: (value) {},
-  //     maximumDateRangeLength: 10,
-  //     minimumDateRangeLength: 3,
-  //     initialDisplayedDate: DateTime.now(),
-  //   ),
-  // }
 
+  /*
   Future<void> _selectDateRange(
       BuildContext context, CapacitacionController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(
@@ -439,6 +438,59 @@ class CapacitacionPage extends StatelessWidget {
           '${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
       controller.fechaInicio = picked.start;
       controller.fechaTermino = picked.end;
+    }
+  }
+  */
+
+  Future<DateTimeRange?> _selectDateRange(
+      BuildContext context, CapacitacionController controller) async {
+    DateTimeRange selectedDateRange = DateTimeRange(
+      start: today.subtract(const Duration(days: 7)),
+      end: today,
+    );
+
+    DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: selectedDateRange,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      barrierDismissible: true,
+      saveText: 'Aceptar',
+      helpText: 'Seleccione fechas',
+      cancelText: 'Cancelar',
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppTheme.primaryColor,
+              onPrimary: Colors.black,
+              onSurface: Colors.black,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                elevation: 3,
+                foregroundColor: Colors.red, // button text color
+              ),
+            ),
+          ),
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            content: SizedBox(
+              child: child,
+              height: 500,
+              width: 400,
+            ),
+          ),
+        );
+      },
+    );
+
+    if (picked != null && picked != selectedDateRange) {
+      //controller.rangoFechaController.text =
+      //'${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
+      //controller.fechaInicio = picked.start;
+      //controller.fechaTermino = picked.end;
     }
   }
 

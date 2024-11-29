@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
+import 'package:sgem/shared/dialogs/rango.fecha.dialog.dart';
 import 'package:sgem/shared/modules/entrenamiento.consulta.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
@@ -202,5 +203,24 @@ class ConsultaEntrenamientoController extends GetxController {
     nombresController.clear();
     dropdownController.resetAllSelections();
     dropdownController.selectValueKey('guardiaFiltro', 0);
+  }
+
+  Future<void> seleccionarFecha(BuildContext context) async {
+    DateTimeRange? rangoFechaSeleccionado;
+
+    if (fechaInicio != null && fechaTermino != null){
+      rangoFechaSeleccionado = DateTimeRange(
+        start: fechaInicio!,
+        end: fechaTermino!,
+      );
+    }
+
+    var seleccionado = await mostrarRangoFecha(context,rangoFechaSeleccionado);
+    if (seleccionado != null) {
+      rangoFechaController.text =
+          '${DateFormat('dd/MM/yyyy').format(seleccionado.start)} - ${DateFormat('dd/MM/yyyy').format(seleccionado.end)}';
+      fechaInicio = seleccionado.start;
+      fechaTermino = seleccionado.end;
+    }
   }
 }

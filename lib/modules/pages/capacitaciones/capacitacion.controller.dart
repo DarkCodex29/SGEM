@@ -13,6 +13,8 @@ import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
+import '../../../shared/dialogs/rango.fecha.dialog.dart';
+
 class CapacitacionController extends GetxController {
   TextEditingController codigoMcpController = TextEditingController();
   TextEditingController numeroDocumentoController = TextEditingController();
@@ -327,5 +329,23 @@ class CapacitacionController extends GetxController {
     fechaTermino = null;
     dropdownController.resetAllSelections();
     dropdownController.selectValueKey('guardiaFiltro', 0);
+  }
+
+  Future<void> seleccionarFecha(BuildContext context) async {
+    DateTimeRange? rangoFechaSeleccionado;
+
+    if (fechaInicio != null && fechaTermino != null){
+      rangoFechaSeleccionado = DateTimeRange(
+        start: fechaInicio!,
+        end: fechaTermino!,
+      );
+    }
+    var seleccionado = await mostrarRangoFecha(context,rangoFechaSeleccionado);
+    if (seleccionado != null) {
+      rangoFechaController.text =
+          '${DateFormat('dd/MM/yyyy').format(seleccionado.start)} - ${DateFormat('dd/MM/yyyy').format(seleccionado.end)}';
+      fechaInicio = seleccionado.start;
+      fechaTermino = seleccionado.end;
+    }
   }
 }

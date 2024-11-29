@@ -169,8 +169,8 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
             label: 'Rango de fecha',
             controller: controller.rangoFechaController,
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: () {
-              _selectDateRange(context, controller);
+            onIconPressed: () async {
+              await controller.seleccionarFecha(context);
             },
           ),
         ),
@@ -249,28 +249,6 @@ class ConsultaEntrenamientoPage extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Future<void> _selectDateRange(
-      BuildContext context, ConsultaEntrenamientoController controller) async {
-    DateTimeRange selectedDateRange = DateTimeRange(
-      start: today.subtract(const Duration(days: 7)),
-      end: today,
-    );
-
-    DateTimeRange? picked = await showDateRangePicker(
-      context: context,
-      initialDateRange: selectedDateRange,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-      initialEntryMode: DatePickerEntryMode.calendar,
-    );
-    if (picked != null && picked != selectedDateRange) {
-      controller.rangoFechaController.text =
-          '${DateFormat('dd/MM/yyyy').format(picked.start)} - ${DateFormat('dd/MM/yyyy').format(picked.end)}';
-      controller.fechaInicio = picked.start;
-      controller.fechaTermino = picked.end;
-    }
   }
 
   Widget _buildSeccionResultado(ConsultaEntrenamientoController controller) {

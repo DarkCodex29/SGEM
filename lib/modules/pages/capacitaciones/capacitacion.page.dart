@@ -7,12 +7,12 @@ import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../shared/widgets/custom.textfield.dart';
 import 'carga.masiva/capacitacion.carga.masiva.page.dart';
 import 'nueva.capacitacion/nueva.capacitacion.page.dart';
+import 'package:flutter_date_range_picker/flutter_date_range_picker.dart';
 
 class CapacitacionPage extends StatelessWidget {
   CapacitacionPage({super.key, required this.onCancel});
@@ -316,13 +316,6 @@ class CapacitacionPage extends StatelessWidget {
         const SizedBox(
           width: 20,
         ),
-        SfDateRangePicker(
-          onSelectionChanged: (dateRangePickerSelectionChangedArgs) {},
-          selectionMode: DateRangePickerSelectionMode.range,
-          initialSelectedRange: PickerDateRange(
-              DateTime.now().subtract(const Duration(days: 4)),
-              DateTime.now().add(const Duration(days: 3))),
-        ),
         const Expanded(
           flex: 1,
           child: SizedBox.shrink(),
@@ -387,21 +380,68 @@ class CapacitacionPage extends StatelessWidget {
       ],
     );
   }
+  //
+  // void _selectFechaRango(){
+  //
+  //   DateRangePickerWidget(
+  //     onDateRangeChanged: (value) {},
+  //     maximumDateRangeLength: 10,
+  //     minimumDateRangeLength: 3,
+  //     initialDisplayedDate: DateTime.now(),
+  //   ),
+  // }
 
   Future<void> _selectDateRange(
       BuildContext context, CapacitacionController controller) async {
     DateTimeRange selectedDateRange = DateTimeRange(
-      start: today.subtract(const Duration(days: 30)),
+      start: today.subtract(const Duration(days: 7)),
       end: today,
     );
 
     DateTimeRange? picked = await showDateRangePicker(
       context: context,
-      barrierColor: Colors.blueAccent,
       initialDateRange: selectedDateRange,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
-      initialEntryMode: DatePickerEntryMode.calendar,
+      initialEntryMode: DatePickerEntryMode.calendarOnly,
+      barrierDismissible: true,
+      saveText: 'Aceptar',
+      helpText: 'Seleccione fechas',
+      cancelText: 'Cancelar',
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: AppTheme.primaryColor,
+              onPrimary: Colors.black,
+              onSurface: Colors.black,
+
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+
+                foregroundColor: Colors.red, // button text color
+              ),
+            ),
+          ),
+          child: AlertDialog(
+            backgroundColor: Colors.white,
+            content: SizedBox(
+              child: child,
+              height: 500,
+              width: 400,
+            ),
+          ),
+        );
+        // return AlertDialog(
+        //   backgroundColor: Colors.white,
+        //   content: SizedBox(
+        //     child: child,
+        //     height: 500,
+        //     width: 400,
+        //   ),
+        // );
+      },
     );
 
     if (picked != null && picked != selectedDateRange) {

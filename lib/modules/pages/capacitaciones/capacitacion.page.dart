@@ -7,6 +7,7 @@ import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.motivo.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.confirmation.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import '../../../config/theme/app_theme.dart';
 import '../../../shared/widgets/dropDown/custom.dropdown.global.dart';
 import '../../../shared/widgets/custom.textfield.dart';
@@ -314,6 +315,13 @@ class CapacitacionPage extends StatelessWidget {
         ),
         const SizedBox(
           width: 20,
+        ),
+        SfDateRangePicker(
+          onSelectionChanged: (dateRangePickerSelectionChangedArgs) {},
+          selectionMode: DateRangePickerSelectionMode.range,
+          initialSelectedRange: PickerDateRange(
+              DateTime.now().subtract(const Duration(days: 4)),
+              DateTime.now().add(const Duration(days: 3))),
         ),
         const Expanded(
           flex: 1,

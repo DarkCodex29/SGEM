@@ -43,6 +43,7 @@ class CapacitacionConsulta {
     required this.capacitacion,
   });
 
+
   factory CapacitacionConsulta.fromJson(Map<String, dynamic> json) =>
       CapacitacionConsulta(
         key: json["Key"],

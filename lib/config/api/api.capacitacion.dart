@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/shared/modules/capacitacion.carga.masiva.validado.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
@@ -137,7 +138,7 @@ class CapacitacionService {
       );
 
       log('Respuesta recibida para capacitacion Paginado: ${response.data}');
-
+  Logger('Api Capacitacion:').info('${response.data}');
       final result = response.data as Map<String, dynamic>;
 
       final items = result['Items'] as List;

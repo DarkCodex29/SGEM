@@ -90,6 +90,7 @@ class CapacitacionController extends GetxController {
         pageSize: pageSize,
         pageNumber: pageNumber,
       );
+      log('Respuesta ${response}');
 
       if (response.success && response.data != null) {
         try {

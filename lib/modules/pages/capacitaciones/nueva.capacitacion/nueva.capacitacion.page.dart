@@ -308,7 +308,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona categoría',
                   noDataHintText: 'No se encontraron categorías',
                   controller: controller.dropdownController,
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -319,7 +320,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona empresa de capacitación',
                   noDataHintText: 'No se encontraron empresas',
                   controller: controller.dropdownController,
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -330,7 +332,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona entrenador',
                   noDataHintText: 'No se encontraron entrenadores',
                   controller: controller.dropdownController,
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
             ],
@@ -349,7 +352,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                         DateFormat('dd/MM/yyyy')
                             .format(controller.fechaInicio!);
                   },
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -359,12 +363,14 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   controller: controller.fechaTerminoController,
                   icon: const Icon(Icons.calendar_today),
                   onIconPressed: () async {
+                    //if (isViewing) return;
                     controller.fechaTermino = await _selectDate(Get.context!);
                     controller.fechaTerminoController.text =
                         DateFormat('dd/MM/yyyy')
                             .format(controller.fechaTermino!);
                   },
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -372,7 +378,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Horas de capacitación",
                   controller: controller.horasController,
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
             ],
@@ -387,7 +394,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona capacitacion',
                   noDataHintText: 'No se encontraron capacitaciones',
                   controller: controller.dropdownController,
-                  isRequired: true,
+                  isReadOnly: isViewing,
+                  isRequired: isViewing ? false : true,
                 ),
               ),
               const SizedBox(width: 20),
@@ -395,6 +403,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Nota teoría",
                   controller: controller.notaTeoriaController,
+                  isReadOnly: isViewing,
                 ),
               ),
               const SizedBox(width: 30),
@@ -402,6 +411,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Nota práctica",
                   controller: controller.notaPracticaController,
+                  isReadOnly: isViewing,
                 ),
               ),
               const SizedBox(width: 10),

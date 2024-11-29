@@ -107,6 +107,33 @@ class NuevaCapacitacionController extends GetxController {
     return null;
   }
 
+  void actualizarOpcionesEmpresaCapacitadora() {
+    final categoriaSeleccionada =
+        dropdownController.getSelectedValue('categoria')?.nombre ?? '';
+
+    if (categoriaSeleccionada == 'Interna') {
+      // Carga la opción fija "Entrenamiento Mina"
+      dropdownController.loadOptions('empresaCapacitacion', () async {
+        return [
+          OptionValue(key: 1, nombre: 'Entrenamiento Mina'),
+        ];
+      });
+      //dropdownController.setReadOnly('empresaCapacitacion', true);
+    } else if (categoriaSeleccionada == 'Externa') {
+      // Filtra las empresas capacitadoras para excluir "Entrenamiento Mina"
+      final todasEmpresas =
+          dropdownController.getOptionsFromKey('empresaCapacitacion');
+      final empresasFiltradas = todasEmpresas
+          .where((empresa) => empresa.nombre != 'Entrenamiento Mina')
+          .toList();
+
+      dropdownController.loadOptions('empresaCapacitacion', () async {
+        return empresasFiltradas;
+      });
+      //dropdownController.setReadOnly('empresaCapacitacion', false);
+    }
+  }
+
   Future<Personal?> loadPersonalInterno(String codigoMcp, bool validate) async {
     if (codigoMcp.isEmpty && validate) {
       _mostrarErroresValidacion(

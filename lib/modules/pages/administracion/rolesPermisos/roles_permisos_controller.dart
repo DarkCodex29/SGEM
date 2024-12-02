@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sgem/config/api/api.roles.permisos.dart';
 import 'package:sgem/config/api/api_rol_permiso.dart';
-import 'package:sgem/modules/pages/administracion/rolesPermisos/roles/roles.dart';
 import 'package:sgem/modules/pages/administracion/rolesPermisos/roles_permisos.dart';
+import 'package:sgem/shared/dialogs/success_dialog.dart';
 import 'package:sgem/shared/models/models.dart';
 import 'package:sgem/shared/utils/Extensions/get_snackbar.dart';
 
@@ -31,6 +29,8 @@ class RolPermisoController extends GetxController {
   final _rolFiltro = Rxn<Rol>();
   Rol? get rolFiltro => _rolFiltro.value;
   final permisosFiltrados = <RolPermiso>[].obs;
+
+  final _permisosFiltrados = <Permiso>[].obs;
 
   final _loading = false.obs;
   bool get loading => _loading.value;
@@ -84,6 +84,7 @@ class RolPermisoController extends GetxController {
       return;
     }
 
+    _permisosFiltrados.value = permisosData.data!;
     final permisosActivos = permisosData.data!.map((p) => p.key);
 
     permisosFiltrados.value = permisos.map((permiso) {
@@ -102,5 +103,37 @@ class RolPermisoController extends GetxController {
     if ((await PermisoDialog(permiso: permiso).show()) ?? false) {
       await _getPermisos();
     }
+  }
+
+  /// Send the changes difference to the server
+  Future<void> saveRolPermisos() async {
+    final rol = rolFiltro;
+    if (rol == null) {
+      Get.errorSnackbar('Debe seleccionar un rol');
+      return;
+    }
+
+    final oldActivePermisos = _permisosFiltrados.map((e) => e.key).toSet();
+    final newActivePermisos =
+        permisosFiltrados.where((e) => e.$2).map((e) => e.$1.key).toSet();
+
+    final toAdd = newActivePermisos.difference(oldActivePermisos);
+    final toRemove = oldActivePermisos.difference(newActivePermisos);
+
+    final response = await _api.updateRolPermisos(
+      rol: rol.key,
+      toAdd: toAdd.toList(),
+      toRemove: toRemove.toList(),
+    );
+
+    if (!response.success) {
+      Get.errorSnackbar(response.message ?? 'Error al actualizar permisos');
+      return;
+    }
+
+    await const SuccessDialog().show();
+    Get.back(result: true);
+
+    await changeRolFiltro(rol);
   }
 }

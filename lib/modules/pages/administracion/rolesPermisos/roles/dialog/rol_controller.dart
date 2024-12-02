@@ -52,6 +52,7 @@ class RolController extends GetxController {
       return;
     }
 
+    await const SuccessDialog().show();
     Get.back(result: true);
   }
 
@@ -82,6 +83,7 @@ class RolController extends GetxController {
       return;
     }
 
+    await const SuccessDialog().show();
     Get.back(result: true);
   }
 }

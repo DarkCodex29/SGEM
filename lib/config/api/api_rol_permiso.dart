@@ -164,4 +164,33 @@ class RolPermisoService {
       );
     }
   }
+
+  Future<ResponseHandler<bool>> updateRolPermisos({
+    required int rol,
+    required List<int> toAdd,
+    required List<int> toRemove,
+  }) async {
+    try {
+      Map<String, dynamic> data = {
+        'Rol': rol,
+        'PermisosActivos': toAdd,
+        'PermisosInactivos': toRemove,
+      };
+
+      Logger('RolPermisoService')
+          .info('Actualizando permisos ${jsonEncode(data)}');
+      await _dio.put<dynamic>(
+        '/ActualizarRolPermiso',
+        data: data,
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al actualizar permisos',
+      );
+    }
+  }
 }

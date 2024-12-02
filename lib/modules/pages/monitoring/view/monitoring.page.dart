@@ -79,7 +79,7 @@ class _MonitoringPageState extends State<MonitoringPage> {
           side: const BorderSide(color: Colors.white),
         ),
         title: const Text(
-          "Busqueda de Monitoreos",
+          "Búsqueda de Monitoreos",
           style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

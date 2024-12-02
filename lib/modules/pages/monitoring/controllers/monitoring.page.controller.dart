@@ -5,6 +5,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/api.entrenamiento.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/config/api/api.modulo.maestro.dart';
@@ -101,6 +102,8 @@ class MonitoringSearchController extends GetxController {
     super.onInit();
   }
 
+  static Logger _logger = Logger('MonitoringSearchController');
+
   clearFilter() {
     codigoMCPController = TextEditingController(text: "");
     documentoIdentidadController = TextEditingController(text: "");
@@ -154,11 +157,12 @@ class MonitoringSearchController extends GetxController {
         currentPage.value = result['PageNumber'] as int;
         totalPages.value = result['TotalPages'] as int;
         totalRecords.value = result['TotalRecords'] as int;
+        _logger.severe('Resultados de la búsqueda: ${monitoringAll.length}');
         rowsPerPage.value = result['PageSize'] as int;
         isExpanded.value = false;
       }
-    } catch (e) {
-      log('Error en la búsqueda2: $e');
+    } catch (e, stackTrace) {
+      _logger.severe('Error en la búsqueda2: $e', e, stackTrace);
     }
   }
 
@@ -169,8 +173,9 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         entrenadores.assignAll(response.data!);
       }
-    } catch (e) {
-      log('Error cargando la data de entrenadores : $e');
+    } catch (e, stackTrace) {
+      _logger.severe(
+          'Error cargando la data de entrenadores : $e', e, stackTrace);
     }
   }
 
@@ -182,12 +187,17 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         estadoEntrenamientoOpciones.assignAll(response.data!);
 
-        log('Estado entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones');
+        _logger.severe(
+          'Estado entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones',
+        );
       } else {
-        log('Error: ${response.message}');
+        _logger.severe('Error: ${response.message}');
       }
-    } catch (e) {
-      log('Error cargando la data de estado entrenamiento maestro: $e');
+    } catch (e, stackTrace) {
+      _logger.severe(
+          'Error cargando la data de estado entrenamiento maestro: $e',
+          e,
+          stackTrace);
     }
   }
 
@@ -199,12 +209,19 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         condicionOpciones.assignAll(response.data!);
 
-        log('Condicion de entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones');
+        _logger.severe(
+          'Condicion de entrenamiento opciones cargadas correctamente: $estadoEntrenamientoOpciones',
+        );
       } else {
-        log('Error: ${response.message}');
+        _logger.severe(
+          'Error: ${response.message}',
+        );
       }
-    } catch (e) {
-      log('Error cargando la data de condicion de entrenamiento maestro: $e');
+    } catch (e, stackTrace) {
+      _logger.severe(
+          'Error cargando la data de condicion de entrenamiento maestro: $e',
+          e,
+          stackTrace);
     }
   }
 
@@ -215,12 +232,17 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         moduloOpciones.assignAll(response.data!);
 
-        log('Modulos maestro opciones cargadas correctamente: $guardiaOpciones');
+        _logger.severe(
+          'Modulos maestro opciones cargadas correctamente: $guardiaOpciones',
+        );
       } else {
-        log('Error: ${response.message}');
+        _logger.severe(
+          'Error: ${response.message}',
+        );
       }
-    } catch (e) {
-      log('Error cargando la data de Modulos maestro: $e');
+    } catch (e, stackTrace) {
+      _logger.severe(
+          'Error cargando la data de Modulos maestro: $e', e, stackTrace);
     }
   }
 
@@ -232,12 +254,15 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         equipoOpciones.assignAll(response.data!);
 
-        log('Equipos opciones cargadas correctamente: $equipoOpciones');
+        _logger.severe(
+          'Equipos opciones cargadas correctamente: $equipoOpciones',
+        );
       } else {
-        log('Error: ${response.message}');
+        _logger.severe('Error: ${response.message}');
       }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
+    } catch (e, stackTrace) {
+      _logger.severe(
+          'Error cargando la data de guardia maestro: $e', e, stackTrace);
     }
   }
 
@@ -249,12 +274,15 @@ class MonitoringSearchController extends GetxController {
       if (response.success && response.data != null) {
         guardiaOpciones.assignAll(response.data!);
 
-        log('Guardia opciones cargadas correctamente: $guardiaOpciones');
+        _logger.info(
+          'Guardia opciones cargadas correctamente: $guardiaOpciones',
+        );
       } else {
-        log('Error: ${response.message}');
+        _logger.severe('Error: ${response.message}');
       }
-    } catch (e) {
-      log('Error cargando la data de guardia maestro: $e');
+    } catch (e, stackTrace) {
+      _logger.severe(
+          'Error cargando la data de guardia maestro: $e', e, stackTrace);
     }
   }
 

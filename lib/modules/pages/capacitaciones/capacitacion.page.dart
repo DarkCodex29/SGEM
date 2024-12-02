@@ -263,7 +263,8 @@ class CapacitacionPage extends StatelessWidget {
             noDataHintText: 'No se encontraron categorías',
             controller: controller.dropdownController,
             onChanged: (value) {
-              controller.dropdownController.selectValue('categoria', value);
+              //controller.dropdownController.selectValue('categoria', value);
+              controller.actualizarOpcionesEmpresaCapacitadora();
             },
           ),
         ),
@@ -278,8 +279,13 @@ class CapacitacionPage extends StatelessWidget {
             noDataHintText: 'No se encontraron empresas',
             controller: controller.dropdownController,
             onChanged: (value) {
-              controller.dropdownController
-                  .selectValue('empresaCapacitacion', value);
+              //controller.dropdownController
+              //  .selectValue('empresaCapacitacion', value);
+
+              controller.dropdownController.selectValue(
+                'empresaCapacitacion',
+                value,
+              );
             },
           ),
         ),
@@ -315,7 +321,7 @@ class CapacitacionPage extends StatelessWidget {
             label: 'Rango de Fecha Inicio',
             controller: controller.rangoFechaController,
             icon: const Icon(Icons.calendar_month),
-            onIconPressed: ()async {
+            onIconPressed: () async {
               await controller.seleccionarFecha(context);
             },
           ),

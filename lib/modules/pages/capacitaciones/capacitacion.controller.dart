@@ -7,10 +7,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
+import 'package:sgem/config/api/api.maestro.detail.dart';
 import 'package:sgem/modules/pages/capacitaciones/capacitacion.enum.dart';
 import 'package:sgem/shared/modules/capacitacion.consulta.dart';
 import 'package:sgem/shared/modules/entrenamiento.modulo.dart';
 import 'package:sgem/shared/modules/option.value.dart';
+import 'package:sgem/shared/widgets/dropDown/dropdown.initializer.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 import '../../../shared/dialogs/rango.fecha.dialog.dart';
@@ -43,6 +45,11 @@ class CapacitacionController extends GetxController {
 
   final GenericDropdownController dropdownController =
       Get.find<GenericDropdownController>();
+  final DropdownDataInitializer dataInitializer =
+      Get.put(DropdownDataInitializer(
+    dropdownController: Get.find<GenericDropdownController>(),
+    maestroDetalleService: MaestroDetalleService(),
+  ));
 
   Rxn<CapacitacionConsulta> selectedCapacitacion = Rxn<CapacitacionConsulta>();
 
@@ -122,6 +129,39 @@ class CapacitacionController extends GetxController {
     } finally {
       isLoadingCapacitacionResultados.value = false;
     }
+  }
+
+  void actualizarOpcionesEmpresaCapacitadora() async {
+    dropdownController.resetSelection('empresaCapacitacion');
+    dropdownController.optionsMap['empresaCapacitacion']?.clear();
+
+    final categoriaSeleccionada =
+        dropdownController.getSelectedValue('categoria')?.nombre ?? '';
+
+    if (categoriaSeleccionada == 'Interna') {
+      await dropdownController.loadOptions(
+        'empresaCapacitacion',
+        () async {
+          return [OptionValue(key: 24, nombre: 'Chinalco')];
+        },
+      );
+    } else if (categoriaSeleccionada == 'Externa') {
+      await dataInitializer.loadEmpresaCapacitacion(filtrarExterna: true);
+    }
+    sincronizarSeleccion('empresaCapacitacion');
+  }
+
+  void sincronizarSeleccion(String key) {
+    final opciones = dropdownController.getOptionsFromKey(key);
+    final seleccionada = dropdownController.getSelectedValue(key);
+    log('Sincronizando selección para $seleccionada');
+
+    if (seleccionada != null && !opciones.contains(seleccionada)) {
+      dropdownController.resetSelection(key);
+    }
+
+    log('Opciones actuales para $key: ${opciones.map((e) => e.nombre)}');
+    log('Selección actual para $key: ${seleccionada?.nombre}');
   }
 
   Future<void> downloadExcel() async {
@@ -334,13 +374,13 @@ class CapacitacionController extends GetxController {
   Future<void> seleccionarFecha(BuildContext context) async {
     DateTimeRange? rangoFechaSeleccionado;
 
-    if (fechaInicio != null && fechaTermino != null){
+    if (fechaInicio != null && fechaTermino != null) {
       rangoFechaSeleccionado = DateTimeRange(
         start: fechaInicio!,
         end: fechaTermino!,
       );
     }
-    var seleccionado = await mostrarRangoFecha(context,rangoFechaSeleccionado);
+    var seleccionado = await mostrarRangoFecha(context, rangoFechaSeleccionado);
     if (seleccionado != null) {
       rangoFechaController.text =
           '${DateFormat('dd/MM/yyyy').format(seleccionado.start)} - ${DateFormat('dd/MM/yyyy').format(seleccionado.end)}';

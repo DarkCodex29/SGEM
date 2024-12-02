@@ -1,4 +1,5 @@
 import 'package:sgem/shared/modules/maestro.dart';
+import 'package:sgem/shared/modules/option.value.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.global.dart';
 
 class MaestroDetalle implements DropdownElement {
@@ -12,6 +13,7 @@ class MaestroDetalle implements DropdownElement {
     this.usuarioModifica,
     this.fechaModifica,
     this.descripcion,
+    this.detalleRelacion,
   });
 
   factory MaestroDetalle.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,9 @@ class MaestroDetalle implements DropdownElement {
           ? MaestroCompleto.parseDate((json['FechaModifica'] as String?) ?? '')
           : null,
       activo: (json['Activo'] as String?) ?? 'N',
+      detalleRelacion: json['DetalleRelacion'] != null
+          ? OptionValue.fromJson(json['DetalleRelacion'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -42,6 +47,8 @@ class MaestroDetalle implements DropdownElement {
   String? usuarioModifica;
   DateTime? fechaModifica;
   String? activo;
+  OptionValue? detalleRelacion;
+
 
   @override
   String get value => valor ?? 'none';
@@ -60,6 +67,7 @@ class MaestroDetalle implements DropdownElement {
       'UsuarioModifica': usuarioModifica,
       'FechaModifica': MaestroCompleto.toJsonDateNullable(fechaModifica),
       'Activo': activo,
+      'DetalleRelacion': detalleRelacion?.toJson(),
     };
   }
 }

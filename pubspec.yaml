@@ -54,7 +54,7 @@ dependencies:
   pdfx: 2.6.0
   permission_handler: ^11.3.1
   printing: ^5.9.0
-  syncfusion_flutter_datepicker: ^27.2.4
+  syncfusion_flutter_datepicker: 24.2.5
 
 dev_dependencies:
   build_runner: ^2.4.9

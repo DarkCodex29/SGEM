@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/administracion/administracion.dart';
+import 'package:sgem/modules/pages/administracion/rolesPermisos/roles_permisos.dart';
+import 'package:sgem/modules/pages/administracion/usuarios/usuarios.dart';
 
 class AdministracionPage extends StatelessWidget {
   const AdministracionPage({super.key});
@@ -34,7 +36,9 @@ class AdministracionPage extends StatelessWidget {
           () => switch (controller.screenPage.value) {
             AdministracionScreen.none => const AdministracionView(),
             AdministracionScreen.maestro => const MaestroPage(),
-            AdministracionScreen.modulos => const ModuloView()
+            AdministracionScreen.modulos => const ModuloView(),
+            AdministracionScreen.rolesPermisos => const RolPermisoPage(),
+            AdministracionScreen.usuarios => const UsuariosPage(),
           },
         ),
       ),
@@ -81,10 +85,12 @@ class AdministracionView extends StatelessWidget {
               _Button(
                 icon: Icons.security,
                 label: 'Roles y Permisos',
+                 toPage: AdministracionScreen.rolesPermisos,
               ),
               _Button(
                 icon: Icons.person,
                 label: 'Usuarios',
+                toPage: AdministracionScreen.usuarios,
               ),
               _Button(
                 icon: Icons.history,

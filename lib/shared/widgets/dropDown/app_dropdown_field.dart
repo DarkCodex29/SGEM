@@ -16,6 +16,7 @@ class AppDropdownField extends StatelessWidget {
     this.disabledHint,
     this.initialValue,
     this.onChanged,
+    this.paddingLeft,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class AppDropdownField extends StatelessWidget {
   final String label;
   final String? disabledHint;
   final bool readOnly;
+  final double? paddingLeft;
   final void Function(int?)? onChanged;
 
   final int? initialValue;
@@ -111,9 +113,9 @@ class AppDropdownField extends StatelessWidget {
             ),
           ),
           if (isRequired)
-            const Padding(
-              padding: EdgeInsets.only(left: 6, bottom: 16),
-              child: Text(
+            Padding(
+              padding: EdgeInsets.only(left: paddingLeft ?? 6, bottom: 16),
+              child: const Text(
                 '*',
                 style: TextStyle(
                   color: Colors.red,

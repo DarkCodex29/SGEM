@@ -89,6 +89,8 @@ class MonitoringSearchController extends GetxController {
   var selectedEstadoEntrenamientoKey = RxnInt();
   var selectedCondicionKey = RxnInt();
 
+  final formKey = GlobalKey<FormState>();
+
   @override
   void onInit() {
     cargarModulo();
@@ -99,6 +101,7 @@ class MonitoringSearchController extends GetxController {
     cargarEntrenadores();
     searchMonitoring(
         pageNumber: currentPage.value, pageSize: rowsPerPage.value);
+
     super.onInit();
   }
 
@@ -121,7 +124,10 @@ class MonitoringSearchController extends GetxController {
     selectedCondicionKey.value = null;
   }
 
-  Future<void> searchMonitoring({int pageNumber = 1, int pageSize = 10}) async {
+  Future<void> searchMonitoring({
+    int pageNumber = 1,
+    int pageSize = 10,
+  }) async {
     String? codigoMcp =
         codigoMCPController.text.isEmpty ? null : codigoMCPController.text;
     String? apellidoMaterno = apellidosMaternoController.text.isEmpty
@@ -132,6 +138,7 @@ class MonitoringSearchController extends GetxController {
         : apellidosPaternoController.text;
     String? nombres =
         nombresController.text.isEmpty ? null : nombresController.text;
+    _logger.info('Buscando monitoreos con los siguientes parámetros:');
 
     try {
       var response = await monitoringService.queryMonitoringPaginated(

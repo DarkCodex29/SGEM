@@ -2,12 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/modules/pages/monitoring/controllers/monitoring.page.controller.dart';
 import 'package:sgem/modules/pages/monitoring/view/create.monitoring.dart';
 import 'package:sgem/modules/pages/monitoring/widget/detail.table.monitoring.dart';
 import 'package:sgem/shared/modules/maestro.detail.dart';
 import 'package:sgem/shared/modules/personal.dart';
+import 'package:sgem/shared/widgets/dropDown/app_dropdown_field.dart';
 import 'package:sgem/shared/widgets/dropDown/custom.dropdown.dart';
+import 'package:sgem/shared/widgets/dropDown/simple_app_dropdown.dart';
 
 import '../../../../config/theme/app_theme.dart';
 import '../../../../shared/widgets/custom.textfield.dart';
@@ -30,11 +33,11 @@ class _MonitoringPageState extends State<MonitoringPage> {
           case MonitoringSearchScreen.none:
             return _buildSearchPage(controller, context);
           case MonitoringSearchScreen.newMonitoring:
-            return CreateMonioringView(controller: controller);
+            return CreateMonitoringView(controller: controller);
           case MonitoringSearchScreen.viewMonitoring:
-            return CreateMonioringView(controller: controller, isViewing: true);
+            return CreateMonitoringView(controller: controller, isViewing: true);
           case MonitoringSearchScreen.editMonitoring:
-            return CreateMonioringView(controller: controller, isEditing: true);
+            return CreateMonitoringView(controller: controller, isEditing: true);
           case MonitoringSearchScreen.actualizacionMasiva:
             return Container();
           case MonitoringSearchScreen.trainingForm:
@@ -72,6 +75,32 @@ class _MonitoringPageState extends State<MonitoringPage> {
 
   Widget _buildFormSection(MonitoringSearchController controller,
       bool isSmallScreen, BuildContext context) {
+    final guardDropdown = _Dropdown(
+      options: controller.guardiaOpciones,
+      value: controller.selectedGuardiaKey,
+      label: "Guardia",
+    );
+
+    final estadoEntrenamientoDropdown = _Dropdown(
+      options: controller.estadoEntrenamientoOpciones,
+      value: controller.selectedEstadoEntrenamientoKey,
+      label: "Estado de Entrenamiento",
+    );
+
+    final equipoDropdown = _Dropdown(
+      options: controller.equipoOpciones,
+      value: controller.selectedEquipoKey,
+      label: "Equipo",
+    );
+
+    final entrenadorDropdown = _buildDropdownEntrenadorResponsable(controller);
+
+    final condicionDropdown = _Dropdown(
+      options: controller.condicionOpciones,
+      value: controller.selectedCondicionKey,
+      label: "Condición",
+    );
+
     return Obx(() {
       return ExpansionTile(
         shape: RoundedRectangleBorder(
@@ -98,297 +127,211 @@ class _MonitoringPageState extends State<MonitoringPage> {
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey.shade300),
             ),
-            child: Column(
-              children: [
-                if (isSmallScreen)
-                  Column(children: [
-                    CustomTextField(
-                      label: "Código MCP",
-                      controller: controller.codigoMCPController,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      label: "Nombres personal",
-                      controller: controller.nombresController,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      label: "Apellido Paterno",
-                      controller: controller.apellidosPaternoController,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      label: "Apellido Materno",
-                      controller: controller.apellidosMaternoController,
-                    ),
-                    const SizedBox(height: 10),
-                    _buildDropdownGuardia(controller),
-                    const SizedBox(height: 10),
-                    _buildDropdownEstadoEntrenamiento(controller),
-                    const SizedBox(height: 10),
-                    _buildDropdownEquipo(controller),
-                    const SizedBox(height: 10),
-                    _buildDropdownEntrenadorResponsable(controller),
-                    const SizedBox(height: 10),
-                    _buildDropdownCondicionMonitoreo(controller),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      label: 'Rango de fecha',
-                      controller: controller.rangoFechaController,
-                      icon: const Icon(Icons.calendar_month),
-                      onIconPressed: () {
-                        _selectDateRange(context, controller);
-                      },
+            child: Form(
+              child: Column(
+                children: [
+                  if (isSmallScreen)
+                    Column(
+                      children: [
+                        CustomTextField(
+                          label: "Código MCP",
+                          controller: controller.codigoMCPController,
+                          validator: (value) {
+                            if ((value?.length ?? 0) > 9) {
+                              return 'Código MCP muy largo';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: "Nombres personal",
+                          controller: controller.nombresController,
+                          validator: (value) {
+                            if ((value?.length ?? 0) > 50) {
+                              return 'Nombre muy largo';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: "Apellido Paterno",
+                          controller: controller.apellidosPaternoController,
+                          validator: (value) {
+                            if ((value?.length ?? 0) > 50) {
+                              return 'Nombre muy largo';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: "Apellido Materno",
+                          controller: controller.apellidosMaternoController,
+                        ),
+                        const SizedBox(height: 10),
+                        guardDropdown,
+                        const SizedBox(height: 10),
+                        estadoEntrenamientoDropdown,
+                        const SizedBox(height: 10),
+                        equipoDropdown,
+                        const SizedBox(height: 10),
+                        entrenadorDropdown,
+                        const SizedBox(height: 10),
+                        condicionDropdown,
+                        const SizedBox(height: 10),
+                        CustomTextField(
+                          label: 'Rango de fecha',
+                          controller: controller.rangoFechaController,
+                          icon: const Icon(Icons.calendar_month),
+                          onIconPressed: () {
+                            _selectDateRange(context, controller);
+                          },
+                        )
+                      ],
                     )
-                  ])
-                else
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Código MCP",
-                              controller: controller.codigoMCPController,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Apellido Paterno",
-                              controller: controller.apellidosPaternoController,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Apellido Materno",
-                              controller: controller.apellidosMaternoController,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: CustomTextField(
-                              label: "Nombres",
-                              controller: controller.nombresController,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(child: _buildDropdownGuardia(controller)),
-                          const SizedBox(width: 10),
-                          Expanded(
-                              child: _buildDropdownEstadoEntrenamiento(
-                                  controller)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(child: _buildDropdownEquipo(controller)),
-                          const SizedBox(width: 10),
-                          Expanded(
-                              child: _buildDropdownEntrenadorResponsable(
-                                  controller)),
-                          const SizedBox(width: 10),
-                          Expanded(
-                              child:
-                                  _buildDropdownCondicionMonitoreo(controller)),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
+                  else
+                    Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
                               child: CustomTextField(
-                            label: 'Rango de fecha',
-                            controller: controller.rangoFechaController,
-                            icon: const Icon(Icons.calendar_month),
-                            onIconPressed: () {
-                              _selectDateRange(context, controller);
-                            },
-                          )),
-                          const SizedBox(width: 10),
-                          const Expanded(
-                              child: SizedBox(
-                            width: double.infinity,
-                          )),
-                          const SizedBox(width: 10),
-                          const Expanded(
-                              child: SizedBox(
-                            width: double.infinity,
-                          ))
-                        ],
+                                label: "Código MCP",
+                                controller: controller.codigoMCPController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Apellido Paterno",
+                                controller:
+                                    controller.apellidosPaternoController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Apellido Materno",
+                                controller:
+                                    controller.apellidosMaternoController,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: CustomTextField(
+                                label: "Nombres",
+                                controller: controller.nombresController,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(child: guardDropdown),
+                            const SizedBox(width: 10),
+                            Expanded(child: estadoEntrenamientoDropdown),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(child: equipoDropdown),
+                            const SizedBox(width: 10),
+                            Expanded(child: entrenadorDropdown),
+                            const SizedBox(width: 10),
+                            Expanded(child: condicionDropdown),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: CustomTextField(
+                              label: 'Rango de fecha',
+                              controller: controller.rangoFechaController,
+                              icon: const Icon(Icons.calendar_month),
+                              onIconPressed: () {
+                                _selectDateRange(context, controller);
+                              },
+                            )),
+                            const SizedBox(width: 10),
+                            const Expanded(
+                                child: SizedBox(
+                              width: double.infinity,
+                            )),
+                            const SizedBox(width: 10),
+                            const Expanded(
+                                child: SizedBox(
+                              width: double.infinity,
+                            ))
+                          ],
+                        ),
+                      ],
+                    ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          controller.clearFilter();
+                          controller.searchMonitoring();
+                          setState(() {});
+                        },
+                        icon: const Icon(
+                          Icons.cleaning_services,
+                          size: 18,
+                          color: AppTheme.primaryText,
+                        ),
+                        label: const Text(
+                          "Limpiar",
+                          style: TextStyle(
+                              fontSize: 16, color: AppTheme.primaryText),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 49, vertical: 18),
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: const BorderSide(
+                                color: AppTheme.alternateColor),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          controller.isExpanded.value = false;
+                          controller.searchMonitoring();
+                        },
+                        icon: const Icon(
+                          Icons.search,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                        label: const Text(
+                          "Buscar",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 49, vertical: 18),
+                          backgroundColor: AppTheme.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 2,
+                        ),
                       ),
                     ],
                   ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        controller.clearFilter();
-                        controller.searchMonitoring();
-                        setState(() {});
-                      },
-                      icon: const Icon(
-                        Icons.cleaning_services,
-                        size: 18,
-                        color: AppTheme.primaryText,
-                      ),
-                      label: const Text(
-                        "Limpiar",
-                        style: TextStyle(
-                            fontSize: 16, color: AppTheme.primaryText),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 49, vertical: 18),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side:
-                              const BorderSide(color: AppTheme.alternateColor),
-                        ),
-                        elevation: 0,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        controller.isExpanded.value = false;
-                        controller.searchMonitoring();
-                      },
-                      icon: const Icon(
-                        Icons.search,
-                        size: 18,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Buscar",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 49, vertical: 18),
-                        backgroundColor: AppTheme.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 2,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           )
         ],
-      );
-    });
-  }
-
-  Widget _buildDropdownEstadoEntrenamiento(
-      MonitoringSearchController controller) {
-    return Obx(() {
-      if (controller.estadoEntrenamientoOpciones.isEmpty) {
-        return const CupertinoActivityIndicator(
-          radius: 10,
-          color: Colors.grey,
-        );
-      }
-      String? selectValue;
-      if (controller.estadoEntrenamientoOpciones.isNotEmpty) {
-        final selectOptionValue = controller.estadoEntrenamientoOpciones
-            .where((option) =>
-                option.key == controller.selectedEstadoEntrenamientoKey.value)
-            .toList();
-        if (selectOptionValue.isNotEmpty) {
-          selectValue = selectOptionValue.first.valor;
-        }
-      }
-
-      return CustomDropdown(
-        hintText: 'Selecciona Estado de Entrenamiento',
-        labelName: "Estado del Entrenamiento",
-        options: controller.estadoEntrenamientoOpciones
-            .map((option) => option.valor ?? "")
-            .toList(),
-        selectedValue: controller.selectedEstadoEntrenamientoKey.value != null
-            ? selectValue
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption =
-              controller.estadoEntrenamientoOpciones.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedEstadoEntrenamientoKey.value = selectedOption.key;
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownGuardia(MonitoringSearchController controller) {
-    return Obx(() {
-      if (controller.guardiaOpciones.isEmpty) {
-        return const CupertinoActivityIndicator(
-          radius: 10,
-          color: Colors.grey,
-        );
-      }
-      List<MaestroDetalle> options = controller.guardiaOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona Guardia',
-        labelName: "Guardia",
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedGuardiaKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedGuardiaKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedGuardiaKey.value = selectedOption.key;
-        },
-      );
-    });
-  }
-
-  Widget _buildDropdownEquipo(MonitoringSearchController controller) {
-    return Obx(() {
-      if (controller.equipoOpciones.isEmpty) {
-        return const CupertinoActivityIndicator(
-          radius: 10,
-          color: Colors.grey,
-        );
-      }
-      List<MaestroDetalle> options = controller.equipoOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona Equipo',
-        labelName: "Equipo",
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedEquipoKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedEquipoKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedEquipoKey.value = selectedOption.key;
-        },
       );
     });
   }
@@ -403,67 +346,25 @@ class _MonitoringPageState extends State<MonitoringPage> {
         );
       }
       List<Personal> options = controller.entrenadores;
-      return CustomDropdown(
-        hintText: 'Selecciona Entrenador',
-        labelName: "Entrenador",
-        options: options.map((option) => option.nombreCompleto!).toList(),
-        selectedValue: controller.selectedEntrenadorKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.inPersonalOrigen ==
-                    controller.selectedEntrenadorKey.value)
-                .nombreCompleto
-                .toString()
-            : null,
-        isSearchable: false,
+      return SimpleAppDropdown(
+        hint: 'Selecciona Entrenador',
+        label: 'Entrenador',
+        hasTodos: true,
+        options: options
+            .map((option) => (option.key!, option.nombreCompleto!))
+            .toList(),
+        initialValue: controller.selectedEntrenadorKey.value,
         isRequired: false,
         onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.nombreCompleto == value,
-          );
-          controller.selectedEntrenadorKey.value =
-              selectedOption.inPersonalOrigen;
+          controller.selectedEntrenadorKey.value = value;
         },
       );
     });
   }
-
-  Widget _buildDropdownCondicionMonitoreo(
-      MonitoringSearchController controller) {
-    return Obx(() {
-      if (controller.condicionOpciones.isEmpty) {
-        return const CupertinoActivityIndicator(
-          radius: 10,
-          color: Colors.grey,
-        );
-      }
-      List<MaestroDetalle> options = controller.condicionOpciones;
-      return CustomDropdown(
-        hintText: 'Selecciona condición',
-        labelName: "Condición",
-        options: options.map((option) => option.valor!).toList(),
-        selectedValue: controller.selectedCondicionKey.value != null
-            ? options
-                .firstWhere((option) =>
-                    option.key == controller.selectedCondicionKey.value)
-                .valor
-            : null,
-        isSearchable: false,
-        isRequired: false,
-        onChanged: (value) {
-          final selectedOption = options.firstWhere(
-            (option) => option.valor == value,
-          );
-          controller.selectedCondicionKey.value = selectedOption.key;
-        },
-      );
-    });
-  }
-
-  final DateTime today = DateTime.now();
 
   Future<void> _selectDateRange(
       BuildContext context, MonitoringSearchController controller) async {
+    final DateTime today = DateTime.now();
     DateTimeRange selectedDateRange = DateTimeRange(
       start: today.subtract(const Duration(days: 30)),
       end: today,
@@ -491,5 +392,43 @@ class _MonitoringPageState extends State<MonitoringPage> {
       controller.fechaInicio = picked.start;
       controller.fechaTermino = picked.end;
     }
+  }
+}
+
+class _Dropdown extends StatelessWidget {
+  const _Dropdown({
+    required this.options,
+    required this.value,
+    required this.label,
+  });
+
+  final RxList<MaestroDetalle> options;
+  final RxnInt value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (options.isEmpty) {
+        return const CupertinoActivityIndicator(
+          radius: 10,
+          color: Colors.grey,
+        );
+      }
+
+      return SimpleAppDropdown(
+        label: label,
+        hint: 'Selecciona $label',
+        options: options.map((option) => (option.key!, option.valor!)).toList(),
+        initialValue: value.value,
+        isRequired: false,
+        hasTodos: true,
+        onChanged: (value) {
+          Logger('MonitoringPage').info('[$label] value: $value');
+          this.value.value = value;
+          Logger('MonitoringPage').info('[$label] value: ${this.value.value}');
+        },
+      );
+    });
   }
 }

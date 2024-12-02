@@ -8,8 +8,8 @@ import 'package:sgem/modules/pages/monitoring/widget/form.monitoring.dart';
 import 'package:sgem/modules/pages/monitoring/widget/info.person.monitoring.dart';
 import 'package:sgem/shared/widgets/custom.textfield.dart';
 
-class CreateMonioringView extends StatefulWidget {
-  const CreateMonioringView({
+class CreateMonitoringView extends StatefulWidget {
+  const CreateMonitoringView({
     super.key,
     required this.controller,
     this.isEditing = false,
@@ -20,10 +20,10 @@ class CreateMonioringView extends StatefulWidget {
   final bool isViewing;
 
   @override
-  State<CreateMonioringView> createState() => _CreateMonioringViewState();
+  State<CreateMonitoringView> createState() => _CreateMonitoringViewState();
 }
 
-class _CreateMonioringViewState extends State<CreateMonioringView> {
+class _CreateMonitoringViewState extends State<CreateMonitoringView> {
   @override
   Widget build(BuildContext context) {
     final CreateMonitoringController createMonitoringController =

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/response.handler.dart';
 import 'package:sgem/config/constants/config.dart';
 import 'package:sgem/shared/modules/monitoring.dart';
@@ -46,10 +47,12 @@ class MonitoringService {
     };
 
     try {
+      queryParams.removeWhere((key, value) => value == null);
+      Logger('MonitoringService').info('Query params: $queryParams');
+
       final response = await dio.get(
         url,
-        queryParameters: queryParams
-          ..removeWhere((key, value) => value == null),
+        queryParameters: queryParams,
         options: Options(
           followRedirects: false,
         ),

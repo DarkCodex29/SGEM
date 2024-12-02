@@ -2,17 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 
 class CustomTextField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  final bool isPassword;
-  final TextInputType keyboardType;
-  final Widget? icon;
-  final bool isRequired;
-  final Function()? onIconPressed;
-  final bool isReadOnly;
-  final Function(String)? onChanged;
-  final int maxLines;
-
   const CustomTextField({
     super.key,
     required this.label,
@@ -25,7 +14,22 @@ class CustomTextField extends StatelessWidget {
     this.isReadOnly = false,
     this.onChanged,
     this.maxLines = 1,
+    this.validator,
   });
+
+  final String label;
+  final TextEditingController controller;
+  final bool isPassword;
+  final TextInputType keyboardType;
+  final Widget? icon;
+  final bool isRequired;
+  final Function()? onIconPressed;
+  final bool isReadOnly;
+  final Function(String)? onChanged;
+  final int maxLines;
+
+  final String? Function(String?)? validator;
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +42,19 @@ class CustomTextField extends StatelessWidget {
             child: ValueListenableBuilder<TextEditingValue>(
               valueListenable: controller,
               builder: (context, value, child) {
-                return TextField(
+                return TextFormField(
                   controller: controller,
                   obscureText: isPassword,
                   keyboardType: keyboardType,
                   readOnly: isReadOnly,
                   onChanged: onChanged,
                   maxLines: maxLines,
+                  validator: (v) {
+                    if (isRequired && v!.isEmpty) {
+                      return 'Campo obligatorio';
+                    }
+                    return validator?.call(v);
+                  },
                   decoration: InputDecoration(
                     // hintText: value.text.isEmpty ? label : null,
                     // labelText: value.text.isNotEmpty ? label : null,

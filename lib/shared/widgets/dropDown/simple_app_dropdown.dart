@@ -13,11 +13,13 @@ class SimpleAppDropdown extends StatelessWidget {
     this.disabledHint,
     this.initialValue,
     this.onChanged,
+    this.hasTodos = false,
     super.key,
   });
 
   final List<_OptionValue>? options;
   final bool isRequired;
+  final bool hasTodos;
   final String? hint;
   final String label;
   final String? disabledHint;
@@ -35,6 +37,7 @@ class SimpleAppDropdown extends StatelessWidget {
             child: _Dropdown(
               options: options!,
               value: initialValue,
+              hasTodos: hasTodos,
               label: label,
               readOnly: readOnly,
               hint: hint,
@@ -67,6 +70,7 @@ class _Dropdown extends StatelessWidget {
     required this.options,
     required this.value,
     required this.label,
+    required this.hasTodos,
     this.readOnly = false,
     this.hint,
     this.disabledHint,
@@ -77,15 +81,41 @@ class _Dropdown extends StatelessWidget {
   final int? value;
   final void Function(int?)? onChanged;
 
+  final bool hasTodos;
+
   final String? hint;
   final String label;
   final String? disabledHint;
   final bool readOnly;
 
+  static final _todos = DropdownMenuItem(
+    value: -1,
+    child: const Text('Todos'),
+  );
+
   @override
   Widget build(BuildContext context) {
+    final newOptions = options
+        .map(
+          (option) => DropdownMenuItem(
+            value: option.$1,
+            child: Text(option.$2),
+          ),
+        )
+        .toList();
+
+    if (hasTodos) {
+      newOptions.insert(0, _todos);
+    }
+
+    final newOnChanged = readOnly
+        ? null
+        : (hasTodos
+            ? (int? value) => onChanged?.call(value == -1 ? null : value)
+            : this.onChanged);
+
     return DropdownButtonFormField<int>(
-      value: value,
+      value: value ?? (hasTodos ? -1 : null),
       isExpanded: true,
       hint: hint != null
           ? Text(
@@ -115,15 +145,8 @@ class _Dropdown extends StatelessWidget {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
-      onChanged: readOnly ? null : onChanged,
-      items: options
-          .map(
-            (option) => DropdownMenuItem(
-              value: option.$1,
-              child: Text(option.$2),
-            ),
-          )
-          .toList(),
+      onChanged: readOnly ? null : newOnChanged,
+      items: newOptions,
       disabledHint: disabledHint != null
           ? Text(
               // initialValue?.nombre ?? hintText,

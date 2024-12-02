@@ -94,7 +94,8 @@ class DeleteReasonWidget extends StatelessWidget {
                       controller: motivoController,
                       maxLines: 3,
                       decoration: InputDecoration(
-                        hintText: 'Motivo de eliminación (opcional)',
+                        hintText: 'Motivo de eliminación' +
+                            (isMotivoRequired ? '' : ' (opcional)'),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

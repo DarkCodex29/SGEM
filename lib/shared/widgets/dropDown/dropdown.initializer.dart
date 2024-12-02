@@ -8,16 +8,16 @@ import 'package:sgem/shared/modules/personal.dart';
 import 'package:sgem/shared/widgets/dropDown/generic.dropdown.controller.dart';
 
 class DropdownDataInitializer {
-  final GenericDropdownController dropdownController;
-  final MaestroDetalleService maestroDetalleService;
-  final ModuloMaestroService moduloMaestroService;
-  final PersonalService personalService;
+  final GenericDropdownController? dropdownController;
+  final MaestroDetalleService? maestroDetalleService;
+  final ModuloMaestroService? moduloMaestroService;
+  final PersonalService? personalService;
 
   DropdownDataInitializer({
-    required this.dropdownController,
-    required this.maestroDetalleService,
-    required this.moduloMaestroService,
-    required this.personalService,
+    this.dropdownController,
+    this.maestroDetalleService,
+    this.moduloMaestroService,
+    this.personalService,
   });
 
   /// Método que inicializa la carga de todos los dropdowns
@@ -29,7 +29,7 @@ class DropdownDataInitializer {
       _loadEquipo(),
       _loadModulo(),
       _loadCategoria(),
-      _loadEmpresaCapacitacion(),
+      loadEmpresaCapacitacion(),
       _loadCapacitacion(),
       _loadEntrenador(),
       _loadEstadoEntrenamiento(),
@@ -71,8 +71,8 @@ class DropdownDataInitializer {
   }
 
   Future<void> _loadEstado() async {
-    dropdownController.initializeDropdown('estado');
-    dropdownController.optionsMap['estado']?.addAll([
+    dropdownController!.initializeDropdown('estado');
+    dropdownController!.optionsMap['estado']?.addAll([
       OptionValue(key: 0, nombre: 'Todos'),
       OptionValue(key: 95, nombre: 'Activo'),
       OptionValue(key: 96, nombre: 'Cesado'),
@@ -83,9 +83,9 @@ class DropdownDataInitializer {
   /// Métodos de carga específicos para cada dropdown, utilizando el servicio correcto
 
   Future<void> _loadGuardiaFiltro() async {
-    await dropdownController.loadOptions('guardiaFiltro', () async {
+    await dropdownController!.loadOptions('guardiaFiltro', () async {
       var options = await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(2),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(2),
       );
       options.insert(0, OptionValue(key: 0, nombre: 'Todos'));
       return options;
@@ -94,9 +94,9 @@ class DropdownDataInitializer {
   }
 
   Future<void> _loadGuardiaRegistro() async {
-    await dropdownController.loadOptions('guardiaRegistro', () async {
+    await dropdownController!.loadOptions('guardiaRegistro', () async {
       var options = await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(2),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(2),
       );
       return options;
     });
@@ -104,81 +104,87 @@ class DropdownDataInitializer {
   }
 
   Future<void> _loadEquipo() async {
-    await dropdownController.loadOptions('equipo', () async {
+    await dropdownController!.loadOptions('equipo', () async {
       return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(5),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(5),
       );
     });
     log('Equipo cargado');
   }
 
   Future<void> _loadModulo() async {
-    await dropdownController.loadOptions('modulo', () async {
+    await dropdownController!.loadOptions('modulo', () async {
       return await _handleResponse(
-        moduloMaestroService.listarMaestros(),
+        moduloMaestroService!.listarMaestros(),
       );
     });
     log('Modulo cargado');
   }
 
   Future<void> _loadCategoria() async {
-    await dropdownController.loadOptions('categoria', () async {
+    await dropdownController!.loadOptions('categoria', () async {
       return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(9),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(9),
       );
     });
     log('Categoria cargada');
   }
 
-  Future<void> _loadEmpresaCapacitacion() async {
-    await dropdownController.loadOptions('empresaCapacitacion', () async {
-      return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(8),
+  Future<void> loadEmpresaCapacitacion({bool filtrarExterna = false}) async {
+    await dropdownController!.loadOptions('empresaCapacitacion', () async {
+      var options = await _handleResponse(
+        maestroDetalleService!.listarMaestroDetallePorMaestro(8),
       );
+      if (filtrarExterna) {
+        options =
+            options.where((empresa) => empresa.nombre != 'Entrenamiento mina').toList();
+      }
+
+      return options;
     });
-    log('Empresa de capacitación cargada');
+    log('Opciones cargadas para empresaCapacitacion: ${dropdownController!.getOptionsFromKey('empresaCapacitacion').map((e) => e.nombre)}');
   }
 
   Future<void> _loadCapacitacion() async {
-    await dropdownController.loadOptions('capacitacion', () async {
+    await dropdownController!.loadOptions('capacitacion', () async {
       return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(7),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(7),
       );
     });
     log('Capacitación cargada');
   }
 
   Future<void> _loadEntrenador() async {
-    await dropdownController.loadOptions('entrenador', () async {
+    await dropdownController!.loadOptions('entrenador', () async {
       return await _handleResponse(
-        personalService.listarEntrenadores(),
+        personalService!.listarEntrenadores(),
       );
     });
     log('Entrenador cargado');
   }
 
   Future<void> _loadEstadoEntrenamiento() async {
-    await dropdownController.loadOptions('estadoEntrenamiento', () async {
+    await dropdownController!.loadOptions('estadoEntrenamiento', () async {
       return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(4),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(4),
       );
     });
     log('Estado de entrenamiento cargado');
   }
 
   Future<void> _loadCondicion() async {
-    await dropdownController.loadOptions('condicion', () async {
+    await dropdownController!.loadOptions('condicion', () async {
       return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(3),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(3),
       );
     });
     log('Condición cargada');
   }
 
   Future<void> _loadEstadoModulo() async {
-    await dropdownController.loadOptions('estadoModulo', () async {
+    await dropdownController!.loadOptions('estadoModulo', () async {
       return await _handleResponse(
-        maestroDetalleService.listarMaestroDetallePorMaestro(10),
+        maestroDetalleService!.listarMaestroDetallePorMaestro(10),
       );
     });
     log('Estados de módulo cargados');

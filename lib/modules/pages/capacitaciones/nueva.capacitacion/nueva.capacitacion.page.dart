@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sgem/config/constants/tipo.actividad.dart';
 import 'package:sgem/config/theme/app_theme.dart';
 import 'package:sgem/modules/pages/capacitaciones/nueva.capacitacion/nueva.capacitacion.controller.dart';
 import 'package:sgem/shared/widgets/delete/widget.delete.personal.dart';
@@ -43,6 +44,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
     } else {
       controller.resetControllers();
     }
+    controller.obtenerArchivosRegistrados(
+        idOrigen: TipoActividad.CAPACITACION, dni: dni, codigoMcp: codigoMcp);
   }
 
   @override

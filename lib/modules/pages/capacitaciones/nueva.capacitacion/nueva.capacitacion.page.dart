@@ -348,7 +348,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Fecha inicio",
                   controller: controller.fechaInicioController,
-                  icon: const Icon(Icons.calendar_today),
+                  icon: !isViewing ? Icon(Icons.calendar_today) : null,
                   onIconPressed: () async {
                     controller.fechaInicio = await _selectDate(Get.context!);
                     controller.fechaInicioController.text =
@@ -364,7 +364,7 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Fecha de término",
                   controller: controller.fechaTerminoController,
-                  icon: const Icon(Icons.calendar_today),
+                  icon: !isViewing ? Icon(Icons.calendar_today) : null,
                   onIconPressed: () async {
                     //if (isViewing) return;
                     controller.fechaTermino = await _selectDate(Get.context!);

@@ -22,12 +22,19 @@ class GenericDropdownController extends GetxController {
   Future<void> loadOptions(
       String key, Future<List<OptionValue>?> Function() getOptions) async {
     initializeDropdown(key);
-    if (isLoadingMap[key]!.value) return; // Evita cargas duplicadas.
+
+    if (isLoadingMap[key]!.value) return; // Evita cargas duplicadas
 
     isLoadingMap[key]!.value = true;
     try {
+      // Limpia las opciones existentes antes de cargar las nuevas
+      optionsMap[key]?.clear();
+      selectedValueMap[key]?.value = null; // Limpia la selección actual
+
       final loadedOptions = await getOptions() ?? [];
       optionsMap[key]?.assignAll(loadedOptions);
+
+      log('Opciones cargadas para $key: ${loadedOptions.map((e) => e.nombre)}');
     } catch (e) {
       log('Error al cargar opciones para $key: $e');
     } finally {

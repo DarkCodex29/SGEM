@@ -6,6 +6,7 @@ import 'package:file_saver/file_saver.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'package:sgem/config/api/api.archivo.dart';
 import 'package:sgem/config/api/api.capacitacion.dart';
 import 'package:sgem/config/api/api.maestro.detail.dart';
@@ -73,7 +74,7 @@ class NuevaCapacitacionController extends GetxController {
   CapacitacionController capacitacionController =
       Get.find<CapacitacionController>();
 
-  RxBool isCategoria = false.obs;
+  RxBool isValidateExterna = false.obs;
 
   void _mostrarMensajeGuardado(BuildContext context) {
     showDialog(
@@ -110,34 +111,66 @@ class NuevaCapacitacionController extends GetxController {
   }
 
   void actualizarOpcionesEmpresaCapacitadora() {
+    dropdownController.resetSelection('empresaCapacitacion');
+    dropdownController.optionsMap['empresaCapacitacion']?.clear();
+
     final categoriaSeleccionada =
         dropdownController.getSelectedValue('categoria')?.nombre ?? '';
+
     if (categoriaSeleccionada == 'Interna') {
       dropdownController.loadOptions(
         'empresaCapacitacion',
         () async {
-          return [
-            OptionValue(key: 24, nombre: 'Chinalco'),
-          ];
+          return [OptionValue(key: 24, nombre: 'Chinalco')];
         },
       );
-      isCategoria.value = true;
     } else if (categoriaSeleccionada == 'Externa') {
-      final todasEmpresas =
-          dropdownController.getOptionsFromKey('empresaCapacitacion');
-      final empresasFiltradas = todasEmpresas
-          .where((empresa) => empresa.nombre != 'Entrenamiento mina')
-          .toList();
       dropdownController.loadOptions(
         'empresaCapacitacion',
         () async {
-          return empresasFiltradas;
+          final todasEmpresas =
+              dropdownController.getOptionsFromKey('empresaCapacitacion');
+          return todasEmpresas
+              .where((empresa) => empresa.nombre != 'Chinalco')
+              .toList();
         },
       );
-      isCategoria.value = false;
+    }
+
+    sincronizarSeleccion('empresaCapacitacion');
+  }
+
+  void sincronizarSeleccion(String key) {
+    final opciones = dropdownController.getOptionsFromKey(key);
+    final seleccionada = dropdownController.getSelectedValue(key);
+
+    if (seleccionada != null && !opciones.contains(seleccionada)) {
+      dropdownController.resetSelection(key);
+    }
+    if (opciones.isEmpty) {
+      dropdownController.resetSelection(key);
     }
   }
 
+/*
+  Future<void> _loadEmpresaCapacitacion({bool filtrarExterna = false}) async {
+    await dropdownController.loadOptions('empresaCapacitacion', () async {
+      // Obtiene todas las empresas de capacitación
+      var options = await _handleResponse(
+        maestroDetalleService.listarMaestroDetallePorMaestro(8),
+      );
+
+      // Si es "Externa", aplica el filtro
+      if (filtrarExterna) {
+        options = options
+            .where((empresa) => empresa.nombre != 'Entrenamiento mina')
+            .toList();
+      }
+      return options;
+    });
+    log('Empresa de capacitación cargada');
+  }
+*/
   Future<Personal?> loadPersonalInterno(String codigoMcp, bool validate) async {
     if (codigoMcp.isEmpty && validate) {
       _mostrarErroresValidacion(
@@ -175,8 +208,10 @@ class NuevaCapacitacionController extends GetxController {
         personalExterno = response.data;
         llenarControladores();
       } else {
-        _mostrarErroresValidacion(Get.context!,
-            ['No se encontró personal con ese número de documento.']);
+        _mostrarErroresValidacion(Get.context!, [
+          'La persona no se encuentra registrada en el sistema, debe ingresar sus datos.'
+        ]);
+        isValidateExterna.value = true;
       }
     } catch (e) {
       log('Error al cargar personal externo: $e');

@@ -263,7 +263,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Nombres",
                   controller: controller.nombresController,
-                  isReadOnly: true,
+                  isReadOnly:
+                      !controller.isValidateExterna.value ? true : false,
                 ),
               ),
               const SizedBox(width: 12),
@@ -271,7 +272,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Apellido Paterno",
                   controller: controller.apellidoPaternoController,
-                  isReadOnly: true,
+                  isReadOnly:
+                      !controller.isValidateExterna.value ? true : false,
                 ),
               ),
               const SizedBox(width: 12),
@@ -279,7 +281,8 @@ class NuevaCapacitacionPage extends StatelessWidget {
                 child: CustomTextField(
                   label: "Apellido Materno",
                   controller: controller.apellidoMaternoController,
-                  isReadOnly: true,
+                  isReadOnly:
+                      !controller.isValidateExterna.value ? true : false,
                 ),
               ),
             ],
@@ -323,8 +326,16 @@ class NuevaCapacitacionPage extends StatelessWidget {
                   hintText: 'Selecciona empresa de capacitación',
                   noDataHintText: 'No se encontraron empresas',
                   controller: controller.dropdownController,
-                  isReadOnly: controller.isCategoria.value || isViewing,
+                  isReadOnly: isViewing,
                   isRequired: isViewing ? false : true,
+                  onChanged: (nuevaSeleccion) {
+                    if (!isViewing) {
+                      controller.dropdownController.selectValue(
+                        'empresaCapacitacion',
+                        nuevaSeleccion,
+                      );
+                    }
+                  },
                 ),
               ),
               const SizedBox(width: 20),

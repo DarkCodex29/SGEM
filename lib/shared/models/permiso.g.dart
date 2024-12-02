@@ -11,8 +11,10 @@ Permiso _$PermisoFromJson(Map<String, dynamic> json) => Permiso(
       name: json['Nombre'] as String,
       code: json['Codigo'] as String,
       userRegister: json['UsuarioRegistro'] as String,
-      dateRegister: DateTime.parse(json['FechaRegistro'] as String),
-      activated: json['Estado'] as bool? ?? false,
+      dateRegister: ajaxDateConverter.fromJson(json['FechaRegistro'] as String),
+      actived: json['Estado'] == null
+          ? false
+          : intBoolConverter.fromJson((json['Estado'] as num).toInt()),
     );
 
 Map<String, dynamic> _$PermisoToJson(Permiso instance) => <String, dynamic>{
@@ -20,6 +22,6 @@ Map<String, dynamic> _$PermisoToJson(Permiso instance) => <String, dynamic>{
       'Nombre': instance.name,
       'Codigo': instance.code,
       'UsuarioRegistro': instance.userRegister,
-      'FechaRegistro': instance.dateRegister.toIso8601String(),
-      'Estado': instance.activated,
+      'FechaRegistro': ajaxDateConverter.toJson(instance.dateRegister),
+      'Estado': intBoolConverter.toJson(instance.actived),
     };

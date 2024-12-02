@@ -106,6 +106,27 @@ class RolPermisoService {
     }
   }
 
+  Future<ResponseHandler<bool>> registratePermiso(
+    Permiso data,
+  ) async {
+    try {
+      Logger('RolPermisoService')
+          .info('Registrando rol ${jsonEncode(data.toJson())}');
+      await _dio.post<dynamic>(
+        '/RegistrarPermiso',
+        data: data.toJson(),
+      );
+
+      return ResponseHandler.handleSuccess(true);
+    } catch (e, stackTrace) {
+      return ResponseHandler.fromError(
+        e,
+        stackTrace,
+        'Error al registrar permiso',
+      );
+    }
+  }
+
   Future<ResponseHandler<bool>> updateRol(
     Rol data,
   ) async {

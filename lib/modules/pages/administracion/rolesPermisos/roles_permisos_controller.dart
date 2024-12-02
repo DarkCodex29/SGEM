@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sgem/config/api/api.roles.permisos.dart';
 import 'package:sgem/config/api/api_rol_permiso.dart';
 import 'package:sgem/modules/pages/administracion/rolesPermisos/roles/roles.dart';
+import 'package:sgem/modules/pages/administracion/rolesPermisos/roles_permisos.dart';
 import 'package:sgem/shared/models/models.dart';
 import 'package:sgem/shared/utils/Extensions/get_snackbar.dart';
 
@@ -94,6 +95,12 @@ class RolPermisoController extends GetxController {
   Future<void> onRolEdit([Rol? rol = null]) async {
     if ((await RolDialog(rol: rol).show()) ?? false) {
       await _getRoles();
+    }
+  }
+
+  Future<void> onPermisoEdit([Permiso? permiso = null]) async {
+    if ((await PermisoDialog(permiso: permiso).show()) ?? false) {
+      await _getPermisos();
     }
   }
 }

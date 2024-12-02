@@ -1,18 +1,19 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:sgem/shared/utils/model_converter.dart';
 
 part 'permiso.g.dart';
 
 @JsonSerializable()
 class Permiso extends Equatable {
-  const Permiso({
+  Permiso({
     this.key = -1,
     required this.name,
     required this.code,
     required this.userRegister,
-    required this.dateRegister,
-    this.activated = false,
-  });
+    DateTime? dateRegister,
+    this.actived = false,
+  }) : dateRegister = dateRegister ?? DateTime.now();
 
   factory Permiso.fromJson(Map<String, dynamic> json) =>
       _$PermisoFromJson(json);
@@ -30,10 +31,12 @@ class Permiso extends Equatable {
   final String userRegister;
 
   @JsonKey(name: 'FechaRegistro')
+  @ajaxDateConverter
   final DateTime dateRegister;
 
   @JsonKey(name: 'Estado')
-  final bool activated;
+  @intBoolConverter
+  final bool actived;
 
   Map<String, dynamic> toJson() => _$PermisoToJson(this);
 
@@ -44,6 +47,6 @@ class Permiso extends Equatable {
         code,
         userRegister,
         dateRegister,
-        activated,
+        actived,
       ];
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sgem/config/theme/app_theme.dart';
-import 'package:sgem/modules/pages/administracion/rolesPermisos/roles/roles.dart';
 import 'package:sgem/modules/pages/administracion/rolesPermisos/roles_permisos.dart';
 import 'package:sgem/shared/models/models.dart';
 import 'package:sgem/shared/utils/Extensions/format_extension.dart';
@@ -21,7 +20,7 @@ class RoleDataTable extends StatelessWidget {
     return Obx(() {
       return DataTable2(
         columns: const [
-          'Código',
+          // 'Código',
           'Nombre',
           'Usuario registro',
           'Fecha registro',
@@ -45,7 +44,7 @@ class RoleDataTable extends StatelessWidget {
             .map(
               (rol) => DataRow(
                 cells: [
-                  DataCell(Text(rol.key.format)),
+                  // DataCell(Text(rol.key.format)),
                   DataCell(Text(rol.name)),
                   DataCell(Text(rol.userRegister)),
                   DataCell(Text(rol.dateRegister.formatExtended)),

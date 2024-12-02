@@ -107,6 +107,7 @@ class CapacitacionCargaMasivaPage extends StatelessWidget {
           child: CustomTextField(
             label: "Archivo",
             controller: controller.archivoController,
+            isReadOnly: true,
           ),
         ),
         const SizedBox(

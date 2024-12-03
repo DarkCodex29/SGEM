@@ -277,13 +277,13 @@ class NuevaCapacitacionController extends GetxController {
             Get.context!, ['Por favor busque un personal']);
         return false;
       }
-
+/*
       if (isInternoSelected == false && personalExterno == null) {
         _mostrarErroresValidacion(
             Get.context!, ['Por favor busque un externo']);
         return false;
       }
-
+*/
       // Validar campos requeridos
       if (!_validarCamposRequeridos()) {
         _mostrarErroresValidacion(

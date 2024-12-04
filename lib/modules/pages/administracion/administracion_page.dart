@@ -5,6 +5,8 @@ import 'package:sgem/modules/pages/administracion/administracion.dart';
 import 'package:sgem/modules/pages/administracion/rolesPermisos/roles_permisos.dart';
 import 'package:sgem/modules/pages/administracion/usuarios/usuarios.dart';
 
+import 'cronogramaFechas/cronograma_fechas_page.dart';
+
 class AdministracionPage extends StatelessWidget {
   const AdministracionPage({super.key});
 
@@ -39,6 +41,7 @@ class AdministracionPage extends StatelessWidget {
             AdministracionScreen.modulos => const ModuloView(),
             AdministracionScreen.rolesPermisos => const RolPermisoPage(),
             AdministracionScreen.usuarios => const UsuariosPage(),
+            AdministracionScreen.cronogramaFechas => const CronogramaFechasPage(),
           },
         ),
       ),
@@ -75,6 +78,7 @@ class AdministracionView extends StatelessWidget {
               _Button(
                 icon: Icons.calendar_month,
                 label: 'Cronograma de fechas disponibles',
+                toPage: AdministracionScreen.cronogramaFechas,
               ),
             ],
           ),

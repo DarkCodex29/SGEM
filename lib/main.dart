@@ -64,7 +64,7 @@ Future<void> initializeServices() async {
       moduloMaestroService: moduloMaestroService,
       personalService: personalService,
     );
-
+    
     await dropdownInitializer.initializeAllDropdowns();
   } catch (e) {
     log('Error initializing services: $e');

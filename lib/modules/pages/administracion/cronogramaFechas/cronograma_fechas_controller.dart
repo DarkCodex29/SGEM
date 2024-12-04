@@ -34,7 +34,7 @@ class CronogramaFechasController extends GetxController {
       final excel = Excel.createExcel();
       // Renombrar la hoja predeterminada "Sheet1" a "Entrenamiento"
       excel.rename('Sheet1', 'Entrenamiento');
-      final sheet = excel['Entrenamiento']; // Recuperar la hoja renombrada
+      final sheet = excel['Entrenamiento']; 
 
       // Agregar cabeceras
       List<String> headers = [
@@ -47,7 +47,7 @@ class CronogramaFechasController extends GetxController {
       ];
       for (int i = 0; i < headers.length; i++) {
         var cell = sheet.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
-        cell.value = TextCellValue(headers[i]);  // Asignar como texto
+        cell.value = TextCellValue(headers[i]);  
       }
 
       // Agregar datos
@@ -65,7 +65,7 @@ class CronogramaFechasController extends GetxController {
         for (int colIndex = 0; colIndex < rowValues.length; colIndex++) {
           var cell = sheet.cell(CellIndex.indexByColumnRow(
               columnIndex: colIndex, rowIndex: rowIndex + 1));
-          cell.value = TextCellValue(rowValues[colIndex].toString()); // Convertir a texto
+          cell.value = TextCellValue(rowValues[colIndex].toString()); 
         }
       }
 
